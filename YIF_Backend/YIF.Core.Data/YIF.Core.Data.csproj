@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Extension\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Repository\" />
+  </ItemGroup>
+
+</Project>
