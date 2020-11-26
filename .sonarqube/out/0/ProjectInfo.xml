@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+  <ProjectName>YIF.Core.Service</ProjectName>
+  <ProjectLanguage>C#</ProjectLanguage>
+  <ProjectType>Product</ProjectType>
+  <ProjectGuid>b7d8f254-bd96-4270-a331-6222c0b0f40f</ProjectGuid>
+  <FullPath>D:\Work\SoftServe\Projects\YIF_Backend\YIF.Core.Service\YIF.Core.Service.csproj</FullPath>
+  <IsExcluded>false</IsExcluded>
+  <AnalysisResults />
+  <AnalysisSettings>
+    <Property Name="sonar.cs.roslyn.reportFilePaths">D:\Work\SoftServe\Projects\YIF_Backend\YIF.Core.Service\bin\Debug\netstandard2.0\YIF.Core.Service.dll.RoslynCA.json|D:\Work\SoftServe\Projects\YIF_Backend\YIF.Core.Service\bin\Debug\netstandard2.0\YIF.Core.Service.dll.RoslynCA.json</Property>
+    <Property Name="sonar.cs.analyzer.projectOutPaths">D:\Work\SoftServe\Projects\YIF_Backend\.sonarqube\out\0</Property>
+  </AnalysisSettings>
+  <Configuration>Debug</Configuration>
+  <Platform>AnyCPU</Platform>
+  <TargetFramework>netstandard2.0</TargetFramework>
+</ProjectInfo>
