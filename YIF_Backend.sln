@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF_Backend", "YIF_Backend\YIF_Backend.csproj", "{903B04E6-828E-4225-99C9-8B8EA215472C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Presentation", "YIF_Backend\YIF.Presentation.csproj", "{903B04E6-828E-4225-99C9-8B8EA215472C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF.Core.Data", "YIF.Core.Data\YIF.Core.Data.csproj", "{BA67AC8F-DFB6-43F7-9466-6C6C5A0912D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Data", "YIF.Core.Data\YIF.Core.Data.csproj", "{BA67AC8F-DFB6-43F7-9466-6C6C5A0912D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF.Core.Domain", "YIF.Core.Domain\YIF.Core.Domain.csproj", "{5687D791-D270-40DC-ACD5-6B86653D848A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Domain", "YIF.Core.Domain\YIF.Core.Domain.csproj", "{5687D791-D270-40DC-ACD5-6B86653D848A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF.Core.Service", "YIF.Core.Service\YIF.Core.Service.csproj", "{B7D8F254-BD96-4270-A331-6222C0B0F40F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Service", "YIF.Core.Service\YIF.Core.Service.csproj", "{B7D8F254-BD96-4270-A331-6222C0B0F40F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
