@@ -1,0 +1,17 @@
+﻿version: "3.8"
+services:
+    ms-sql-server:
+        container_name: ms-sql-server
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports:
+            - "1433:1433"
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "YIF_Backend_DB_MyKeyOnlyInMyHeart"
+            MSSQL_PID: Express
+    web-api:
+        container_name: web-api
+        image: web-api
+        build: .
+        ports:
+            - "8080:80"
