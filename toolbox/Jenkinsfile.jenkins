@@ -1,0 +1,74 @@
+pipeline {
+	agent any
+
+	options {
+		timestamps()
+		buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+		retry(1)
+		skipStagesAfterUnstable()
+		}
+    triggers {
+        pollSCM '* * * * *'
+    }
+	
+    stages {
+        stage ('Init') {
+            steps {
+				echo '=============>   Step 1.  Load Solution   <=============\n'
+				echo '\n 1.1  Delete dirs:'
+				deleteDir()
+				echo '\n 1.2  Checkout project from GitHub:'
+				dir("project") {
+					git url: "https://github.com/ita-social-projects/YIF_Backend", 
+						branch: "feature_#9_CI_Jenkins_Kolia"
+                }
+				echo '\n 1.3  Restore project:'
+				dotnetRestore workDirectory: 'project', project: 'YIF_Backend.sln'
+				echo '\n 1.4  Clean project:'
+				dotnetClean workDirectory: 'project', project: 'YIF_Backend.sln', unstableIfWarnings: true
+				echo '\n================>   End of step 1.   <================\n\n\n'
+            }
+        }
+		
+		stage('Build') {
+            steps {
+				echo '===========>   Step 2.  Building Solution   <============\n'
+				//echo '\n 2.1  Create NuGet packages:'
+				//dotnetPack workDirectory: 'project', project: 'YIF_Backend.sln'
+				//echo '\n 2.2  Build project:'
+				dotnetBuild workDirectory: 'project', project: 'YIF_Backend.sln', configuration: 'Debug', versionSuffix: '${BUILD_NUMBER}'
+				echo '\n================>   End of step 2.   <================\n\n\n'
+			}
+		}
+		
+		stage('Test') {
+            steps {
+				echo '============>   Step 3.  Testing Solution   <============\n'
+				echo '\n   Step 3.1  Unit Testing\n'
+				//dotnetTest workDirectory: 'project', project: 'YIF.Test.Unit/YIF.Test.Unit.csproj', resultsDirectory: 'testsResults'
+				echo '\n\n   Step 3.2  Integration Testing\n'
+				//dotnetTest workDirectory: 'project', project: 'YIF.Test.Integration/YIF.Test.Integration.csproj', resultsDirectory: 'testsResults'
+				echo '\n\n   Step 3.3  Testing Results\n'
+				//step([$class: 'XUnitPublisher',
+				//	thresholds: [[$class: 'FailedThreshold', unstableThreshold: '1']],
+				//	tools: [[$class: 'JUnitType', pattern: '**/surefire-reports/*.xml'],
+				//			[$class: 'JUnitType', pattern: '**/generatedJUnitFiles/JUnit/*.xml'],
+				//			[$class: 'BoostTestJunitHudsonTestType', pattern: '**/*_results.xml'],
+				//			]])
+				////  ... or:
+				//xunit([xUnitDotNet(deleteOutputFiles: true, failIfNotNew: true,
+				//pattern: '**/*_results.xml', skipNoTestFiles: true, stopProcessingIfError: true)])
+				echo '\n================>   End of step 3.   <================\n\n\n'
+			}
+		}
+		
+		stage('Publish') {
+            steps {
+				echo '============>   Step 4.  Release Solution   <============\n'
+				dotnetPublish project: 'project/YIF_Backend.sln', outputDirectory: 'published',
+					configuration: 'Release', unstableIfWarnings: true
+				echo '\n================>   End of step 4.   <================\n\n\n'
+			}
+		}
+    }
+}
