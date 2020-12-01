@@ -4,7 +4,6 @@ pipeline {
 	options {
 		timestamps()
 		buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-		retry(1)
 		skipStagesAfterUnstable()
 		}
 	
@@ -67,5 +66,23 @@ pipeline {
 				echo '\n================>   End of step 4.   <================\n\n\n'
 			}
 		}
+    }
+	
+    post {
+        failure {
+            echo """\n\nJenkins job '${env.JOB_NAME}' (${env.BUILD_NUMBER}) has FAILED. currentBuild.result = ${currentBuild.result}"""
+			
+			mail bcc: '', body: """<b>FAILED</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}""",
+				cc: '', from: 'YIF_Backend@jenkins.server', mimeType: 'text/html', replyTo: '',
+				subject: """ERROR YIF_Backend CI: Project name -> ${env.JOB_NAME}""", to: 'kolyalyutko@gmail.com'
+        }
+        unstable {
+			echo """\n\nJenkins job '${env.JOB_NAME}' (${env.BUILD_NUMBER}) has FAILED. currentBuild.result = ${currentBuild.result}"""
+            echo 'Jenkins job has gone unstable. currentBuild.result = ${currentBuild.result}'
+			mail bcc: '', body: """<b>FAILED</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}""",
+				cc: '', from: 'YIF_Backend@jenkins.server', mimeType: 'text/html', replyTo: '',
+				subject: """ERROR YIF_Backend CI: Project name -> ${env.JOB_NAME}""", to: 'kolyalyutko@gmail.com'
+			
+        }
     }
 }
