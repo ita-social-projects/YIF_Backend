@@ -7,9 +7,6 @@ pipeline {
 		retry(1)
 		skipStagesAfterUnstable()
 		}
-    triggers {
-        pollSCM '* * * * *'
-    }
 	
     stages {
         stage ('Init') {
