@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF_Backend", "YIF_Backend\YIF_Backend.csproj", "{903B04E6-828E-4225-99C9-8B8EA215472C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Data", "YIF.Core.Data\YIF.Core.Data.csproj", "{7896CF00-85C3-498A-99C4-30A58C941978}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Domain", "YIF.Core.Domain\YIF.Core.Domain.csproj", "{D1C0CEEF-A8D9-443A-BA5C-D6AAD21D8FEF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Service", "YIF.Core.Service\YIF.Core.Service.csproj", "{E598136F-BE80-4B72-A011-0FB461610A47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF_XUnitTests", "YIF_XUnitTests\YIF_XUnitTests.csproj", "{8881C5A5-453D-441B-BF17-AE78A7BBE8AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF_XUnitTests", "YIF_XUnitTests\YIF_XUnitTests.csproj", "{8881C5A5-453D-441B-BF17-AE78A7BBE8AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF.Core.Data", "YIF.Core.Data\YIF.Core.Data.csproj", "{AA9383E3-E707-48A6-B740-F6D2BB04FC76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{903B04E6-828E-4225-99C9-8B8EA215472C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903B04E6-828E-4225-99C9-8B8EA215472C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903B04E6-828E-4225-99C9-8B8EA215472C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7896CF00-85C3-498A-99C4-30A58C941978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7896CF00-85C3-498A-99C4-30A58C941978}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7896CF00-85C3-498A-99C4-30A58C941978}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7896CF00-85C3-498A-99C4-30A58C941978}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1C0CEEF-A8D9-443A-BA5C-D6AAD21D8FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1C0CEEF-A8D9-443A-BA5C-D6AAD21D8FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C0CEEF-A8D9-443A-BA5C-D6AAD21D8FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{8881C5A5-453D-441B-BF17-AE78A7BBE8AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8881C5A5-453D-441B-BF17-AE78A7BBE8AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8881C5A5-453D-441B-BF17-AE78A7BBE8AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA9383E3-E707-48A6-B740-F6D2BB04FC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA9383E3-E707-48A6-B740-F6D2BB04FC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA9383E3-E707-48A6-B740-F6D2BB04FC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA9383E3-E707-48A6-B740-F6D2BB04FC76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
