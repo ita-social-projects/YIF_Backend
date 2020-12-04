@@ -36,14 +36,14 @@ namespace YIF.Core.Data
         { 
             base.OnModelCreating(builder);
 
-            
+
 
             #region University
 
-            //builder.Entity<UniversityModerator>()
-            //    .HasOne(x => x.Admin)
-            //    .WithOne(x => x.Moderator)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<UniversityModerator>()
+                .HasOne(x => x.Admin)
+                .WithOne(x => x.Moderator)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UniversityModerator>()
                 .HasOne(x => x.University)
@@ -75,7 +75,7 @@ namespace YIF.Core.Data
 
 
             builder.Entity<SpecialityToUniversity>()
-                .HasKey(c => new { c.Id,c.UniversityId, c.SpecialityId });                                        
+                .HasKey(c => new { c.Id,c.UniversityId, c.SpecialityId });
 
             //builder.Entity<University>()
             //.HasMany(x => x.Specialities)
@@ -85,10 +85,10 @@ namespace YIF.Core.Data
 
             #region School
 
-            //builder.Entity<SchoolModerator>()
-            //    .HasOne(x => x.Admin)
-            //    .WithOne(x => x.Moderator)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<SchoolModerator>()
+                .HasOne(x => x.Admin)
+                .WithOne(x => x.Moderator)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<SchoolModerator>()
                 .HasOne(x => x.School)

@@ -19,11 +19,6 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// Link to school moderator
         /// </summary>
-        //public SchoolModerator Moderator { get; set; }
-        /// <summary>
-        /// Link to Identity user
-        /// </summary>
-        [ForeignKey("Id")]
-        public DbUser User { get; set; }
+        public SchoolModerator Moderator { get; set; }
     }
 }

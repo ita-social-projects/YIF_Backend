@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20201202205414_init")]
+    [Migration("20201204214134_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -303,7 +303,9 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
+                    b.HasIndex("AdminId")
+                        .IsUnique()
+                        .HasFilter("[AdminId] IS NOT NULL");
 
                     b.HasIndex("SchoolId");
 
@@ -398,7 +400,9 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
+                    b.HasIndex("AdminId")
+                        .IsUnique()
+                        .HasFilter("[AdminId] IS NOT NULL");
 
                     b.HasIndex("UniversityId");
 
@@ -486,12 +490,6 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SchoolAdmin", b =>
                 {
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.School", "School")
                         .WithMany("Admins")
                         .HasForeignKey("SchoolId");
@@ -500,8 +498,9 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.SchoolModerator", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.SchoolAdmin", "Admin")
-                        .WithMany()
-                        .HasForeignKey("AdminId");
+                        .WithOne("Moderator")
+                        .HasForeignKey("YIF.Core.Data.Entities.SchoolModerator", "AdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()
@@ -532,12 +531,6 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityAdmin", b =>
                 {
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany("Admins")
                         .HasForeignKey("UniversityId")
@@ -547,8 +540,9 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityModerator", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.UniversityAdmin", "Admin")
-                        .WithMany()
-                        .HasForeignKey("AdminId");
+                        .WithOne("Moderator")
+                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()

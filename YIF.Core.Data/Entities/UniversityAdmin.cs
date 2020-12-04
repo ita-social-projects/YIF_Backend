@@ -19,11 +19,6 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// Link to university moderator
         /// </summary>
-        //public UniversityModerator Moderator { get; set; }
-        /// <summary>
-        /// Link to Identity user
-        /// </summary>
-        [ForeignKey("Id")]
-        public DbUser User { get; set; }
+        public UniversityModerator Moderator { get; set; }     
     }
 }
