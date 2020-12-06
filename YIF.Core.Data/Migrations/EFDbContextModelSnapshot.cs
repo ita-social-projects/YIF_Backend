@@ -559,8 +559,7 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.UniversityAdmin", "Admin")
                         .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId");
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()

@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20201204214134_init")]
-    partial class init
+    [Migration("20201206173747_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -350,6 +350,17 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("SpecialityToUniversity");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SuperAdmin");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.University", b =>
                 {
                     b.Property<string>("Id")
@@ -529,6 +540,15 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityAdmin", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
@@ -541,8 +561,7 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.UniversityAdmin", "Admin")
                         .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId");
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()

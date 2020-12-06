@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20201206151727_Update-Database")]
-    partial class UpdateDatabase
+    [Migration("20201206173839_SuperAdmin")]
+    partial class SuperAdmin
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -561,8 +561,7 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.UniversityAdmin", "Admin")
                         .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId");
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()

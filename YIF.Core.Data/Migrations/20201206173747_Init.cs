@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace YIF.Core.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -194,6 +194,23 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SuperAdmin",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SuperAdmin", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SuperAdmin_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Graduates",
                 columns: table => new
                 {
@@ -349,7 +366,7 @@ namespace YIF.Core.Data.Migrations
                         column: x => x.AdminId,
                         principalTable: "UniversityAdmins",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UniversityModerators_AspNetUsers_Id",
                         column: x => x.Id,
@@ -486,6 +503,9 @@ namespace YIF.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "SpecialityToUniversity");
+
+            migrationBuilder.DropTable(
+                name: "SuperAdmin");
 
             migrationBuilder.DropTable(
                 name: "UniversityModerators");

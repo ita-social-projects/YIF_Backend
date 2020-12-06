@@ -21,6 +21,7 @@ namespace YIF.Core.Data
 
         #region Tables
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
+
         public DbSet<UniversityModerator> UniversityModerators { get; set; }
         public DbSet<UniversityAdmin> UniversityAdmins { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
@@ -44,8 +45,7 @@ namespace YIF.Core.Data
 
             builder.Entity<UniversityModerator>()
                 .HasOne(x => x.Admin)
-                .WithOne(x => x.Moderator)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(x => x.Moderator);
 
             builder.Entity<UniversityModerator>()
                 .HasOne(x => x.University)
@@ -78,10 +78,6 @@ namespace YIF.Core.Data
 
             builder.Entity<SpecialityToUniversity>()
                 .HasKey(c => new { c.Id,c.UniversityId, c.SpecialityId });
-
-            //builder.Entity<University>()
-            //.HasMany(x => x.Specialities)
-            //.WithMany(x => x.Universities);
 
             #endregion
 
