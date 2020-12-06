@@ -20,6 +20,7 @@ namespace YIF.Core.Data
         }
 
         #region Tables
+        public DbSet<SuperAdmin> SuperAdmins { get; set; }
         public DbSet<UniversityModerator> UniversityModerators { get; set; }
         public DbSet<UniversityAdmin> UniversityAdmins { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
@@ -36,7 +37,8 @@ namespace YIF.Core.Data
         { 
             base.OnModelCreating(builder);
 
-
+            builder.Entity<SuperAdmin>()
+                .HasOne(x => x.User);
 
             #region University
 
