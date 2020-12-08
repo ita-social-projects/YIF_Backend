@@ -12,23 +12,23 @@ namespace YIF_Backend.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private readonly EFDbContext _context;
+        //private readonly EFDbContext _context;
 
-        public HomeController(EFDbContext context)
-        {
-            _context = context;
-        }
+        //public HomeController(EFDbContext context)
+        //{
+        //    _context = context;
+        //}
 
-        [HttpGet("usersdb")]
-        public ActionResult<IEnumerable<DbUser>> GetUsersDB()
-        {
-            return _context.Users;
-        }
+        //[HttpGet("usersdb")]
+        //public ActionResult<IEnumerable<DbUser>> GetUsersDB()
+        //{
+        //    return _context.Users;
+        //}
 
-        [HttpGet("users")]
-        public ActionResult<IEnumerable<string>> GetUsers()
-        {
-            return new string[] { "stepan", "oleg" };
-        }
+        //[HttpGet("users")]
+        //public ActionResult<IEnumerable<string>> GetUsers()
+        //{
+        //    return new string[] { "stepan", "oleg" };
+        //}
     }
 }

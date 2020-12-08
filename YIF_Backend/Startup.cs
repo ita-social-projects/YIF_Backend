@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF_Backend
 {
@@ -23,19 +24,20 @@ namespace YIF_Backend
         {
             Configuration = configuration;
         }
-
+        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+           
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<DbUser, DbRole>(options => options.Stores.MaxLengthForKeys = 128)
+            services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
-
+            
             services.AddControllers();
         }
 
@@ -53,7 +55,7 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
-            SeederDb.SeedDataByAS(app.ApplicationServices);
+            //SeederDb.SeedDataByAS(app.ApplicationServices);
 
             app.UseEndpoints(endpoints =>
             {
