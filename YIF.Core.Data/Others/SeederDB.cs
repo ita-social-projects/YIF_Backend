@@ -670,7 +670,7 @@ namespace YIF.Core.Data
                 // Random seeding
                 universities.ForEach(x =>                 
                 {
-                    for (int i = 0; i < new Random().Next(0, specialities.Count() - 1); i++)
+                    for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
                     {
                         specialitiesTouniversities.Add(new SpecialityToUniversity 
                         { 
