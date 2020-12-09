@@ -9,7 +9,7 @@ namespace YIF.Core.Data.Entities
 {
     public class UniversityModerator
     {
-        [Key, ForeignKey("User")]
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public string UniversityId { get; set; }
