@@ -163,9 +163,14 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("SchoolId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Graduates");
                 });
@@ -299,6 +304,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("SchoolId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdminId")
@@ -306,6 +314,8 @@ namespace YIF.Core.Data.Migrations
                         .HasFilter("[AdminId] IS NOT NULL");
 
                     b.HasIndex("SchoolId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SchoolModerators");
                 });
@@ -345,7 +355,7 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasIndex("UniversityId");
 
-                    b.ToTable("SpecialityToUniversity");
+                    b.ToTable("SpecialityToUniversities");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
@@ -354,7 +364,12 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SuperAdmins");
                 });
@@ -407,6 +422,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("UniversityId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdminId")
@@ -414,6 +432,8 @@ namespace YIF.Core.Data.Migrations
                         .HasFilter("[AdminId] IS NOT NULL");
 
                     b.HasIndex("UniversityId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UniversityModerators");
                 });
@@ -471,16 +491,14 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Graduate", b =>
                 {
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.School", "School")
                         .WithMany("Graduates")
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
@@ -511,16 +529,14 @@ namespace YIF.Core.Data.Migrations
                         .HasForeignKey("YIF.Core.Data.Entities.SchoolModerator", "AdminId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.School", "School")
                         .WithMany("Moderators")
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialityToUniversity", b =>
@@ -542,9 +558,7 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityAdmin", b =>
@@ -561,16 +575,14 @@ namespace YIF.Core.Data.Migrations
                         .WithOne("Moderator")
                         .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId");
 
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany("Moderators")
                         .HasForeignKey("UniversityId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

@@ -88,7 +88,7 @@ namespace YIF_Backend
             #region EntityFramework
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            
             services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
@@ -111,6 +111,7 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
+            SeederDB.SeedData(app.ApplicationServices);
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
