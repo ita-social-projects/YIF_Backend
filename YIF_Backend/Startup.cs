@@ -111,7 +111,10 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
-            SeederDB.SeedData(app.ApplicationServices);
+            #region Seeder
+            //SeederDB.SeedData(app.ApplicationServices);
+            #endregion
+
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -119,8 +122,6 @@ namespace YIF_Backend
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
             #endregion
-
-            //SeederDb.SeedDataByAS(app.ApplicationServices);
 
             app.UseEndpoints(endpoints =>
             {
