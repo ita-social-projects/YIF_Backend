@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -14,11 +16,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Service;
-using YIF.Core.Service.ValidationServices;
 
 namespace YIF_Backend
 {
@@ -37,7 +38,51 @@ namespace YIF_Backend
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
 
-            services.AddTransient<IValidator<User>, UserValidation>();
+            //services.AddTransient<IValidator<User>, UserValidation>();
+            #endregion
+
+            #region Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "YPS API",
+                    Description = "A project  ASP.NET Core Web API",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Team YPS",
+                        Email = string.Empty,
+                    },
+
+                });
+
+                c.AddSecurityDefinition("Bearer",
+                     new OpenApiSecurityScheme
+                     {
+                         Description = "JWT Authorization header using the Bearer scheme.",
+                         Type = SecuritySchemeType.Http,
+                         Scheme = "bearer"
+                     });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                    {
+                        new OpenApiSecurityScheme{
+                            Reference = new OpenApiReference{
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },new List<string>()
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
+
+            });
             #endregion
 
             #region EntityFramework
@@ -66,7 +111,14 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
-            new Class1();
+            #region Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+            #endregion
+
             //SeederDb.SeedDataByAS(app.ApplicationServices);
 
             app.UseEndpoints(endpoints =>
