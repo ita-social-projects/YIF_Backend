@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +17,8 @@ using Microsoft.Extensions.Logging;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Service;
+using YIF.Core.Service.ValidationServices;
 
 namespace YIF_Backend
 {
@@ -30,14 +34,21 @@ namespace YIF_Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+            #region FluentValidation
+            services.AddMvc().AddFluentValidation();
+
+            services.AddTransient<IValidator<User>, UserValidation>();
+            #endregion
+
+            #region EntityFramework
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
-            
+            #endregion
+
             services.AddControllers();
         }
 
@@ -55,6 +66,7 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
+            new Class1();
             //SeederDb.SeedDataByAS(app.ApplicationServices);
 
             app.UseEndpoints(endpoints =>
