@@ -27,6 +27,7 @@ namespace YIF.Core.Data
         public DbSet<Lecture> Lectures { get; set; }
         public DbSet<University> Universities { get; set; }
         public DbSet<Speciality> Specialities { get; set; }
+        public DbSet<SpecialityToUniversity> SpecialityToUniversities { get; set; }
 
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }

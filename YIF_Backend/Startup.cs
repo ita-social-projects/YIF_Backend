@@ -33,7 +33,7 @@ namespace YIF_Backend
            
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            
             services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
@@ -55,7 +55,7 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
-            //SeederDb.SeedDataByAS(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
 
             app.UseEndpoints(endpoints =>
             {

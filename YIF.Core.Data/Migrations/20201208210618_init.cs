@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace YIF.Core.Data.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -194,20 +194,21 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SuperAdmin",
+                name: "SuperAdmins",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false)
+                    Id = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SuperAdmin", x => x.Id);
+                    table.PrimaryKey("PK_SuperAdmins", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SuperAdmin_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_SuperAdmins_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,23 +216,24 @@ namespace YIF.Core.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    SchoolId = table.Column<string>(nullable: true)
+                    SchoolId = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Graduates", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Graduates_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Graduates_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Graduates_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,7 +279,7 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SpecialityToUniversity",
+                name: "SpecialityToUniversities",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -286,15 +288,15 @@ namespace YIF.Core.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpecialityToUniversity", x => new { x.Id, x.UniversityId, x.SpecialityId });
+                    table.PrimaryKey("PK_SpecialityToUniversities", x => new { x.Id, x.UniversityId, x.SpecialityId });
                     table.ForeignKey(
-                        name: "FK_SpecialityToUniversity_Specialities_SpecialityId",
+                        name: "FK_SpecialityToUniversities_Specialities_SpecialityId",
                         column: x => x.SpecialityId,
                         principalTable: "Specialities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SpecialityToUniversity_Universities_UniversityId",
+                        name: "FK_SpecialityToUniversities_Universities_UniversityId",
                         column: x => x.UniversityId,
                         principalTable: "Universities",
                         principalColumn: "Id",
@@ -325,7 +327,8 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     SchoolId = table.Column<string>(nullable: true),
-                    AdminId = table.Column<string>(nullable: true)
+                    AdminId = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -337,17 +340,17 @@ namespace YIF.Core.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SchoolModerators_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_SchoolModerators_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SchoolModerators_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -356,7 +359,8 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     UniversityId = table.Column<string>(nullable: true),
-                    AdminId = table.Column<string>(nullable: true)
+                    AdminId = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -368,17 +372,17 @@ namespace YIF.Core.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UniversityModerators_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_UniversityModerators_Universities_UniversityId",
                         column: x => x.UniversityId,
                         principalTable: "Universities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UniversityModerators_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -426,6 +430,11 @@ namespace YIF.Core.Data.Migrations
                 column: "SchoolId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Graduates_UserId",
+                table: "Graduates",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lectures_UniversityId",
                 table: "Lectures",
                 column: "UniversityId");
@@ -448,14 +457,24 @@ namespace YIF.Core.Data.Migrations
                 column: "SchoolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SpecialityToUniversity_SpecialityId",
-                table: "SpecialityToUniversity",
+                name: "IX_SchoolModerators_UserId",
+                table: "SchoolModerators",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialityToUniversities_SpecialityId",
+                table: "SpecialityToUniversities",
                 column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SpecialityToUniversity_UniversityId",
-                table: "SpecialityToUniversity",
+                name: "IX_SpecialityToUniversities_UniversityId",
+                table: "SpecialityToUniversities",
                 column: "UniversityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SuperAdmins_UserId",
+                table: "SuperAdmins",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UniversityAdmins_UniversityId",
@@ -473,6 +492,11 @@ namespace YIF.Core.Data.Migrations
                 name: "IX_UniversityModerators_UniversityId",
                 table: "UniversityModerators",
                 column: "UniversityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UniversityModerators_UserId",
+                table: "UniversityModerators",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -502,10 +526,10 @@ namespace YIF.Core.Data.Migrations
                 name: "SchoolModerators");
 
             migrationBuilder.DropTable(
-                name: "SpecialityToUniversity");
+                name: "SpecialityToUniversities");
 
             migrationBuilder.DropTable(
-                name: "SuperAdmin");
+                name: "SuperAdmins");
 
             migrationBuilder.DropTable(
                 name: "UniversityModerators");
