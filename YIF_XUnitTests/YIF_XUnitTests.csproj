@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
@@ -28,7 +29,6 @@
     <Folder Include="Integration\YIF.Core.Service\Concrete\Services\" />
     <Folder Include="Integration\YIF.Core.Service\Mapping\" />
     <Folder Include="Integration\YIF.Core.Service\ValidationServices\" />
-    <Folder Include="Integration\YIF_Backend\Controllers\" />
     <Folder Include="Unit\YIF.Core.Data\Entities\" />
     <Folder Include="Unit\YIF.Core.Data\Others\" />
     <Folder Include="Unit\YIF.Core.Domain\Models\" />
