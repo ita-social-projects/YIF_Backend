@@ -26,7 +26,7 @@ namespace YIF.Core.Domain.Repositories
             if (user != null)
             {
                 _db.Users.Add(user);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
                 return mapper.Map<UserDTO>(await _db.Users.FindAsync(user));
             }
@@ -40,7 +40,7 @@ namespace YIF.Core.Domain.Repositories
                 if (_db.Users.Find(user) != null)
                 {
                     _db.Users.Update(user);
-                    _db.SaveChanges();
+                    await _db.SaveChangesAsync();
                     var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace YIF.Core.Domain.Repositories
             if (user != null)
             {
                 _db.Users.Remove(user);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return true;
             }
             return false;
