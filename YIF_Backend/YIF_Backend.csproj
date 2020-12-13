@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
+    <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
+    <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
   </ItemGroup>
 
 

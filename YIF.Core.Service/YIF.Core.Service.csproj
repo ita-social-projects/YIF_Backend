@@ -4,4 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
+    <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mapping\" />
+  </ItemGroup>
+
 </Project>
