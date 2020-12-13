@@ -1,0 +1,42 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
+pipeline {
+	agent { label 'master' }
+    // triggers { pollSCM('* * * * *') }
+	options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+	
+    stages {
+        stage('Code Quality Check via SonarQube') {
+            steps {
+                script {
+                    echo " ---> Code Quality Check via SonarQube  <--- "
+                    def scannerHome = tool 'sonarqubescanner';
+                    withSonarQubeEnv("sonarqube8.1") {
+                        sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=/var/lib/jenkins/workspace/yifbackend/toolbox/sonar/sonar-project.properties"
+                    }
+                }
+            }
+        }
+        stage ('Build docker-api') {
+            steps {
+                dir(".") {
+                    echo " ---> If web-api-pc exist - remove it  <--- "
+                    sh "docker stop web-api-pc || true && docker rm web-api-pc || true"
+                    
+                    echo " ---> Build docker web-api <--- "
+                    sh "docker build -t smethan/web-api:latest . "
+
+                    echo " ---> Run web-api-pc <--- "
+                    sh "docker run -d --name web-api-pc -p 5000:80 smethan/web-api"
+
+                    echo " ---> Remove dangling images  <--- "
+                    sh "docker rmi \$(docker images --filter 'dangling=true' -q --no-trunc) || true"
+                }
+            }
+        }
+    }
+}
