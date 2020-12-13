@@ -50,7 +50,6 @@ namespace YIF_Backend.Controllers
             {
                 return BadRequest($"Bad format:  {id}");
             }
-            return BadRequest();
         }
 
 
