@@ -14,7 +14,7 @@ namespace YIF_Backend.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet("GetRandomNumber")]
-        public async Task<IActionResult> GetRandomNumber()
+        public IActionResult GetRandomNumber()
         {
             var result = new Random().Next(1, 1000);
 

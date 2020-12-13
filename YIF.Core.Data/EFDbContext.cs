@@ -5,14 +5,16 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Data.Interfaces;
 
 namespace YIF.Core.Data
 {
     public class EFDbContext : IdentityDbContext<DbUser, IdentityRole, string, IdentityUserClaim<string>,
     IdentityUserRole<string>, IdentityUserLogin<string>,
-    IdentityRoleClaim<string>, IdentityUserToken<string>>
+    IdentityRoleClaim<string>, IdentityUserToken<string>>, IApplicationDbContext
     {       
         public EFDbContext(DbContextOptions<EFDbContext> options) : base(options)
         {
@@ -34,6 +36,11 @@ namespace YIF.Core.Data
         public DbSet<Graduate> Graduates { get; set; }
         public DbSet<School> Schools { get; set; }
         #endregion
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await base.SaveChangesAsync();
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         { 

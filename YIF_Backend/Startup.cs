@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -18,8 +19,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using YIF.Core.Data;
-using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.Repositories;
+using YIF.Core.Domain.ServicesInterfaces;
+using YIF.Core.Service.Concrete.Services;
 
 namespace YIF_Backend
 {
@@ -35,6 +40,17 @@ namespace YIF_Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Interfaces
+            services.AddTransient<IApplicationDbContext, EFDbContext>();
+            services.AddTransient<EFDbContext>();
+
+            services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<UserRepository>();
+
+            services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<UserService>();
+            #endregion
+
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
 
