@@ -11,7 +11,7 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ViewModels;
 using System.Linq.Expressions;
 
-namespace YIF.Core.Service.Concrete
+namespace YIF.Core.Service.Concrete.Services
 {
     public class UserService : IUserService<DbUser>
     {
@@ -46,7 +46,7 @@ namespace YIF.Core.Service.Concrete
             var user = await _userRepository.Get(id);
             if (user == null)
             {
-                return result.Set(false, $"User {id} not found");
+                return result.Set(false, $"User not found:  {id}");
             }
             var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, UserViewModel>()));
             

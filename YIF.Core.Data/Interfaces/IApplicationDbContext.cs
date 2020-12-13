@@ -10,7 +10,7 @@ using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IApplicationDbContext :IDisposable
+    public interface IApplicationDbContext : IDisposable
     {
         DbSet<SuperAdmin> SuperAdmins { get; set; }
 

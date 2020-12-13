@@ -35,12 +35,22 @@ namespace YIF_Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetUserAsync(string id)
         {
-            if (id.Length == 36)
+            try
             {
-                var result = await _userService.GetUserById(id);
+                Guid guid = Guid.Parse(id);
+                var result = await _userService.GetUserById(guid.ToString("D"));
                 return ReturnResult(result.Success, result.Object, result.Message);
             }
-            return BadRequest("Wrong ID length");
+            catch (ArgumentNullException)
+            {
+                return BadRequest("The string to be parsed is null.");
+                //return BadRequest("Wrong ID length");
+            }
+            catch (FormatException)
+            {
+                return BadRequest($"Bad format:  {id}");
+            }
+            return BadRequest();
         }
 
 

@@ -35,12 +35,12 @@ namespace YIF.Core.Data
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
         public DbSet<Graduate> Graduates { get; set; }
         public DbSet<School> Schools { get; set; }
+        #endregion
 
         public async Task<int> SaveChangesAsync()
         {
             return await base.SaveChangesAsync();
         }
-        #endregion
 
         protected override void OnModelCreating(ModelBuilder builder)
         { 

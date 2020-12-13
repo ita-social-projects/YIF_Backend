@@ -19,4 +19,25 @@
     <ProjectReference Include="..\YIF_Backend\YIF_Backend.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Integration\YIF.Core.Data\Entities\" />
+    <Folder Include="Integration\YIF.Core.Data\Others\" />
+    <Folder Include="Integration\YIF.Core.Domain\Models\" />
+    <Folder Include="Integration\YIF.Core.Domain\ViewModels\" />
+    <Folder Include="Integration\YIF.Core.Domain\Repositories\" />
+    <Folder Include="Integration\YIF.Core.Service\Concrete\Services\" />
+    <Folder Include="Integration\YIF.Core.Service\Mapping\" />
+    <Folder Include="Integration\YIF.Core.Service\ValidationServices\" />
+    <Folder Include="Integration\YIF_Backend\Controllers\" />
+    <Folder Include="Unit\YIF.Core.Data\Entities\" />
+    <Folder Include="Unit\YIF.Core.Data\Others\" />
+    <Folder Include="Unit\YIF.Core.Domain\Models\" />
+    <Folder Include="Unit\YIF.Core.Domain\Repositories\" />
+    <Folder Include="Unit\YIF.Core.Domain\ViewModels\" />
+    <Folder Include="Unit\YIF.Core.Service\Concrete\Services\" />
+    <Folder Include="Unit\YIF.Core.Service\Mapping\" />
+    <Folder Include="Unit\YIF.Core.Service\ValidationServices\" />
+    <Folder Include="Unit\YIF_Backend\Controllers\" />
+  </ItemGroup>
+
 </Project>
