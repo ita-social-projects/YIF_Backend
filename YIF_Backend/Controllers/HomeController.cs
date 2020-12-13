@@ -8,10 +8,19 @@ using YIF.Core.Data.Entities;
 
 namespace YIF_Backend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
+    [Route("api/[controller]")]
     public class HomeController : ControllerBase
     {
+        [HttpGet("GetRandomNumber")]
+        public IActionResult GetRandomNumber()
+        {
+            var result = new Random().Next(1, 1000);
+
+            return Ok(result);
+        }
+
         //private readonly EFDbContext _context;
 
         //public HomeController(EFDbContext context)

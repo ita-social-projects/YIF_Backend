@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,10 +7,13 @@
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Mapping\" />
+    <Folder Include="Concrete\Services\" />
+    <Folder Include="ValidationServices\" />
   </ItemGroup>
 
 </Project>
