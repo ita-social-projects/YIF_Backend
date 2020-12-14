@@ -81,7 +81,7 @@ As secret organisaton we cannot show our faces so here are our git-hub accounts
 
 ### FAQ
 
-- Comming soon
+- [API](https://bit.ly/3acfxs7)
 
 ---
 
