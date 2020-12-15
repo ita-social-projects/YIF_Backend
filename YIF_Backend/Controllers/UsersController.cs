@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ServicesInterfaces;
-using YIF.Core.Domain.ViewModels.IdentityViewModels;
-using YIF.Core.Service;
 
 namespace YIF_Backend.Controllers
 {
@@ -18,10 +17,12 @@ namespace YIF_Backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
+        private readonly IJwtService _jwtService;
 
-        public UsersController(IUserService<DbUser> userService)
+        public UsersController(IUserService<DbUser> userService, IJwtService jwtService)
         {
             _userService = userService;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -52,6 +53,27 @@ namespace YIF_Backend.Controllers
             }
         }
 
+        [HttpGet("token/{id}")]
+        public async Task<ActionResult> GetJwtAsync(string id)
+        {
+            try
+            {
+                Guid guid = Guid.Parse(id);
+                return Ok(
+                 new
+                 {
+                     token = await _jwtService.CreateTokenByIdAsync(guid.ToString("D"))
+                 });
+            }
+            catch (ArgumentNullException)
+            {
+                return BadRequest("The string to be parsed is null.");
+            }
+            catch (FormatException)
+            {
+                return BadRequest($"Bad format:  {id}");
+            }
+        }
 
         private ActionResult ReturnResult(bool Success, object Object, string Message = null)
         {
