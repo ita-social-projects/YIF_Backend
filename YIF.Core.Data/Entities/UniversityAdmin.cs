@@ -15,10 +15,10 @@ namespace YIF.Core.Data.Entities
         public string UniversityId { get; set; }
 
         [ForeignKey("UniversityId")]
-        public University University { get; set; }
+        public virtual University University { get; set; }
         /// <summary>
         /// Link to university moderator
         /// </summary>
-        public UniversityModerator Moderator { get; set; }     
+        public virtual UniversityModerator Moderator { get; set; }     
     }
 }

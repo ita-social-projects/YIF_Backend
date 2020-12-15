@@ -665,14 +665,14 @@ namespace YIF.Core.Data
                 var specialities = context.Specialities.ToList();
                 var universities = context.Universities.ToList();
 
-                var specialitiesTouniversities = new List<SpecialityToUniversity>();
+                var specialitiesTouniversities = new List<DirectionToUniversity>();
 
                 // Random seeding
                 universities.ForEach(x =>                 
                 {
                     for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
                     {
-                        specialitiesTouniversities.Add(new SpecialityToUniversity 
+                        specialitiesTouniversities.Add(new DirectionToUniversity 
                         { 
                             UniversityId = x.Id,
                             SpecialityId = specialities[i].Id
