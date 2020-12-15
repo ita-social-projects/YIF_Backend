@@ -13,9 +13,5 @@ namespace YIF.Core.Data.Entities
 
         [ForeignKey("DirectionId")]
         public virtual Direction Direction { get; set; }
-        /// <summary>
-        /// List of universities, who have`s this speciality
-        /// </summary>
-        //public ICollection<SpecialityToUniversity> Universities { get; set; }
     }
 }

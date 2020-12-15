@@ -660,7 +660,7 @@ namespace YIF.Core.Data
 
         public static void SeedSpecialityToUniversity(EFDbContext context)
         {
-            if(context.SpecialityToUniversities.Count() == 0)
+            if(context.DirectionsToUniversities.Count() == 0)
             {
                 var specialities = context.Specialities.ToList();
                 var universities = context.Universities.ToList();
@@ -668,20 +668,20 @@ namespace YIF.Core.Data
                 var specialitiesTouniversities = new List<DirectionToUniversity>();
 
                 // Random seeding
-                universities.ForEach(x =>                 
-                {
-                    for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
-                    {
-                        specialitiesTouniversities.Add(new DirectionToUniversity 
-                        { 
-                            UniversityId = x.Id,
-                            SpecialityId = specialities[i].Id
-                        });
-                    }
-                });
+                //universities.ForEach(x =>                 
+                //{
+                //    for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
+                //    {
+                //        specialitiesTouniversities.Add(new DirectionToUniversity 
+                //        { 
+                //            UniversityId = x.Id,
+                //            SpecialityId = specialities[i].Id
+                //        });
+                //    }
+                //});
                
 
-                context.SpecialityToUniversities.AddRange(specialitiesTouniversities);
+                context.DirectionsToUniversities.AddRange(specialitiesTouniversities);
                 context.SaveChanges();
 
             }

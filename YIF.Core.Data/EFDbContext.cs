@@ -30,7 +30,7 @@ namespace YIF.Core.Data
         public DbSet<University> Universities { get; set; }
         public DbSet<Direction> Directions { get; set; }
         public DbSet<Speciality> Specialities { get; set; }
-        public DbSet<DirectionToUniversity> SpecialityToUniversities { get; set; }
+        public DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
 
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }

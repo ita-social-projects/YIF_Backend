@@ -11,7 +11,7 @@ namespace YIF.Core.Data.Entities
         public string UniversityId { get; set; }
 
         [ForeignKey("DirectionId")]
-        public virtual Direction Speciality { get; set; }
+        public virtual Direction Direction { get; set; }
         [ForeignKey("UniversityId")]
         public virtual University University { get; set; }
     }
