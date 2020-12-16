@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Entities
@@ -16,12 +13,12 @@ namespace YIF.Core.Data.Entities
         public string AdminId { get; set; }
 
         [ForeignKey("AdminId")]
-        public UniversityAdmin Admin { get; set; }
+        public virtual UniversityAdmin Admin { get; set; }
         [ForeignKey("UniversityId")]
-        public University University { get; set; }
+        public virtual University University { get; set; }
         /// <summary>
         /// Link to Identity user
         /// </summary>
-        public DbUser User { get; set; }
+        public virtual DbUser User { get; set; }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -660,28 +658,28 @@ namespace YIF.Core.Data
 
         public static void SeedSpecialityToUniversity(EFDbContext context)
         {
-            if(context.SpecialityToUniversities.Count() == 0)
+            if(context.DirectionsToUniversities.Count() == 0)
             {
                 var specialities = context.Specialities.ToList();
                 var universities = context.Universities.ToList();
 
-                var specialitiesTouniversities = new List<SpecialityToUniversity>();
+                var specialitiesTouniversities = new List<DirectionToUniversity>();
 
                 // Random seeding
-                universities.ForEach(x =>                 
-                {
-                    for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
-                    {
-                        specialitiesTouniversities.Add(new SpecialityToUniversity 
-                        { 
-                            UniversityId = x.Id,
-                            SpecialityId = specialities[i].Id
-                        });
-                    }
-                });
+                //universities.ForEach(x =>                 
+                //{
+                //    for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
+                //    {
+                //        specialitiesTouniversities.Add(new DirectionToUniversity 
+                //        { 
+                //            UniversityId = x.Id,
+                //            SpecialityId = specialities[i].Id
+                //        });
+                //    }
+                //});
                
 
-                context.SpecialityToUniversities.AddRange(specialitiesTouniversities);
+                context.DirectionsToUniversities.AddRange(specialitiesTouniversities);
                 context.SaveChanges();
 
             }

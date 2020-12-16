@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Moq;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Threading;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace YIF_XUnitTests
 {

@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ServicesInterfaces;
-using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.ViewModels.IdentityViewModels;
-using System.Threading.Tasks;
-using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.ViewModels;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Domain.ViewModels;
+using YIF.Core.Domain.ViewModels.IdentityViewModels;
 
 namespace YIF.Core.Service.Concrete.Services
 {

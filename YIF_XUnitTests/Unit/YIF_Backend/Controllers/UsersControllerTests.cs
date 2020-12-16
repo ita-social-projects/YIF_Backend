@@ -3,11 +3,10 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ServicesInterfaces;
+using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ViewModels;
 using YIF.Core.Domain.ViewModels.IdentityViewModels;
 using YIF_Backend.Controllers;
@@ -17,7 +16,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class UsersControllerTests
     {
         private static readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
-        private static readonly UsersController _testControl = new UsersController(_userService.Object);
+        private static readonly Mock<IJwtService> _jwtService = new Mock<IJwtService>();
+        private static readonly UsersController _testControl = new UsersController(_userService.Object, _jwtService.Object);
         private static readonly string _guid = Guid.NewGuid().ToString("D");
 
         [Fact]

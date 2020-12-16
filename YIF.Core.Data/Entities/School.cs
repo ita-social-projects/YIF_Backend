@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace YIF.Core.Data.Entities
 {
@@ -13,14 +11,14 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// List of school moderators
         /// </summary>
-        public ICollection<SchoolModerator> Moderators { get; set; }
+        public virtual ICollection<SchoolModerator> Moderators { get; set; }
         /// <summary>
         /// List of school admins
         /// </summary>
-        public ICollection<SchoolAdmin> Admins { get; set; }
+        public virtual ICollection<SchoolAdmin> Admins { get; set; }
         /// <summary>
         /// List of school graduates
         /// </summary>
-        public ICollection<Graduate> Graduates { get; set; }
+        public virtual ICollection<Graduate> Graduates { get; set; }
     }
 }

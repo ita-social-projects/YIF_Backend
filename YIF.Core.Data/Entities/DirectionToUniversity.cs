@@ -2,13 +2,14 @@
 
 namespace YIF.Core.Data.Entities
 {
-    public class Speciality : BaseEntity
+    public class DirectionToUniversity : BaseEntity
     {
-        public string Name { get; set; }
         public string DirectionId { get; set; }
-        public string Description { get; set; }
+        public string UniversityId { get; set; }
 
         [ForeignKey("DirectionId")]
         public virtual Direction Direction { get; set; }
+        [ForeignKey("UniversityId")]
+        public virtual University University { get; set; }
     }
 }

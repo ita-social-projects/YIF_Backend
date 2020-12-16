@@ -1,19 +1,13 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using Xunit;
-using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
-using System.Linq.Expressions;
-using System.Threading;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 {

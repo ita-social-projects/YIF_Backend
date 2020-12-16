@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YIF.Core.Data.Others
+﻿namespace YIF.Core.Data.Others
 {
     class ProjectRoles
     {
