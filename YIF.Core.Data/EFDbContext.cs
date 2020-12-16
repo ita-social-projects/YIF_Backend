@@ -28,8 +28,9 @@ namespace YIF.Core.Data
         public DbSet<UniversityAdmin> UniversityAdmins { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
         public DbSet<University> Universities { get; set; }
+        public DbSet<Direction> Directions { get; set; }
         public DbSet<Speciality> Specialities { get; set; }
-        public DbSet<SpecialityToUniversity> SpecialityToUniversities { get; set; }
+        public DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
 
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
@@ -83,9 +84,14 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.UniversityId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Direction>()
+                .HasMany(x => x.Specialities)
+                .WithOne(x => x.Direction)
+                .HasForeignKey(x => x.DirectionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<SpecialityToUniversity>()
-                .HasKey(c => new { c.Id,c.UniversityId, c.SpecialityId });
+            builder.Entity<DirectionToUniversity>()
+                .HasKey(c => new { c.Id,c.UniversityId, c.DirectionId });
 
             #endregion
 

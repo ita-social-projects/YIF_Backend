@@ -16,12 +16,12 @@ namespace YIF.Core.Data.Entities
         public string AdminId { get; set; }
 
         [ForeignKey("SchoolId")]
-        public School School { get; set; }
+        public virtual School School { get; set; }
         [ForeignKey("AdminId")]
-        public SchoolAdmin Admin { get; set; }
+        public virtual SchoolAdmin Admin { get; set; }
         /// <summary>
         /// Link to Identity user
         /// </summary>      
-        public DbUser User { get; set; }
+        public virtual DbUser User { get; set; }
     }
 }

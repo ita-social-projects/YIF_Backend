@@ -5,14 +5,14 @@ using System.Text;
 
 namespace YIF.Core.Data.Entities
 {
-    public class SpecialityToUniversity : BaseEntity
+    public class DirectionToUniversity : BaseEntity
     {
-        public string SpecialityId { get; set; }
+        public string DirectionId { get; set; }
         public string UniversityId { get; set; }
 
-        [ForeignKey("SpecialityId")]
-        public Speciality Speciality { get; set; }
+        [ForeignKey("DirectionId")]
+        public virtual Direction Direction { get; set; }
         [ForeignKey("UniversityId")]
-        public University University { get; set; }
+        public virtual University University { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// Link to Identity user
         /// </summary>      
-        public DbUser User { get; set; }
+        public virtual DbUser User { get; set; }
     }
 }
