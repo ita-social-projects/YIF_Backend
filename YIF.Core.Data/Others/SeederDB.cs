@@ -228,7 +228,7 @@ namespace YIF.Core.Data
                 dbUser = new DbUser
                 {
                     Email = "bromSava@gmail.com",
-                    UserName = "Bezymniy Drochila" // :)
+                    UserName = "Bezymniy Max" // :)
                 };
                 schoolModerator = new SchoolModerator
                 {
@@ -244,7 +244,7 @@ namespace YIF.Core.Data
                 dbUser = new DbUser
                 {
                     Email = "counterDown23@gmail.com",
-                    UserName = "AdminKachalki"
+                    UserName = "Admin Kachalki"
                 };
                 schoolModerator = new SchoolModerator
                 {
@@ -253,7 +253,7 @@ namespace YIF.Core.Data
                     User = dbUser
                 };
                 await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
+                await context.SchoolModerators.AddAsync(schoolModerator); 
                 await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolAdmin);
 
 
@@ -638,7 +638,7 @@ namespace YIF.Core.Data
 
         public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
-            if(context.DirectionsToUniversities.Count() == 0)
+            if(context.DirectionsToUniversities.Count() == 0 || context.SpecialityToUniversities.Count() == 0)
             {
                 var directions = context.Directions.ToList();
                 var specialities = context.Specialities.ToList();
@@ -650,7 +650,10 @@ namespace YIF.Core.Data
                 // Random seeding
                 universities.ForEach (x =>
                  {
-                     for (int i = 0; i < new Random().Next(1, directions.Count() - 1); i++)
+                     int rand = new Random().Next(0, directions.Count());
+                     if (rand <= 0) rand = 1;
+
+                     for (int i = 0; i < rand; i++)
                      {
                          directionsToUniversities.Add(new DirectionToUniversity
                          {
