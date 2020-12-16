@@ -44,7 +44,6 @@ namespace YIF_Backend.Controllers
             catch (ArgumentNullException)
             {
                 return BadRequest("The string to be parsed is null.");
-                //return BadRequest("Wrong ID length");
             }
             catch (FormatException)
             {

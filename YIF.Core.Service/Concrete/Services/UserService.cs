@@ -31,11 +31,12 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, $"There are not users in database");
             }
 
-            var mapper = new Mapper(new MapperConfiguration(cfg => {
+            var mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
                 cfg.AllowNullCollections = true;
                 cfg.CreateMap<UserDTO, UserViewModel>();
             }));
-            
+
             result.Object = mapper.Map<IEnumerable<UserViewModel>>(users);
             return result.Set(true);
         }
@@ -43,21 +44,24 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseModel<UserViewModel>> GetUserById(string id)
         {
             var result = new ResponseModel<UserViewModel>();
-            var user = await _userRepository.Get(id);
-            if (user == null)
+            try
             {
-                return result.Set(false, $"User not found:  {id}");
+                var user = await _userRepository.Get(id);
+                var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, UserViewModel>()));
+                result.Object = mapper.Map<UserViewModel>(user);
             }
-            var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, UserViewModel>()));
-            
-            result.Object = mapper.Map<UserViewModel>(user);
+            catch (KeyNotFoundException ex)
+            {
+                return result.Set(false, ex.Message);
+            }
             return result.Set(true);
         }
 
         public async Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
             var result = new ResponseModel<IEnumerable<UserViewModel>>();
-            var mapper = new Mapper(new MapperConfiguration(cfg => {
+            var mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
                 cfg.AllowNullCollections = true;
                 cfg.CreateMap<UserDTO, UserViewModel>();
             }));

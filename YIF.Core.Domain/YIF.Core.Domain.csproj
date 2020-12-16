@@ -1,14 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>YIF_XUnitTests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
-
+  
   <ItemGroup>
+    <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
   </ItemGroup>
 

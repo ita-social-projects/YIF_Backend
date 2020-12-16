@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -14,7 +15,7 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
-        private IApplicationDbContext _db;
+        private readonly IApplicationDbContext _db;
 
         public UserRepository(IApplicationDbContext context)
         {
@@ -41,7 +42,6 @@ namespace YIF.Core.Domain.Repositories
                 {
                     _db.Users.Update(user);
                     await _db.SaveChangesAsync();
-                    var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
                     return true;
                 }
             }
@@ -60,6 +60,7 @@ namespace YIF.Core.Domain.Repositories
             return false;
         }
 
+        [ExcludeFromCodeCoverage]
         public async Task<IEnumerable<UserDTO>> Find(Expression<Func<DbUser, bool>> predicate)
         {
             var configuration = new MapperConfiguration(cfg =>
@@ -68,14 +69,18 @@ namespace YIF.Core.Domain.Repositories
                 cfg.CreateMap<DbUser, UserDTO>();
             });
             var mapper = new Mapper(configuration);
-
             return mapper.Map<IEnumerable<UserDTO>>(await _db.Users.Where(predicate).ToListAsync());
         }
 
         public async Task<UserDTO> Get(string id)
         {
             var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
-            return mapper.Map<UserDTO>(await _db.Users.FindAsync(id));
+            var user = await _db.Users.FindAsync(id);
+            if (user != null)
+            {
+                return mapper.Map<UserDTO>(user);
+            }
+            throw new KeyNotFoundException("User not found:  " + id);
         }
 
         public async Task<IEnumerable<UserDTO>> GetAll()
@@ -85,8 +90,8 @@ namespace YIF.Core.Domain.Repositories
                 cfg.AllowNullCollections = true;
                 cfg.CreateMap<DbUser, UserDTO>();
             }));
-
-            return mapper.Map<IEnumerable<UserDTO>>(await _db.Users.ToListAsync());
+            var list = await _db.Users.ToListAsync();
+            return mapper.Map<IEnumerable<UserDTO>>(list);
         }
 
         public void Dispose()
