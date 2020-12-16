@@ -526,93 +526,71 @@ namespace YIF.Core.Data
 
         #region University
 
+        public static void SeedDirections(EFDbContext context)
+        {
+            if(context.Directions.Count() == 0)
+            {
+                var directions = new List<Direction>();
+
+                directions.Add(new Direction 
+                {
+                    Name = "Інформаційні технології"
+                });
+
+                context.Directions.AddRange(directions);
+                context.SaveChanges();
+            }
+        }
+
         public static void SeedSpecialities(EFDbContext context)
         {
             if(context.Specialities.Count() == 0)
             {
+                string currentDirection = string.Empty;
                 var specialities = new List<Speciality>();
 
-                #region Гуманітарні науки
-                specialities.Add(new Speciality {
-                    Name = "Історія та археологія"
-                });
-
-                specialities.Add(new Speciality
-                {
-                    Name = "Філософія"
-                });
-
-                specialities.Add(new Speciality
-                {
-                    Name = "Філологія"
-                });
-                #endregion
-
-                #region Право
-                specialities.Add(new Speciality
-                {
-                    Name = "Право"
-                });
-                specialities.Add(new Speciality
-                {
-                    Name = "Міжнародне право"
-                });
-                #endregion
-
-                #region Природничі науки
-                specialities.Add(new Speciality
-                {
-                    Name = "Екологія"
-                });
-                specialities.Add(new Speciality
-                {
-                    Name = "Хімія"
-                });
-                specialities.Add(new Speciality
-                {
-                    Name = "Фізика та астрономія"
-                });
-                #endregion
-
-                #region Математика та статистика
-                specialities.Add(new Speciality
-                {
-                    Name = "Математика"
-                });
-                specialities.Add(new Speciality
-                {
-                    Name = "Статистика"
-                });
-                #endregion
-
                 #region Інформаційні технології
-                specialities.Add(new Speciality
-                {
-                    Name = "Інженерія програмного забезпечення"
-                });
-                specialities.Add(new Speciality
-                {
-                    Name = "Комп’ютерна інженерія"
-                });
-                specialities.Add(new Speciality
-                {
-                    Name = "Кібербезпека"
-                });
-                #endregion
+                currentDirection = context.Directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id;
 
-                #region Архітектура та будівництво
-                specialities.Add(new Speciality
-                {
-                    Name = "Архітектура та містобудування"
+                specialities.Add(new Speciality 
+                { 
+                    Name = "Комп'ютерні науки",
+                    DirectionId = currentDirection
                 });
+
                 specialities.Add(new Speciality
                 {
-                    Name = "Геодезія та землеустрій"
+                    Name = "Інженерія програмного забезпечення",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Комп’ютерна інженерія",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Кібербезпека",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Інформаційні системи та технології",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Системний аналіз",
+                    DirectionId = currentDirection
                 });
                 #endregion
 
                 context.Specialities.AddRange(specialities);
-                context.SaveChanges();
+                context.SaveChanges(); 
             }
         }
 
@@ -658,30 +636,44 @@ namespace YIF.Core.Data
             }
         }
 
-        public static void SeedSpecialityToUniversity(EFDbContext context)
+        public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
             if(context.DirectionsToUniversities.Count() == 0)
             {
+                var directions = context.Directions.ToList();
                 var specialities = context.Specialities.ToList();
                 var universities = context.Universities.ToList();
 
-                var specialitiesTouniversities = new List<DirectionToUniversity>();
+                var directionsToUniversities = new List<DirectionToUniversity>();
+                var specialitiesToUniversities = new List<SpecialityToUniversity>();
 
                 // Random seeding
-                //universities.ForEach(x =>                 
-                //{
-                //    for (int i = 0; i < new Random().Next(1, specialities.Count() - 1); i++)
-                //    {
-                //        specialitiesTouniversities.Add(new DirectionToUniversity 
-                //        { 
-                //            UniversityId = x.Id,
-                //            SpecialityId = specialities[i].Id
-                //        });
-                //    }
-                //});
-               
+                universities.ForEach (x =>
+                 {
+                     for (int i = 0; i < new Random().Next(1, directions.Count() - 1); i++)
+                     {
+                         directionsToUniversities.Add(new DirectionToUniversity
+                         {
+                             UniversityId = x.Id,
+                             DirectionId = directions[i].Id
+                         });
 
-                context.DirectionsToUniversities.AddRange(specialitiesTouniversities);
+                         for (int j = 0; j < new Random().Next(1,
+                              specialities.Where(x => x.DirectionId == directions[i].Id).Count());
+                              j++)
+                         {
+                             specialitiesToUniversities.Add(new SpecialityToUniversity 
+                             {
+                                 SpecialityId = specialities[j].Id,
+                                 UniversityId = universities[i].Id
+                             });
+                         }
+                     }
+                 });
+
+
+                context.DirectionsToUniversities.AddRange(directionsToUniversities);
+                context.SpecialityToUniversities.AddRange(specialitiesToUniversities);
                 context.SaveChanges();
 
             }
@@ -1054,7 +1046,8 @@ namespace YIF.Core.Data
                 // SchoolModerators: 10
                 // Graduates: 11
 
-                // Specialities: 15
+                // Directions: 1
+                // Specialities: 6
                 // Universities: 3
                 // UniversityAdmins: 3
                 // UniversityModerators: 9
@@ -1071,8 +1064,9 @@ namespace YIF.Core.Data
                 #endregion
 
                 #region University
+                SeederDB.SeedDirections(context);
                 SeederDB.SeedSpecialities(context);
-                SeederDB.SeedSpecialityToUniversity(context);
+                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
                 SeederDB.SeedUniversities(context);
                 SeederDB.SeedUniversityAdmins(context);
                 await SeederDB.SeedUniversityModerators(context, manager);
