@@ -6,6 +6,34 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  
+  <ItemGroup>
+    <Compile Remove="Integration\YIF.Core.Data\Entities\**" />
+    <Compile Remove="Integration\YIF.Core.Data\Others\**" />
+    <Compile Remove="Integration\YIF.Core.Domain\Models\**" />
+    <Compile Remove="Integration\YIF.Core.Domain\ViewModels\**" />
+    <Compile Remove="Unit\YIF.Core.Data\Entities\**" />
+    <Compile Remove="Unit\YIF.Core.Data\Others\**" />
+    <Compile Remove="Unit\YIF.Core.Domain\Models\**" />
+    <Compile Remove="Unit\YIF.Core.Domain\ViewModels\**" />
+    <EmbeddedResource Remove="Integration\YIF.Core.Data\Entities\**" />
+    <EmbeddedResource Remove="Integration\YIF.Core.Data\Others\**" />
+    <EmbeddedResource Remove="Integration\YIF.Core.Domain\Models\**" />
+    <EmbeddedResource Remove="Integration\YIF.Core.Domain\ViewModels\**" />
+    <EmbeddedResource Remove="Unit\YIF.Core.Data\Entities\**" />
+    <EmbeddedResource Remove="Unit\YIF.Core.Data\Others\**" />
+    <EmbeddedResource Remove="Unit\YIF.Core.Domain\Models\**" />
+    <EmbeddedResource Remove="Unit\YIF.Core.Domain\ViewModels\**" />
+    <None Remove="Integration\YIF.Core.Data\Entities\**" />
+    <None Remove="Integration\YIF.Core.Data\Others\**" />
+    <None Remove="Integration\YIF.Core.Domain\Models\**" />
+    <None Remove="Integration\YIF.Core.Domain\ViewModels\**" />
+    <None Remove="Unit\YIF.Core.Data\Entities\**" />
+    <None Remove="Unit\YIF.Core.Data\Others\**" />
+    <None Remove="Unit\YIF.Core.Domain\Models\**" />
+    <None Remove="Unit\YIF.Core.Domain\ViewModels\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
@@ -20,18 +48,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\YIF.Core.Data\Entities\" />
-    <Folder Include="Integration\YIF.Core.Data\Others\" />
-    <Folder Include="Integration\YIF.Core.Domain\Models\" />
-    <Folder Include="Integration\YIF.Core.Domain\ViewModels\" />
+    <Folder Include="Integration\YIF.Core.Data\" />
     <Folder Include="Integration\YIF.Core.Domain\Repositories\" />
     <Folder Include="Integration\YIF.Core.Service\Concrete\Services\" />
     <Folder Include="Integration\YIF.Core.Service\Mapping\" />
     <Folder Include="Integration\YIF.Core.Service\ValidationServices\" />
-    <Folder Include="Unit\YIF.Core.Data\Entities\" />
-    <Folder Include="Unit\YIF.Core.Data\Others\" />
-    <Folder Include="Unit\YIF.Core.Domain\Models\" />
-    <Folder Include="Unit\YIF.Core.Domain\ViewModels\" />
+    <Folder Include="Unit\YIF.Core.Data\" />
     <Folder Include="Unit\YIF.Core.Service\Mapping\" />
     <Folder Include="Unit\YIF.Core.Service\ValidationServices\" />
   </ItemGroup>
