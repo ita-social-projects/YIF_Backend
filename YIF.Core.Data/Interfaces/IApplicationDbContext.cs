@@ -17,6 +17,8 @@ namespace YIF.Core.Data.Interfaces
         DbSet<Direction> Directions { get; set; }
         DbSet<Speciality> Specialities { get; set; }
         DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
+        DbSet<SpecialityToUniversity> SpecialityToUniversities { get; set; }
+
 
         DbSet<SchoolModerator> SchoolModerators { get; set; }
         DbSet<SchoolAdmin> SchoolAdmins { get; set; }
