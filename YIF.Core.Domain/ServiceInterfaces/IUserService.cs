@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ViewModels;
 using YIF.Core.Domain.ViewModels.IdentityViewModels;
+using YIF.Core.Domain.ViewModels.UserViewModels;
 
 namespace YIF.Core.Domain.ServicesInterfaces
 {
@@ -16,7 +17,7 @@ namespace YIF.Core.Domain.ServicesInterfaces
         Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<T, bool>> predicate);
 
         Task<ResponseModel<UserViewModel>> CreateUser(UserDTO userDTO);
-        Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginDTO loginDTO);
+        Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginViewModel loginModel);
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(int? id);
 

@@ -12,6 +12,7 @@ using YIF.Core.Domain.ViewModels;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Domain.ViewModels.UserViewModels;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -81,17 +82,18 @@ namespace YIF.Core.Service.Concrete.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginDTO loginDTO)
+        public async Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginViewModel loginModel)
         {
             var result = new ResponseModel<LoginResponseViewModel>();
+            result.Object = new LoginResponseViewModel();
 
-            var user = await _userManager.FindByEmailAsync(loginDTO.email);
+            var user = await _userManager.FindByEmailAsync(loginModel.email);
             if(user == null)
             {
                 return result.Set(false, "Login or password is incorrect");
             }
 
-            var loginResult = await _signInManager.PasswordSignInAsync(user, loginDTO.password, false, false);
+            var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.password, false, false);
             if(!loginResult.Succeeded)
             {
                 return result.Set(false, "Login or password is incorrect");
