@@ -22,7 +22,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("")]
-        [InlineData("00f5e3b3-fa90-4e74-856f-cbd41f178529")]
+        [InlineData("117ab34c-7bb7-4526-b84e-069b476a6279")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Act            
