@@ -46,7 +46,7 @@ namespace YIF.Core.Data
                 var dbUser = new DbUser
                 {
                     Email = "superAdmin@gmail.com",
-                    UserName = "Super Admin"
+                    UserName = "SuperAdmin"
                 };
 
                 var superAdmin = new SuperAdmin 
@@ -54,11 +54,7 @@ namespace YIF.Core.Data
                     User = dbUser
                 };
 
-                await userManager.CreateAsync(dbUser, "Super");
-                await context.SuperAdmins.AddAsync(superAdmin);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SuperAdmin);
-                context.SaveChanges();
-
+                await SeederDB.CreateUser(context, userManager, dbUser, ProjectRoles.SuperAdmin, superAdmin);
             }
 
         }
@@ -162,165 +158,157 @@ namespace YIF.Core.Data
                 var schoolAdmins = context.SchoolAdmins.ToList();
 
                 #region ЗОШ №3
-                var dbUser = new DbUser();
-                var schoolModerator = new SchoolModerator();
-
                 {
-                    var myDbUser = new DbUser
+                    var dbUser = new DbUser
                     {
                         Email = "anataly@gmail.com",
                         UserName = "Moderator228"
                     };
-                    var entityUser = new SchoolModerator
+                    var schoolModerator = new SchoolModerator
                     {
                         AdminId = schoolAdmins.FirstOrDefault(x => x.School.Name == "ЗОШ №3").Id,
                         SchoolId = schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
-                        User = myDbUser
+                        User = dbUser
                     };
-                    await CreateUser(context, userManager, myDbUser, ProjectRoles.SchoolAdmin, entityUser);                  
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);                  
                 }
 
                 {
-                    var myDbUser = new DbUser
+                    var dbUser = new DbUser
                     {
                         Email = "vasiliy@gmail.com",
                         UserName = "KitVasil"
                     };
-                    var entityUser = new SchoolModerator
+                    var schoolModerator = new SchoolModerator
                     {
                         SchoolId = schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, myDbUser, ProjectRoles.SchoolModerator, entityUser);
-                }                              
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolModerator, schoolModerator);
+                }
                 #endregion
 
-                #region Школа №4               
-                await SeederDB.CreateUser(context, userManager,
-                new DbUser
+                #region Школа №4  
                 {
-                    Email = "snakSmash@gmail.com",
-                    UserName = "SuperSmash"
-                }, ProjectRoles.SchoolAdmin,
-                new SchoolModerator
-                {
-                    AdminId = context.SchoolAdmins.Where(x => x.School.Name == "Школа №4").First().Id,
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
-                    User = dbUser
+                    var dbUser = new DbUser
+                    {
+                        Email = "snakSmash@gmail.com",
+                        UserName = "SuperSmash"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        AdminId = schoolAdmins.Where(x => x.School.Name == "Школа №4").First().Id,
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);
                 }
-                );
 
-                dbUser = new DbUser
                 {
-                    Email = "vasiliy@gmail.com",
-                    UserName = "Kit Vasil"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    AdminId = context.SchoolAdmins.Where(x => x.School.Name == "Школа №4").ToList()[1].Id,
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolAdmin);
+                    var dbUser = new DbUser
+                    {
+                        Email = "vasiliy@gmail.com",
+                        UserName = "KitVasil"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        AdminId = schoolAdmins.Where(x => x.School.Name == "Школа №4").ToList()[1].Id,
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);
+                }
 
-
-                dbUser = new DbUser
                 {
-                    Email = "bromSava@gmail.com",
-                    UserName = "Bezymniy Max" // :)
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolModerator);
+                    var dbUser = new DbUser
+                    {
+                        Email = "bromSava@gmail.com",
+                        UserName = "BezymniyMax" // :)
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolModerator, schoolModerator);
+                }
                 #endregion
 
                 #region Рівненська гімназія Гармонія
-                dbUser = new DbUser
                 {
-                    Email = "counterDown23@gmail.com",
-                    UserName = "Admin Kachalki"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    AdminId = context.SchoolAdmins.Where(x => x.School.Name == "Рівненська гімназія \"Гармонія\"").First().Id,
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator); 
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolAdmin);
+                    var dbUser = new DbUser
+                    {
+                        Email = "counterDown23@gmail.com",
+                        UserName = "AdminKachalki"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        AdminId = schoolAdmins.Where(x => x.School.Name == "Рівненська гімназія \"Гармонія\"").First().Id,
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);
+                }
 
+                {
+                    var dbUser = new DbUser
+                    {
+                        Email = "supremeSavage@gmail.com",
+                        UserName = "MinorSouce"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolModerator, schoolModerator);
+                }
 
-                dbUser = new DbUser
                 {
-                    Email = "supremeSavage@gmail.com",
-                    UserName = "Minor Souce"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolModerator);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "vorobSetin@gmail.com",
-                    UserName = "Andrii Metov"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolModerator);
+                    var dbUser = new DbUser
+                    {
+                        Email = "vorobSetin@gmail.com",
+                        UserName = "AndriiMetov"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolModerator, schoolModerator);
+                }
                 #endregion
 
                 #region Школа №25
-                dbUser = new DbUser
                 {
-                    Email = "brownWizzard09@gmail.com",
-                    UserName = "Tom Halson"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    AdminId = context.SchoolAdmins.Where(x => x.School.Name == "Школа №25").First().Id,
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Школа №25").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolAdmin);
+                    var dbUser = new DbUser
+                    {
+                        Email = "brownWizzard09@gmail.com",
+                        UserName = "TomHalson"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        AdminId = schoolAdmins.Where(x => x.School.Name == "Школа №25").First().Id,
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Школа №25").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);
+                }
 
-
-                dbUser = new DbUser
                 {
-                    Email = "intelIdea@gmail.com",
-                    UserName = "Howard Tzirdzia"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Школа №25").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolModerator);
+                    var dbUser = new DbUser
+                    {
+                        Email = "intelIdea@gmail.com",
+                        UserName = "HowardTzirdzia"
+                    };
+                    var schoolModerator = new SchoolModerator
+                    {
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "Школа №25").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolModerator, schoolModerator);
+                }
                 #endregion
-
-                context.SaveChanges();
             }
         }
 
@@ -334,192 +322,173 @@ namespace YIF.Core.Data
                 #region ЗОШ №3
                 currentSchool = schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id;
 
-                var dbUser = new DbUser
                 {
-                    Email = "cabbas21212121b@banot.net",
-                    UserName = "Christopher Graves"
-                };
-                var graduate = new Graduate
+                    var dbUser = new DbUser
+                    {
+                        Email = "cabbas21212121b@banot.net",
+                        UserName = "ChristopherGraves"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
+
                 {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "6necum.how@silentsuite.com",
-                    UserName = "Isaak Seymour"
-                };
-                graduate = new Graduate
-                {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
+                    var dbUser = new DbUser
+                    {
+                        Email = "6necum.how@silentsuite.com",
+                        UserName = "IsaakSeymour"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }              
                 #endregion
 
                 #region Школа №4
                 currentSchool = schools.FirstOrDefault(x => x.Name == "Школа №4").Id;
 
-                dbUser = new DbUser
                 {
-                    Email = "rarige@thegrovebnb.com",
-                    UserName = "Mikhail Rahman"
-                };
-                graduate = new Graduate
+                    var dbUser = new DbUser
+                    {
+                        Email = "rarige@thegrovebnb.com",
+                        UserName = "MikhailRahman"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
+
                 {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "umanogabida@partajona.com",
-                    UserName = "Claudia Adam"
-                };
-                graduate = new Graduate
-                {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
+                    var dbUser = new DbUser
+                    {
+                        Email = "umanogabida@partajona.com",
+                        UserName = "ClaudiaAdam"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
                 #endregion
 
                 #region Рівненська гімназія Гармонія
                 currentSchool = schools.FirstOrDefault(x => x.Name == "Рівненська гімназія \"Гармонія\"").Id;
 
-                dbUser = new DbUser
                 {
-                    Email = "wshubcnbn@memprof.com",
-                    UserName = "Gary Ferguson"
-                };
-                graduate = new Graduate
+                    var dbUser = new DbUser
+                    {
+                        Email = "wshubcnbn@memprof.com",
+                        UserName = "GaryFerguson"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
+
                 {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
+                    var dbUser = new DbUser
+                    {
+                        Email = "fbrylle.bhousz7@iklankeren.pw",
+                        UserName = "SamsonBannister"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
 
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
                 {
-                    Email = "fbrylle.bhousz7@iklankeren.pw",
-                    UserName = "Samson Bannister"
-                };
-                graduate = new Graduate
+                    var dbUser = new DbUser
+                    {
+                        Email = "43azzyr@chrisjoyce.net",
+                        UserName = "EmilisRandall"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
+
                 {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "43azzyr@chrisjoyce.net",
-                    UserName = "Emilis Randall"
-                };
-                graduate = new Graduate
-                {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "tshadyalex1a@azel.xyz",
-                    UserName = "Joshua Macfarlane"
-                };
-                graduate = new Graduate
-                {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
+                    var dbUser = new DbUser
+                    {
+                        Email = "tshadyalex1a@azel.xyz",
+                        UserName = "JoshuaMacfarlane"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }               
                 #endregion
 
                 #region Школа №25
                 currentSchool = schools.FirstOrDefault(x => x.Name == "Школа №25").Id;
 
-                dbUser = new DbUser
                 {
-                    Email = "jyass@bomtool.com",
-                    UserName = "Mihai Hanna"
-                };
-                graduate = new Graduate
+                    var dbUser = new DbUser
+                    {
+                        Email = "jyass@bomtool.com",
+                        UserName = "MihaiHanna"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
+
                 {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
+                    var dbUser = new DbUser
+                    {
+                        Email = "shadj_hadjf@maliberty.com",
+                        UserName = "JeremiahGibson"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
 
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
                 {
-                    Email = "shadj_hadjf@maliberty.com",
-                    UserName = "Jeremiah Gibson"
-                };
-                graduate = new Graduate
-                {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
+                    var dbUser = new DbUser
+                    {
+                        Email = "tzezogamil673@subrolive.com",
+                        UserName = "MontelJeffery"
+                    };
+                    var graduate = new Graduate
+                    {
+                        User = dbUser,
+                        SchoolId = currentSchool
+                    };
 
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "tzezogamil673@subrolive.com",
-                    UserName = "Montel Jeffery"
-                };
-                graduate = new Graduate
-                {
-                    User = dbUser,
-                    SchoolId = currentSchool
-                };
-
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Graduates.AddAsync(graduate);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
+                }
                 #endregion
-
-                context.SaveChanges();
             }
         }
 
@@ -727,153 +696,145 @@ namespace YIF.Core.Data
                 var universities = context.Universities.ToList();
 
                 #region НУВГП
-                var dbUser = new DbUser
                 {
-                    Email = "wformservices@triumphlotto.com",
-                    UserName = "Rayyan Ford"
-                };
-                var lecture = new Lecture
+                    var dbUser = new DbUser
+                    {
+                        Email = "wformservices@triumphlotto.com",
+                        UserName = "RayyanFord"
+                    };
+                    var lecture = new Lecture
+                    {
+
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
+
                 {
-                   
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
+                    var dbUser = new DbUser
+                    {
+                        Email = "8wesclei_rjf@guestify.com",
+                        UserName = "FedericoPierce"
+                    };
+                    var lecture = new Lecture
+                    {
 
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
 
-                dbUser = new DbUser
                 {
-                    Email = "8wesclei_rjf@guestify.com",
-                    UserName = "Federico Pierce"
-                };
-                lecture = new Lecture
-                {
+                    var dbUser = new DbUser
+                    {
+                        Email = "imali@tuneintogiving.com",
+                        UserName = "HamzahNeville"
+                    };
+                    var lecture = new Lecture
+                    {
 
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "imali@tuneintogiving.com",
-                    UserName = "Hamzah Neville"
-                };
-                lecture = new Lecture
-                {
-
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
                 #endregion
 
                 #region КПІ
-                dbUser = new DbUser
                 {
-                    Email = "xsdhafer1@usayummy.com",
-                    UserName = "Stephan Plummer"
-                };
-                lecture = new Lecture
+                    var dbUser = new DbUser
+                    {
+                        Email = "xsdhafer1@usayummy.com",
+                        UserName = "StephanPlummer"
+                    };
+                    var lecture = new Lecture
+                    {
+
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
+
                 {
+                    var dbUser = new DbUser
+                    {
+                        Email = "vweslaine.pg@ericreyess.com",
+                        UserName = "AbrahamStafford"
+                    };
+                    var lecture = new Lecture
+                    {
 
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "vweslaine.pg@ericreyess.com",
-                    UserName = "Abraham Stafford"
-                };
-                lecture = new Lecture
-                {
-
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
                 #endregion
 
                 #region АВВУ
-                dbUser = new DbUser
                 {
-                    Email = "7wave@rose2.ga",
-                    UserName = "Bradleigh Hagan"
-                };
-                lecture = new Lecture
+                    var dbUser = new DbUser
+                    {
+                        Email = "7wave@rose2.ga",
+                        UserName = "BradleighHagan"
+                    };
+                    var lecture = new Lecture
+                    {
+
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
+
                 {
+                    var dbUser = new DbUser
+                    {
+                        Email = "fmcaagent908@rose2.ga",
+                        UserName = "GarinBurrows"
+                    };
+                    var lecture = new Lecture
+                    {
 
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
 
-
-                dbUser = new DbUser
                 {
-                    Email = "fmcaagent908@rose2.ga",
-                    UserName = "Garin Burrows"
-                };
-                lecture = new Lecture
+                    var dbUser = new DbUser
+                    {
+                        Email = "gjuninho.silva.3s@jbnasfjhas96637.ml",
+                        UserName = "KaciePalmer"
+                    };
+                    var lecture = new Lecture
+                    {
+
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
+
                 {
+                    var dbUser = new DbUser
+                    {
+                        Email = "6amine.kikira2@nx-mail.com",
+                        UserName = "KadeWood"
+                    };
+                    var lecture = new Lecture
+                    {
 
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "gjuninho.silva.3s@jbnasfjhas96637.ml",
-                    UserName = "Kacie Palmer"
-                };
-                lecture = new Lecture
-                {
-
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "6amine.kikira2@nx-mail.com",
-                    UserName = "Kade Wood"
-                };
-                lecture = new Lecture
-                {
-
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.Lectures.AddAsync(lecture);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.Lecture);
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                }
                 #endregion
-
-                context.SaveChanges();
             }
         }
 
@@ -885,148 +846,139 @@ namespace YIF.Core.Data
                 var admins = context.UniversityAdmins.ToList();
 
                 #region НУВГП
-                var dbUser = new DbUser
                 {
-                    Email = "qtoni6@gmail.com",
-                    UserName = "Arnold Beasley"
-                };
-                var universityModerator = new UniversityModerator
-                {
-                    AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityAdmin);
+                    var dbUser = new DbUser
+                    {
+                        Email = "qtoni6@gmail.com",
+                        UserName = "ArnoldBeasley"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
+                }
 
+                {
+                    var dbUser = new DbUser
+                    {
+                        Email = "cfarid.nadji2r@devist.com",
+                        UserName = "SafwanWickens"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                }
 
-                dbUser = new DbUser
                 {
-                    Email = "cfarid.nadji2r@devist.com",
-                    UserName = "Safwan Wickens"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityModerator);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "hselma_kra@jomcs.com",
-                    UserName = "Daniele Hicks"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityModerator);
+                    var dbUser = new DbUser
+                    {
+                        Email = "hselma_kra@jomcs.com",
+                        UserName = "DanieleHicks"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                }
                 #endregion
 
                 #region КПІ
-                dbUser = new DbUser
                 {
-                    Email = "dill.pazee@azel.xyz",
-                    UserName = "Gia Vang"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityAdmin);
+                    var dbUser = new DbUser
+                    {
+                        Email = "dill.pazee@azel.xyz",
+                        UserName = "GiaVang"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
+                }
 
+                {
+                    var dbUser = new DbUser
+                    {
+                        Email = "2soso@hustletussle.com",
+                        UserName = "SuhailMcloughlin"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                }
 
-                dbUser = new DbUser
                 {
-                    Email = "2soso@hustletussle.com",
-                    UserName = "Suhail Mcloughlin"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityModerator);
+                    var dbUser = new DbUser
+                    {
+                        Email = "vhamimi.salah@nanbianshan.com",
+                        UserName = "MirzaReed"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                }
 
-
-                dbUser = new DbUser
                 {
-                    Email = "vhamimi.salah@nanbianshan.com",
-                    UserName = "Mirza Reed"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityModerator);
-
-
-                dbUser = new DbUser
-                {
-                    Email = "7chhavi.s@cagi.ru",
-                    UserName = "Anton Roberts"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityModerator);
+                    var dbUser = new DbUser
+                    {
+                        Email = "7chhavi.s@cagi.ru",
+                        UserName = "AntonRoberts"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                }
                 #endregion
 
                 #region АВВУ
-                dbUser = new DbUser
                 {
-                    Email = "fmourad_v7w@hotmail-s.com",
-                    UserName = "Alexis Holding"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    AdminId = admins.FirstOrDefault(x => x.University.Name == "Академія внутрішніх військ МВС України").Id,
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityAdmin);
+                    var dbUser = new DbUser
+                    {
+                        Email = "fmourad_v7w@hotmail-s.com",
+                        UserName = "AlexisHolding"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Академія внутрішніх військ МВС України").Id,
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
+                }
 
-
-                dbUser = new DbUser
                 {
-                    Email = "jleart.blakaj2n@twseel.com",
-                    UserName = "Conor Bloggs"
-                };
-                universityModerator = new UniversityModerator
-                {
-                    UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.UniversityModerators.AddAsync(universityModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.UniversityModerator);
-
+                    var dbUser = new DbUser
+                    {
+                        Email = "jleart.blakaj2n@twseel.com",
+                        UserName = "ConorBloggs"
+                    };
+                    var universityModerator = new UniversityModerator
+                    {
+                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                }              
                 #endregion
-
-                context.SaveChanges();
             }
         }
 
@@ -1073,23 +1025,23 @@ namespace YIF.Core.Data
                 // Lectures: 9
 
                 await SeederDB.SeedRoles(managerRole);
-                //await SeederDB.SeedSuperAdmin(context, manager);
+                await SeederDB.SeedSuperAdmin(context, manager);
 
                 #region School
                 SeederDB.SeedSchools(context);
                 SeederDB.SeedSchoolAdmins(context);
                 await SeederDB.SeedSchoolModerators(context, manager);
-                //await SeederDB.SeedGraduates(context, manager);
+                await SeederDB.SeedGraduates(context, manager);
                 #endregion
 
                 #region University
-                //SeederDB.SeedDirections(context);
-                //SeederDB.SeedSpecialities(context);
-                //SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                //SeederDB.SeedUniversities(context);
-                //SeederDB.SeedUniversityAdmins(context);
-                //await SeederDB.SeedUniversityModerators(context, manager);
-                //await SeederDB.SeedLectures(context, manager);
+                SeederDB.SeedDirections(context);
+                SeederDB.SeedSpecialities(context);
+                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
+                SeederDB.SeedUniversities(context);
+                SeederDB.SeedUniversityAdmins(context);
+                await SeederDB.SeedUniversityModerators(context, manager);
+                await SeederDB.SeedLectures(context, manager);
                 #endregion
 
 
