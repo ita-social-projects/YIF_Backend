@@ -8,11 +8,8 @@
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>YIF_XUnitTests</_Parameter1>
-    </AssemblyAttribute>
   </ItemGroup>
-  
+
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>YIF_XUnitTests</_Parameter1>

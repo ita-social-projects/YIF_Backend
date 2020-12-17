@@ -6,45 +6,20 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  
-  <ItemGroup>
-    <Compile Remove="Integration\YIF.Core.Data\Entities\**" />
-    <Compile Remove="Integration\YIF.Core.Data\Others\**" />
-    <Compile Remove="Integration\YIF.Core.Domain\Models\**" />
-    <Compile Remove="Integration\YIF.Core.Domain\ViewModels\**" />
-    <Compile Remove="Unit\YIF.Core.Data\Entities\**" />
-    <Compile Remove="Unit\YIF.Core.Data\Others\**" />
-    <Compile Remove="Unit\YIF.Core.Domain\Models\**" />
-    <Compile Remove="Unit\YIF.Core.Domain\ViewModels\**" />
-    <EmbeddedResource Remove="Integration\YIF.Core.Data\Entities\**" />
-    <EmbeddedResource Remove="Integration\YIF.Core.Data\Others\**" />
-    <EmbeddedResource Remove="Integration\YIF.Core.Domain\Models\**" />
-    <EmbeddedResource Remove="Integration\YIF.Core.Domain\ViewModels\**" />
-    <EmbeddedResource Remove="Unit\YIF.Core.Data\Entities\**" />
-    <EmbeddedResource Remove="Unit\YIF.Core.Data\Others\**" />
-    <EmbeddedResource Remove="Unit\YIF.Core.Domain\Models\**" />
-    <EmbeddedResource Remove="Unit\YIF.Core.Domain\ViewModels\**" />
-    <None Remove="Integration\YIF.Core.Data\Entities\**" />
-    <None Remove="Integration\YIF.Core.Data\Others\**" />
-    <None Remove="Integration\YIF.Core.Domain\Models\**" />
-    <None Remove="Integration\YIF.Core.Domain\ViewModels\**" />
-    <None Remove="Unit\YIF.Core.Data\Entities\**" />
-    <None Remove="Unit\YIF.Core.Data\Others\**" />
-    <None Remove="Unit\YIF.Core.Domain\Models\**" />
-    <None Remove="Unit\YIF.Core.Domain\ViewModels\**" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
     <ProjectReference Include="..\YIF_Backend\YIF_Backend.csproj" />
+    <PackageReference Include="coverlet.msbuild" Version="2.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.10" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="16.8.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="Moq" Version="4.15.2" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>
