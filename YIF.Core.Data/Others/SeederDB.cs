@@ -12,9 +12,9 @@ namespace YIF.Core.Data
 {
     public class SeederDB
     {
-        public async static Task SeedRoles(EFDbContext context,RoleManager<IdentityRole> roleManager)
-        {
-            if(context.Roles.Count() == 0)
+        public async static Task SeedRoles(RoleManager<IdentityRole> roleManager)
+        {        
+            if(roleManager.Roles.Count() == 0)
             {
                 var superAdminRole = new IdentityRole(ProjectRoles.SuperAdmin);
                 await roleManager.CreateAsync(superAdminRole);
@@ -158,54 +158,57 @@ namespace YIF.Core.Data
         {
             if(context.SchoolModerators.Count() == 0)
             {
+                var schools = context.Schools.ToList();
+                var schoolAdmins = context.SchoolAdmins.ToList();
+
                 #region ЗОШ №3
-                var dbUser = new DbUser
-                {
-                    Email = "anataly@gmail.com",
-                    UserName = "Moderator228"                 
-                };
-                var schoolModerator = new SchoolModerator
-                {
-                    AdminId = context.SchoolAdmins.FirstOrDefault(x => x.School.Name == "ЗОШ №3").Id,
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolAdmin);
+                var dbUser = new DbUser();
+                var schoolModerator = new SchoolModerator();
 
+                {
+                    var myDbUser = new DbUser
+                    {
+                        Email = "anataly@gmail.com",
+                        UserName = "Moderator228"
+                    };
+                    var entityUser = new SchoolModerator
+                    {
+                        AdminId = schoolAdmins.FirstOrDefault(x => x.School.Name == "ЗОШ №3").Id,
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
+                        User = myDbUser
+                    };
+                    await CreateUser(context, userManager, myDbUser, ProjectRoles.SchoolAdmin, entityUser);                  
+                }
 
-                dbUser = new DbUser
                 {
-                    Email = "vasiliy@gmail.com",
-                    UserName = "KitVasil"
-                };
-                schoolModerator = new SchoolModerator
-                {
-                    SchoolId = context.Schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
-                    User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolModerator);
+                    var myDbUser = new DbUser
+                    {
+                        Email = "vasiliy@gmail.com",
+                        UserName = "KitVasil"
+                    };
+                    var entityUser = new SchoolModerator
+                    {
+                        SchoolId = schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, myDbUser, ProjectRoles.SchoolModerator, entityUser);
+                }                              
                 #endregion
 
-                #region Школа №4
-                dbUser = new DbUser
+                #region Школа №4               
+                await SeederDB.CreateUser(context, userManager,
+                new DbUser
                 {
                     Email = "snakSmash@gmail.com",
-                    UserName = "Super Smash"
-                };
-                schoolModerator = new SchoolModerator
+                    UserName = "SuperSmash"
+                }, ProjectRoles.SchoolAdmin,
+                new SchoolModerator
                 {
                     AdminId = context.SchoolAdmins.Where(x => x.School.Name == "Школа №4").First().Id,
                     SchoolId = context.Schools.FirstOrDefault(x => x.Name == "Школа №4").Id,
                     User = dbUser
-                };
-                await userManager.CreateAsync(dbUser, "QWerty-1");
-                await context.SchoolModerators.AddAsync(schoolModerator);
-                await userManager.AddToRoleAsync(dbUser, ProjectRoles.SchoolAdmin);
-
+                }
+                );
 
                 dbUser = new DbUser
                 {
@@ -1025,10 +1028,25 @@ namespace YIF.Core.Data
 
                 context.SaveChanges();
             }
-        } 
+        }
 
         #endregion
 
+        static async Task CreateUser(EFDbContext context,
+           UserManager<DbUser> userManager,
+           DbUser dbUser,
+           string roleName,
+           Object entityUser)
+        {
+            var result = await userManager.CreateAsync(dbUser, "QWerty-1");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(dbUser, roleName);
+
+                await context.AddAsync(entityUser);
+                await context.SaveChangesAsync();
+            }
+        }
 
         public async static void SeedData(IServiceProvider services)
         {
@@ -1054,24 +1072,24 @@ namespace YIF.Core.Data
                 // UniversityModerators: 9
                 // Lectures: 9
 
-                await SeederDB.SeedRoles(context, managerRole);
-                await SeederDB.SeedSuperAdmin(context, manager);
+                await SeederDB.SeedRoles(managerRole);
+                //await SeederDB.SeedSuperAdmin(context, manager);
 
                 #region School
                 SeederDB.SeedSchools(context);
                 SeederDB.SeedSchoolAdmins(context);
                 await SeederDB.SeedSchoolModerators(context, manager);
-                await SeederDB.SeedGraduates(context, manager);
+                //await SeederDB.SeedGraduates(context, manager);
                 #endregion
 
                 #region University
-                SeederDB.SeedDirections(context);
-                SeederDB.SeedSpecialities(context);
-                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                SeederDB.SeedUniversities(context);
-                SeederDB.SeedUniversityAdmins(context);
-                await SeederDB.SeedUniversityModerators(context, manager);
-                await SeederDB.SeedLectures(context, manager);
+                //SeederDB.SeedDirections(context);
+                //SeederDB.SeedSpecialities(context);
+                //SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
+                //SeederDB.SeedUniversities(context);
+                //SeederDB.SeedUniversityAdmins(context);
+                //await SeederDB.SeedUniversityModerators(context, manager);
+                //await SeederDB.SeedLectures(context, manager);
                 #endregion
 
 
