@@ -1,43 +1,36 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.10" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
-    <PackageReference Include="coverlet.collector" Version="1.2.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
     <ProjectReference Include="..\YIF_Backend\YIF_Backend.csproj" />
+    <PackageReference Include="coverlet.msbuild" Version="2.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.10" />
+    <PackageReference Include="Microsoft.CodeCoverage" Version="16.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Moq" Version="4.15.2" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\YIF.Core.Data\Entities\" />
-    <Folder Include="Integration\YIF.Core.Data\Others\" />
-    <Folder Include="Integration\YIF.Core.Domain\Models\" />
-    <Folder Include="Integration\YIF.Core.Domain\ViewModels\" />
+    <Folder Include="Integration\YIF.Core.Data\" />
     <Folder Include="Integration\YIF.Core.Domain\Repositories\" />
     <Folder Include="Integration\YIF.Core.Service\Concrete\Services\" />
     <Folder Include="Integration\YIF.Core.Service\Mapping\" />
     <Folder Include="Integration\YIF.Core.Service\ValidationServices\" />
-    <Folder Include="Unit\YIF.Core.Data\Entities\" />
-    <Folder Include="Unit\YIF.Core.Data\Others\" />
-    <Folder Include="Unit\YIF.Core.Domain\Models\" />
-    <Folder Include="Unit\YIF.Core.Domain\Repositories\" />
-    <Folder Include="Unit\YIF.Core.Domain\ViewModels\" />
-    <Folder Include="Unit\YIF.Core.Service\Concrete\Services\" />
+    <Folder Include="Unit\YIF.Core.Data\" />
     <Folder Include="Unit\YIF.Core.Service\Mapping\" />
     <Folder Include="Unit\YIF.Core.Service\ValidationServices\" />
-    <Folder Include="Unit\YIF_Backend\Controllers\" />
   </ItemGroup>
 
 </Project>

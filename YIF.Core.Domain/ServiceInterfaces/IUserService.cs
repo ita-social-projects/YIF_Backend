@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ViewModels;
 using YIF.Core.Domain.ViewModels.IdentityViewModels;
 using YIF.Core.Domain.ViewModels.UserViewModels;
 
-namespace YIF.Core.Domain.ServicesInterfaces
+namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface IUserService<T> where T : class
     {

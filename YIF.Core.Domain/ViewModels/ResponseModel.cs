@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace YIF.Core.Domain.ViewModels
+﻿namespace YIF.Core.Domain.ViewModels
 {
     public class ResponseModel<T>
     {

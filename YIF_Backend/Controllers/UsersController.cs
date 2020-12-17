@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ServicesInterfaces;
 
 namespace YIF_Backend.Controllers
 {
@@ -45,7 +39,6 @@ namespace YIF_Backend.Controllers
             catch (ArgumentNullException)
             {
                 return BadRequest("The string to be parsed is null.");
-                //return BadRequest("Wrong ID length");
             }
             catch (FormatException)
             {
