@@ -91,13 +91,13 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseModel<LoginResponseViewModel>();
             result.Object = new LoginResponseViewModel();
 
-            var user = await _userManager.FindByEmailAsync(loginModel.email);
+            var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)
             {
                 return result.Set(false, "Login or password is incorrect");
             }
 
-            var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.password, false, false);
+            var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
             if(!loginResult.Succeeded)
             {
                 return result.Set(false, "Login or password is incorrect");
@@ -106,7 +106,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateTokenByUser(user);
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            result.Object.userToken = token;
+            result.Object.UserToken = token;
 
             return result.Set(true);
         }

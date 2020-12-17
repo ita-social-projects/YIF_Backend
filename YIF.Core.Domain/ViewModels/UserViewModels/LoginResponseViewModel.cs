@@ -6,7 +6,6 @@ namespace YIF.Core.Domain.ViewModels
 {
     public class LoginResponseViewModel
     {
-        public string userToken { get; set; }
-        public int statusCode { get; set; }
+        public string UserToken { get; set; }
     }
 }
