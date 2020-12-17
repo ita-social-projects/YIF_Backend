@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YIF.Core.Domain.Models.IdentityDTO
+﻿namespace YIF.Core.Domain.Models.IdentityDTO
 {
     public class UserDTO
     {

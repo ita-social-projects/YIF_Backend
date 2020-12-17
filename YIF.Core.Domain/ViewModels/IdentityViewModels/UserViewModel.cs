@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YIF.Core.Domain.ViewModels.IdentityViewModels
+﻿namespace YIF.Core.Domain.ViewModels.IdentityViewModels
 {
     public class UserViewModel
     {
