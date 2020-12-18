@@ -143,7 +143,7 @@ namespace YIF_Backend
             app.UseAuthorization();
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            // SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger

@@ -13,8 +13,8 @@ namespace YIF.Core.Data
     public class SeederDB
     {
         public async static Task SeedRoles(RoleManager<IdentityRole> roleManager)
-        {        
-            if(roleManager.Roles.Count() == 0)
+        {
+            if (roleManager.Roles.Count() == 0)
             {
                 var superAdminRole = new IdentityRole(ProjectRoles.SuperAdmin);
                 await roleManager.CreateAsync(superAdminRole);
@@ -41,7 +41,7 @@ namespace YIF.Core.Data
 
         public async static Task SeedSuperAdmin(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if(context.SuperAdmins.Count() == 0)
+            if (context.SuperAdmins.Count() == 0)
             {
                 var dbUser = new DbUser
                 {
@@ -49,7 +49,7 @@ namespace YIF.Core.Data
                     UserName = "SuperAdmin"
                 };
 
-                var superAdmin = new SuperAdmin 
+                var superAdmin = new SuperAdmin
                 {
                     User = dbUser
                 };
@@ -63,11 +63,11 @@ namespace YIF.Core.Data
 
         public static void SeedSchools(EFDbContext context)
         {
-            if(context.Schools.Count() == 0)
+            if (context.Schools.Count() == 0)
             {
                 var schools = new List<School>();
 
-                schools.Add(new School 
+                schools.Add(new School
                 {
                     Name = "ЗОШ №3",
                     Description = "Рівненська загальноосвітня школа І-ІІІ ступенів № 3"
@@ -98,7 +98,7 @@ namespace YIF.Core.Data
 
         public static void SeedSchoolAdmins(EFDbContext context)
         {
-            if(context.SchoolAdmins.Count() == 0)
+            if (context.SchoolAdmins.Count() == 0)
             {
                 var admins = new List<SchoolAdmin>();
                 string currentSchool = string.Empty;
@@ -109,7 +109,7 @@ namespace YIF.Core.Data
 
                 admins.Add(new SchoolAdmin
                 {
-                    SchoolId = currentSchool 
+                    SchoolId = currentSchool
                 });
                 #endregion
 
@@ -152,7 +152,7 @@ namespace YIF.Core.Data
 
         public async static Task SeedSchoolModerators(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if(context.SchoolModerators.Count() == 0)
+            if (context.SchoolModerators.Count() == 0)
             {
                 var schools = context.Schools.ToList();
                 var schoolAdmins = context.SchoolAdmins.ToList();
@@ -170,7 +170,7 @@ namespace YIF.Core.Data
                         SchoolId = schools.FirstOrDefault(x => x.Name == "ЗОШ №3").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);                  
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.SchoolAdmin, schoolModerator);
                 }
 
                 {
@@ -314,7 +314,7 @@ namespace YIF.Core.Data
 
         public async static Task SeedGraduates(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if(context.Graduates.Count() == 0)
+            if (context.Graduates.Count() == 0)
             {
                 string currentSchool = string.Empty;
                 var schools = context.Schools.ToList();
@@ -348,7 +348,7 @@ namespace YIF.Core.Data
                         SchoolId = currentSchool
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
-                }              
+                }
                 #endregion
 
                 #region Школа №4
@@ -440,7 +440,7 @@ namespace YIF.Core.Data
                         SchoolId = currentSchool
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Graduate, graduate);
-                }               
+                }
                 #endregion
 
                 #region Школа №25
@@ -498,11 +498,11 @@ namespace YIF.Core.Data
 
         public static void SeedDirections(EFDbContext context)
         {
-            if(context.Directions.Count() == 0)
+            if (context.Directions.Count() == 0)
             {
                 var directions = new List<Direction>();
 
-                directions.Add(new Direction 
+                directions.Add(new Direction
                 {
                     Name = "Інформаційні технології"
                 });
@@ -514,7 +514,7 @@ namespace YIF.Core.Data
 
         public static void SeedSpecialities(EFDbContext context)
         {
-            if(context.Specialities.Count() == 0)
+            if (context.Specialities.Count() == 0)
             {
                 string currentDirection = string.Empty;
                 var specialities = new List<Speciality>();
@@ -522,8 +522,8 @@ namespace YIF.Core.Data
                 #region Інформаційні технології
                 currentDirection = context.Directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id;
 
-                specialities.Add(new Speciality 
-                { 
+                specialities.Add(new Speciality
+                {
                     Name = "Комп'ютерні науки",
                     DirectionId = currentDirection
                 });
@@ -560,13 +560,13 @@ namespace YIF.Core.Data
                 #endregion
 
                 context.Specialities.AddRange(specialities);
-                context.SaveChanges(); 
+                context.SaveChanges();
             }
         }
 
         public static void SeedUniversities(EFDbContext context)
         {
-            if(context.Universities.Count() == 0)
+            if (context.Universities.Count() == 0)
             {
                 var univerities = new List<University>();
 
@@ -577,12 +577,12 @@ namespace YIF.Core.Data
                     Description = "Єдиний в Україні вищий навчальний заклад водогосподарського профілю." +
                     " Заклад є навчально-науковим комплексом, що здійснює підготовку висококваліфікованих фахівців," +
                     " науково-педагогічних кадрів, забезпечує підвищення кваліфікації фахівців та" +
-                    " проводить науково-дослідну роботу. ",                  
+                    " проводить науково-дослідну роботу. ",
                 });
                 #endregion
 
                 #region КПІ
-                univerities.Add(new University 
+                univerities.Add(new University
                 {
                     Name = "Київський політехнічний інститут імені Ігоря Сікорського",
                     Description = "Заклад вищої освіти інженерного профілю," +
@@ -608,7 +608,7 @@ namespace YIF.Core.Data
 
         public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
-            if(context.DirectionsToUniversities.Count() == 0 || context.SpecialityToUniversities.Count() == 0)
+            if (context.DirectionsToUniversities.Count() == 0 || context.SpecialityToUniversities.Count() == 0)
             {
                 var directions = context.Directions.ToList();
                 var specialities = context.Specialities.ToList();
@@ -618,31 +618,31 @@ namespace YIF.Core.Data
                 var specialitiesToUniversities = new List<SpecialityToUniversity>();
 
                 // Random seeding
-                universities.ForEach (x =>
-                 {
-                     int rand = new Random().Next(0, directions.Count());
-                     if (rand <= 0) rand = 1;
+                universities.ForEach(x =>
+                {
+                    int rand = new Random().Next(0, directions.Count());
+                    if (rand <= 0) rand = 1;
 
-                     for (int i = 0; i < rand; i++)
-                     {
-                         directionsToUniversities.Add(new DirectionToUniversity
-                         {
-                             UniversityId = x.Id,
-                             DirectionId = directions[i].Id
-                         });
+                    for (int i = 0; i < rand; i++)
+                    {
+                        directionsToUniversities.Add(new DirectionToUniversity
+                        {
+                            UniversityId = x.Id,
+                            DirectionId = directions[i].Id
+                        });
 
-                         for (int j = 0; j < new Random().Next(1,
-                              specialities.Where(x => x.DirectionId == directions[i].Id).Count());
-                              j++)
-                         {
-                             specialitiesToUniversities.Add(new SpecialityToUniversity 
-                             {
-                                 SpecialityId = specialities[j].Id,
-                                 UniversityId = universities[i].Id
-                             });
-                         }
-                     }
-                 });
+                        for (int j = 0; j < new Random().Next(1,
+                             specialities.Where(x => x.DirectionId == directions[i].Id).Count());
+                             j++)
+                        {
+                            specialitiesToUniversities.Add(new SpecialityToUniversity
+                            {
+                                SpecialityId = specialities[j].Id,
+                                UniversityId = universities[i].Id
+                            });
+                        }
+                    }
+                });
 
 
                 context.DirectionsToUniversities.AddRange(directionsToUniversities);
@@ -661,7 +661,7 @@ namespace YIF.Core.Data
             #region НУВГП
             currentUniversity = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
 
-            admins.Add(new UniversityAdmin 
+            admins.Add(new UniversityAdmin
             {
                 UniversityId = currentUniversity
             });
@@ -691,7 +691,7 @@ namespace YIF.Core.Data
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if(context.Lectures.Count() == 0)
+            if (context.Lectures.Count() == 0)
             {
                 var universities = context.Universities.ToList();
 
@@ -840,7 +840,7 @@ namespace YIF.Core.Data
 
         public async static Task SeedUniversityModerators(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if(context.UniversityModerators.Count() == 0)
+            if (context.UniversityModerators.Count() == 0)
             {
                 var universities = context.Universities.ToList();
                 var admins = context.UniversityAdmins.ToList();
@@ -977,7 +977,7 @@ namespace YIF.Core.Data
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
-                }              
+                }
                 #endregion
             }
         }
@@ -1043,8 +1043,6 @@ namespace YIF.Core.Data
                 await SeederDB.SeedUniversityModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);
                 #endregion
-
-
             }
 
         }

@@ -46,28 +46,6 @@ namespace YIF_Backend.Controllers
             }
         }
 
-        [HttpGet("token/{id}")]
-        public async Task<ActionResult> GetJwtAsync(string id)
-        {
-            try
-            {
-                Guid guid = Guid.Parse(id);
-                return Ok(
-                 new
-                 {
-                     token = await _jwtService.CreateTokenByIdAsync(guid.ToString("D"))
-                 });
-            }
-            catch (ArgumentNullException)
-            {
-                return BadRequest("The string to be parsed is null.");
-            }
-            catch (FormatException)
-            {
-                return BadRequest($"Bad format:  {id}");
-            }
-        }
-
         private ActionResult ReturnResult(bool Success, object Object, string Message = null)
         {
             if (Success)
