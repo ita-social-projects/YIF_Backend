@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20201218173500_init")]
+    [Migration("20201218192048_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -7,7 +7,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ServiceInterfaces;
 
@@ -21,18 +20,6 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _configuration = configuration;
             _userManager = userManager;
-        }
-
-        public async Task<string> CreateTokenByIdAsync(string id)
-        {
-            var userDb = await _userManager.FindByIdAsync(id);
-            return CreateTokenByUser(userDb);
-        }
-
-        public string CreateTokenById(string id)
-        {
-            var userDb = _userManager.FindByIdAsync(id).Result;
-            return CreateTokenByUser(userDb);
         }
 
         public string CreateTokenByUser(DbUser user)
