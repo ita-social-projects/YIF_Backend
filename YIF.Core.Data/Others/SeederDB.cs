@@ -207,8 +207,8 @@ namespace YIF.Core.Data
                 {
                     var dbUser = new DbUser
                     {
-                        Email = "vasiliy@gmail.com",
-                        UserName = "KitVasil"
+                        Email = "8edua@factwalk.com",
+                        UserName = "DidPanas"
                     };
                     var schoolModerator = new SchoolModerator
                     {
@@ -1031,17 +1031,17 @@ namespace YIF.Core.Data
                 SeederDB.SeedSchools(context);
                 SeederDB.SeedSchoolAdmins(context);
                 await SeederDB.SeedSchoolModerators(context, manager);
-                await SeederDB.SeedGraduates(context, manager);
+                //await SeederDB.SeedGraduates(context, manager);
                 #endregion
 
                 #region University
-                SeederDB.SeedDirections(context);
-                SeederDB.SeedSpecialities(context);
-                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                SeederDB.SeedUniversities(context);
-                SeederDB.SeedUniversityAdmins(context);
-                await SeederDB.SeedUniversityModerators(context, manager);
-                await SeederDB.SeedLectures(context, manager);
+                //SeederDB.SeedDirections(context);
+                //SeederDB.SeedSpecialities(context);
+                //SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
+                //SeederDB.SeedUniversities(context);
+                //SeederDB.SeedUniversityAdmins(context);
+                //await SeederDB.SeedUniversityModerators(context, manager);
+                //await SeederDB.SeedLectures(context, manager);
                 #endregion
 
 
