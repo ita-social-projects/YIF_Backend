@@ -32,7 +32,7 @@ RUN dotnet sonarscanner begin \
   /d:sonar.host.url="$SONAR_HOST_URL" \
   /d:sonar.login="$SONAR_TOKEN" \
   /d:sonar.cs.opencover.reportsPaths=YIF_XUnitTests/coverage.opencover.xml \
-  /d:sonar.coverage.exclusions="YIF.Core.Data/**,YIF.Core.Domain/**,**Test*.cs" \
+  /d:sonar.coverage.exclusions="YIF.Core.Data/**,**Test*.cs" \
   /d:sonar.cs.vstest.reportsPaths=YIF_XUnitTests/TestResults/*.trx
 
 # Build and test the application
