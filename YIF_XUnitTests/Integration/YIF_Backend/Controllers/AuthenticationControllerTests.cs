@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Domain.ViewModels;
 using YIF_Backend;
-using System.IdentityModel.Tokens.Jwt;
-using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
@@ -24,7 +20,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class AuthenticationControllerTests
     {
         private readonly HttpClient _client;
-        private readonly IUserService<DbUser> _userService;
 
         public AuthenticationControllerTests()
         {
