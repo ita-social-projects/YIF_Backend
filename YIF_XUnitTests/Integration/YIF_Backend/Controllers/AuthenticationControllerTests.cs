@@ -31,21 +31,21 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("")]
-        public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string url)
+        [InlineData("qtoni6@gmail.com", "QWerty-1")]
+        public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string email, string password)
         {
             // Arrange
             var user = new User
             {
-                Email = "qtoni6@gmail.com",
-                Password = "QWerty-1"
+                Email = email,
+                Password = password
             };
 
             var json = JsonConvert.SerializeObject(user);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync(url, data);
+            var response = await _client.PostAsync("", data);
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JObject.Parse(content);
@@ -65,21 +65,21 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("")]
-        public async Task Post_EndpointsReturnError_IfLoginIncorrect(string url)
+        [InlineData("d@gmail.com", "QWerty-1")]
+        public async Task Post_EndpointsReturnError_IfLoginIncorrect(string email, string password)
         {
             // Arrange
             var user = new User
             {
-                Email = "d@gmail.com",
-                Password = "QWerty-1"
+                Email = email,
+                Password = password
             };
 
             var json = JsonConvert.SerializeObject(user);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync(url, data);
+            var response = await _client.PostAsync("", data);
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JObject.Parse(content);
@@ -96,21 +96,21 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("")]
-        public async Task Post_EndpointsReturnError_IfPasswordIncorrect(string url)
+        [InlineData("qtoni6@gmail.com", "d")]
+        public async Task Post_EndpointsReturnError_IfPasswordIncorrect(string email, string password)
         {
             // Arrange
             var user = new User
             {
-                Email = "qtoni6@gmail.com",
-                Password = "d"
+                Email = email,
+                Password = password
             };
 
             var json = JsonConvert.SerializeObject(user);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             // Act
-            var response = await _client.PostAsync(url, data);
+            var response = await _client.PostAsync("", data);
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JObject.Parse(content);
