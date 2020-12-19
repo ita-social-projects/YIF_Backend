@@ -30,6 +30,7 @@ namespace YIF.Core.Service.Concrete.Services
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("id", user.Id),
+                new Claim("email", user.Email),
                 new Claim("name", user.UserName),
             };
 
