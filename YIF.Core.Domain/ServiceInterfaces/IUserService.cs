@@ -15,7 +15,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseModel<IEnumerable<UserViewModel>>> GetAllUsers();
         Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<T, bool>> predicate);
 
-        Task<ResponseModel<UserViewModel>> CreateUser(UserDTO userDTO);
+        Task<ResponseModel<LoginResponseViewModel>> RegisterUser(RegisterViewModel registerModel);
         Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginViewModel loginModel);
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(int? id);

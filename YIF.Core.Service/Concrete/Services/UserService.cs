@@ -81,10 +81,11 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<UserViewModel>> CreateUser(UserDTO userDTO)
+        Task<ResponseModel<LoginResponseViewModel>> RegisterUser(RegisterViewModel registerModel)
         {
-            throw new NotImplementedException();
+            throw new Exception();
         }
+
 
         public async Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginViewModel loginModel)
         {
