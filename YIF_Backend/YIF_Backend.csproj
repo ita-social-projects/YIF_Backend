@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
+    <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
+    <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.6.3" />
@@ -15,12 +18,5 @@
       <_Parameter1>YIF_XUnitTests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
-    <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
-    <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
-  </ItemGroup>
-
 
 </Project>

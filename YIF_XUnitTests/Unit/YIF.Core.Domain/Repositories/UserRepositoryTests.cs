@@ -9,7 +9,6 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
-using YIF.Core.Service.Mapping;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 {

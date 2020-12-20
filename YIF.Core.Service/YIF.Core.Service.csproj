@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ValidationServices\**" />
-    <EmbeddedResource Remove="ValidationServices\**" />
-    <None Remove="ValidationServices\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
