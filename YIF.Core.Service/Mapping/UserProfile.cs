@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.Models.IdentityDTO;
@@ -27,12 +26,10 @@ namespace YIF.Core.Service.Mapping
     public class GetRolesResolver : IValueResolver<DbUser, UserDTO, IEnumerable<string>>
     {
         private static UserManager<DbUser> _manager;
-
         public GetRolesResolver(UserManager<DbUser> manager)
         {
             _manager = manager;
         }
-
         public IEnumerable<string> Resolve(DbUser user, UserDTO userDTO, IEnumerable<string> roles, ResolutionContext context)
         {
             return _manager.GetRolesAsync(user).Result;
@@ -42,12 +39,10 @@ namespace YIF.Core.Service.Mapping
     public class SetRolesResolver : IMappingAction<UserDTO, DbUser>
     {
         private static UserManager<DbUser> _manager;
-
         public SetRolesResolver(UserManager<DbUser> manager)
         {
             _manager = manager;
         }
-
         public void Process(UserDTO userDTO, DbUser user, ResolutionContext context)
         {
             var roles = _manager.GetRolesAsync(user).Result;

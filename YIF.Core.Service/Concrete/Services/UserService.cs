@@ -73,10 +73,10 @@ namespace YIF.Core.Service.Concrete.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseModel<LoginResponseViewModel>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseModel<string>> LoginUser(LoginViewModel loginModel)
         {
-            var result = new ResponseModel<LoginResponseViewModel>();
-            result.Object = new LoginResponseViewModel();
+            var result = new ResponseModel<string>();
+            //result.Object = new LoginResponseViewModel();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)
@@ -93,7 +93,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateTokenByUser(user);
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            result.Object.UserToken = token;
+            result.Object = token;
 
             return result.Set(true);
         }

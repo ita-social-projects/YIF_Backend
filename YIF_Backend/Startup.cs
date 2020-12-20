@@ -22,7 +22,6 @@ using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
-using YIF.Core.Service.Mapping;
 
 namespace YIF_Backend
 {
@@ -128,7 +127,7 @@ namespace YIF_Backend
             #endregion
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            //services.AddAutoMapper(typeof(UserProfile));
+
             services.AddControllers();
         }
 
