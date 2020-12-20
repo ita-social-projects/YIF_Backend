@@ -1,6 +1,6 @@
 ﻿namespace YIF.Core.Data.Others
 {
-    class ProjectRoles
+    public class ProjectRoles
     {
         public static string SuperAdmin = "SuperAdmin";
         public static string UniversityAdmin = "UniversityAdmin";

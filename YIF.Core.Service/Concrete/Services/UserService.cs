@@ -81,7 +81,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        Task<ResponseModel<LoginResponseViewModel>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseModel<LoginResponseViewModel>> RegisterUser(RegisterViewModel registerModel)
         {
             throw new Exception();
         }
