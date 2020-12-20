@@ -26,7 +26,7 @@ namespace YIF.Core.Domain.Repositories
             _userManager = userManager;
         }
 
-        public async Task<UserDTO> Create(DbUser dbUser,Object entityUser,string userPassword)
+        public async Task<string> Create(DbUser dbUser,Object entityUser,string userPassword)
         {
             var result = await _userManager.CreateAsync(dbUser, userPassword);
             if (result.Succeeded)
@@ -37,10 +37,10 @@ namespace YIF.Core.Domain.Repositories
                 await _context.SaveChangesAsync();
 
                 var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
-                return mapper.Map<UserDTO>(await _context.Users.FindAsync(dbUser));
+                return string.Empty;
             }
 
-            return null;
+            return result.Errors.First().Description;
         }
 
         public async Task<bool> Update(DbUser user)

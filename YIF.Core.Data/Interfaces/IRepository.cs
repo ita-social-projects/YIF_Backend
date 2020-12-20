@@ -9,7 +9,7 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<K> Create(T dbUser, object entityUser, string userPassword);
+        Task<string> Create(T dbUser, object entityUser, string userPassword);
         Task<bool> Update(T item);
         Task<bool> Delete(string id);
         Task<K> Get(string id);

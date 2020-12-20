@@ -13,6 +13,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -83,7 +84,39 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseModel<LoginResponseViewModel>> RegisterUser(RegisterViewModel registerModel)
         {
-            throw new Exception();
+            var result = new ResponseModel<LoginResponseViewModel>();
+            result.Object = new LoginResponseViewModel();
+
+            var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
+            if(searchUser.Result != null)
+            {
+                return result.Set(false, "User already exist");
+            }
+
+            if(!registerModel.Password.Equals(registerModel.ConfirmPassword))
+            {
+                return result.Set(false, "Password and confirm password does not compare");
+            }
+
+            var dbUser = new DbUser 
+            { 
+                Email = registerModel.Email,
+                UserName = registerModel.Username
+            };
+            var graduate = new Graduate();
+            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password);
+
+            if (registerResult != string.Empty)
+            {
+                return result.Set(false, registerResult);
+            }
+
+            var token = _jwtService.CreateTokenByUser(dbUser);
+            await _signInManager.SignInAsync(dbUser, isPersistent: false);
+
+            result.Object.UserToken = token;
+
+            return result.Set(true);
         }
 
 
