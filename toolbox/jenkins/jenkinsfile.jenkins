@@ -24,7 +24,7 @@ pipeline {
                 dir(".") {
                     echo " ---> Build docker web-api <--- "
                     sh "dotnet clean"
-                    sh "docker build -t smethan/web-api:latest -f Dockerfile_VM . "
+                    sh "docker build -t smethan/web-api:latest -f Dockerfile.VM . "
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
                 dir(".") {
                     echo " ---> Remove dangling images  <--- "
                     sh "docker rmi \$(docker images --filter 'dangling=true' -q --no-trunc) || true"
-                    //deleteDir()
+                    deleteDir()
                 }
             }
         }
