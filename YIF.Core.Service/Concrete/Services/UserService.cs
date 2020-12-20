@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -9,9 +10,6 @@ using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ViewModels;
 using YIF.Core.Domain.ViewModels.IdentityViewModels;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Identity;
-using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ViewModels.UserViewModels;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -22,15 +20,18 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
+        private readonly IMapper _mapper;
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager, 
-            IJwtService _IJwtService)
+            IJwtService _IJwtService,
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = _IJwtService;
+            _mapper = mapper;
         }
 
         public async Task<ResponseModel<IEnumerable<UserViewModel>>> GetAllUsers()
@@ -41,14 +42,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(false, $"There are not users in database");
             }
-
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.AllowNullCollections = true;
-                cfg.CreateMap<UserDTO, UserViewModel>();
-            }));
-
-            result.Object = mapper.Map<IEnumerable<UserViewModel>>(users);
+            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(users);
             return result.Set(true);
         }
 
@@ -58,8 +52,7 @@ namespace YIF.Core.Service.Concrete.Services
             try
             {
                 var user = await _userRepository.Get(id);
-                var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<UserDTO, UserViewModel>()));
-                result.Object = mapper.Map<UserViewModel>(user);
+                result.Object = _mapper.Map<UserViewModel>(user);
             }
             catch (KeyNotFoundException ex)
             {
@@ -71,13 +64,7 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
             var result = new ResponseModel<IEnumerable<UserViewModel>>();
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.AllowNullCollections = true;
-                cfg.CreateMap<UserDTO, UserViewModel>();
-            }));
-
-            result.Object = mapper.Map<IEnumerable<UserViewModel>>(await _userRepository.Find(predicate));
+            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(await _userRepository.Find(predicate));
             return result.Set(true);
         }
 

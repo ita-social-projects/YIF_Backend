@@ -144,8 +144,6 @@ namespace YIF_XUnitTests
             dbSet.Setup(d => d.Add(It.IsAny<T>())).Callback<T>((s) => sourceList.Add(s));
             dbSet.Setup(d => d.Update(It.IsAny<T>())).Callback<T>((s) => sourceList[0] = s);
             dbSet.Setup(d => d.Remove(It.IsAny<T>())).Callback<T>((s) => sourceList.Remove(s));
-            //dbSet.Setup(d => d.Find(It.IsAny<object[]>())).Returns<Predicate<T>>((s) => sourceList.Find(s));
-            //dbSet.Setup(d => d.Find(It.IsAny<object[]>())).Callback<T>((s) => return sourceList.Find(s));
             return dbSet.Object;
         }
     }

@@ -5,8 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ValidationServices\**" />
+    <EmbeddedResource Remove="ValidationServices\**" />
+    <None Remove="ValidationServices\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.3.0" />
   </ItemGroup>
 
@@ -14,11 +21,6 @@
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>YIF_XUnitTests</_Parameter1>
     </AssemblyAttribute>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mapping\" />
-    <Folder Include="ValidationServices\" />
   </ItemGroup>
 
 </Project>

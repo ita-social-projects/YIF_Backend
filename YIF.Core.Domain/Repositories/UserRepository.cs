@@ -15,10 +15,12 @@ namespace YIF.Core.Domain.Repositories
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
         private readonly IApplicationDbContext _db;
+        private readonly IMapper _mapper;
 
-        public UserRepository(IApplicationDbContext context)
+        public UserRepository(IApplicationDbContext context, IMapper mapper)
         {
             _db = context;
+            _mapper = mapper;
         }
 
         public async Task<UserDTO> Create(DbUser user)
@@ -27,8 +29,8 @@ namespace YIF.Core.Domain.Repositories
             {
                 _db.Users.Add(user);
                 await _db.SaveChangesAsync();
-                var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
-                return mapper.Map<UserDTO>(await _db.Users.FindAsync(user));
+                var foundUser = await _db.Users.FindAsync(user);
+                return _mapper.Map<UserDTO>(foundUser);
             }
             return null;
         }
@@ -62,35 +64,24 @@ namespace YIF.Core.Domain.Repositories
         [ExcludeFromCodeCoverage]
         public async Task<IEnumerable<UserDTO>> Find(Expression<Func<DbUser, bool>> predicate)
         {
-            var configuration = new MapperConfiguration(cfg =>
-            {
-                cfg.AllowNullCollections = true;
-                cfg.CreateMap<DbUser, UserDTO>();
-            });
-            var mapper = new Mapper(configuration);
-            return mapper.Map<IEnumerable<UserDTO>>(await _db.Users.Where(predicate).ToListAsync());
+            var user = await _db.Users.Where(predicate).ToListAsync();
+            return _mapper.Map<IEnumerable<UserDTO>>(user);
         }
 
         public async Task<UserDTO> Get(string id)
         {
-            var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
             var user = await _db.Users.FindAsync(id);
             if (user != null)
             {
-                return mapper.Map<UserDTO>(user);
+                return _mapper.Map<UserDTO>(user);
             }
             throw new KeyNotFoundException("User not found:  " + id);
         }
 
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
-            var mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.AllowNullCollections = true;
-                cfg.CreateMap<DbUser, UserDTO>();
-            }));
             var list = await _db.Users.ToListAsync();
-            return mapper.Map<IEnumerable<UserDTO>>(list);
+            return _mapper.Map<IEnumerable<UserDTO>>(list);
         }
 
         public void Dispose()
