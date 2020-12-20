@@ -33,5 +33,11 @@ namespace YIF_Backend.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("RegisterUser")]
+        public async Task<IActionResult> RegisterUser([FromBody]RegisterViewModel model)
+        {
+            return Ok();
+        }
     }
 }
