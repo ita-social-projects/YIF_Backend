@@ -24,7 +24,7 @@ pipeline {
                 dir(".") {
                     echo " ---> Build docker web-api <--- "
                     sh "dotnet clean"
-                    sh "docker build -t smethan/web-api:latest -f Dockerfile_VM . "
+                    sh "docker build -t smethan/web-api:latest -f Dockerfile.VM . "
                 }
             }
         }

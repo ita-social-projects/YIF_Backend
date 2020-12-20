@@ -31,8 +31,11 @@ RUN dotnet sonarscanner begin \
   /k:"$SONAR_PROJECT_KEY" \
   /d:sonar.host.url="$SONAR_HOST_URL" \
   /d:sonar.login="$SONAR_TOKEN" \
+  /v:1.0 \
+  /d:sonar.scm.disabled=true \
+  /d:sonar.exclusions="**/SeederDB.cs,**/Migrations/**" \
   /d:sonar.cs.opencover.reportsPaths=YIF_XUnitTests/coverage.opencover.xml \
-  /d:sonar.coverage.exclusions="YIF.Core.Data/**,**Test*.cs" \
+  /d:sonar.coverage.exclusions="YIF.Core.Data/**,**Test*.cs,**DTO.cs,**Model.cs" \
   /d:sonar.cs.vstest.reportsPaths=YIF_XUnitTests/TestResults/*.trx
 
 # Build and test the application
