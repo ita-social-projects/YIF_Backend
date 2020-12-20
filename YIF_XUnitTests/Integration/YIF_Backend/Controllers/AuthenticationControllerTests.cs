@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,16 +8,12 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Domain.ViewModels;
+using YIF.Core.Domain.ViewModels.UserViewModels;
 using YIF_Backend;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    class User
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
     public class AuthenticationControllerTests
     {
         private readonly HttpClient _client;
@@ -35,7 +32,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string email, string password)
         {
             // Arrange
-            var user = new User
+            var user = new LoginViewModel
             {
                 Email = email,
                 Password = password
@@ -53,54 +50,23 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var successStatus = contentJsonObj["success"].ToObject<bool>();
             var token = new JwtSecurityToken(contentJsonObj["object"]["userToken"].ToString());
 
-            var payload = token.Payload;
-
             // Assert
             response.EnsureSuccessStatusCode();
 
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
             Assert.True(successStatus);
-            Assert.Equal(user.Email, payload["email"]);
+            Assert.Equal(user.Email, token.Payload["email"]);
         }
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1")]
-        public async Task Post_EndpointsReturnError_IfLoginIncorrect(string email, string password)
-        {
-            // Arrange
-            var user = new User
-            {
-                Email = email,
-                Password = password
-            };
-
-            var json = JsonConvert.SerializeObject(user);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-            // Act
-            var response = await _client.PostAsync("", data);
-            var content = response.Content.ReadAsStringAsync().Result;
-
-            var contentJsonObj = JObject.Parse(content);
-
-            var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = contentJsonObj["object"]["userToken"].ToObject<object>();
-
-            // Assert
-            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
-            Assert.False(successStatus);
-            Assert.Null(token);
-        }
-
-        [Theory]
         [InlineData("qtoni6@gmail.com", "d")]
-        public async Task Post_EndpointsReturnError_IfPasswordIncorrect(string email, string password)
+        [InlineData("", "")]
+        public async Task Post_EndpointsReturnError_IfLoginOrPasswordIncorrect(string email, string password)
         {
             // Arrange
-            var user = new User
+            var user = new LoginViewModel
             {
                 Email = email,
                 Password = password
