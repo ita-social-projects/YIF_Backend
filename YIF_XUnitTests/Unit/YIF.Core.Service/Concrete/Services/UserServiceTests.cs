@@ -146,7 +146,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await _testService.LoginUser(loginVM);
             // Assert
             Assert.True(result.Success);
-            Assert.Equal(token, result.Object);
+            Assert.Equal(token, result.Object.Token);
         }
 
         [Theory]

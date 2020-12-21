@@ -8,8 +8,11 @@
 
   
   <ItemGroup>
+    <Compile Remove="Integration\YIF.Core.Service\ValidationServices\**" />
     <Compile Remove="Unit\YIF.Core.Service\ValidationServices\**" />
+    <EmbeddedResource Remove="Integration\YIF.Core.Service\ValidationServices\**" />
     <EmbeddedResource Remove="Unit\YIF.Core.Service\ValidationServices\**" />
+    <None Remove="Integration\YIF.Core.Service\ValidationServices\**" />
     <None Remove="Unit\YIF.Core.Service\ValidationServices\**" />
   </ItemGroup>
 
@@ -34,7 +37,6 @@
     <Folder Include="Integration\YIF.Core.Domain\Repositories\" />
     <Folder Include="Integration\YIF.Core.Service\Concrete\Services\" />
     <Folder Include="Integration\YIF.Core.Service\Mapping\" />
-    <Folder Include="Integration\YIF.Core.Service\ValidationServices\" />
     <Folder Include="Unit\YIF.Core.Data\" />
     <Folder Include="Unit\YIF.Core.Service\Mapping\" />
   </ItemGroup>

@@ -70,9 +70,9 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<string>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseModel<LoginResultViewModel>> RegisterUser(RegisterViewModel registerModel)
         {
-            var result = new ResponseModel<string>();
+            var result = new ResponseModel<LoginResultViewModel>();
             //result.Object = string.Empty;
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
@@ -102,14 +102,14 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateTokenByUser(dbUser);
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = token;
+            result.Object.Token = token;
 
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<string>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseModel<LoginResultViewModel>> LoginUser(LoginViewModel loginModel)
         {
-            var result = new ResponseModel<string>();
+            var result = new ResponseModel<LoginResultViewModel>();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)
@@ -125,8 +125,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             var token = _jwtService.CreateTokenByUser(user);
             await _signInManager.SignInAsync(user, isPersistent: false);
-
-            result.Object = token;
+            
+            result.Object = new LoginResultViewModel() { Token = token };
 
             return result.Set(true);
         }

@@ -33,7 +33,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseModel<string> { Success = true, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseModel<LoginResultViewModel> { Success = true, Object = new LoginResultViewModel { Token = GetTestJwt()[0] } };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -41,7 +41,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseModel<string>)responseResult.Value;            
+            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;            
 
             Assert.Equal(responseModel.Object, model.Object);
         }
@@ -59,7 +59,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseModel<string> { Success = false, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseModel<LoginResultViewModel> { Success = false, Object = new LoginResultViewModel { Token = GetTestJwt()[1] } };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -67,9 +67,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseModel<string>)responseResult.Value;
+            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;
 
-            Assert.Null(model.Object);
+            Assert.Null(model.Object.Token);
         }
 
         private List<string> GetTestJwt()
