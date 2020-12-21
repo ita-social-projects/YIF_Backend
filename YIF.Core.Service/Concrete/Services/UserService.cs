@@ -102,7 +102,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateTokenByUser(dbUser);
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object.Token = token;
+            result.Object = new LoginResultViewModel { Token = token };
 
             return result.Set(true);
         }
