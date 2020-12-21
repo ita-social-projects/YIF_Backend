@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
     {
         private static readonly Mock<IApplicationDbContext> _dbContextMock = new Mock<IApplicationDbContext>();
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
-        private static readonly UserRepository _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object);
+        private static readonly FakeUserManager<DbUser> _userManagerMock = new FakeUserManager<DbUser>();
+        private static readonly UserRepository _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
         // User for check Create method
         private static readonly DbUser _newUserStub = new DbUser();
         private static readonly UserDTO _newUserDTOStub = new UserDTO();
+        private readonly string _newUserPassword;
         // Users for check Update and Delete methods
         private static readonly DbUser _userStub = new DbUser();
         private static readonly UserDTO _userDTOStub = new UserDTO();
@@ -39,6 +42,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 
         public UserRepositoryTests()
         {
+            _newUserPassword = "QWerty-1";
             _newUserDTOStub.Id = _newUserStub.Id = Guid.NewGuid().ToString("D");
             _newUserDTOStub.UserName = _newUserStub.UserName = "Gia Vang";
             _newUserDTOStub.Email = _newUserStub.Email = "dill.pazee@azel.xyz";
@@ -57,23 +61,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public async Task Create_ShouldAddUserToDatabase_WhenUserIsValid()
         {
             // Arrange
-            _dbContextMock.Setup(s => s.Users.FindAsync(_newUserStub)).ReturnsAsync(_newUserStub);
-            _mapperMock.Setup(s => s.Map<UserDTO>(_newUserStub)).Returns(_newUserDTOStub);
+            _userManagerMock.ResIsSucces = IdentityResult.Success;
+            _dbContextMock.Setup(s => s.AddAsync(It.IsAny<IdentityUser>())).Verifiable();
             // Act
-            var result = await _testRepo.Create(_newUserStub);
+            var errors = await _testRepo.Create(_newUserStub, It.IsAny<IdentityUser>(), _newUserPassword);
             // Assert
-            Assert.Contains(_newUserStub, _dataStub);
-            Assert.Equal(_newUserStub.Id, result.Id);
-            Assert.Equal(_newUserStub.UserName, result.UserName);
+            Assert.Empty(errors);
         }
 
         [Fact]
-        public async Task Create_ShouldReturnNull_WhenIsNoUser()
+        public async Task Create_ShouldReturnErrors_WhenCreatingUserIsFailed()
         {
             // Act
-            var result = await _testRepo.Create(null);
+            _userManagerMock.ResIsSucces = IdentityResult.Failed();
+            var errors = await _testRepo.Create(null, null, null);
             // Assert
-            Assert.Null(result);
+            Assert.True(errors.Length > 0);
         }
 
         [Fact]
@@ -180,7 +183,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var result = false;
             context.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var repo = new UserRepository(context.Object, _mapperMock.Object);
+            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock);
             repo.Dispose();
             // Assert
             Assert.True(result);

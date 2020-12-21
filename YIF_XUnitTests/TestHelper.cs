@@ -159,6 +159,7 @@ namespace YIF_XUnitTests
     // For mocking IdentityUser managers
     public class FakeUserManager<T> : UserManager<T> where T : class
     {
+        public IdentityResult ResIsSucces { get; set; } = IdentityResult.Success;
         public FakeUserManager()
             : base(new Mock<IUserStore<T>>().Object,
                   new Mock<IOptions<IdentityOptions>>().Object,
@@ -170,6 +171,25 @@ namespace YIF_XUnitTests
                   new Mock<IServiceProvider>().Object,
                   new Mock<ILogger<UserManager<T>>>().Object)
         { }
+        public override Task<IdentityResult> CreateAsync(T user, string password)
+        {
+            var error = new IdentityError();
+            if (user == null || password == null)
+            {
+                error.Description = "False";
+                return Task.FromResult(IdentityResult.Failed(error));
+            }
+            //ResIsSucces = IdentityResult.Failed(error);
+            return Task.FromResult(ResIsSucces);
+        }
+        public override Task<IdentityResult> CreateAsync(T user)
+        {
+            return Task.FromResult(ResIsSucces);
+        }
+        public override Task<IdentityResult> AddToRoleAsync(T user, string role)
+        {
+            return Task.FromResult(ResIsSucces);
+        }
     }
     public class FakeSignInManager<T> : SignInManager<T> where T : class
     {

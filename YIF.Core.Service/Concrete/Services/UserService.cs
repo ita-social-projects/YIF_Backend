@@ -11,6 +11,7 @@ using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ViewModels;
 using YIF.Core.Domain.ViewModels.IdentityViewModels;
 using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -69,9 +70,41 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<UserViewModel>> CreateUser(UserDTO userDTO)
+        public async Task<ResponseModel<string>> RegisterUser(RegisterViewModel registerModel)
         {
-            throw new NotImplementedException();
+            var result = new ResponseModel<string>();
+            //result.Object = string.Empty;
+
+            var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
+            if(searchUser.Result != null)
+            {
+                return result.Set(false, "User already exist");
+            }
+
+            if(!registerModel.Password.Equals(registerModel.ConfirmPassword))
+            {
+                return result.Set(false, "Password and confirm password does not compare");
+            }
+
+            var dbUser = new DbUser 
+            { 
+                Email = registerModel.Email,
+                UserName = registerModel.Username
+            };
+            var graduate = new Graduate();
+            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password);
+
+            if (registerResult != string.Empty)
+            {
+                return result.Set(false, registerResult);
+            }
+
+            var token = _jwtService.CreateTokenByUser(dbUser);
+            await _signInManager.SignInAsync(dbUser, isPersistent: false);
+
+            result.Object = token;
+
+            return result.Set(true);
         }
 
         public async Task<ResponseModel<string>> LoginUser(LoginViewModel loginModel)
@@ -98,13 +131,12 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-
-        public async Task<bool> DeleteUserById(int? id)
+        public async Task<bool> UpdateUser(UserDTO user)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateUser(UserDTO user)
+        public async Task<bool> DeleteUserById(string id)
         {
             throw new NotImplementedException();
         }

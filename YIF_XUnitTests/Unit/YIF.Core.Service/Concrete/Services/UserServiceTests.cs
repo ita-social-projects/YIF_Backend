@@ -171,14 +171,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public void DeleteUser_ShouldReturnException_Yet()
         {
             // Assert
-            Assert.ThrowsAsync<NotImplementedException>(() => _testService.CreateUser(_userDTOStub));
+            Assert.ThrowsAsync<NotImplementedException>(() => _testService.DeleteUserById(_userDTOStub.Id));
         }
 
         [Fact]
         public void UpdateUser_ShouldReturnException_Yet()
         {
             // Assert
-            Assert.ThrowsAsync<NotImplementedException>(() => _testService.CreateUser(_userDTOStub));
+            Assert.ThrowsAsync<NotImplementedException>(() => _testService.UpdateUser(_userDTOStub));
         }
 
         [Fact]

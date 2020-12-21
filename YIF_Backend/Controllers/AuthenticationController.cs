@@ -20,9 +20,32 @@ namespace YIF_Backend.Controllers
         [HttpPost("LoginUser")]
         public async Task<IActionResult> LoginUser([FromBody]LoginViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var result = await _userService.LoginUser(model);
 
             if(!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("RegisterUser")]
+        public async Task<IActionResult> RegisterUser([FromBody]RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userService.RegisterUser(model);
+
+            if (!result.Success)
             {
                 return BadRequest(result);
             }

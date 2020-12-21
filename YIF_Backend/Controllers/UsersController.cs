@@ -11,12 +11,10 @@ namespace YIF_Backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
-        private readonly IJwtService _jwtService;
 
-        public UsersController(IUserService<DbUser> userService, IJwtService jwtService)
+        public UsersController(IUserService<DbUser> userService)
         {
             _userService = userService;
-            _jwtService = jwtService;
         }
 
         [HttpGet]

@@ -16,8 +16,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class UsersControllerTests
     {
         private static readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
-        private static readonly Mock<IJwtService> _jwtService = new Mock<IJwtService>();
-        private static readonly UsersController _testControl = new UsersController(_userService.Object, _jwtService.Object);
+        private static readonly UsersController _testControl = new UsersController(_userService.Object);
         private static readonly string _guid = Guid.NewGuid().ToString("D");
 
         [Fact]
