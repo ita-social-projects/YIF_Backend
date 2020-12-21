@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -11,10 +12,13 @@ namespace YIF_Backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
-
-        public UsersController(IUserService<DbUser> userService)
+        private readonly IJwtService _jwtService;
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(IUserService<DbUser> userService, IJwtService jwtService, ILogger<UsersController> logger)
         {
             _userService = userService;
+            _jwtService = jwtService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -32,14 +36,18 @@ namespace YIF_Backend.Controllers
             {
                 Guid guid = Guid.Parse(id);
                 var result = await _userService.GetUserById(guid.ToString("D"));
+                _logger.LogInformation("Trying to get a user");
                 return ReturnResult(result.Success, result.Object, result.Message);
+                
             }
             catch (ArgumentNullException)
             {
+                _logger.LogError("Null user is not allowed");
                 return BadRequest("The string to be parsed is null.");
             }
             catch (FormatException)
             {
+                _logger.LogError("There is a problem with format");
                 return BadRequest($"Bad format:  {id}");
             }
         }
