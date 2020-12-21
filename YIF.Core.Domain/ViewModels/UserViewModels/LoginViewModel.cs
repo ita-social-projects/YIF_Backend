@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YIF.Core.Domain.ViewModels.UserViewModels
+﻿namespace YIF.Core.Domain.ViewModels.UserViewModels
 {
     public class LoginViewModel
     {
