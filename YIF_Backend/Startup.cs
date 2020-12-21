@@ -125,6 +125,13 @@ namespace YIF_Backend
             });
             #endregion
 
+            #region IdentitySettings
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            });
+            #endregion
+
             services.AddControllers();
         }
 

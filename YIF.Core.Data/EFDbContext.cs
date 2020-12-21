@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -39,6 +40,12 @@ namespace YIF.Core.Data
         {
             return await base.SaveChangesAsync();
         }
+
+        public async ValueTask<EntityEntry<T>> AddAsync<T>(T entity) where T : class
+        {      
+            return await base.AddAsync(entity);
+        }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         { 

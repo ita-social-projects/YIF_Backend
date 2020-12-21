@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,39 +9,48 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.Models.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
-        private readonly IApplicationDbContext _db;
+        private readonly IApplicationDbContext _context;
+        private readonly UserManager<DbUser> _userManager;
 
-        public UserRepository(IApplicationDbContext context)
+
+        public UserRepository(IApplicationDbContext context, UserManager<DbUser> userManager)
         {
-            _db = context;
+            _context = context;
+            _userManager = userManager;
         }
 
-        public async Task<UserDTO> Create(DbUser user)
+        public async Task<string> Create(DbUser dbUser,Object entityUser,string userPassword)
         {
-            if (user != null)
+            var result = await _userManager.CreateAsync(dbUser, userPassword);
+            if (result.Succeeded)
             {
-                _db.Users.Add(user);
-                await _db.SaveChangesAsync();
+                await _userManager.AddToRoleAsync(dbUser,ProjectRoles.Graduate);
+
+                await _context.AddAsync(entityUser);
+                await _context.SaveChangesAsync();
+
                 var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
-                return mapper.Map<UserDTO>(await _db.Users.FindAsync(user));
+                return string.Empty;
             }
-            return null;
+
+            return result.Errors.First().Description;
         }
 
         public async Task<bool> Update(DbUser user)
         {
             if (user != null)
             {
-                if (_db.Users.Find(user) != null)
+                if (_context.Users.Find(user) != null)
                 {
-                    _db.Users.Update(user);
-                    await _db.SaveChangesAsync();
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
                     return true;
                 }
             }
@@ -49,11 +59,11 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<bool> Delete(string id)
         {
-            DbUser user = _db.Users.Find(id);
+            DbUser user = _context.Users.Find(id);
             if (user != null)
             {
-                _db.Users.Remove(user);
-                await _db.SaveChangesAsync();
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
                 return true;
             }
             return false;
@@ -68,13 +78,13 @@ namespace YIF.Core.Domain.Repositories
                 cfg.CreateMap<DbUser, UserDTO>();
             });
             var mapper = new Mapper(configuration);
-            return mapper.Map<IEnumerable<UserDTO>>(await _db.Users.Where(predicate).ToListAsync());
+            return mapper.Map<IEnumerable<UserDTO>>(await _context.Users.Where(predicate).ToListAsync());
         }
 
         public async Task<UserDTO> Get(string id)
         {
             var mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<DbUser, UserDTO>()));
-            var user = await _db.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
                 return mapper.Map<UserDTO>(user);
@@ -89,13 +99,13 @@ namespace YIF.Core.Domain.Repositories
                 cfg.AllowNullCollections = true;
                 cfg.CreateMap<DbUser, UserDTO>();
             }));
-            var list = await _db.Users.ToListAsync();
+            var list = await _context.Users.ToListAsync();
             return mapper.Map<IEnumerable<UserDTO>>(list);
         }
 
         public void Dispose()
         {
-            _db.Dispose();
+            _context.Dispose();
         }
     }
 }
