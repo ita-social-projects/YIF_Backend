@@ -36,7 +36,6 @@
     <Folder Include="Integration\YIF.Core.Service\Mapping\" />
     <Folder Include="Integration\YIF.Core.Service\ValidationServices\" />
     <Folder Include="Unit\YIF.Core.Data\" />
-    <Folder Include="Unit\YIF.Core.Service\Concrete\Services\" />
     <Folder Include="Unit\YIF.Core.Service\Mapping\" />
   </ItemGroup>
 

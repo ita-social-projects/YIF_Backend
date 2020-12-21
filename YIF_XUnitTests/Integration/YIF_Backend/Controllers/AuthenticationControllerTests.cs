@@ -48,7 +48,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var contentJsonObj = JObject.Parse(content);
 
             var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = new JwtSecurityToken(contentJsonObj["object"]["userToken"].ToString());
+            var token = new JwtSecurityToken(contentJsonObj["object"].ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -82,7 +82,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var contentJsonObj = JObject.Parse(content);
 
             var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = contentJsonObj["object"]["userToken"].ToObject<object>();
+            var token = contentJsonObj["object"].ToObject<object>();
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);

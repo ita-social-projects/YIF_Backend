@@ -30,7 +30,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             UserName = "Jeremiah Gibson",
             Email = "shadj_hadjf@maliberty.com"
         };
-        private static readonly DbUser _userStub3 = new DbUser { Id = Guid.NewGuid().ToString("D"), };
+        private static readonly DbUser _userStub3 = new DbUser { Id = Guid.NewGuid().ToString("D") };
         // Users for check Find methods from DbSet
         private static readonly List<UserDTO> _listDTO = new List<UserDTO> { new UserDTO() };
         // Fake database

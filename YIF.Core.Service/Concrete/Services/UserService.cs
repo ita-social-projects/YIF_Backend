@@ -37,8 +37,8 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseModel<IEnumerable<UserViewModel>>> GetAllUsers()
         {
             var result = new ResponseModel<IEnumerable<UserViewModel>>();
-            var users = await _userRepository.GetAll();
-            if (users == null)
+            var users = (List<UserDTO>)await _userRepository.GetAll();
+            if (users.Count < 1)
             {
                 return result.Set(false, $"There are not users in database");
             }
@@ -64,7 +64,8 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
             var result = new ResponseModel<IEnumerable<UserViewModel>>();
-            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(await _userRepository.Find(predicate));
+            var foundUsers = await _userRepository.Find(predicate);
+            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(foundUsers);
             return result.Set(true);
         }
 
@@ -76,7 +77,6 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseModel<string>> LoginUser(LoginViewModel loginModel)
         {
             var result = new ResponseModel<string>();
-            //result.Object = new LoginResponseViewModel();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)
