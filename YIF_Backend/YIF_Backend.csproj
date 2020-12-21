@@ -28,5 +28,4 @@
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
   </ItemGroup>
 
-
 </Project>

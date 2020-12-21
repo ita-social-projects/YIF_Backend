@@ -1,12 +1,28 @@
-﻿namespace YIF.Core.Domain.ViewModels.IdentityViewModels
+﻿using System.Collections.Generic;
+
+namespace YIF.Core.Domain.ViewModels.IdentityViewModels
 {
     public class UserViewModel
     {
-            public string Id { get; set; }
-            public string UserName { get; set; }
-            public string Email { get; set; }
-            public string Name { get; set; }
-            public string Address { get; set; }
-            public string Role { get; set; }
+        /// <summary>
+        /// Gets or sets the primary key for this user.
+        /// </summary>
+        public string Id { get; set; }
+        /// <summary>
+        /// Gets or sets the user name for this user.
+        /// </summary>
+        public string UserName { get; set; }
+        /// <summary>
+        /// Gets or sets the email address for this user.
+        /// </summary>
+        public string Email { get; set; }
+        /// <summary>
+        /// Gets or sets a telephone number for the user.
+        /// </summary>
+        public string PhoneNumber { get; set; }
+        /// <summary>
+        /// Navigation property for the roles this user belongs to.
+        /// </summary>
+        public virtual IEnumerable<string> Roles { get; set; }
     }
 }

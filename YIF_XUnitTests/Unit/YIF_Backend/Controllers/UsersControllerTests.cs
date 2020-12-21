@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -17,7 +18,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     {
         private static readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
         private static readonly Mock<IJwtService> _jwtService = new Mock<IJwtService>();
-        private static readonly UsersController _testControl = new UsersController(_userService.Object, _jwtService.Object);
+        private static readonly Mock<ILogger<UsersController>> _logger = new Mock<ILogger<UsersController>>();
+        private static readonly UsersController _testControl = new UsersController(_userService.Object, _jwtService.Object, _logger.Object);
         private static readonly string _guid = Guid.NewGuid().ToString("D");
 
         [Fact]
@@ -76,8 +78,35 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(responseModel.Object, model);
         }
 
+        [Fact]
+        public void ReturnResult_MethodReturnObjectIfStatusIsSuccess()
+        {
+            // Arrange
+            var guid = Guid.NewGuid();
+            // Act
+            var privateMethod = _testControl.GetType().GetMethod("ReturnResult", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = (ActionResult)privateMethod.Invoke(_testControl, new object[] { true, guid, "" });
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            var model = (Guid)responseResult.Value;
+            Assert.Equal(guid, model);
+        }
 
-        [ExcludeFromCodeCoverage]
+        [Fact]
+        public void ReturnResult_MethodReturnMessageIfStatusIsFalse()
+        {
+            // Arrange
+            var str = "Something went wrong";
+            // Act
+            var privateMethod = _testControl.GetType().GetMethod("ReturnResult", BindingFlags.NonPublic | BindingFlags.Instance);
+            var result = (ActionResult)privateMethod.Invoke(_testControl, new object[] { false, null, str });
+            // Assert
+            var responseResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal(str, responseResult.Value.ToString());
+        }
+
+
+
         private List<UserViewModel> GetTestUsers()
         {
             var users = new List<UserViewModel>

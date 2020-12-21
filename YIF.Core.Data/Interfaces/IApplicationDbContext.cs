@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -28,5 +29,7 @@ namespace YIF.Core.Data.Interfaces
 
         Task<int> SaveChangesAsync();
         int SaveChanges();
+
+        ValueTask<EntityEntry<T>> AddAsync<T>(T entity) where T : class;
     }
 }
