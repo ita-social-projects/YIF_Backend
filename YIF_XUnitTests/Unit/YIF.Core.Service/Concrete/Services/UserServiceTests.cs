@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -60,8 +59,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 new UserViewModel { Id = _listDTO[1].Id, UserName = _listDTO[1].UserName, Email = _listDTO[1].Email }
             };
         }
-
-
 
         [Fact]
         public async Task GetAll_ShouldReturnAllUsers_IfThereAreMoreThanOneUser()
@@ -132,6 +129,129 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.Equal(2, result.Object.Count());
         }
 
+        [Theory]
+        [InlineData("test@gmail.com", "test", "PAssword123_", "PAssword123_")]
+        public async Task RegisterUser_ShouldReturnResponseModelWithToken_WhenDataCorrect(string email, string username, string password, string confirmPassword)
+        {
+            // Arrange
+            var token = "some correct token";
+            var userData = new RegisterViewModel
+            {
+                Email = email,
+                Username = username,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
+
+            _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(string.Empty));
+            _jwtService.Setup(x => x.CreateTokenByUser(It.IsAny<DbUser>())).Returns(token);
+            _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
+
+            // Act
+            var result = await _testService.RegisterUser(userData);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(token, result.Object.Token);
+        }
+
+        [Theory]
+        [InlineData("test123@gmail.com", "test123", "PAssword123_", "PAssword123_")]
+        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameEmailExists(string email, string username, string password, string confirmPassword)
+        {
+            // Arrange
+            var userData = new RegisterViewModel
+            {
+                Email = email,
+                Username = username,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
+
+            var dbUser = new DbUser
+            {
+                Email = email,
+                UserName = username
+            };
+
+            _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(dbUser));
+
+            // Act
+            var result = await _testService.RegisterUser(userData);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Null(result.Object);
+            Assert.Equal("User already exist", result.Message);
+        }
+
+        [Theory]
+        [InlineData("test123@gmail.com", "test123", "PAssword123_", "PAssword123_")]
+        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameNameExists(string email, string username, string password, string confirmPassword)
+        {
+            // Arrange
+            var message = $"User name '{username}' is already taken.";
+
+            var userData = new RegisterViewModel
+            {
+                Email = email,
+                Username = username,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
+
+            var dbUser = new DbUser
+            {
+                Email = email,
+                UserName = username
+            };
+
+            _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(message));
+
+            // Act
+            var result = await _testService.RegisterUser(userData);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Null(result.Object);
+            Assert.Equal(message, result.Message);
+        }
+
+        [Theory]
+        [InlineData("test123@gmail.com", "test123", "PAssword122_", "PAssword123_", "Password and confirm password does not compare")]
+        [InlineData("test123@gmail.com", "test123", "PAssword12", "PAssword12", "Passwords must have at least one non alphanumeric character.")]
+        [InlineData("test123@gmail.com", "test123", "pass", "pass", "Passwords must be at least 6 characters.")]
+        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenPasswordIsBad(string email, string username, string password, string confirmPassword, string message)
+        {
+            // Arrange
+            var userData = new RegisterViewModel
+            {
+                Email = email,
+                Username = username,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
+
+            var dbUser = new DbUser
+            {
+                Email = email,
+                UserName = username
+            };
+
+            _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(message));
+
+            // Act
+            var result = await _testService.RegisterUser(userData);
+
+            // Assert
+            Assert.False(result.Success);
+            Assert.Null(result.Object);
+            Assert.Equal(message, result.Message);
+        }
+
         [Fact]
         public async Task LoginUser_ShouldReturnResponseModelWithToken_WhenEmailAndPasswordAreCorrect()
         {
@@ -140,7 +260,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var loginVM = new LoginViewModel { Email = "email@gmail.com", Password = "password" };
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginVM.Email, PasswordHash = loginVM.Password };
             _userManager.Setup(s => s.FindByEmailAsync(loginVM.Email)).ReturnsAsync(user);
-            _signInManager.SignIsSucces = SignInResult.Success;
+            _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
             _jwtService.Setup(s => s.CreateTokenByUser(user)).Returns(token);
             // Act
             var result = await _testService.LoginUser(loginVM);
@@ -159,7 +279,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var loginVM = new LoginViewModel { Email = email, Password = password };
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = email, PasswordHash = password };
             _userManager.Setup(s => s.FindByEmailAsync(email)).ReturnsAsync(email == "" ? null : user);
-            _signInManager.SignIsSucces = SignInResult.Failed;
+            _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Failed;
             // Act
             var result = await _testService.LoginUser(loginVM);
             // Assert

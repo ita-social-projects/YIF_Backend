@@ -33,7 +33,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseModel<LoginResultViewModel> { Success = true, Object = new LoginResultViewModel { Token = GetTestJwt()[0] } };
+            var responseModel = new ResponseModel<LoginResultViewModel> { Success = true, Object = GetTestJwt()[0] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -48,8 +48,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1")]
-        [InlineData("qtoni6@gmail.com", "d")]
-        [InlineData("", "")]
         public async Task LoginUser_EndpointReturnLoginResponseViewModelWithoutJwt_IfLoginOrPasswordInorrect(string email, string password)
         {
             // Arrange
@@ -59,7 +57,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseModel<LoginResultViewModel> { Success = false, Object = new LoginResultViewModel { Token = GetTestJwt()[1] } };
+            var responseModel = new ResponseModel<LoginResultViewModel> { Success = false, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -72,12 +70,64 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Null(model.Object.Token);
         }
 
-        private List<string> GetTestJwt()
+        [Theory]
+        [InlineData("test@gmail.com", "test", "PAssword123_", "PAssword123_")]
+        public async Task RegisterUser_EndpointsReturnLoginResponseViewModelWithJwt_IfDataСorrect(string email, string username, string password, string confirmPassword)
         {
-            return new List<string>
+            // Arrange
+            var request = new RegisterViewModel
             {
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZWY1ZmM4LTA1NjEtNDI2OS04Zjc1LTk1N2RhNzg4ODkyOCIsImVtYWlsIjoicXRvbmk2QGdtYWlsLmNvbSIsIm5hbWUiOiJBcm5vbGRCZWFzbGV5Iiwicm9sZXMiOiJVbml2ZXJzaXR5QWRtaW4iLCJleHAiOjE2MDg1MDQxMjl9.araGavMMEaMXF2fjFU_OH72ipfJuae21vzxEcfTp_L0",
-                null
+                Email = email,
+                Username = username,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
+
+            var responseModel = new ResponseModel<LoginResultViewModel> { Success = true, Object = GetTestJwt()[1] };
+            _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
+
+            // Act
+            var result = await _testControl.RegisterUser(request);
+
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;
+
+            Assert.Equal(responseModel.Object.Token, model.Object.Token);
+        }
+
+        [Theory]
+        [InlineData("d@gmail.com", "d", "test", "test")]
+        public async Task RegisterUser_EndpointsReturnBadRequest_IfDataIncorrect(string email, string username, string password, string confirmPassword)
+        {
+            // Arrange
+            var request = new RegisterViewModel
+            {
+                Email = email,
+                Username = username,
+                Password = password,
+                ConfirmPassword = confirmPassword
+            };
+
+            var responseModel = new ResponseModel<LoginResultViewModel> { Success = false, Object = GetTestJwt()[1] };
+            _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
+
+            // Act
+            var result = await _testControl.RegisterUser(request);
+
+            // Assert
+            var responseResult = Assert.IsType<BadRequestObjectResult>(result);
+            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;
+
+            Assert.Null(model.Object.Token);
+        }
+
+        private List<LoginResultViewModel> GetTestJwt()
+        {
+            return new List<LoginResultViewModel>
+            {
+                new LoginResultViewModel { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZWY1ZmM4LTA1NjEtNDI2OS04Zjc1LTk1N2RhNzg4ODkyOCIsImVtYWlsIjoicXRvbmk2QGdtYWlsLmNvbSIsIm5hbWUiOiJBcm5vbGRCZWFzbGV5Iiwicm9sZXMiOiJVbml2ZXJzaXR5QWRtaW4iLCJleHAiOjE2MDg1MDQxMjl9.araGavMMEaMXF2fjFU_OH72ipfJuae21vzxEcfTp_L0" },
+                new LoginResultViewModel { Token = null },
             };
         }
     }

@@ -135,9 +135,7 @@ namespace YIF_Backend
             #endregion
 
             #region AutoMapper
-            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddAutoMapper(typeof(Startup));
-            services.AddAutoMapper(typeof(UserProfile));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #endregion
 
             services.AddControllers();
