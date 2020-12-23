@@ -70,9 +70,9 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultViewModel>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseModel<AuthenticateResponseVM>> RegisterUser(RegisterViewModel registerModel)
         {
-            var result = new ResponseModel<LoginResultViewModel>();
+            var result = new ResponseModel<AuthenticateResponseVM>();
             //result.Object = string.Empty;
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
@@ -99,17 +99,19 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, registerResult);
             }
 
-            var token = _jwtService.CreateTokenByUser(dbUser);
+            var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
+            var refreshToken = _jwtService.CreateRefreshToken();
+
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new LoginResultViewModel { Token = token };
+            result.Object = new AuthenticateResponseVM { Token = token, RefreshToken = refreshToken };
 
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultViewModel>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseModel<AuthenticateResponseVM>> LoginUser(LoginViewModel loginModel)
         {
-            var result = new ResponseModel<LoginResultViewModel>();
+            var result = new ResponseModel<AuthenticateResponseVM>();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)
@@ -123,11 +125,39 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, "Login or password is incorrect");
             }
 
-            var token = _jwtService.CreateTokenByUser(user);
+            var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
+            var refreshToken = _jwtService.CreateRefreshToken();
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             
-            result.Object = new LoginResultViewModel() { Token = token };
+            result.Object = new AuthenticateResponseVM() { Token = token, RefreshToken = refreshToken };
 
+            return result.Set(true);
+        }
+
+        public async Task<ResponseModel<AuthenticateResponseVM>> RefreshToken(TokenRequestApiModel tokenApiModel)
+        {
+            var result = new ResponseModel<AuthenticateResponseVM>();
+
+            string accessToken = tokenApiModel.Token;
+            string refreshToken = tokenApiModel.RefreshToken;
+
+            var principal = _jwtService.GetPrincipalFromExpiredToken(accessToken);
+
+            System.Console.WriteLine("principal.Identity.Name -> " + principal.Identity.Name);
+            var username = principal.Identity.Name; //this is mapped to the Name claim by default
+
+            var user = await _userManager.FindByEmailAsync(username);
+
+            if (user == null)
+            {
+                return result.Set(false, "Invalid client request");
+            }
+
+            var newAccessToken = _jwtService.CreateToken(principal.Claims);
+            var newRefreshToken = _jwtService.CreateRefreshToken();
+
+            result.Object = new AuthenticateResponseVM() { Token = newAccessToken, RefreshToken = newRefreshToken };
             return result.Set(true);
         }
 
