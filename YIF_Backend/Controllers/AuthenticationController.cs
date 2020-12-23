@@ -54,14 +54,14 @@ namespace YIF_Backend.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        public Task<IActionResult> Refresh([FromBody] TokenRequestApiModel tokenApiModel)
+        public async Task<IActionResult> Refresh([FromBody] TokenRequestApiModel tokenApiModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            var result = await _userService.;
+            var result = await _userService.RefreshToken(tokenApiModel);
 
             if (!result.Success)
             {
