@@ -94,6 +94,15 @@ namespace YIF_Backend
             });
             #endregion
 
+            #region CORS
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+            #endregion
+
             #region EntityFramework
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -154,6 +163,15 @@ namespace YIF_Backend
             app.UseRouting();
 
             app.UseAuthorization();
+
+            #region CORS
+            app.UseCors(builder => builder
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .SetIsOriginAllowed((host) => true)
+                 .AllowCredentials()
+             );
+            #endregion
 
             #region Seeder
             // SeederDB.SeedData(app.ApplicationServices);
