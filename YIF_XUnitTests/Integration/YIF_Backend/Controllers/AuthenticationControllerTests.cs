@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Domain.ApiModels.UserApiModels;
 using YIF_Backend;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers

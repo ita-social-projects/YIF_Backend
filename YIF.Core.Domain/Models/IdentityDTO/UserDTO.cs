@@ -65,7 +65,7 @@ namespace YIF.Core.Domain.Models.IdentityDTO
         /// Gets or sets the number of failed login attempts for the current user.
         /// </summary>
         public int AccessFailedCount { get; set; }
-        // <summary>
+        /// <summary>
         /// Navigation property for the roles this user belongs to.
         /// </summary>
         public virtual IEnumerable<string> Roles { get; set; }

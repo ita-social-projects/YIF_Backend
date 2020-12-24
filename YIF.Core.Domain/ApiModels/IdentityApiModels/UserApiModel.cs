@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace YIF.Core.Domain.ViewModels.IdentityViewModels
+namespace YIF.Core.Domain.ApiModels.IdentityApiModels
 {
-    public class UserViewModel
+    public class UserApiModel
     {
         /// <summary>
         /// Gets or sets the primary key for this user.

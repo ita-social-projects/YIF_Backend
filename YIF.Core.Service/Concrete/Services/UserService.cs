@@ -8,9 +8,9 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ViewModels;
-using YIF.Core.Domain.ViewModels.IdentityViewModels;
-using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Domain.ApiModels;
+using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.UserApiModels;
 using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -35,25 +35,25 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseModel<IEnumerable<UserViewModel>>> GetAllUsers()
+        public async Task<ResponseModel<IEnumerable<UserApiModel>>> GetAllUsers()
         {
-            var result = new ResponseModel<IEnumerable<UserViewModel>>();
+            var result = new ResponseModel<IEnumerable<UserApiModel>>();
             var users = (List<UserDTO>)await _userRepository.GetAll();
             if (users.Count < 1)
             {
                 return result.Set(false, $"There are not users in database");
             }
-            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(users);
+            result.Object = _mapper.Map<IEnumerable<UserApiModel>>(users);
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<UserViewModel>> GetUserById(string id)
+        public async Task<ResponseModel<UserApiModel>> GetUserById(string id)
         {
-            var result = new ResponseModel<UserViewModel>();
+            var result = new ResponseModel<UserApiModel>();
             try
             {
                 var user = await _userRepository.Get(id);
-                result.Object = _mapper.Map<UserViewModel>(user);
+                result.Object = _mapper.Map<UserApiModel>(user);
             }
             catch (KeyNotFoundException ex)
             {
@@ -62,17 +62,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
+        public async Task<ResponseModel<IEnumerable<UserApiModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
-            var result = new ResponseModel<IEnumerable<UserViewModel>>();
+            var result = new ResponseModel<IEnumerable<UserApiModel>>();
             var foundUsers = await _userRepository.Find(predicate);
-            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(foundUsers);
+            result.Object = _mapper.Map<IEnumerable<UserApiModel>>(foundUsers);
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultViewModel>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseModel<LoginResultApiModel>> RegisterUser(RegisterViewModel registerModel)
         {
-            var result = new ResponseModel<LoginResultViewModel>();
+            var result = new ResponseModel<LoginResultApiModel>();
             //result.Object = string.Empty;
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
@@ -102,14 +102,14 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateTokenByUser(dbUser);
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new LoginResultViewModel { Token = token };
+            result.Object = new LoginResultApiModel { Token = token };
 
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultViewModel>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseModel<LoginResultApiModel>> LoginUser(LoginViewModel loginModel)
         {
-            var result = new ResponseModel<LoginResultViewModel>();
+            var result = new ResponseModel<LoginResultApiModel>();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)
@@ -126,7 +126,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateTokenByUser(user);
             await _signInManager.SignInAsync(user, isPersistent: false);
             
-            result.Object = new LoginResultViewModel() { Token = token };
+            result.Object = new LoginResultApiModel() { Token = token };
 
             return result.Set(true);
         }

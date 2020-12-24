@@ -10,8 +10,8 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ViewModels.IdentityViewModels;
-using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.UserApiModels;
 using YIF.Core.Service.Concrete.Services;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
@@ -25,10 +25,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
 
-        private readonly List<UserViewModel> _listViewModel;
+        private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
         private readonly UserDTO _userDTOStub;
-        private readonly UserViewModel _userVMStub;
+        private readonly UserApiModel _userVMStub;
 
         public UserServiceTests()
         {
@@ -40,7 +40,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _testService = new UserService(_userRepository.Object, _userManager.Object, _signInManager, _jwtService.Object, _mapperMock.Object);
 
             _userDTOStub = new UserDTO();
-            _userVMStub = new UserViewModel();
+            _userVMStub = new UserApiModel();
 
             var _userDTOStub2 = new UserDTO
             {
@@ -54,9 +54,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userVMStub.UserName = _userDTOStub.UserName = "Safwan Wickens";
             _userVMStub.Email = _userDTOStub.Email = "cfarid.nadji2r@devist.com";
 
-            _listViewModel = new List<UserViewModel> {
-                new UserViewModel { Id = _listDTO[0].Id, UserName = _listDTO[0].UserName, Email = _listDTO[0].Email },
-                new UserViewModel { Id = _listDTO[1].Id, UserName = _listDTO[1].UserName, Email = _listDTO[1].Email }
+            _listViewModel = new List<UserApiModel> {
+                new UserApiModel { Id = _listDTO[0].Id, UserName = _listDTO[0].UserName, Email = _listDTO[0].Email },
+                new UserApiModel { Id = _listDTO[1].Id, UserName = _listDTO[1].UserName, Email = _listDTO[1].Email }
             };
         }
 
@@ -65,7 +65,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             _userRepository.Setup(s => s.GetAll()).Returns(Task.FromResult(_listDTO.AsEnumerable()));
-            _mapperMock.Setup(s => s.Map<IEnumerable<UserViewModel>>(_listDTO)).Returns(_listViewModel);
+            _mapperMock.Setup(s => s.Map<IEnumerable<UserApiModel>>(_listDTO)).Returns(_listViewModel);
             // Act
             var result = await _testService.GetAllUsers();
             var users = result.Object.ToList();
@@ -92,7 +92,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             _userRepository.Setup(s => s.Get(_userDTOStub.Id)).Returns(Task.FromResult(_userDTOStub));
-            _mapperMock.Setup(s => s.Map<UserViewModel>(_userDTOStub)).Returns(_userVMStub);
+            _mapperMock.Setup(s => s.Map<UserApiModel>(_userDTOStub)).Returns(_userVMStub);
             // Act
             var result = await _testService.GetUserById(_userDTOStub.Id);
             // Assert
@@ -121,7 +121,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userRepository.Setup(s => s.Find(It.IsAny<Expression<Func<DbUser, bool>>>()))
                 .Callback<Expression<Func<DbUser, bool>>>(expression => { var func = expression.Compile(); })
                 .Returns(() => Task.FromResult(_listDTO.AsEnumerable()));
-            _mapperMock.Setup(s => s.Map<IEnumerable<UserViewModel>>(_listDTO)).Returns(_listViewModel);
+            _mapperMock.Setup(s => s.Map<IEnumerable<UserApiModel>>(_listDTO)).Returns(_listViewModel);
             // Act
             var result = await _testService.FindUser(u => u.Id == _userDTOStub.Id);
             // Assert

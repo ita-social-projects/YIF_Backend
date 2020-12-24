@@ -1,4 +1,4 @@
-﻿namespace YIF.Core.Domain.ViewModels.UserViewModels
+﻿namespace YIF.Core.Domain.ApiModels.UserApiModels
 {
     public class LoginViewModel
     {

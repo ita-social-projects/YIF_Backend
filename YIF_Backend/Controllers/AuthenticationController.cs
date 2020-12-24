@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Domain.ApiModels.UserApiModels;
 
 namespace YIF_Backend.Controllers
 {

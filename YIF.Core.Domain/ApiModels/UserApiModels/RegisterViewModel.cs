@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YIF.Core.Domain.ViewModels.UserViewModels
+namespace YIF.Core.Domain.ApiModels.UserApiModels
 {
     public class RegisterViewModel
     {
