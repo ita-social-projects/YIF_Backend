@@ -145,7 +145,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(string.Empty));
-            _jwtService.Setup(x => x.CreateTokenByUser(It.IsAny<DbUser>())).Returns(token);
+            _jwtService.Setup(x => x.CreateToken(x.SetClaims(It.IsAny<DbUser>()))).Returns(token);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
 
             // Act
@@ -261,7 +261,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginVM.Email, PasswordHash = loginVM.Password };
             _userManager.Setup(s => s.FindByEmailAsync(loginVM.Email)).ReturnsAsync(user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
-            _jwtService.Setup(s => s.CreateTokenByUser(user)).Returns(token);
+            _jwtService.Setup(s => s.CreateToken(s.SetClaims(user))).Returns(token);
             // Act
             var result = await _testService.LoginUser(loginVM);
             // Assert

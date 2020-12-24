@@ -72,9 +72,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("id", user.Id),
-                new Claim("email", user.Email),
-                new Claim("name", user.UserName)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
             foreach (var role in roles)
