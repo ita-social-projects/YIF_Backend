@@ -155,6 +155,15 @@ namespace YIF_Backend
 
             app.UseAuthorization();
 
+            #region CORS
+            app.UseCors(builder => builder
+                 .AllowAnyHeader()
+                 .AllowAnyMethod()
+                 .SetIsOriginAllowed((host) => true)
+                 .AllowCredentials()
+             );
+            #endregion
+
             #region Seeder
             // SeederDB.SeedData(app.ApplicationServices);
             #endregion
