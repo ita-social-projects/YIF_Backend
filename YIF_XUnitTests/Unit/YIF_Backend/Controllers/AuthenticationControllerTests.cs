@@ -6,7 +6,7 @@ using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ApiModels;
-using YIF.Core.Domain.ApiModels.UserApiModels;
+using YIF.Core.Domain.ApiModels.ResultApiModels;
 using YIF_Backend.Controllers;
 
 namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
@@ -27,13 +27,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task LoginUser_EndpointsReturnLoginResponseViewModelWithJwt_IfLoginAndPasswordCorrect(string email, string password)
         {
             // Arrange
-            var request = new LoginViewModel
+            var request = new LoginApiModel
             {
                 Email = email,
                 Password = password
             };
 
-            var responseModel = new ResponseModel<LoginResultApiModel> { Success = true, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 200, Object = GetTestJwt()[0] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -41,7 +41,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseModel<LoginResultApiModel>)responseResult.Value;            
+            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;            
 
             Assert.Equal(responseModel.Object, model.Object);
         }
@@ -51,13 +51,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task LoginUser_EndpointReturnLoginResponseViewModelWithoutJwt_IfLoginOrPasswordInorrect(string email, string password)
         {
             // Arrange
-            var request = new LoginViewModel
+            var request = new LoginApiModel
             {
                 Email = email,
                 Password = password
             };
 
-            var responseModel = new ResponseModel<LoginResultApiModel> { Success = false, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -65,7 +65,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseModel<LoginResultApiModel>)responseResult.Value;
+            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;
 
             Assert.Null(model.Object.Token);
         }
@@ -75,7 +75,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task RegisterUser_EndpointsReturnLoginResponseViewModelWithJwt_IfDataСorrect(string email, string username, string password, string confirmPassword)
         {
             // Arrange
-            var request = new RegisterViewModel
+            var request = new RegisterApiModel
             {
                 Email = email,
                 Username = username,
@@ -83,7 +83,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseModel<LoginResultApiModel> { Success = true, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 200, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -91,7 +91,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseModel<LoginResultApiModel>)responseResult.Value;
+            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;
 
             Assert.Equal(responseModel.Object.Token, model.Object.Token);
         }
@@ -101,7 +101,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task RegisterUser_EndpointsReturnBadRequest_IfDataIncorrect(string email, string username, string password, string confirmPassword)
         {
             // Arrange
-            var request = new RegisterViewModel
+            var request = new RegisterApiModel
             {
                 Email = email,
                 Username = username,
@@ -109,7 +109,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseModel<LoginResultApiModel> { Success = false, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -117,7 +117,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseModel<LoginResultApiModel>)responseResult.Value;
+            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;
 
             Assert.Null(model.Object.Token);
         }

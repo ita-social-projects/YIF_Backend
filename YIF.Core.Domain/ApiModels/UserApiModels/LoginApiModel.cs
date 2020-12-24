@@ -1,6 +1,6 @@
-﻿namespace YIF.Core.Domain.ApiModels.UserApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResultApiModels
 {
-    public class LoginViewModel
+    public class LoginApiModel
     {
         public string Email { get; set; }
         public string Password { get; set; }

@@ -7,9 +7,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ApiModels;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.ResultApiModels;
+using YIF.Core.Domain.ServiceInterfaces;
 using YIF_Backend.Controllers;
 
 namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
@@ -26,7 +26,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task GetUserAsync_EndpointReturnSuccessAndCorrectViewModel_IfUserExists()
         {
             // Arrange
-            var responseModel = new ResponseModel<UserApiModel> { Success = true, Object = GetTestUsers()[0] };
+            var responseModel = new ResponseApiModel<UserApiModel> { StatusCode = 200, Object = GetTestUsers()[0] };
             _userService.Setup(x => x.GetUserById(_guid)).Returns(Task.FromResult(responseModel));
             // Act
             var result = await _testControl.GetUserAsync(_guid);
@@ -41,7 +41,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             var request = Guid.NewGuid().ToString("D");
-            var responseModel = new ResponseModel<UserApiModel> { Success = false, Object = null, Message = "User not found:  " + request };
+            var responseModel = new ResponseApiModel<UserApiModel> { StatusCode = 400, Object = null, Message = "User not found:  " + request };
             _userService.Setup(x => x.GetUserById(request)).Returns(Task.FromResult(responseModel));
             // Act
             var result = await _testControl.GetUserAsync(request);
@@ -68,7 +68,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             var request = Guid.NewGuid().ToString("D");
-            var responseModel = new ResponseModel<IEnumerable<UserApiModel>> { Success = true, Object = (IEnumerable<UserApiModel>)GetTestUsers() };
+            var responseModel = new ResponseApiModel<IEnumerable<UserApiModel>> { StatusCode = 200, Object = (IEnumerable<UserApiModel>)GetTestUsers() };
             _userService.Setup(x => x.GetAllUsers()).Returns(Task.FromResult(responseModel));
             // Act
             var result = await _testControl.GetAllUsersAsync();

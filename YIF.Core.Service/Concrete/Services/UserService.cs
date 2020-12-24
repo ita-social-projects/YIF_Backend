@@ -10,7 +10,7 @@ using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ApiModels;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
-using YIF.Core.Domain.ApiModels.UserApiModels;
+using YIF.Core.Domain.ApiModels.ResultApiModels;
 using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -35,9 +35,9 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseModel<IEnumerable<UserApiModel>>> GetAllUsers()
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
         {
-            var result = new ResponseModel<IEnumerable<UserApiModel>>();
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
             var users = (List<UserDTO>)await _userRepository.GetAll();
             if (users.Count < 1)
             {
@@ -47,9 +47,9 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<UserApiModel>> GetUserById(string id)
+        public async Task<ResponseApiModel<UserApiModel>> GetUserById(string id)
         {
-            var result = new ResponseModel<UserApiModel>();
+            var result = new ResponseApiModel<UserApiModel>();
             try
             {
                 var user = await _userRepository.Get(id);
@@ -62,18 +62,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<IEnumerable<UserApiModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
-            var result = new ResponseModel<IEnumerable<UserApiModel>>();
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
             var foundUsers = await _userRepository.Find(predicate);
             result.Object = _mapper.Map<IEnumerable<UserApiModel>>(foundUsers);
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultApiModel>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseApiModel<LoginResultApiModel>> RegisterUser(RegisterApiModel registerModel)
         {
-            var result = new ResponseModel<LoginResultApiModel>();
-            //result.Object = string.Empty;
+            var result = new ResponseApiModel<LoginResultApiModel>();
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if(searchUser.Result != null)
@@ -107,9 +106,9 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultApiModel>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseApiModel<LoginResultApiModel>> LoginUser(LoginApiModel loginModel)
         {
-            var result = new ResponseModel<LoginResultApiModel>();
+            var result = new ResponseApiModel<LoginResultApiModel>();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if(user == null)

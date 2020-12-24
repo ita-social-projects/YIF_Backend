@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Domain.ApiModels.UserApiModels;
+using YIF.Core.Domain.ApiModels.ResultApiModels;
 using YIF_Backend;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
@@ -30,7 +30,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string email, string password)
         {
             // Arrange
-            var user = new LoginViewModel
+            var user = new LoginApiModel
             {
                 Email = email,
                 Password = password
@@ -64,7 +64,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task Post_EndpointsReturnError_IfLoginOrPasswordIncorrect(string email, string password)
         {
             // Arrange
-            var user = new LoginViewModel
+            var user = new LoginApiModel
             {
                 Email = email,
                 Password = password

@@ -11,7 +11,7 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
-using YIF.Core.Domain.ApiModels.UserApiModels;
+using YIF.Core.Domain.ApiModels.ResultApiModels;
 using YIF.Core.Service.Concrete.Services;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
@@ -135,7 +135,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var token = "some correct token";
-            var userData = new RegisterViewModel
+            var userData = new RegisterApiModel
             {
                 Email = email,
                 Username = username,
@@ -161,7 +161,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameEmailExists(string email, string username, string password, string confirmPassword)
         {
             // Arrange
-            var userData = new RegisterViewModel
+            var userData = new RegisterApiModel
             {
                 Email = email,
                 Username = username,
@@ -193,7 +193,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var message = $"User name '{username}' is already taken.";
 
-            var userData = new RegisterViewModel
+            var userData = new RegisterApiModel
             {
                 Email = email,
                 Username = username,
@@ -226,7 +226,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenPasswordIsBad(string email, string username, string password, string confirmPassword, string message)
         {
             // Arrange
-            var userData = new RegisterViewModel
+            var userData = new RegisterApiModel
             {
                 Email = email,
                 Username = username,
@@ -257,7 +257,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var token = "some correct token";
-            var loginVM = new LoginViewModel { Email = "email@gmail.com", Password = "password" };
+            var loginVM = new LoginApiModel { Email = "email@gmail.com", Password = "password" };
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginVM.Email, PasswordHash = loginVM.Password };
             _userManager.Setup(s => s.FindByEmailAsync(loginVM.Email)).ReturnsAsync(user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
@@ -276,7 +276,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task LoginUser_ShouldReturnFalse_WhenEmailOrPasswordAreIncorrect(string email, string password)
         {
             // Arrange
-            var loginVM = new LoginViewModel { Email = email, Password = password };
+            var loginVM = new LoginApiModel { Email = email, Password = password };
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = email, PasswordHash = password };
             _userManager.Setup(s => s.FindByEmailAsync(email)).ReturnsAsync(email == "" ? null : user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Failed;

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YIF.Core.Domain.ApiModels.UserApiModels
+namespace YIF.Core.Domain.ApiModels.ResultApiModels
 {
-    public class RegisterViewModel
+    public class RegisterApiModel
     {
         public string Email { get; set; }
         public string Username { get; set; }

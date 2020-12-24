@@ -1,14 +1,14 @@
-﻿namespace YIF.Core.Domain.ApiModels.UserApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResultApiModels
 {
     /// <summary>
-    /// A class for return login results.
+    /// A class for return login results in response.
     /// </summary>
     public class LoginResultApiModel
     {
         /// <summary>
         /// Initializes a new instance of login result model.
         /// </summary>
-        /// <param name="token">Sets the token</param>
+        /// <param name="token">Sets the token.</param>
         public LoginResultApiModel(string token = null)
         {
             Token = token;
