@@ -46,7 +46,7 @@ namespace YIF.Core.Service.Concrete.Services
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        public IEnumerable<Claim> GetClaimsFromExpiredToken(string token)
         {
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -56,13 +56,17 @@ namespace YIF.Core.Service.Concrete.Services
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("SecretPhrase"))),
                 ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
             };
+
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+
             var jwtSecurityToken = securityToken as JwtSecurityToken;
+
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 throw new SecurityTokenException("Invalid token");
-            return principal;
+            
+            return jwtSecurityToken.Claims;
         }
 
         public IEnumerable<Claim> SetClaims(DbUser user)
@@ -72,8 +76,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             List<Claim> claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim("id", user.Id),
+                new Claim("email", user.Email)
             };
 
             foreach (var role in roles)

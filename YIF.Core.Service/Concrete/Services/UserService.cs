@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -147,24 +149,21 @@ namespace YIF.Core.Service.Concrete.Services
             string accessToken = tokenApiModel.Token;
             string refreshToken = tokenApiModel.RefreshToken;
 
-            var principal = _jwtService.GetPrincipalFromExpiredToken(accessToken);
+            var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
 
-            System.Console.WriteLine("principal.Identity.Name -> " + principal.Identity.Name);
-            var username = principal.Identity.Name; //this is mapped to the Name claim by default
+            var userId = claims.First(claim => claim.Type == "id").Value;
 
-            var user = await _userManager.FindByEmailAsync(username);
+            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
             
             if (user == null || user.Token == null || user.Token.RefreshToken != refreshToken || user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 return result.Set(false, "Invalid client request");
             }
 
-            var newAccessToken = _jwtService.CreateToken(principal.Claims);
+            var newAccessToken = _jwtService.CreateToken(claims);
             var newRefreshToken = _jwtService.CreateRefreshToken();
 
-            user.Token.RefreshToken = newRefreshToken;
-            user.Token.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
-            _ = _userRepository.Update(user);
+            await _userRepository.UpdateUserToken(user, newRefreshToken);
 
             result.Object = new AuthenticateResponseVM() { Token = newAccessToken, RefreshToken = newRefreshToken };
             return result.Set(true);

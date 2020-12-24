@@ -9,6 +9,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         IEnumerable<Claim> SetClaims(DbUser user);
         string CreateToken(IEnumerable<Claim> claims);
         string CreateRefreshToken();
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+        IEnumerable<Claim> GetClaimsFromExpiredToken(string token);
     }
 }
