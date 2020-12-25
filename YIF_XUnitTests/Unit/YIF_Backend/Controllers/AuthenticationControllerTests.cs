@@ -18,8 +18,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         public AuthenticationControllerTests()
         {
-            _userService = new Mock<IUserService<DbUser>>(); 
-            _testControl = new AuthenticationController(_userService.Object);            
+            _userService = new Mock<IUserService<DbUser>>();
+            _testControl = new AuthenticationController(_userService.Object);
         }
 
         [Theory]
@@ -41,14 +41,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;            
+            var model = (LoginResultApiModel)responseResult.Value;
 
-            Assert.Equal(responseModel.Object, model.Object);
+            Assert.Equal(responseModel.Object.Token, model.Token);
         }
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1")]
-        public async Task LoginUser_EndpointReturnLoginResponseViewModelWithoutJwt_IfLoginOrPasswordInorrect(string email, string password)
+        public async Task LoginUser_EndpointReturnLoginResponseViewModelWithMessage_IfLoginOrPasswordIncorrect(string email, string password)
         {
             // Arrange
             var request = new LoginApiModel
@@ -57,7 +57,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Object = GetTestJwt()[1] };
+            var error = "Login or password is incorrect";
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Message = error };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -65,9 +66,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;
+            var model = (DescriptionResultApiModel)responseResult.Value;
 
-            Assert.Null(model.Object.Token);
+            Assert.Equal(error, model.Message);
         }
 
         [Theory]
@@ -83,17 +84,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 200, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 201, Object = GetTestJwt()[0] };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
             var result = await _testControl.RegisterUser(request);
 
             // Assert
-            var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;
+            var responseResult = Assert.IsType<CreatedResult>(result);
+            var model = (LoginResultApiModel)responseResult.Value;
 
-            Assert.Equal(responseModel.Object.Token, model.Object.Token);
+            Assert.Equal(responseModel.Object.Token, model.Token);
         }
 
         [Theory]
@@ -109,7 +110,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Object = GetTestJwt()[1] };
+            var error = "error message";
+            var responseModel = new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Message = error };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -117,9 +119,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseApiModel<LoginResultApiModel>)responseResult.Value;
+            var model = (DescriptionResultApiModel)responseResult.Value;
 
-            Assert.Null(model.Object.Token);
+            Assert.Equal(error, model.Message);
         }
 
         private List<LoginResultApiModel> GetTestJwt()

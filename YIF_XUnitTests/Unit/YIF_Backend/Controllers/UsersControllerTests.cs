@@ -41,13 +41,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             var request = Guid.NewGuid().ToString("D");
-            var responseModel = new ResponseApiModel<UserApiModel> { StatusCode = 400, Object = null, Message = "User not found:  " + request };
+            var responseModel = new ResponseApiModel<UserApiModel> { StatusCode = 404, Object = null, Message = "User not found:  " + request };
             _userService.Setup(x => x.GetUserById(request)).Returns(Task.FromResult(responseModel));
             // Act
             var result = await _testControl.GetUserAsync(request);
             // Assert
             var responseResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.StartsWith("User not found", responseResult.Value.ToString());
+            Assert.StartsWith("User not found", ((DescriptionResultApiModel)responseResult.Value).Message);
         }
 
         [Theory]
@@ -59,8 +59,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var result = await _testControl.GetUserAsync(request);
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.True(responseResult.Value.ToString().Contains("The string to be parsed is null") ||
-                responseResult.Value.ToString().Contains("Bad format"));
+            Assert.True(((DescriptionResultApiModel)responseResult.Value).Message.Contains("The string to be parsed is null") ||
+                ((DescriptionResultApiModel)responseResult.Value).Message.Contains("Bad format"));
         }
 
         [Fact]
@@ -76,33 +76,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var responseResult = Assert.IsType<OkObjectResult>(result);
             var model = (IEnumerable<UserApiModel>)responseResult.Value;
             Assert.Equal(responseModel.Object, model);
-        }
-
-        [Fact]
-        public void ReturnResult_MethodReturnObjectIfStatusIsSuccess()
-        {
-            // Arrange
-            var guid = Guid.NewGuid();
-            // Act
-            var privateMethod = _testControl.GetType().GetMethod("ReturnResult", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = (ActionResult)privateMethod.Invoke(_testControl, new object[] { true, guid, "" });
-            // Assert
-            var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (Guid)responseResult.Value;
-            Assert.Equal(guid, model);
-        }
-
-        [Fact]
-        public void ReturnResult_MethodReturnMessageIfStatusIsFalse()
-        {
-            // Arrange
-            var str = "Something went wrong";
-            // Act
-            var privateMethod = _testControl.GetType().GetMethod("ReturnResult", BindingFlags.NonPublic | BindingFlags.Instance);
-            var result = (ActionResult)privateMethod.Invoke(_testControl, new object[] { false, null, str });
-            // Assert
-            var responseResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal(str, responseResult.Value.ToString());
         }
 
 

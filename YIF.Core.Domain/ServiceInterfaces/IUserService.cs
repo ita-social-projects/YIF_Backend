@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.ApiModels;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResultApiModels;
+using YIF.Core.Domain.Models.IdentityDTO;
 
 namespace YIF.Core.Domain.ServiceInterfaces
 {

@@ -17,7 +17,7 @@ namespace YIF.Core.Domain.ApiModels.ResultApiModels
         /// <summary>
         /// Gets the value of whether the result is successful (whether the <see cref="HttpStatusCode"/> is 2XX).
         /// </summary>
-        public bool Success => StatusCode >= 200 || StatusCode <= 226;
+        public bool Success => StatusCode >= 200 && StatusCode <= 226;
         /// <summary>
         /// Gets or sets the description model for the response.
         /// </summary>
@@ -116,11 +116,11 @@ namespace YIF.Core.Domain.ApiModels.ResultApiModels
                 case HttpStatusCode.Forbidden:
                     return new ForbidResult();
                 case HttpStatusCode.NotFound:
-                    if (Object == null)
+                    if (Description == null)
                     {
                         return new NotFoundResult();
                     }
-                    return new NotFoundObjectResult(Object);
+                    return new NotFoundObjectResult(Description);
                 case HttpStatusCode.Conflict:
                     if (Description == null)
                     {

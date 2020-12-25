@@ -41,7 +41,7 @@ namespace YIF.Core.Service.Concrete.Services
             var users = (List<UserDTO>)await _userRepository.GetAll();
             if (users.Count < 1)
             {
-                return result.Set(false, $"There are not users in database");
+                return result.Set(404, $"There are not users in database");
             }
             result.Object = _mapper.Map<IEnumerable<UserApiModel>>(users);
             return result.Set(true);
@@ -57,7 +57,7 @@ namespace YIF.Core.Service.Concrete.Services
             }
             catch (KeyNotFoundException ex)
             {
-                return result.Set(false, ex.Message);
+                return result.Set(404, ex.Message);
             }
             return result.Set(true);
         }
@@ -103,7 +103,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             result.Object = new LoginResultApiModel { Token = token };
 
-            return result.Set(true);
+            return result.Set(201);
         }
 
         public async Task<ResponseApiModel<LoginResultApiModel>> LoginUser(LoginApiModel loginModel)
