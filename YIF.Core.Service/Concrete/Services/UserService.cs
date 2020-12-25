@@ -4,14 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ApiModels;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResultApiModels;
-using YIF.Core.Data.Entities;
+using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
 {

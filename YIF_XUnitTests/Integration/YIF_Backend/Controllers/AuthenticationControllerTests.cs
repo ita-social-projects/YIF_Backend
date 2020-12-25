@@ -45,15 +45,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var contentJsonObj = JObject.Parse(content);
 
-            var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = new JwtSecurityToken(contentJsonObj["object"]["token"].ToString());
+            var token = new JwtSecurityToken(contentJsonObj["token"].ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
 
+            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-            Assert.True(successStatus);
             Assert.Equal(user.Email, token.Payload["email"]);
         }
 
@@ -79,15 +78,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var contentJsonObj = JObject.Parse(content);
 
-            var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = contentJsonObj["object"].ToObject<object>();
+            var message = contentJsonObj["message"].ToString();
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-            Assert.False(successStatus);
-            Assert.Null(token);
+            Assert.NotEmpty(message);
         }
     }
 }

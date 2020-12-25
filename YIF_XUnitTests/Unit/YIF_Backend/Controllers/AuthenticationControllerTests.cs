@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ApiModels;
 using YIF.Core.Domain.ApiModels.ResultApiModels;
+using YIF.Core.Domain.ServiceInterfaces;
 using YIF_Backend.Controllers;
 
 namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
