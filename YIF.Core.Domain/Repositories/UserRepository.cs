@@ -60,11 +60,15 @@ namespace YIF.Core.Domain.Repositories
             if (user == null) return false;
 
             var tokendb = _context.Tokens.Find(user.Id);
-            
+
             if (tokendb == null)
             {
-                _context.Tokens.Add(new Token {Id = user.Id, RefreshToken = refreshToken, 
-                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7) });
+                _context.Tokens.Add(new Token
+                {
+                    Id = user.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                });
             }
             else
             {

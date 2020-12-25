@@ -132,7 +132,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
             var refreshToken = _jwtService.CreateRefreshToken();
-            
+
             await _userRepository.UpdateUserToken(user, refreshToken);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -150,11 +150,14 @@ namespace YIF.Core.Service.Concrete.Services
             string refreshToken = tokenApiModel.RefreshToken;
 
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
-
+            if (claims == null)
+            {
+                return result.Set(false, "Invalid client request");
+            }
             var userId = claims.First(claim => claim.Type == "id").Value;
 
             var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
-            
+
             if (user == null || user.Token == null || user.Token.RefreshToken != refreshToken || user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 return result.Set(false, "Invalid client request");

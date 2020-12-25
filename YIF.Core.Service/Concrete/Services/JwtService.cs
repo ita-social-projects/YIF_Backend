@@ -54,18 +54,27 @@ namespace YIF.Core.Service.Concrete.Services
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("SecretPhrase"))),
-                ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
+                ValidateLifetime = false // here we are saying that we don't care about the token's expiration date
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;
-            tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            JwtSecurityToken jwtSecurityToken;
 
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            try
+            {
+                tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+                jwtSecurityToken = securityToken as JwtSecurityToken;
 
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid token");
-            
+                if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                    throw new SecurityTokenException("Invalid token");
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
             return jwtSecurityToken.Claims;
         }
 
