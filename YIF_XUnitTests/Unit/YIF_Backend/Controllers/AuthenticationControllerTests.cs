@@ -23,7 +23,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("qtoni6@gmail.com", "QWerty-1")]
-        public async Task LoginUser_EndpointsReturnLoginResponseViewModelWithJwt_IfLoginAndPasswordCorrect(string email, string password)
+        public async Task LoginUser_EndpointsReturnLoginResponseApiModelWithJwt_IfLoginAndPasswordCorrect(string email, string password)
         {
             // Arrange
             var request = new LoginApiModel
@@ -47,7 +47,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1")]
-        public async Task LoginUser_EndpointReturnLoginResponseViewModelWithMessage_IfLoginOrPasswordIncorrect(string email, string password)
+        public async Task LoginUser_EndpointReturnLoginResponseApiodelWithMessage_IfLoginOrPasswordIncorrect(string email, string password)
         {
             // Arrange
             var request = new LoginApiModel
@@ -72,7 +72,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("test@gmail.com", "test", "PAssword123_", "PAssword123_")]
-        public async Task RegisterUser_EndpointsReturnLoginResponseViewModelWithJwt_IfDataСorrect(string email, string username, string password, string confirmPassword)
+        public async Task RegisterUser_EndpointsReturnLoginResponseApiModelWithJwt_IfDataСorrect(string email, string username, string password, string confirmPassword)
         {
             // Arrange
             var request = new RegisterApiModel

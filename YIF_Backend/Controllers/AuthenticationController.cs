@@ -22,7 +22,7 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Message = "Model state is not valid." }.Response();
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
             var result = await _userService.LoginUser(model);
             return result.Response();
@@ -33,7 +33,7 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new ResponseApiModel<LoginResultApiModel> { StatusCode = 400, Message = "Model state is not valid." }.Response();
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
             var result = await _userService.RegisterUser(model);
             return result.Response();

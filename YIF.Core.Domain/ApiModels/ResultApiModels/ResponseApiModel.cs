@@ -33,6 +33,22 @@ namespace YIF.Core.Domain.ApiModels.ResultApiModels
 
 
         /// <summary>
+        /// Initializes a new instance of 'ResponseApiModel'.
+        /// </summary>
+        public ResponseApiModel() { }
+        /// <summary>
+        /// Initializes a new instance of 'ResponseApiModel'.
+        /// </summary>
+        /// <param name="statusCode">The <see cref="HttpStatusCode"/> during response.</param>
+        /// <param name="message">The message for the description of the response.</param>
+        public ResponseApiModel(int statusCode, string message = null)
+        {
+            StatusCode = statusCode;
+            Message = message;
+        }
+
+
+        /// <summary>
         /// Sets properties of the class.
         /// </summary>
         /// <param name="isSuccess">Is the result successfully? Returns the <see cref="OkResult"/> with code 200, if true,
@@ -64,6 +80,7 @@ namespace YIF.Core.Domain.ApiModels.ResultApiModels
             Object = obj;
             return Set(statusCode, message);
         }
+
 
         /// <summary>
         /// Creates response.
