@@ -9,7 +9,6 @@ namespace YIF.Core.Domain.ViewModels.UserViewModels
     {
         [Required]
         public string Token { get; set; }
-
         [Required]
         public string RefreshToken { get; set; }
     }
