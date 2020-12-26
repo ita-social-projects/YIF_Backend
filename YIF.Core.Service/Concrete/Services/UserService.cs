@@ -10,11 +10,10 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ApiModels;
-using YIF.Core.Domain.ApiModels.RequestApiModels;
 
 namespace YIF.Core.Service.Concrete.Services
 {

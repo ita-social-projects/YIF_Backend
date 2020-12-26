@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -145,7 +146,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(string.Empty));
-            _jwtService.Setup(x => x.CreateToken(x.SetClaims(It.IsAny<DbUser>()))).Returns(token);
+            _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
+            _jwtService.Setup(x => x.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
 
             // Act
@@ -257,13 +259,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var token = "some correct token";
-            var loginVM = new LoginApiModel { Email = "email@gmail.com", Password = "password" };
-            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginVM.Email, PasswordHash = loginVM.Password };
-            _userManager.Setup(s => s.FindByEmailAsync(loginVM.Email)).ReturnsAsync(user);
+            var loginAM = new LoginApiModel { Email = "email@gmail.com", Password = "password" };
+            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginAM.Email, PasswordHash = loginAM.Password };
+            _userManager.Setup(s => s.FindByEmailAsync(loginAM.Email)).ReturnsAsync(user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
-            _jwtService.Setup(s => s.CreateToken(s.SetClaims(user))).Returns(token);
+            _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
+            _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
+            _jwtService.Setup(s => s.CreateRefreshToken()).Returns(token);
+            _userRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
             // Act
-            var result = await _testService.LoginUser(loginVM);
+            var result = await _testService.LoginUser(loginAM);
             // Assert
             Assert.True(result.Success);
             Assert.Equal(token, result.Object.Token);

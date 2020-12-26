@@ -61,7 +61,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1")]
         [InlineData("qtoni6@gmail.com", "d")]
-        [InlineData("", "")]
         public async Task Post_EndpointsReturnError_IfLoginOrPasswordIncorrect(string email, string password)
         {
             // Arrange
@@ -85,7 +84,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
+               response.Content.Headers.ContentType.ToString());
             Assert.NotEmpty(message);
         }
     }
