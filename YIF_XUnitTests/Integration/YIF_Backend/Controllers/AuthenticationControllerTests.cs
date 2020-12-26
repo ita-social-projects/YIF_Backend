@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Domain.ApiModels.ResultApiModels;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_Backend;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
@@ -18,8 +18,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         public AuthenticationControllerTests()
         {
-            var clientOptions = new WebApplicationFactoryClientOptions();
-            clientOptions.BaseAddress = new Uri("https://localhost:44324/api/Authentication/LoginUser/");
+            var clientOptions = new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("https://localhost:44324/api/Authentication/LoginUser/")
+            };
 
             var appFactory = new WebApplicationFactory<Startup>();
             _client = appFactory.CreateClient(clientOptions);

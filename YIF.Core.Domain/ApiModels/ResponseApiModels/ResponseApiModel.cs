@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
-namespace YIF.Core.Domain.ApiModels.ResultApiModels
+namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     /// <summary>
     /// A сlass for easily create response.
@@ -21,9 +21,9 @@ namespace YIF.Core.Domain.ApiModels.ResultApiModels
         /// <summary>
         /// Gets or sets the description model for the response.
         /// </summary>
-        public DescriptionResultApiModel Description { get; set; } = new DescriptionResultApiModel();
+        public DescriptionResponseApiModel Description { get; set; } = new DescriptionResponseApiModel();
         /// <summary>
-        /// Gets or sets the message for the <see cref="DescriptionResultApiModel"/> for the response.
+        /// Gets or sets the message for the <see cref="DescriptionResponseApiModel"/> for the response.
         /// </summary>
         public string Message { get => Description.Message; set => Description.Message = value; }
         /// <summary>

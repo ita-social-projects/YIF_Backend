@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
-using YIF.Core.Domain.ApiModels.ResultApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF_Backend.Controllers;
 
@@ -17,9 +17,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class UsersControllerTests
     {
         private static readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
-        private static readonly Mock<IJwtService> _jwtService = new Mock<IJwtService>();
         private static readonly Mock<ILogger<UsersController>> _logger = new Mock<ILogger<UsersController>>();
-        private static readonly UsersController _testControl = new UsersController(_userService.Object, _jwtService.Object, _logger.Object);
+        private static readonly UsersController _testControl = new UsersController(_userService.Object, _logger.Object);
         private static readonly string _guid = Guid.NewGuid().ToString("D");
 
         [Fact]
@@ -47,7 +46,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var result = await _testControl.GetUserAsync(request);
             // Assert
             var responseResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.StartsWith("User not found", ((DescriptionResultApiModel)responseResult.Value).Message);
+            Assert.StartsWith("User not found", ((DescriptionResponseApiModel)responseResult.Value).Message);
         }
 
         [Theory]
@@ -59,8 +58,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var result = await _testControl.GetUserAsync(request);
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.True(((DescriptionResultApiModel)responseResult.Value).Message.Contains("The string to be parsed is null") ||
-                ((DescriptionResultApiModel)responseResult.Value).Message.Contains("Bad format"));
+            Assert.True(((DescriptionResponseApiModel)responseResult.Value).Message.Contains("The string to be parsed is null") ||
+                ((DescriptionResponseApiModel)responseResult.Value).Message.Contains("Bad format"));
         }
 
         [Fact]

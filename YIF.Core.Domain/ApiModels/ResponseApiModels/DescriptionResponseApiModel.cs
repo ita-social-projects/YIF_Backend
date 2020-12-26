@@ -1,4 +1,4 @@
-﻿namespace YIF.Core.Domain.ApiModels.ResultApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     /// <summary>
     /// A class for return the description in response.
@@ -6,13 +6,13 @@
     /// <remarks>
     /// Usually used the error or the describe message.
     /// </remarks>
-    public class DescriptionResultApiModel
+    public class DescriptionResponseApiModel
     {
         /// <summary>
         /// Initializes a new instance of description result.
         /// </summary>
         /// <param name="message">Sets the message to describe.</param>
-        public DescriptionResultApiModel(string message = null)
+        public DescriptionResponseApiModel(string message = null)
         {
             Message = message;
         }

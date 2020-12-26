@@ -211,6 +211,25 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tblTokens",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    RefreshToken = table.Column<string>(maxLength: 100, nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblTokens_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Specialities",
                 columns: table => new
                 {
@@ -592,6 +611,9 @@ namespace YIF.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "SuperAdmins");
+
+            migrationBuilder.DropTable(
+                name: "tblTokens");
 
             migrationBuilder.DropTable(
                 name: "UniversityModerators");

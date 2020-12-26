@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ApiModels.ResultApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF_Backend.Controllers
@@ -13,12 +13,10 @@ namespace YIF_Backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
-        private readonly IJwtService _jwtService;
         private readonly ILogger<UsersController> _logger;
-        public UsersController(IUserService<DbUser> userService, IJwtService jwtService, ILogger<UsersController> logger)
+        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger)
         {
             _userService = userService;
-            _jwtService = jwtService;
             _logger = logger;
         }
 

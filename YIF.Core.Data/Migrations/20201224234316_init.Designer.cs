@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20201218192048_init")]
+    [Migration("20201224234316_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -416,6 +416,24 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("SuperAdmins");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.Token", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblTokens");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.University", b =>
                 {
                     b.Property<string>("Id")
@@ -624,6 +642,15 @@ namespace YIF.Core.Data.Migrations
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.Token", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithOne("Token")
+                        .HasForeignKey("YIF.Core.Data.Entities.Token", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityAdmin", b =>
