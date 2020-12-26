@@ -119,13 +119,13 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
                 case HttpStatusCode.NoContent:
                     return new NoContentResult();
                 case HttpStatusCode.BadRequest:
-                    if (Description == null)
+                    if (Message == null)
                     {
                         return new BadRequestResult();
                     }
                     return new BadRequestObjectResult(Description);
                 case HttpStatusCode.Unauthorized:
-                    if (Description == null)
+                    if (Message == null)
                     {
                         return new UnauthorizedResult();
                     }
@@ -133,13 +133,13 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
                 case HttpStatusCode.Forbidden:
                     return new ForbidResult();
                 case HttpStatusCode.NotFound:
-                    if (Description == null)
+                    if (Message == null)
                     {
                         return new NotFoundResult();
                     }
                     return new NotFoundObjectResult(Description);
                 case HttpStatusCode.Conflict:
-                    if (Description == null)
+                    if (Message == null)
                     {
                         return new ConflictResult();
                     }
