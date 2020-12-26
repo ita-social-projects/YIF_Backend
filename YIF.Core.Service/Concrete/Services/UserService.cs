@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Models.IdentityDTO;
@@ -11,7 +14,6 @@ using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Domain.ViewModels;
 using YIF.Core.Domain.ViewModels.IdentityViewModels;
 using YIF.Core.Domain.ViewModels.UserViewModels;
-using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -24,7 +26,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IMapper _mapper;
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
-            SignInManager<DbUser> signInManager, 
+            SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper)
         {
@@ -70,27 +72,28 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultViewModel>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseModel<AuthenticateResponseVM>> RegisterUser(RegisterViewModel registerModel)
         {
-            var result = new ResponseModel<LoginResultViewModel>();
+            var result = new ResponseModel<AuthenticateResponseVM>();
             //result.Object = string.Empty;
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
-            if(searchUser.Result != null)
+            if (searchUser.Result != null)
             {
                 return result.Set(false, "User already exist");
             }
 
-            if(!registerModel.Password.Equals(registerModel.ConfirmPassword))
+            if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
             {
                 return result.Set(false, "Password and confirm password does not compare");
             }
 
-            var dbUser = new DbUser 
-            { 
+            var dbUser = new DbUser
+            {
                 Email = registerModel.Email,
                 UserName = registerModel.Username
             };
+
             var graduate = new Graduate();
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password);
 
@@ -99,44 +102,82 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, registerResult);
             }
 
-            var token = _jwtService.CreateTokenByUser(dbUser);
+            var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
+            var refreshToken = _jwtService.CreateRefreshToken();
+
+            await _userRepository.UpdateUserToken(dbUser, refreshToken);
+
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new LoginResultViewModel { Token = token };
+            result.Object = new AuthenticateResponseVM { Token = token, RefreshToken = refreshToken };
 
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<LoginResultViewModel>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseModel<AuthenticateResponseVM>> LoginUser(LoginViewModel loginModel)
         {
-            var result = new ResponseModel<LoginResultViewModel>();
+            var result = new ResponseModel<AuthenticateResponseVM>();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
-            if(user == null)
+            if (user == null)
             {
                 return result.Set(false, "Login or password is incorrect");
             }
 
             var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
-            if(!loginResult.Succeeded)
+            if (!loginResult.Succeeded)
             {
                 return result.Set(false, "Login or password is incorrect");
             }
 
-            var token = _jwtService.CreateTokenByUser(user);
+            var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
+            var refreshToken = _jwtService.CreateRefreshToken();
+
+            await _userRepository.UpdateUserToken(user, refreshToken);
+
             await _signInManager.SignInAsync(user, isPersistent: false);
-            
-            result.Object = new LoginResultViewModel() { Token = token };
+
+            result.Object = new AuthenticateResponseVM() { Token = token, RefreshToken = refreshToken };
 
             return result.Set(true);
         }
 
-        public async Task<bool> UpdateUser(UserDTO user)
+        public async Task<ResponseModel<AuthenticateResponseVM>> RefreshToken(TokenRequestApiModel tokenApiModel)
+        {
+            var result = new ResponseModel<AuthenticateResponseVM>();
+
+            string accessToken = tokenApiModel.Token;
+            string refreshToken = tokenApiModel.RefreshToken;
+
+            var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
+            if (claims == null)
+            {
+                return result.Set(false, "Invalid client request");
+            }
+            var userId = claims.First(claim => claim.Type == "id").Value;
+
+            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
+
+            if (user == null || user.Token == null || user.Token.RefreshToken != refreshToken || user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return result.Set(false, "Invalid client request");
+            }
+
+            var newAccessToken = _jwtService.CreateToken(claims);
+            var newRefreshToken = _jwtService.CreateRefreshToken();
+
+            await _userRepository.UpdateUserToken(user, newRefreshToken);
+
+            result.Object = new AuthenticateResponseVM() { Token = newAccessToken, RefreshToken = newRefreshToken };
+            return result.Set(true);
+        }
+
+        public Task<bool> UpdateUser(UserDTO user)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> DeleteUserById(string id)
+        public Task<bool> DeleteUserById(string id)
         {
             throw new NotImplementedException();
         }

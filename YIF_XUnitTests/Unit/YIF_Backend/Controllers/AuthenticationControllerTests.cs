@@ -33,7 +33,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseModel<LoginResultViewModel> { Success = true, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseModel<AuthenticateResponseVM> { Success = true, Object = GetTestJwt()[0] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -41,7 +41,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;            
+            var model = (ResponseModel<AuthenticateResponseVM>)responseResult.Value;            
 
             Assert.Equal(responseModel.Object, model.Object);
         }
@@ -57,7 +57,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseModel<LoginResultViewModel> { Success = false, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseModel<AuthenticateResponseVM> { Success = false, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -65,7 +65,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;
+            var model = (ResponseModel<AuthenticateResponseVM>)responseResult.Value;
 
             Assert.Null(model.Object.Token);
         }
@@ -83,7 +83,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseModel<LoginResultViewModel> { Success = true, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseModel<AuthenticateResponseVM> { Success = true, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -91,7 +91,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;
+            var model = (ResponseModel<AuthenticateResponseVM>)responseResult.Value;
 
             Assert.Equal(responseModel.Object.Token, model.Object.Token);
         }
@@ -109,7 +109,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseModel<LoginResultViewModel> { Success = false, Object = GetTestJwt()[1] };
+            var responseModel = new ResponseModel<AuthenticateResponseVM> { Success = false, Object = GetTestJwt()[1] };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -117,17 +117,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (ResponseModel<LoginResultViewModel>)responseResult.Value;
+            var model = (ResponseModel<AuthenticateResponseVM>)responseResult.Value;
 
             Assert.Null(model.Object.Token);
         }
 
-        private List<LoginResultViewModel> GetTestJwt()
+        private List<AuthenticateResponseVM> GetTestJwt()
         {
-            return new List<LoginResultViewModel>
+            return new List<AuthenticateResponseVM>
             {
-                new LoginResultViewModel { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZWY1ZmM4LTA1NjEtNDI2OS04Zjc1LTk1N2RhNzg4ODkyOCIsImVtYWlsIjoicXRvbmk2QGdtYWlsLmNvbSIsIm5hbWUiOiJBcm5vbGRCZWFzbGV5Iiwicm9sZXMiOiJVbml2ZXJzaXR5QWRtaW4iLCJleHAiOjE2MDg1MDQxMjl9.araGavMMEaMXF2fjFU_OH72ipfJuae21vzxEcfTp_L0" },
-                new LoginResultViewModel { Token = null },
+                new AuthenticateResponseVM { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZWY1ZmM4LTA1NjEtNDI2OS04Zjc1LTk1N2RhNzg4ODkyOCIsImVtYWlsIjoicXRvbmk2QGdtYWlsLmNvbSIsIm5hbWUiOiJBcm5vbGRCZWFzbGV5Iiwicm9sZXMiOiJVbml2ZXJzaXR5QWRtaW4iLCJleHAiOjE2MDg1MDQxMjl9.araGavMMEaMXF2fjFU_OH72ipfJuae21vzxEcfTp_L0" },
+                new AuthenticateResponseVM { Token = null },
             };
         }
     }

@@ -10,7 +10,6 @@ namespace YIF.Core.Data.Interfaces
     public interface IApplicationDbContext : IDisposable
     {
         DbSet<SuperAdmin> SuperAdmins { get; set; }
-
         DbSet<UniversityModerator> UniversityModerators { get; set; }
         DbSet<UniversityAdmin> UniversityAdmins { get; set; }
         DbSet<Lecture> Lectures { get; set; }
@@ -19,14 +18,12 @@ namespace YIF.Core.Data.Interfaces
         DbSet<Speciality> Specialities { get; set; }
         DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
         DbSet<SpecialityToUniversity> SpecialityToUniversities { get; set; }
-
-
         DbSet<SchoolModerator> SchoolModerators { get; set; }
         DbSet<SchoolAdmin> SchoolAdmins { get; set; }
         DbSet<Graduate> Graduates { get; set; }
         DbSet<School> Schools { get; set; }
         DbSet<DbUser> Users { get; set; }
-
+        DbSet<Token> Tokens { get; set; }
         Task<int> SaveChangesAsync();
         int SaveChanges();
 
