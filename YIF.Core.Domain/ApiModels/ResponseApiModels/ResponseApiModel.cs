@@ -14,28 +14,32 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// Gets or sets the status code for the response.
         /// </summary>
         public int StatusCode { get; set; }
+
         /// <summary>
         /// Gets the value of whether the result is successful (whether the <see cref="HttpStatusCode"/> is 2XX).
         /// </summary>
         public bool Success => StatusCode >= 200 && StatusCode <= 226;
+
         /// <summary>
         /// Gets or sets the description model for the response.
         /// </summary>
         public DescriptionResponseApiModel Description { get; set; } = new DescriptionResponseApiModel();
+
         /// <summary>
         /// Gets or sets the message for the <see cref="DescriptionResponseApiModel"/> for the response.
         /// </summary>
         public string Message { get => Description.Message; set => Description.Message = value; }
+
         /// <summary>
         /// A class used in case of a response with returning an object.
         /// </summary>
         public T Object { get; set; }
 
-
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
         public ResponseApiModel() { }
+
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
@@ -47,7 +51,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
             Message = message;
         }
 
-
         /// <summary>
         /// Sets properties of the class.
         /// </summary>
@@ -56,6 +59,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <param name="message">The message for the description of the response.</param>
         /// <returns>This response model class.</returns>
         public ResponseApiModel<T> Set(bool isSuccess, string message = null) => Set(isSuccess ? 200 : 400, message);
+
         /// <summary>
         /// Sets properties of the class.
         /// </summary>
@@ -68,6 +72,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
             Message = message;
             return this;
         }
+
         /// <summary>
         /// Sets properties of the class.
         /// </summary>
@@ -81,13 +86,13 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
             return Set(statusCode, message);
         }
 
-
         /// <summary>
         /// Creates response.
         /// </summary>
         /// <param name="code">The <see cref="HttpStatusCode"/> during response.</param>
         /// <returns><see cref="IActionResult"/> object.</returns>
         public IActionResult Response(HttpStatusCode code) => Response((int)code);
+
         /// <summary>
         /// Creates response.
         /// </summary>
@@ -98,6 +103,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
             StatusCode = code;
             return Response();
         }
+
         /// <summary>
         /// Creates response with automatic type detection.
         /// </summary>

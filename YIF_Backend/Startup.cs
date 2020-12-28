@@ -13,7 +13,6 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -22,7 +21,6 @@ using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
-using YIF.Core.Service.Mapping;
 
 namespace YIF_Backend
 {
@@ -74,6 +72,7 @@ namespace YIF_Backend
                          Type = SecuritySchemeType.Http,
                          Scheme = "bearer"
                      });
+
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement{
                     {
                         new OpenApiSecurityScheme{
@@ -84,13 +83,15 @@ namespace YIF_Backend
                         },new List<string>()
                     }
                 });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                if (File.Exists(xmlPath))
-                {
-                    c.IncludeXmlComments(xmlPath);
-                }
 
+                foreach (string xmlFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.xml"))
+                {
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    if (File.Exists(xmlPath))
+                    {
+                        c.IncludeXmlComments(xmlPath);
+                    }
+                }
             });
             #endregion
 
