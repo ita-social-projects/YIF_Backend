@@ -43,7 +43,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
-            Assert.Equal("text/plain; charset=utf-8",
+            Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
         }
 
@@ -56,7 +56,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Equal("text/plain; charset=utf-8",
+            Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
         }
     }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ViewModels;
-using YIF.Core.Domain.ViewModels.IdentityViewModels;
-using YIF.Core.Domain.ViewModels.UserViewModels;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -37,50 +37,49 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseModel<IEnumerable<UserViewModel>>> GetAllUsers()
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
         {
-            var result = new ResponseModel<IEnumerable<UserViewModel>>();
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
             var users = (List<UserDTO>)await _userRepository.GetAll();
             if (users.Count < 1)
             {
-                return result.Set(false, $"There are not users in database");
+                return result.Set(404, $"There are not users in database");
             }
-            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(users);
+            result.Object = _mapper.Map<IEnumerable<UserApiModel>>(users);
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<UserViewModel>> GetUserById(string id)
+        public async Task<ResponseApiModel<UserApiModel>> GetUserById(string id)
         {
-            var result = new ResponseModel<UserViewModel>();
+            var result = new ResponseApiModel<UserApiModel>();
             try
             {
                 var user = await _userRepository.Get(id);
-                result.Object = _mapper.Map<UserViewModel>(user);
+                result.Object = _mapper.Map<UserApiModel>(user);
             }
             catch (KeyNotFoundException ex)
             {
-                return result.Set(false, ex.Message);
+                return result.Set(404, ex.Message);
             }
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<IEnumerable<UserViewModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
-            var result = new ResponseModel<IEnumerable<UserViewModel>>();
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
             var foundUsers = await _userRepository.Find(predicate);
-            result.Object = _mapper.Map<IEnumerable<UserViewModel>>(foundUsers);
+            result.Object = _mapper.Map<IEnumerable<UserApiModel>>(foundUsers);
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<AuthenticateResponseVM>> RegisterUser(RegisterViewModel registerModel)
+        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> RegisterUser(RegisterApiModel registerModel)
         {
-            var result = new ResponseModel<AuthenticateResponseVM>();
-            //result.Object = string.Empty;
+            var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null)
             {
-                return result.Set(false, "User already exist");
+                return result.Set(409, "User already exist");
             }
 
             if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
@@ -99,7 +98,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (registerResult != string.Empty)
             {
-                return result.Set(false, registerResult);
+                return result.Set(409, registerResult);
             }
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
@@ -109,14 +108,14 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new AuthenticateResponseVM { Token = token, RefreshToken = refreshToken };
+            result.Object = new AuthenticateResponseApiModel { Token = token, RefreshToken = refreshToken };
 
-            return result.Set(true);
+            return result.Set(201);
         }
 
-        public async Task<ResponseModel<AuthenticateResponseVM>> LoginUser(LoginViewModel loginModel)
+        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel)
         {
-            var result = new ResponseModel<AuthenticateResponseVM>();
+            var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)
@@ -137,14 +136,14 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            result.Object = new AuthenticateResponseVM() { Token = token, RefreshToken = refreshToken };
+            result.Object = new AuthenticateResponseApiModel() { Token = token, RefreshToken = refreshToken };
 
             return result.Set(true);
         }
 
-        public async Task<ResponseModel<AuthenticateResponseVM>> RefreshToken(TokenRequestApiModel tokenApiModel)
+        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> RefreshToken(TokenRequestApiModel tokenApiModel)
         {
-            var result = new ResponseModel<AuthenticateResponseVM>();
+            var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
             string accessToken = tokenApiModel.Token;
             string refreshToken = tokenApiModel.RefreshToken;
@@ -168,7 +167,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _userRepository.UpdateUserToken(user, newRefreshToken);
 
-            result.Object = new AuthenticateResponseVM() { Token = newAccessToken, RefreshToken = newRefreshToken };
+            result.Object = new AuthenticateResponseApiModel() { Token = newAccessToken, RefreshToken = newRefreshToken };
             return result.Set(true);
         }
 

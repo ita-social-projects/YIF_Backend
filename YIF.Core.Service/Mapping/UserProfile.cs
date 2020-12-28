@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.ViewModels.IdentityViewModels;
+using YIF.Core.Domain.ApiModels.IdentityApiModels;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -18,7 +18,7 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dto => dto.Roles, opt => opt.MapFrom<GetRolesResolver>());
             CreateMap<UserDTO, DbUser>()
                 .AfterMap<SetRolesResolver>();
-            CreateMap<UserDTO, UserViewModel>()
+            CreateMap<UserDTO, UserApiModel>()
                 .ReverseMap();
         }
     }

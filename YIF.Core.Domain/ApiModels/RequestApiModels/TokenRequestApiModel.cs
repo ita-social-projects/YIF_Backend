@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace YIF.Core.Domain.ViewModels.UserViewModels
+namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
     public class TokenRequestApiModel
     {

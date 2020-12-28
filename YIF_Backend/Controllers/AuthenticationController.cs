@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Domain.ViewModels.UserViewModels;
 
 namespace YIF_Backend.Controllers
 {
@@ -18,39 +19,25 @@ namespace YIF_Backend.Controllers
         }
 
         [HttpPost("LoginUser")]
-        public async Task<IActionResult> LoginUser([FromBody] LoginViewModel model)
+        public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
-
             var result = await _userService.LoginUser(model);
-
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-
-            return Ok(result);
+            return result.Response();
         }
 
         [HttpPost("RegisterUser")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterApiModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
-
             var result = await _userService.RegisterUser(model);
-
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-
-            return Ok(result);
+            return result.Response();
         }
 
         [HttpPost("RefreshToken")]
@@ -58,17 +45,10 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
-
             var result = await _userService.RefreshToken(tokenApiModel);
-
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-
-            return Ok(result);
+            return result.Response();
         }
     }
 }

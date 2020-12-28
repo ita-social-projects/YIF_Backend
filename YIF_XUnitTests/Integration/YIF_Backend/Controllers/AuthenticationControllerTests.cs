@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Domain.ViewModels.UserViewModels;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_Backend;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
@@ -18,8 +18,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         public AuthenticationControllerTests()
         {
-            var clientOptions = new WebApplicationFactoryClientOptions();
-            clientOptions.BaseAddress = new Uri("https://localhost:44324/api/Authentication/LoginUser/");
+            var clientOptions = new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("https://localhost:44324/api/Authentication/LoginUser/")
+            };
 
             var appFactory = new WebApplicationFactory<Startup>();
             _client = appFactory.CreateClient(clientOptions);
@@ -30,7 +32,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string email, string password)
         {
             // Arrange
-            var user = new LoginViewModel
+            var user = new LoginApiModel
             {
                 Email = email,
                 Password = password
@@ -45,26 +47,24 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var contentJsonObj = JObject.Parse(content);
 
-            var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = new JwtSecurityToken(contentJsonObj["object"]["token"].ToString());
+            var token = new JwtSecurityToken(contentJsonObj["token"].ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
 
+            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-            Assert.True(successStatus);
             Assert.Equal(user.Email, token.Payload["email"]);
         }
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1")]
         [InlineData("qtoni6@gmail.com", "d")]
-        [InlineData("", "")]
         public async Task Post_EndpointsReturnError_IfLoginOrPasswordIncorrect(string email, string password)
         {
             // Arrange
-            var user = new LoginViewModel
+            var user = new LoginApiModel
             {
                 Email = email,
                 Password = password
@@ -79,15 +79,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var contentJsonObj = JObject.Parse(content);
 
-            var successStatus = contentJsonObj["success"].ToObject<bool>();
-            var token = contentJsonObj["object"].ToObject<object>();
+            var message = contentJsonObj["message"].ToString();
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
-            Assert.False(successStatus);
-            Assert.Null(token);
+               response.Content.Headers.ContentType.ToString());
+            Assert.NotEmpty(message);
         }
     }
 }

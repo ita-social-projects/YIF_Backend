@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace YIF.Core.Domain.ViewModels.UserViewModels
+namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
-    public class LoginViewModel
+    public class LoginApiModel
     {
         [Required]
         public string Email { get; set; }
