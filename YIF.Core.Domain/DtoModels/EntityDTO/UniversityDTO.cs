@@ -5,7 +5,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.DtoModels
 {
-    class UniversityDTO
+    public class UniversityDTO
     {
         public string Id { get; set; }
         /// <summary>

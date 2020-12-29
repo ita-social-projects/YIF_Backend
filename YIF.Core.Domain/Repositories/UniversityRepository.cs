@@ -1,5 +1,8 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +15,15 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UniversityRepository : IRepository<University, UniversityDTO>
     {
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public UniversityRepository(IApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
         public Task<string> Create(University dbUser, object entityUser, string userPassword)
         {
             throw new NotImplementedException();
@@ -29,7 +41,14 @@ namespace YIF.Core.Domain.Repositories
 
         public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
         {
-            throw new NotImplementedException();
+            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+
+            if (universities != null || universities.Count > 0)
+            {
+                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
+            }
+
+            return null;
         }
 
         public Task<UniversityDTO> Get(string id)
