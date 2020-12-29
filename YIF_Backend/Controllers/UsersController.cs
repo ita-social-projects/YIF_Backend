@@ -42,7 +42,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of users</returns>
         /// <response code="200">Returns a user</response>
-        /// <param name="id">01f75261-2feb-4a34-93fb-ab26bf16cbe7</param>
+        /// <param name="id" example="01f75261-2feb-4a34-93fb-ab26bf16cbe7">User ID</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
