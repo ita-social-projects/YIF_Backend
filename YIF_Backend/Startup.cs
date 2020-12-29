@@ -42,6 +42,7 @@ namespace YIF_Backend
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<IRecaptchaService, RecaptchaService>();
             #endregion
 
             #region FluentValidation
