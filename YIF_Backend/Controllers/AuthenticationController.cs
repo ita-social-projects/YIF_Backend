@@ -28,6 +28,7 @@ namespace YIF_Backend.Controllers
         [HttpPost("LoginUser")]
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
             if (!ModelState.IsValid)
@@ -43,12 +44,13 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
         /// <response code="201">Returns object with tokens</response>
-        /// <response code="400">If email or password incorrect</response>
+        /// <response code="400">If model state is not valid</response>
         /// <response code="409">If email or password incorrect</response>
         [HttpPost("RegisterUser")]
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterApiModel model)
         {
             if (!ModelState.IsValid)
@@ -67,6 +69,7 @@ namespace YIF_Backend.Controllers
         /// <response code="400">If refresh token incorrect</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(500)]
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> Refresh([FromBody] TokenRequestApiModel tokenApiModel)
         {
