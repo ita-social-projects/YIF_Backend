@@ -54,15 +54,14 @@ namespace YIF_Backend
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "YPS API",
-                    Description = "A project  ASP.NET Core Web API",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    Title = "YIF API",
+                    Description = "A project ASP.NET Core Web API",
                     Contact = new OpenApiContact
                     {
-                        Name = "Team YPS",
+                        Name = "Team YIF",
                         Email = string.Empty,
-                    },
-
+                        Url = new Uri("https://github.com/ita-social-projects/YIF_Backend/blob/dev/README.md")
+                    }
                 });
 
                 c.AddSecurityDefinition("Bearer",
@@ -73,14 +72,17 @@ namespace YIF_Backend
                          Scheme = "bearer"
                      });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
-                        new OpenApiSecurityScheme{
-                            Reference = new OpenApiReference{
+                        new OpenApiSecurityScheme 
+                        {
+                            Reference = new OpenApiReference
+                            {
                                 Id = "Bearer",
                                 Type = ReferenceType.SecurityScheme
                             }
-                        },new List<string>()
+                        },
+                        new List<string>()
                     }
                 });
 
@@ -182,7 +184,7 @@ namespace YIF_Backend
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
             });
             #endregion
 
