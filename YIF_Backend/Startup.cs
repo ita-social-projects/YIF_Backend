@@ -16,8 +16,11 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using YIF.Core.Data;
+using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.DtoModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -41,6 +44,11 @@ namespace YIF_Backend
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
+            services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
+            services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
+            services.AddTransient<IRepository<DirectionToUniversity, DirectionToUniversityDTO>, DirectionToUniversityRepository>();
+            services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
             services.AddTransient<ITokenRepository,TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             #endregion

@@ -12,18 +12,18 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UniversityRepository : IRepository<University, UniversityDTO>
+    public class SpecialityToUniversityRepository : IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public UniversityRepository(IApplicationDbContext context, IMapper mapper)
+        public SpecialityToUniversityRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword)
+        public Task<string> Create(SpecialityToUniversity dbUser, object entityUser, string userPassword)
         {
             throw new NotImplementedException();
         }
@@ -38,29 +38,29 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
+        public Task<IEnumerable<SpecialityToUniversityDTO>> Find(Expression<Func<SpecialityToUniversity, bool>> predicate)
         {
-            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+            var list = _context.SpecialityToUniversities.Where(predicate).AsNoTracking().ToList();
 
-            if (universities != null || universities.Count > 0)
+            if (list != null || list.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
+                return Task.FromResult(_mapper.Map<IEnumerable<SpecialityToUniversityDTO>>(list));
             }
 
             return null;
         }
 
-        public Task<UniversityDTO> Get(string id)
+        public Task<SpecialityToUniversityDTO> Get(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UniversityDTO>> GetAll()
+        public Task<IEnumerable<SpecialityToUniversityDTO>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(University item)
+        public Task<bool> Update(SpecialityToUniversity item)
         {
             throw new NotImplementedException();
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using YIF.Core.Domain.DtoModels.EntityDTO;
 
-namespace YIF.Core.Domain.DtoModels
+namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class UniversityDTO
     {
@@ -24,14 +24,14 @@ namespace YIF.Core.Domain.DtoModels
         /// <summary>
         /// List of university admins
         /// </summary>
-        public virtual ICollection<UniversityAdminDTO> Admins { get; set; }
+        public virtual IQueryable<UniversityAdminDTO> Admins { get; set; }
         /// <summary>
         /// List of university moderators
         /// </summary>
-        public virtual ICollection<UniversityModeratorDTO> Moderators { get; set; }
+        public virtual IQueryable<UniversityModeratorDTO> Moderators { get; set; }
         /// <summary>
         /// List of university lectures
         /// </summary>
-        public virtual ICollection<LectureDTO> Lectures { get; set; }
+        public virtual IQueryable<LectureDTO> Lectures { get; set; }
     }
 }
