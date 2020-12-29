@@ -53,33 +53,7 @@ namespace YIF.Core.Domain.Repositories
                 }
             }
             return false;
-        }
-
-        public async Task<bool> UpdateUserToken(DbUser user, string refreshToken)
-        {
-            if (user == null) return false;
-
-            var tokendb = _context.Tokens.Find(user.Id);
-
-            if (tokendb == null)
-            {
-                _context.Tokens.Add(new Token
-                {
-                    Id = user.Id,
-                    RefreshToken = refreshToken,
-                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
-                });
-            }
-            else
-            {
-                tokendb.RefreshToken = refreshToken;
-                tokendb.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
-                _context.Tokens.Update(tokendb);
-            }
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
+        }       
 
         public async Task<bool> Delete(string id)
         {

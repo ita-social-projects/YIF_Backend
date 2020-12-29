@@ -6,6 +6,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     public class UniversityFilterResponseApiModel
     {
+        public string Id { get; set; }
         /// <summary>
         /// Name of university
         /// </summary>

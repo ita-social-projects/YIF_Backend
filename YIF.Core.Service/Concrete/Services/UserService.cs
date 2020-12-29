@@ -20,6 +20,7 @@ namespace YIF.Core.Service.Concrete.Services
     public class UserService : IUserService<DbUser>
     {
         private readonly IRepository<DbUser, UserDTO> _userRepository;
+        private readonly ITokenRepository _tokenRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
@@ -104,7 +105,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _userRepository.UpdateUserToken(dbUser, refreshToken);
+            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
@@ -132,7 +133,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _userRepository.UpdateUserToken(user, refreshToken);
+            await _tokenRepository.UpdateUserToken(user, refreshToken);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -165,7 +166,7 @@ namespace YIF.Core.Service.Concrete.Services
             var newAccessToken = _jwtService.CreateToken(claims);
             var newRefreshToken = _jwtService.CreateRefreshToken();
 
-            await _userRepository.UpdateUserToken(user, newRefreshToken);
+            await _tokenRepository.UpdateUserToken(user, newRefreshToken);
 
             result.Object = new AuthenticateResponseApiModel() { Token = newAccessToken, RefreshToken = newRefreshToken };
             return result.Set(true);

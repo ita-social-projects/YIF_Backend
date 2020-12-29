@@ -41,6 +41,7 @@ namespace YIF_Backend
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<ITokenRepository,TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             #endregion
 
