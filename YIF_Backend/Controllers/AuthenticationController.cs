@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -78,6 +79,32 @@ namespace YIF_Backend.Controllers
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
             var result = await _userService.RefreshToken(tokenApiModel);
+            return result.Response();
+        }
+
+
+
+
+
+
+
+        // For test authorize endpoint
+
+        /// <summary>
+        /// Get current user roles by using token authorize.
+        /// </summary>
+        /// <returns>List of current user roles</returns>
+        /// <response code="200">Returns current user roles</response>
+        [HttpGet("my_roles")]
+        [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(500)]
+        [Authorize]
+        public async Task<IActionResult> GetRolesUsingAuthorizeAsync()
+        {
+            var id = User.FindFirst("id")?.Value;
+
+            var result = await _userService.GetRoles(id);
             return result.Response();
         }
     }

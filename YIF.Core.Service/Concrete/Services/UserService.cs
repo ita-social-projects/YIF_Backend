@@ -185,5 +185,32 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _userRepository.Dispose();
         }
+
+
+
+
+
+        // For test authorize endpoint
+        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetRoles(string id)
+        {
+            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
+            result.Object = new RolesByTokenResponseApiModel("Not Valid");
+
+            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
+            if (user == null || user.Token == null || user.Token.RefreshToken == null)
+            {
+                return result.Set(false, "Invalid client request");
+            }
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                result.Object.TokenStatus = "Valid, but expired";
+            }
+
+            result.Object.TokenStatus = "Valid";
+            result.Object.Roles = await _userManager.GetRolesAsync(user);
+
+            return result.Set(true);
+        }
     }
 }

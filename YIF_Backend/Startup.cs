@@ -165,6 +165,8 @@ namespace YIF_Backend
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             #region CORS

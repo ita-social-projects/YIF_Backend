@@ -22,5 +22,10 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<bool> DeleteUserById(string id);
 
         void Dispose();
+
+
+
+        // For test authorize endpoint
+        Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetRoles(string id);
     }
 }
