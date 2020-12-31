@@ -4,10 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>..\YIF_Backend\bin\Debug\YIF.Core.Domain.xml</DocumentationFile>
+  <PropertyGroup>
+    <DocumentationFile>..\YIF_Backend\bin\$(Configuration)\YIF.Core.Domain.xml</DocumentationFile>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />

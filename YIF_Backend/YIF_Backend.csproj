@@ -9,9 +9,8 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\YIF_Backend.xml</DocumentationFile>
-    <WarningLevel>5</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>

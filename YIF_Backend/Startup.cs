@@ -59,7 +59,7 @@ namespace YIF_Backend
                     Contact = new OpenApiContact
                     {
                         Name = "Team YIF",
-                        Email = string.Empty,
+                        Email = "yifteam2020@gmail.com",
                         Url = new Uri("https://github.com/ita-social-projects/YIF_Backend/blob/dev/README.md")
                     }
                 });
