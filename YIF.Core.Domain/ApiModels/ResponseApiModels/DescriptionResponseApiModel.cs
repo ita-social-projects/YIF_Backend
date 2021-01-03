@@ -16,7 +16,6 @@
         {
             Message = message;
         }
-
         /// <summary>
         /// Gets or sets the message for response description.
         /// </summary>

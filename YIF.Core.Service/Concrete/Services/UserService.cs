@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -190,8 +191,25 @@ namespace YIF.Core.Service.Concrete.Services
 
 
 
-        // For test authorize endpoint
-        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetRoles(string id)
+        // =========================   For test authorize endpoint:   =========================
+        public async Task<ResponseApiModel<IdByTokenResponseApiModel>> GetCurrentUserIdUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<IdByTokenResponseApiModel>();
+            result.Object = new IdByTokenResponseApiModel("Not Valid");
+
+            var token = (await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id)).Token;
+            if (token == null || token.RefreshToken == null || token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return result.Set(false, "Invalid client request");
+            }
+
+            result.Object.TokenStatus = "Valid";
+            result.Object.Id = id;
+
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
             var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
             result.Object = new RolesByTokenResponseApiModel("Not Valid");
@@ -202,6 +220,8 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, "Invalid client request");
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+
             if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 result.Object.TokenStatus = "Valid, but expired";
@@ -210,6 +230,58 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object.TokenStatus = "Valid";
             result.Object.Roles = await _userManager.GetRolesAsync(user);
 
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsSimilarInstitutionAsCurrentUserUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
+
+            var token = (await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id)).Token;
+            if (token == null || token.RefreshToken == null || token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return result.Set(false, "Invalid client request");
+            }
+
+
+            result = await GetAllUsers();
+            if (!result.Success)
+            {
+                return result;
+            }
+            var allUsers = result.Object;
+
+
+            var userResult = await GetUserById(id);
+            if (!userResult.Success)
+            {
+                return result.Set(userResult.StatusCode, userResult.Message);
+            }
+            var currentUser = userResult.Object;
+
+
+            IEnumerable<UserApiModel> foundAdmins = new List<UserApiModel>();
+
+            if (currentUser.Roles.Contains(ProjectRoles.SchoolModerator))
+            {
+                foundAdmins = allUsers.Where(u => u.Roles.Contains(ProjectRoles.SchoolAdmin));
+            }
+            if (currentUser.Roles.Contains(ProjectRoles.UniversityModerator))
+            {
+                foundAdmins = allUsers.Where(u => u.Roles.Contains(ProjectRoles.UniversityAdmin));
+            }
+            if (currentUser.Roles.Contains(ProjectRoles.SuperAdmin))
+            {
+                foundAdmins = allUsers.Where(
+                    u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
+                    u.Roles.Contains(ProjectRoles.UniversityAdmin) ||
+                    u.Roles.Contains(ProjectRoles.SchoolModerator) ||
+                    u.Roles.Contains(ProjectRoles.UniversityModerator)
+                    );
+            }
+
+
+            result.Object = foundAdmins;
             return result.Set(true);
         }
     }
