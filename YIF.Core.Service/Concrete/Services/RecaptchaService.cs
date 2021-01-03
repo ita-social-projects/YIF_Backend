@@ -17,13 +17,13 @@ namespace YIF.Core.Service.Concrete.Services
             var client = new System.Net.WebClient();
 
             // Get key from appsettings.json
-            string PrivateKey = _configuration.GetValue<string>("Recaptcha:SecretKey");
+            string privateKey = _configuration.GetValue<string>("Recaptcha:SecretKey");
             string requestComm = string.Format("https://www.google.com/recaptcha/api/siteverify?secret={0}&response={1}",
-                PrivateKey, recaptchaToken);
+                privateKey, recaptchaToken);
 
-            var GoogleReply = client.DownloadString(requestComm);
+            var googleReply = client.DownloadString(requestComm);
 
-            var captchaResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RecaptchaResponseDTO>(GoogleReply);
+            var captchaResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RecaptchaResponseDTO>(googleReply);
 
             if (captchaResponse.Success)
             {
@@ -31,7 +31,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
             else
             {
-                //throw new Exception("Виникла помилка при підтвердженні каптчи.");
                 return false;
             }
         }
