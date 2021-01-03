@@ -10,23 +10,31 @@ namespace YIF.Core.Service.Concrete.Services
     {
         private readonly IConfiguration _configuration;
         private readonly string _apiKey;
-        private readonly string _fromMail;
+        private readonly string _senderEmail;
+        private readonly string _senderName;
 
         public SendGridService(IConfiguration configuration)
         {
             _configuration = configuration;
             _apiKey = _configuration.GetValue<string>("SendGrid:SendGridApi");
-            _fromMail = _configuration.GetValue<string>("SendGrid:SendGridMail");
+            _senderEmail = _configuration.GetValue<string>("SendGrid:SenderEmail");
+            _senderName = _configuration.GetValue<string>("SendGrid:SenderName");
         }
-        public async Task<bool> Send(string email, string subject, string plainTextContent)
+        public async Task<bool> SendAsync(string email, string subject, string content)
         {
             var client = new SendGridClient(_apiKey);
-            var from = new EmailAddress(_fromMail, _fromMail);
-            subject = "Sending with SendGrid is Fun";
-            var to = new EmailAddress(email, email);
-            plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var from = new EmailAddress(_senderEmail, _senderName);
+            var to = new EmailAddress(email);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
+
+            // disable tracking settings
+            // ref.: https://sendgrid.com/docs/User_Guide/Settings/tracking.html
+
+            //msg.SetClickTracking(false, false);
+            //msg.SetOpenTracking(false);
+            //msg.SetGoogleAnalytics(false);
+            //msg.SetSubscriptionTracking(false);
+
             var response = await client.SendEmailAsync(msg);
             return response.IsSuccessStatusCode;
         }

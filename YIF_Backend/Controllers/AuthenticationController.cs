@@ -35,7 +35,9 @@ namespace YIF_Backend.Controllers
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
             var result = await _userService.LoginUser(model);
-            // var resEmail = await _emailService.Send("stepansmetanskyy@gmail.com", "", "");
+
+            _ = _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");
+            
             return result.Response();
         }
 
