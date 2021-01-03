@@ -192,22 +192,13 @@ namespace YIF.Core.Service.Concrete.Services
 
 
         // =========================   For test authorize endpoint:   =========================
-        public async Task<bool> AdvancedCheckTokenUsingAuthorize(string id)
-        {
-            var token = (await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id)).Token;
-            return !(token == null || token.RefreshToken == null || token.RefreshTokenExpiryTime <= DateTime.Now);
-        }
-
+        
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
             var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
             result.Object = new RolesByTokenResponseApiModel("Not Valid");
 
             var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
-            if (user == null || user.Token == null || user.Token.RefreshToken == null)
-            {
-                return result.Set(false, "Invalid client request");
-            }
 
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -225,12 +216,6 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id)
         {
             var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
-
-            var token = (await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id)).Token;
-            if (token == null || token.RefreshToken == null || token.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return result.Set(false, "Invalid client request");
-            }
 
             result = await GetAllUsers();
             if (!result.Success)

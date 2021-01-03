@@ -26,7 +26,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
 
 
         // =========================   For test authorize endpoint:   =========================
-        Task<bool> AdvancedCheckTokenUsingAuthorize(string id);
         Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id);
         Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id);
     }

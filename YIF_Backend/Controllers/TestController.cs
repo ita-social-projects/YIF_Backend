@@ -33,7 +33,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of current user id</returns>
         /// <response code="200">Returns current user id</response>
-        /// <response code="401">If user is unauthorized or token is bad/expired</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
         [HttpGet("my_id")]
         [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
         [ProducesResponseType(500)]
@@ -41,18 +41,12 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetCurrentUserIdUsingAuthorizeAsync()
         {
             var result = new ResponseApiModel<IdByTokenResponseApiModel>();
-            result.Object = new IdByTokenResponseApiModel("Not Valid");
+            result.Object = new IdByTokenResponseApiModel("Valid");
 
             var id = User.FindFirst("id")?.Value;
-
-            if (!await _userService.AdvancedCheckTokenUsingAuthorize(id))
-            {
-                return result.Set(401);
-            };
-
-            result.Object.TokenStatus = "Valid";
             result.Object.Id = id;
-            return result.Set(true).Response();
+
+            return await Task.FromResult(result.Set(true).Response());
         }
 
 
@@ -62,11 +56,9 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of current user roles</returns>
         /// <response code="200">Returns current user roles</response>
-        /// <response code="400">If token is bad or expired</response>
-        /// <response code="401">If user is unauthorized</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
         [HttpGet("my_roles")]
         [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(500)]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserRolesUsingAuthorizeAsync()
@@ -83,14 +75,12 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of admins of the similar institution as a current user</returns>
         /// <response code="200">Returns list of admins of the similar institution</response>
-        /// <response code="400">If token is bad or expired</response>
-        /// <response code="401">If user is unauthorized</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user doesn't have enough rights</response>
         /// <response code="404">If database is empty or current user not found</response>
         [HttpGet("admins")]
         [Authorize(Roles = "SuperAdmin,UniversityModerator,SchoolModerator")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAdminsUsingAuthorizeAsync()
