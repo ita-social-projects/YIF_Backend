@@ -192,21 +192,10 @@ namespace YIF.Core.Service.Concrete.Services
 
 
         // =========================   For test authorize endpoint:   =========================
-        public async Task<ResponseApiModel<IdByTokenResponseApiModel>> GetCurrentUserIdUsingAuthorize(string id)
+        public async Task<bool> AdvancedCheckTokenUsingAuthorize(string id)
         {
-            var result = new ResponseApiModel<IdByTokenResponseApiModel>();
-            result.Object = new IdByTokenResponseApiModel("Not Valid");
-
             var token = (await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id)).Token;
-            if (token == null || token.RefreshToken == null || token.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return result.Set(false, "Invalid client request");
-            }
-
-            result.Object.TokenStatus = "Valid";
-            result.Object.Id = id;
-
-            return result.Set(true);
+            return !(token == null || token.RefreshToken == null || token.RefreshTokenExpiryTime <= DateTime.Now);
         }
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
@@ -233,7 +222,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsSimilarInstitutionAsCurrentUserUsingAuthorize(string id)
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id)
         {
             var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
 
@@ -243,46 +232,16 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, "Invalid client request");
             }
 
-
             result = await GetAllUsers();
             if (!result.Success)
             {
                 return result;
             }
-            var allUsers = result.Object;
 
-
-            var userResult = await GetUserById(id);
-            if (!userResult.Success)
-            {
-                return result.Set(userResult.StatusCode, userResult.Message);
-            }
-            var currentUser = userResult.Object;
-
-
-            IEnumerable<UserApiModel> foundAdmins = new List<UserApiModel>();
-
-            if (currentUser.Roles.Contains(ProjectRoles.SchoolModerator))
-            {
-                foundAdmins = allUsers.Where(u => u.Roles.Contains(ProjectRoles.SchoolAdmin));
-            }
-            if (currentUser.Roles.Contains(ProjectRoles.UniversityModerator))
-            {
-                foundAdmins = allUsers.Where(u => u.Roles.Contains(ProjectRoles.UniversityAdmin));
-            }
-            if (currentUser.Roles.Contains(ProjectRoles.SuperAdmin))
-            {
-                foundAdmins = allUsers.Where(
+            return result.Set(200, result.Object.Where(
                     u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
-                    u.Roles.Contains(ProjectRoles.UniversityAdmin) ||
-                    u.Roles.Contains(ProjectRoles.SchoolModerator) ||
-                    u.Roles.Contains(ProjectRoles.UniversityModerator)
-                    );
-            }
-
-
-            result.Object = foundAdmins;
-            return result.Set(true);
+                    u.Roles.Contains(ProjectRoles.UniversityAdmin)
+                    ));
         }
     }
 }
