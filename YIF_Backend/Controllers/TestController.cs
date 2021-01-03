@@ -36,7 +36,6 @@ namespace YIF_Backend.Controllers
         /// <response code="401">If user is unauthorized or token is bad/expired</response>
         [HttpGet("my_id")]
         [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
-        [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserIdUsingAuthorizeAsync()
@@ -68,7 +67,6 @@ namespace YIF_Backend.Controllers
         [HttpGet("my_roles")]
         [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserRolesUsingAuthorizeAsync()
@@ -93,8 +91,6 @@ namespace YIF_Backend.Controllers
         [Authorize(Roles = "SuperAdmin,UniversityModerator,SchoolModerator")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(401)]
-        [ProducesResponseType(403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAdminsUsingAuthorizeAsync()
