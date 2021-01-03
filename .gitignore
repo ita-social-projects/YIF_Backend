@@ -1,4 +1,5 @@
 coverage.opencover.xml
+appsettings.json
 
 #ignore folder with logs
 Logs/

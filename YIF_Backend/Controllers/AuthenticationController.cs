@@ -13,11 +13,13 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly IRecaptchaService _recaptcha;
+        private readonly IEmailService _emailService;
 
-        public AuthenticationController(IUserService<DbUser> userService, IRecaptchaService recaptcha)
+        public AuthenticationController(IUserService<DbUser> userService, IRecaptchaService recaptcha, IEmailService emailService)
         {
             _userService = userService;
             _recaptcha = recaptcha;
+            _emailService = emailService;
         }
 
         [HttpPost("LoginUser")]
@@ -33,6 +35,7 @@ namespace YIF_Backend.Controllers
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
             var result = await _userService.LoginUser(model);
+            // var resEmail = await _emailService.Send("stepansmetanskyy@gmail.com", "", "");
             return result.Response();
         }
 
