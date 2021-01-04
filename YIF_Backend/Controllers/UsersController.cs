@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.ApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 
@@ -14,10 +15,20 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ILogger<UsersController> _logger;
-        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger)
+        private readonly IMyMessageSender _messageSender;
+        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger, 
+            IMyMessageSender messageSender)
         {
             _userService = userService;
             _logger = logger;
+            _messageSender = messageSender;
+        }
+
+        [HttpGet("azure")]
+        public async Task<string> SendMessage([FromBody] BaseEntityApiModel model)
+        {
+            await _messageSender.Send(model.Id);
+            return model.Id;
         }
 
         [HttpGet]

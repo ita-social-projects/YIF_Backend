@@ -44,6 +44,7 @@ namespace YIF_Backend
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
+            services.AddTransient<IMyMessageSender, AzureQueueSender>();
             #endregion
 
             #region FluentValidation
