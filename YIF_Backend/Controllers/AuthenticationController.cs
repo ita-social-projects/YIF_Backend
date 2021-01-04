@@ -12,24 +12,17 @@ namespace YIF_Backend.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
-        private readonly IRecaptchaService _recaptcha;
         private readonly IEmailService _emailService;
 
-        public AuthenticationController(IUserService<DbUser> userService, IRecaptchaService recaptcha, IEmailService emailService)
+        public AuthenticationController(IUserService<DbUser> userService, IEmailService emailService)
         {
             _userService = userService;
-            _recaptcha = recaptcha;
             _emailService = emailService;
         }
 
         [HttpPost("LoginUser")]
         public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
-            //if (!_recaptcha.IsValid(model.RecaptchaToken))
-            //{
-            //    return new ResponseApiModel<object>(400, "Роботи атакують!").Response();
-            //}
-
             if (!ModelState.IsValid)
             {
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
@@ -37,7 +30,7 @@ namespace YIF_Backend.Controllers
 
             var result = await _userService.LoginUser(model);
 
-            _ = _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");
+            //await _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");
 
             return result.Response();
         }

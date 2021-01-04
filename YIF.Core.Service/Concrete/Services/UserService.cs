@@ -24,17 +24,20 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IRecaptchaService _recaptcha;
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
-            IMapper mapper)
+            IMapper mapper,
+            IRecaptchaService recaptcha)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = _IJwtService;
             _mapper = mapper;
+            _recaptcha = recaptcha;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -76,13 +79,12 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
-            var validator = new RegisterValidator(_userManager);
+            var validator = new RegisterValidator(_userManager, _recaptcha);
             var validResults = validator.Validate(registerModel);
 
             if (!validResults.IsValid)
             {
-                return result.Set(false, validResults.ToString(" "));
-                //return result.Set(false, validResults.Errors.FirstOrDefault().ErrorMessage);
+                return result.Set(false, validResults.ToString());
             }
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
@@ -126,17 +128,13 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
-            var validator = new LoginValidator(_userManager);
+            var validator = new LoginValidator(_userManager, _recaptcha);
             var validResults = validator.Validate(loginModel);
 
             if (!validResults.IsValid)
             {
-                return result.Set(false, validResults.ToString(" "));
-                //return result.Set(false, validResults.Errors.FirstOrDefault().ErrorMessage);
+                return result.Set(false, validResults.ToString());
             }
-
-            result.Object = new AuthenticateResponseApiModel() { Token = "good", RefreshToken = "good" };
-            return result.Set(true);
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)

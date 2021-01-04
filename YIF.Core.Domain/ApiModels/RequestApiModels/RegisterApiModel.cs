@@ -12,5 +12,7 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public string RecaptchaToken { get; set; }
     }
 }
