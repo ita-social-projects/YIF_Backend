@@ -13,6 +13,7 @@ namespace YIF_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class SuperAdminController : ControllerBase
     {
         private readonly ISuperAdminService _superAdminService;
@@ -30,11 +31,11 @@ namespace YIF_Backend.Controllers
         /// <response code="201">Returns object with tokens</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="409">If email or password incorrect</response>
-        [HttpPost("AddSuperAdmin")]
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
+        [HttpPost("AddSuperAdmin")]
         public async Task<IActionResult> AddSuperAdmin([FromBody] UniversityAdminApiModel model)
         {
             if (!ModelState.IsValid)

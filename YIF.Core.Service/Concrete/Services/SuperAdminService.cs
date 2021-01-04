@@ -82,10 +82,7 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(409, registerResult);
             }
 
-            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin
-            {
-                UniversityId = university.Id
-            });
+            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin{UniversityId = university.Id});
             var admin = await _universityAdminRepository.GetByUniversityId(university.Id);
 
             UniversityModerator toAdd = new UniversityModerator();

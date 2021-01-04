@@ -27,7 +27,10 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<string> AddUniModerator(UniversityModerator universityModerator)
         {
-             await _dbContext.AddAsync(universityModerator);
+            UniversityModerator q = new UniversityModerator();
+            q.UniversityId = universityModerator.UniversityId;
+            q.UserId = universityModerator.UserId;
+             await _dbContext.UniversityModerators.AddAsync(q);
              await _dbContext.SaveChangesAsync();
              return string.Empty;
         }
