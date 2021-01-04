@@ -54,7 +54,7 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
-            var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Login);
+            var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
             if (searchUser.Result != null)
             {
                 return result.Set(409, "User already exist");
@@ -62,7 +62,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             var dbUser = new DbUser
             {
-                Email = universityAdminModel.Login
+                Email = universityAdminModel.Email,
+                UserName = universityAdminModel.Email
             };
             //take uni
             var university = await _universityRepository.GetByName(universityAdminModel.UniversityName);
@@ -95,6 +96,8 @@ namespace YIF.Core.Service.Concrete.Services
 
 
             //to do change logic and response model
+
+
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
