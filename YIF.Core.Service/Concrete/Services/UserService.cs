@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -94,7 +95,7 @@ namespace YIF.Core.Service.Concrete.Services
             };
 
             var graduate = new Graduate();
-            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password);
+            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
             if (registerResult != string.Empty)
             {

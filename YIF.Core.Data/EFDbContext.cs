@@ -57,9 +57,9 @@ namespace YIF.Core.Data
 
             #region University
 
-            builder.Entity<UniversityModerator>()
-                .HasOne(x => x.Admin)
-                .WithOne(x => x.Moderator);
+            //builder.Entity<UniversityModerator>()
+            //    .HasOne(x => x.Admin)
+            //    .WithOne(x => x.Moderator);
 
             builder.Entity<UniversityModerator>()
                 .HasOne(x => x.University)

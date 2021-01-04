@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
@@ -17,25 +18,30 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
+        private readonly EFDbContext _dbContext;
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
 
-        public UserRepository(IApplicationDbContext context, IMapper mapper, UserManager<DbUser> userManager)
+        public UserRepository(IApplicationDbContext context,
+                              IMapper mapper, 
+                              UserManager<DbUser> userManager, 
+                              EFDbContext dbContext)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
+            _dbContext = dbContext;
         }
 
-        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword)
+        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword ,string role)
         {
             var result = await _userManager.CreateAsync(dbUser, userPassword);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-                await _context.AddAsync(entityUser);
-                await _context.SaveChangesAsync();
+                await _userManager.AddToRoleAsync(dbUser, role);
+              //  await _dbContext.AddAsync(entityUser);
+              //  await _dbContext.SaveChangesAsync();
                 return string.Empty;
             }
             return result.Errors.First().Description;
@@ -109,7 +115,15 @@ namespace YIF.Core.Domain.Repositories
             }
             throw new KeyNotFoundException("User not found:  " + id);
         }
-
+        public async Task<UserDTO> GetByEmail(string email)
+        {
+            var user = await _dbContext.Users.FindAsync(email);
+            if (user != null)
+            {
+                return _mapper.Map<UserDTO>(user);
+            }
+            throw new KeyNotFoundException("User not found:  " + email);
+        }
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
             var list = await _context.Users.ToListAsync();
