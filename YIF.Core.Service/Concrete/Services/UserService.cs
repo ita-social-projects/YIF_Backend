@@ -76,6 +76,15 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
+            var validator = new RegisterValidator(_userManager);
+            var validResults = validator.Validate(registerModel);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString(" "));
+                //return result.Set(false, validResults.Errors.FirstOrDefault().ErrorMessage);
+            }
+
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null)
             {
@@ -116,6 +125,18 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel)
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
+
+            var validator = new LoginValidator(_userManager);
+            var validResults = validator.Validate(loginModel);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString(" "));
+                //return result.Set(false, validResults.Errors.FirstOrDefault().ErrorMessage);
+            }
+
+            result.Object = new AuthenticateResponseApiModel() { Token = "good", RefreshToken = "good" };
+            return result.Set(true);
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)

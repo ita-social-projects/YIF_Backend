@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,7 @@ using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -47,8 +49,6 @@ namespace YIF_Backend
 
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
-
-            //services.AddTransient<IValidator<User>, UserValidation>();
             #endregion
 
             #region Swagger

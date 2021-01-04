@@ -25,15 +25,16 @@ namespace YIF_Backend.Controllers
         [HttpPost("LoginUser")]
         public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
-            if (!_recaptcha.IsValid(model.RecaptchaToken))
-            {
-                return new ResponseApiModel<object>(400, "Роботи атакують!").Response();
-            }
+            //if (!_recaptcha.IsValid(model.RecaptchaToken))
+            //{
+            //    return new ResponseApiModel<object>(400, "Роботи атакують!").Response();
+            //}
 
             if (!ModelState.IsValid)
             {
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
+
             var result = await _userService.LoginUser(model);
 
             _ = _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");

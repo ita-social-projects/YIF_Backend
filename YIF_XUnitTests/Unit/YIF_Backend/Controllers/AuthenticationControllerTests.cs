@@ -14,12 +14,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class AuthenticationControllerTests
     {
         private readonly Mock<IUserService<DbUser>> _userService;
+        private readonly Mock<IRecaptchaService> _recaptcha;
+        private readonly Mock<IEmailService> _emailService;
+
         private readonly AuthenticationController _testControl;
 
         public AuthenticationControllerTests()
         {
             _userService = new Mock<IUserService<DbUser>>();
-            _testControl = new AuthenticationController(_userService.Object);
+            _recaptcha = new Mock<IRecaptchaService>();
+            _emailService = new Mock<IEmailService>();
+            _testControl = new AuthenticationController(_userService.Object, _recaptcha.Object, _emailService.Object);
         }
 
         [Theory]
