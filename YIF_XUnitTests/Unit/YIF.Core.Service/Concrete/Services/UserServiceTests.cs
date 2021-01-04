@@ -21,6 +21,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private readonly UserService _testService;
         private readonly Mock<IRepository<DbUser, UserDTO>> _userRepository;
+        private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
@@ -34,6 +35,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public UserServiceTests()
         {
             _userRepository = new Mock<IRepository<DbUser, UserDTO>>();
+            _tokenRepository = new Mock<ITokenRepository>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
@@ -266,7 +268,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _jwtService.Setup(s => s.CreateRefreshToken()).Returns(token);
-            _userRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
+            _tokenRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
             // Act
             var result = await _testService.LoginUser(loginAM);
             // Assert
