@@ -16,7 +16,7 @@ namespace YIF_Backend.Controllers
         private readonly IUserService<DbUser> _userService;
         private readonly ILogger<UsersController> _logger;
         private readonly IMyMessageSender _messageSender;
-        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger, 
+        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger,
             IMyMessageSender messageSender)
         {
             _userService = userService;
@@ -38,7 +38,6 @@ namespace YIF_Backend.Controllers
             return result.Response();
         }
 
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserAsync(string id)
         {
@@ -48,7 +47,7 @@ namespace YIF_Backend.Controllers
                 var result = await _userService.GetUserById(guid.ToString("D"));
                 _logger.LogInformation("Trying to get a user");
                 return result.Response();
-                
+
             }
             catch (ArgumentNullException)
             {
