@@ -25,12 +25,15 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IRecaptchaService _recaptcha;
+        private readonly IEmailService _emailService;
+
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper,
-            IRecaptchaService recaptcha)
+            IRecaptchaService recaptcha,
+            IEmailService emailService)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -38,6 +41,7 @@ namespace YIF.Core.Service.Concrete.Services
             _jwtService = _IJwtService;
             _mapper = mapper;
             _recaptcha = recaptcha;
+            _emailService = emailService;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -156,6 +160,8 @@ namespace YIF.Core.Service.Concrete.Services
             await _signInManager.SignInAsync(user, isPersistent: false);
 
             result.Object = new AuthenticateResponseApiModel() { Token = token, RefreshToken = refreshToken };
+
+            await _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");
 
             return result.Set(true);
         }

@@ -14,7 +14,7 @@ namespace YIF_Backend.Controllers
         private readonly IUserService<DbUser> _userService;
         private readonly IEmailService _emailService;
 
-        public AuthenticationController(IUserService<DbUser> userService, IEmailService emailService)
+        public AuthenticationController(IUserService<DbUser> userService)
         {
             _userService = userService;
             _emailService = emailService;
@@ -29,9 +29,6 @@ namespace YIF_Backend.Controllers
             }
 
             var result = await _userService.LoginUser(model);
-
-            await _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");
-
             return result.Response();
         }
 
