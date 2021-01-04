@@ -22,7 +22,6 @@ using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
-using YIF.Core.Service.Mapping;
 
 namespace YIF_Backend
 {
@@ -44,7 +43,6 @@ namespace YIF_Backend
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
-            services.AddTransient<IMyMessageSender, AzureQueueSender>();
             #endregion
 
             #region FluentValidation

@@ -37,7 +37,7 @@ namespace YIF_Backend.Controllers
             var result = await _userService.LoginUser(model);
 
             _ = _emailService.SendAsync("stepansmetanskyy@gmail.com", "Sending email is Fun", "<strong>and easy to do anywhere, even with C# it's html content</strong>");
-            
+
             return result.Response();
         }
 
