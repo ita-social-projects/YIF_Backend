@@ -12,12 +12,10 @@ namespace YIF_Backend.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
-        private readonly IEmailService _emailService;
 
         public AuthenticationController(IUserService<DbUser> userService)
         {
             _userService = userService;
-            _emailService = emailService;
         }
 
         [HttpPost("LoginUser")]
