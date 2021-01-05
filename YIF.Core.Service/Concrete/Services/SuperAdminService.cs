@@ -54,6 +54,19 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
+            //take uni
+            var university = await _universityRepository.GetByName(universityAdminModel.UniversityName);
+            if (university == null)
+            {
+                return result.Set(false, "There is no university with name" + universityAdminModel.UniversityName + "in our database");
+            }
+
+            var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
+            if (adminCheck != null)
+            {
+                return result.Set(409, "Admin for this uni already exists( 1 university can have only 1 admin )");
+            }
+
             var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
             if (searchUser.Result != null)
             {
@@ -65,14 +78,7 @@ namespace YIF.Core.Service.Concrete.Services
                 Email = universityAdminModel.Email,
                 UserName = universityAdminModel.Email
             };
-            //take uni
-            var university = await _universityRepository.GetByName(universityAdminModel.UniversityName);
-            if (university == null)
-            {
-                return result.Set(false, "There is ni university with name" + universityAdminModel.UniversityName + "in our database");
-            }
-
-
+            
             var universityModerator = new UniversityModerator();
             //TO DO зачем його передавать то шо више
             var registerResult = await _userRepository.Create(dbUser, universityModerator, universityAdminModel.Password, ProjectRoles.UniversityModerator);
@@ -81,8 +87,9 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(409, registerResult);
             }
-
-            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin{UniversityId = university.Id});
+           
+           
+            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
             var admin = await _universityAdminRepository.GetByUniversityId(university.Id);
 
             UniversityModerator toAdd = new UniversityModerator();

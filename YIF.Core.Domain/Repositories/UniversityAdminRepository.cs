@@ -55,7 +55,7 @@ namespace YIF.Core.Domain.Repositories
             {
                 return  _mapper.Map<UniversityAdminDTO>(universityAdmin);
             }
-            throw new KeyNotFoundException("There is no university admin with such universityId = " + universityId);
+            return null;
         }
 
         public Task<IEnumerable<UniversityAdminDTO>> GetAllUniAdmins()
@@ -68,9 +68,9 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
         [ExcludeFromCodeCoverage]
-        public void Dispose()
+        public async void Dispose()
         {
-            throw new NotImplementedException();
+            await _dbContext.DisposeAsync();
         }
     }
 }

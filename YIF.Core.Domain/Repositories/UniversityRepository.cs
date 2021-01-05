@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.University;
@@ -14,9 +15,9 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UniversityRepository : IUniversityRepository<UniversityDTO>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly EFDbContext _context;
         private readonly IMapper _mapper;
-        public UniversityRepository(IApplicationDbContext context, 
+        public UniversityRepository(EFDbContext context, 
                                     IMapper mapper)
         {
             _context = context;
@@ -41,14 +42,14 @@ namespace YIF.Core.Domain.Repositories
             {
                 return _mapper.Map<UniversityDTO>(university);
             }
-            throw new KeyNotFoundException("There is no university with name = " + name);
+            return null;
         }
 
 
         [ExcludeFromCodeCoverage]
-        public void Dispose()
+        public async void Dispose()
         {
-            throw new NotImplementedException();
+            await _context.DisposeAsync();
         }
     }
 }

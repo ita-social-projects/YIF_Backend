@@ -35,8 +35,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
-        [HttpPost("AddSuperAdmin")]
-        public async Task<IActionResult> AddSuperAdmin([FromBody] UniversityAdminApiModel model)
+        [HttpPost("AddUniversityModerator")]
+        public async Task<IActionResult> AddUniversityModerator([FromBody] UniversityAdminApiModel model)
         {
             if (!ModelState.IsValid)
             {
