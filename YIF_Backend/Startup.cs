@@ -186,6 +186,12 @@ namespace YIF_Backend
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                c.InjectJavascript("YIF_Backend.Swagger.rapipdf-min.js");
+                c.InjectJavascript("/Swagger/rapipdf-min.js");
+                c.InjectJavascript("./Swagger/rapipdf-min.js");
+                c.InjectJavascript("../../Swagger/rapipdf-min.js");
+                c.IndexStream = () => GetType().Assembly.GetManifestResourceStream("YIF_Backend.Swagger.index.html");
+
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
             });
             #endregion
