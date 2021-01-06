@@ -186,5 +186,47 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _userRepository.Dispose();
         }
+
+
+
+
+
+        // =========================   For test authorize endpoint:   =========================
+        
+        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
+            result.Object = new RolesByTokenResponseApiModel("Not Valid");
+
+            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                result.Object.TokenStatus = "Valid, but expired";
+            }
+
+            result.Object.TokenStatus = "Valid";
+            result.Object.Roles = await _userManager.GetRolesAsync(user);
+
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
+
+            result = await GetAllUsers();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            return result.Set(200, result.Object.Where(
+                    u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
+                    u.Roles.Contains(ProjectRoles.UniversityAdmin)
+                    ));
+        }
     }
 }

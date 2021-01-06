@@ -13,7 +13,6 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -25,7 +24,6 @@ using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
-using YIF.Core.Service.Mapping;
 
 namespace YIF_Backend
 {
@@ -64,15 +62,14 @@ namespace YIF_Backend
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "YPS API",
-                    Description = "A project  ASP.NET Core Web API",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    Title = "YIF API",
+                    Description = "A project ASP.NET Core Web API",
                     Contact = new OpenApiContact
                     {
-                        Name = "Team YPS",
+                        Name = "Team YIF",
                         Email = string.Empty,
-                    },
-
+                        Url = new Uri("https://github.com/ita-social-projects/YIF_Backend/blob/dev/README.md")
+                    }
                 });
 
                 c.AddSecurityDefinition("Bearer",
@@ -82,23 +79,29 @@ namespace YIF_Backend
                          Type = SecuritySchemeType.Http,
                          Scheme = "bearer"
                      });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
-                        new OpenApiSecurityScheme{
-                            Reference = new OpenApiReference{
+                        new OpenApiSecurityScheme 
+                        {
+                            Reference = new OpenApiReference
+                            {
                                 Id = "Bearer",
                                 Type = ReferenceType.SecurityScheme
                             }
-                        },new List<string>()
+                        },
+                        new List<string>()
                     }
                 });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                if (File.Exists(xmlPath))
-                {
-                    c.IncludeXmlComments(xmlPath);
-                }
 
+                foreach (string xmlFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.xml"))
+                {
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    if (File.Exists(xmlPath))
+                    {
+                        c.IncludeXmlComments(xmlPath);
+                    }
+                }
             });
             #endregion
 
@@ -170,6 +173,8 @@ namespace YIF_Backend
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             #region CORS
@@ -189,7 +194,7 @@ namespace YIF_Backend
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
             });
             #endregion
 
