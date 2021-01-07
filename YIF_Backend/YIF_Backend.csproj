@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <None Remove="index.html" />
-    <None Remove="Swagger\rapipdf-min.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +38,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Swagger\index.html" />
-    <EmbeddedResource Include="Swagger\rapipdf-min.js" />
   </ItemGroup>
 
   <ItemGroup>
