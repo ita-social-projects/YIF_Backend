@@ -187,7 +187,6 @@ namespace YIF_Backend
             app.UseSwaggerUI(c =>
             {
                 c.IndexStream = () => GetType().Assembly.GetManifestResourceStream("YIF_Backend.Swagger.index.html");
-                GetType().Assembly.GetManifestResourceStream("YIF_Backend.Swagger.index.html");
 
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
             });
