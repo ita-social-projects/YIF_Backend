@@ -10,10 +10,11 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<string> Create(T dbUser, object entityUser, string userPassword);
+        Task<string> Create(T dbUser, object entityUser, string userPassword, string role);
         Task<bool> Update(T item);
         Task<bool> Delete(string id);
         Task<K> Get(string id);
+        Task<K> GetByEmail(string email);
         Task<IEnumerable<K>> GetAll();
         Task<IEnumerable<K>> Find(Expression<Func<T, bool>> predicate);
         Task<bool> UpdateUserToken(DbUser user, string refreshToken);

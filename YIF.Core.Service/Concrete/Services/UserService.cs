@@ -94,8 +94,8 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = registerModel.Username
             };
 
-            var graduate = new Graduate() { User = dbUser };
-            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password);
+            var graduate = new Graduate();
+            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
             if (registerResult != string.Empty)
             {

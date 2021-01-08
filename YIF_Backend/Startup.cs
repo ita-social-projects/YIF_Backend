@@ -17,6 +17,9 @@ using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.DtoModels.University;
+using YIF.Core.Domain.DtoModels.UniversityAdmin;
+using YIF.Core.Domain.DtoModels.UniversityModerator;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -40,6 +43,11 @@ namespace YIF_Backend
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+
+            services.AddTransient<ISuperAdminService, SuperAdminService>();
+            services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
+            services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
+            services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
             #endregion
 
             #region FluentValidation
@@ -179,7 +187,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            // SeederDB.SeedData(app.ApplicationServices);
+            //SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger

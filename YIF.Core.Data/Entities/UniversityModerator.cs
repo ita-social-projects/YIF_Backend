@@ -19,6 +19,8 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// Link to Identity user
         /// </summary>
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
         public virtual DbUser User { get; set; }
     }
 }

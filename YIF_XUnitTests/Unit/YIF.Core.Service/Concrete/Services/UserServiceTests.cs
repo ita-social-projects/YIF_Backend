@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.Models.IdentityDTO;
@@ -145,7 +146,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
 
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(string.Empty));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(string.Empty));
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(x => x.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
@@ -210,7 +211,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
 
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(message));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
             // Act
             var result = await _testService.RegisterUser(userData);
@@ -243,7 +244,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
 
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password)).Returns(Task.FromResult(message));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
             // Act
             var result = await _testService.RegisterUser(userData);
