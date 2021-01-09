@@ -26,6 +26,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IRecaptchaService> _recaptcha;
+        private readonly Mock<IEmailService> _emailServise;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -39,7 +41,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock = new Mock<IMapper>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
-            _testService = new UserService(_userRepository.Object, _userManager.Object, _signInManager, _jwtService.Object, _mapperMock.Object);
+            _recaptcha = new Mock<IRecaptchaService>();
+            _emailServise = new Mock<IEmailService>();
+            _testService = new UserService(
+                _userRepository.Object,
+                _userManager.Object,
+                _signInManager,
+                _jwtService.Object,
+                _mapperMock.Object,
+                _recaptcha.Object,
+                _emailServise.Object);
 
             _userDTOStub = new UserDTO();
             _userVMStub = new UserApiModel();
@@ -315,7 +326,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null);
             service.Dispose();
             // Assert
             Assert.True(result);

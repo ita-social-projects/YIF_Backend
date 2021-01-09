@@ -162,8 +162,6 @@ namespace YIF.Core.Service.Concrete.Services
 
             result.Object = new AuthenticateResponseApiModel() { Token = token, RefreshToken = refreshToken };
 
-            await _emailService.SendAsync("ivanna.pugaiko@gmail.com", "Sending email is Fun", "<strong>Blazor Web Apps - Goodbye JavaScript! I'm in love with C#</strong>");
-
             return result.Set(true);
         }
 
