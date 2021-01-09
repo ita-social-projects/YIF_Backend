@@ -40,8 +40,8 @@ namespace YIF.Core.Domain.Repositories
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(dbUser, role);
-              //  await _dbContext.AddAsync(entityUser);
-              //  await _dbContext.SaveChangesAsync();
+                await _dbContext.AddAsync(entityUser);
+                await _dbContext.SaveChangesAsync();
                 return string.Empty;
             }
             return result.Errors.First().Description;

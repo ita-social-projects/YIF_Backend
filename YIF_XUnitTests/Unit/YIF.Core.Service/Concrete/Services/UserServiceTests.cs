@@ -240,9 +240,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("test123@gmail.com", "test123", "PAssword122_", "PAssword123_", "recaptcha_", "Password and confirm password does not compare")]
-        [InlineData("test123@gmail.com", "test123", "PAssword12", "PAssword12", "recaptcha_", "Passwords must have at least one non alphanumeric character.")]
-        [InlineData("test123@gmail.com", "test123", "pass", "pass", "recaptcha_", "Passwords must be at least 6 characters.")]
+        [InlineData("test123@gmail.com", "test123", "PAssword122_", "PAssword123_", "recaptcha_", "Паролі не співпадають!")]
+        [InlineData("test123@gmail.com", "test123", "PAssword12", "PAssword12", "recaptcha_", "Пароль має містити щонайменше один спеціальний символ!")]
+        [InlineData("test123@gmail.com", "test123", "pass", "pass", "recaptcha_", "Пароль має містити мінімум 8 символів і максимум 20 (включно)!")]
         public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenPasswordIsBad(string email, string username, string password, string confirmPassword, string recaptcha, string message)
         {
             // Arrange
@@ -279,8 +279,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var token = "some correct token";
-            var loginAM = new LoginApiModel { Email = "email@gmail.com", Password = "password", RecaptchaToken = "recaptcha" };
-            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginAM.Email, PasswordHash = loginAM.Password };
+            var loginAM = new LoginApiModel { Email = "email@gmail.com", Password = "Qwerty-1", RecaptchaToken = "recaptcha" };
+            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginAM.Email, UserName = loginAM.Email,
+                PasswordHash = loginAM.Password };
 
             _recaptcha.Setup(x => x.IsValid(loginAM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(loginAM.Email)).ReturnsAsync(user);
@@ -297,14 +298,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("d@gmail.com", "QWerty-1", "recaptcha")]
+        [InlineData("@gmail.com", "QWerty-1", "recaptcha")]
         [InlineData("qtoni6@gmail.com", "d", "recaptcha")]
         [InlineData("", "", "")]
         public async Task LoginUser_ShouldReturnFalse_WhenEmailOrPasswordAreIncorrect(string email, string password, string recaptcha)
         {
             // Arrange
             var loginVM = new LoginApiModel { Email = email, Password = password, RecaptchaToken = recaptcha };
-            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = email, PasswordHash = password };
+            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = email, UserName = email,
+                PasswordHash = password };
 
             _recaptcha.Setup(x => x.IsValid(loginVM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(email)).ReturnsAsync(email == "" ? null : user);

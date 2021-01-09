@@ -21,9 +21,9 @@ namespace YIF.Core.Service.Concrete.Services
 
             CascadeMode = CascadeMode.Stop;
 
-            RuleFor(x => x.RecaptchaToken)
-                .NotNull().WithMessage("Recaptcha є обов'язковою!")
-                .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
+            //RuleFor(x => x.RecaptchaToken)
+            //    .NotNull().WithMessage("Recaptcha є обов'язковою!")
+            //    .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
 
             RuleFor(x => x.Email)
                 .NotNull().WithMessage("Електронна пошта є обов'язковою!")
@@ -65,9 +65,9 @@ namespace YIF.Core.Service.Concrete.Services
 
             CascadeMode = CascadeMode.Stop;
 
-            RuleFor(x => x.RecaptchaToken)
-                .NotNull().WithMessage("Recaptcha є обов'язковою!")
-                .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
+            //RuleFor(x => x.RecaptchaToken)
+            //    .NotNull().WithMessage("Recaptcha є обов'язковою!")
+            //    .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
 
             RuleFor(x => x.Email).NotNull().WithMessage("Електронна пошта є обов'язковою!")
                 .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");

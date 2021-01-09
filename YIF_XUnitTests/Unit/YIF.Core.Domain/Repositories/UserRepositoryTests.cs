@@ -17,48 +17,54 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 {
     public class UserRepositoryTests
     {
-        private static readonly Mock<IApplicationDbContext> _dbContextMock = new Mock<IApplicationDbContext>();
-        private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
-        private static readonly FakeUserManager<DbUser> _userManagerMock = new FakeUserManager<DbUser>();
-        private static readonly Mock<EFDbContext> _dbEFContextMock = new Mock<EFDbContext>();
-        private static readonly UserRepository _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
+        private readonly Mock<IApplicationDbContext> _dbContextMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly FakeUserManager<DbUser> _userManagerMock;
+        private readonly Mock<EFDbContext> _dbEFContextMock;
+        private readonly UserRepository _testRepo;
 
         // User for check Create method
-        private static readonly DbUser _newUserStub = new DbUser();
-        private static readonly UserDTO _newUserDTOStub = new UserDTO();
+        private readonly DbUser _newUserStub;
+        private readonly UserDTO _newUserDTOStub;
         private readonly string _newUserPassword;
+
         // Users for check Update and Delete methods
-        private static readonly DbUser _userStub = new DbUser();
-        private static readonly UserDTO _userDTOStub = new UserDTO();
-        private static readonly DbUser _userStub2 = new DbUser
-        {
-            Id = Guid.NewGuid().ToString("D"),
-            UserName = "Jeremiah Gibson",
-            Email = "shadj_hadjf@maliberty.com"
-        };
-        private static readonly DbUser _userStub3 = new DbUser { Id = Guid.NewGuid().ToString("D") };
+        private readonly DbUser _userStub;
+        private readonly UserDTO _userDTOStub;
+        private readonly DbUser _userStub2;
+        private readonly DbUser _userStub3;
+
         // Users for check Find methods from DbSet
-        private static readonly List<UserDTO> _listDTO = new List<UserDTO> { new UserDTO() };
+        private readonly List<UserDTO> _listDTO;
         // Fake database
-        private static readonly List<DbUser> _dataStub = new List<DbUser> { _userStub, _userStub2 };
+        private readonly List<DbUser> _dataStub;
 
 
         public UserRepositoryTests()
         {
-            _newUserPassword = "QWerty-1";
-            _newUserDTOStub.Id = _newUserStub.Id = Guid.NewGuid().ToString("D");
-            _newUserDTOStub.UserName = _newUserStub.UserName = "Gia Vang";
-            _newUserDTOStub.Email = _newUserStub.Email = "dill.pazee@azel.xyz";
+            _dbContextMock = new Mock<IApplicationDbContext>();
+            _mapperMock = new Mock<IMapper>();
+            _userManagerMock = new FakeUserManager<DbUser>();
+            _dbEFContextMock = new Mock<EFDbContext>();
+            _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
 
-            _listDTO[0].Id = _userDTOStub.Id = _userStub.Id = Guid.NewGuid().ToString("D");
-            _listDTO[0].UserName = _userDTOStub.UserName = _userStub.UserName = "Safwan Wickens";
-            _listDTO[0].Email = _userDTOStub.Email = _userStub.Email = "cfarid.nadji2r@devist.com";
+            _newUserPassword = "QWerty-1";
+            _listDTO = new List<UserDTO>();
+
+            _userStub = new DbUser { Id = Guid.NewGuid().ToString("D"), UserName = "Safwan Wickens", Email = "cfarid.nadji2r@devist.com" };
+            _newUserStub = new DbUser { Id = Guid.NewGuid().ToString("D"), UserName = "Gia Vang", Email = "dill.pazee@azel.xyz" };
+            _userStub2 = new DbUser { Id = Guid.NewGuid().ToString("D"), UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
+            _userStub3 = new DbUser { Id = Guid.NewGuid().ToString("D") };
+
+            _userDTOStub = new UserDTO { Id = Guid.NewGuid().ToString("D"), UserName = "Safwan Wickens", Email = "cfarid.nadji2r@devist.com" };
+            _newUserDTOStub = new UserDTO { Id = Guid.NewGuid().ToString("D"), UserName = "Gia Vang", Email = "dill.pazee@azel.xyz" };
+
+            _listDTO.Add(new UserDTO { Id = Guid.NewGuid().ToString("D"), UserName = "Safwan Wickens", Email = "cfarid.nadji2r@devist.com" });
+            _dataStub = new List<DbUser> { _userStub, _userStub2 };
 
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_dataStub));
             _dbContextMock.Setup(s => s.SaveChangesAsync()).Verifiable();
         }
-
-
 
         [Fact]
         public async Task Create_ShouldAddUserToDatabase_WhenUserIsValid()

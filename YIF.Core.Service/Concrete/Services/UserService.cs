@@ -109,7 +109,7 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = registerModel.Username
             };
 
-            var graduate = new Graduate();
+            var graduate = new Graduate { UserId = dbUser.Id };
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
             if (registerResult != string.Empty)
@@ -175,15 +175,26 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                return result.Set(false, "Invalid client request");
+                return result.Set(false, "Invalid client request. Invalid token.");
             }
+
             var userId = claims.First(claim => claim.Type == "id").Value;
 
             var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
 
-            if (user == null || user.Token == null || user.Token.RefreshToken != refreshToken || user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null)
             {
-                return result.Set(false, "Invalid client request");
+                return result.Set(false, "Invalid client request. User doesn't exist.");
+            }
+
+            if (user.Token == null || user.Token.RefreshToken != refreshToken)
+            {
+                return result.Set(false, "Invalid client request. You must log in first.");
+            }
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return result.Set(false, "Invalid client request. Refresh token expired.");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
