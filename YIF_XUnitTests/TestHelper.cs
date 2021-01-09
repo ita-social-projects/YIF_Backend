@@ -20,33 +20,6 @@ using System.Threading.Tasks;
 
 namespace YIF_XUnitTests
 {
-    [ExcludeFromCodeCoverage]
-    internal class TestRecaptcha
-    {
-        //private readonly IConfiguration _configuration;
-        //internal TestRecaptcha(IConfiguration configuration)
-        //{
-        //    _configuration = configuration;
-        //}
-        internal static bool TestGetRecaptcha(string gRecaptchaResponse)
-        {
-            HttpClient httpClient = new HttpClient();
-
-            var res = httpClient.GetAsync($"https://www.google.com/recaptcha/api.js?render=6Le3gRkaAAAAADJIzK5jv3HegJ7VzkuS0XiBa-mK").Result;
-
-            if (res.StatusCode != HttpStatusCode.OK)
-                return false;
-
-            string JSONres = res.Content.ReadAsStringAsync().Result;
-            dynamic JSONdata = JObject.Parse(JSONres);
-
-            if (JSONdata.success != "true")
-                return false;
-
-            return true;
-        }
-    }
-    
     // For mocking Async behavior for IQueriable elements
     [ExcludeFromCodeCoverage]
     internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
