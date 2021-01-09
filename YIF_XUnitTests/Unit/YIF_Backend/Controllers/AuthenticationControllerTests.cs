@@ -53,7 +53,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var request = new LoginApiModel
             {
                 Email = email,
-                Password = password
+                Password = password,
+
             };
 
             var error = "Login or password is incorrect";
