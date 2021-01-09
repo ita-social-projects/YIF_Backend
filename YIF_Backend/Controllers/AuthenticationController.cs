@@ -31,6 +31,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
+            
             if (!ModelState.IsValid)
             {
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();

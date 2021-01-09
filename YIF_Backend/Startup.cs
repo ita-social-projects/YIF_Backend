@@ -44,6 +44,8 @@ namespace YIF_Backend
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<IRecaptchaService, RecaptchaService>();
+            services.AddTransient<IEmailService, SendGridService>();
 
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();

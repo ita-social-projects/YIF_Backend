@@ -15,7 +15,7 @@ namespace YIF.Core.Service.Concrete.Services
         //{
         //    _configuration = configuration;
         //}
-        internal static bool TestGetRecaptcha(string gRecaptchaResponse)
+        internal static bool TestGetRecaptcha()
         {
             HttpClient httpClient = new HttpClient();
 
