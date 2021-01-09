@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 
@@ -18,7 +20,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         private static readonly Mock<IApplicationDbContext> _dbContextMock = new Mock<IApplicationDbContext>();
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private static readonly FakeUserManager<DbUser> _userManagerMock = new FakeUserManager<DbUser>();
-        private static readonly UserRepository _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
+        private static readonly Mock<EFDbContext> _dbEFContextMock = new Mock<EFDbContext>();
+        private static readonly UserRepository _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
 
         // User for check Create method
         private static readonly DbUser _newUserStub = new DbUser();
@@ -64,7 +67,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _userManagerMock.ResIsSucces = IdentityResult.Success;
             _dbContextMock.Setup(s => s.AddAsync(It.IsAny<IdentityUser>())).Verifiable();
             // Act
-            var errors = await _testRepo.Create(_newUserStub, It.IsAny<IdentityUser>(), _newUserPassword);
+            var errors = await _testRepo.Create(_newUserStub, It.IsAny<IdentityUser>(), _newUserPassword, ProjectRoles.Graduate);
             // Assert
             Assert.Empty(errors);
         }
@@ -74,7 +77,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         {
             // Act
             _userManagerMock.ResIsSucces = IdentityResult.Failed();
-            var errors = await _testRepo.Create(null, null, null);
+            var errors = await _testRepo.Create(null, null, null,null);
             // Assert
             Assert.True(errors.Length > 0);
         }
@@ -183,7 +186,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var result = false;
             context.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock);
+            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
             repo.Dispose();
             // Assert
             Assert.True(result);

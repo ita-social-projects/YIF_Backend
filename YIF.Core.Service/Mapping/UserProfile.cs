@@ -20,6 +20,7 @@ namespace YIF.Core.Service.Mapping
                 .AfterMap<SetRolesResolver>();
             CreateMap<UserDTO, UserApiModel>()
                 .ReverseMap();
+
         }
     }
 
