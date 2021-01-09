@@ -67,7 +67,7 @@ namespace YIF_Backend
                     Contact = new OpenApiContact
                     {
                         Name = "Team YIF",
-                        Email = string.Empty,
+                        Email = "yifteam2020@gmail.com",
                         Url = new Uri("https://github.com/ita-social-projects/YIF_Backend/blob/dev/README.md")
                     }
                 });
@@ -82,7 +82,7 @@ namespace YIF_Backend
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
-                        new OpenApiSecurityScheme 
+                        new OpenApiSecurityScheme
                         {
                             Reference = new OpenApiReference
                             {
@@ -194,6 +194,8 @@ namespace YIF_Backend
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                c.IndexStream = () => GetType().Assembly.GetManifestResourceStream("YIF_Backend.Swagger.index.html");
+
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
             });
             #endregion
