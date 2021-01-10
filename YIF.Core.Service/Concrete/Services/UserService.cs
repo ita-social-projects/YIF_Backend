@@ -180,7 +180,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             var userId = claims.First(claim => claim.Type == "id").Value;
 
-            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
+            var user = await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user == null)
             {
@@ -220,10 +220,6 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _userRepository.Dispose();
         }
-
-
-
-
 
         // =========================   For test authorize endpoint:   =========================
         
