@@ -51,6 +51,7 @@ namespace YIF_Backend
             services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
             services.AddTransient<ITokenRepository,TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<IUniversityService<University>, UniversityService>();
             #endregion
 
             #region FluentValidation

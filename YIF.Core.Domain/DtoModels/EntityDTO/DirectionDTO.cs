@@ -7,6 +7,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class DirectionDTO
     {
+        public string Id { get; set; }
         /// <summary>
         /// Speciality name
         /// </summary>
@@ -14,6 +15,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// <summary>
         /// List of specialities
         /// </summary>
-        public virtual IQueryable<SpecialityDTO> Specialities { get; set; }
+        public virtual IEnumerable<SpecialityDTO> Specialities { get; set; }
     }
 }

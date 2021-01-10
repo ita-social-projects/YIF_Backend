@@ -40,7 +40,8 @@ namespace YIF.Core.Domain.Repositories
 
         public Task<IEnumerable<SpecialityDTO>> Find(Expression<Func<Speciality, bool>> predicate)
         {
-            var specialities = _context.Specialities.Where(predicate).AsNoTracking().ToList();
+            var specialities = _context.Specialities.Where(predicate)
+                .AsNoTracking().ToList();
 
             if (specialities != null || specialities.Count > 0)
             {

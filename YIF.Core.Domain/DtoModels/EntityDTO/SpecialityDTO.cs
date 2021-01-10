@@ -7,6 +7,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class SpecialityDTO
     {
+        public string Id { get; set; }
         /// <summary>
         /// Speciality name
         /// </summary>

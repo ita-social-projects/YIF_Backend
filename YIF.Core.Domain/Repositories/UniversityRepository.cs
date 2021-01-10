@@ -35,7 +35,7 @@ namespace YIF.Core.Domain.Repositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
 
         public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)

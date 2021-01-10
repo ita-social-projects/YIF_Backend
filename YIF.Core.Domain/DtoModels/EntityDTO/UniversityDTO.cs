@@ -24,14 +24,14 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// <summary>
         /// List of university admins
         /// </summary>
-        public virtual IQueryable<UniversityAdminDTO> Admins { get; set; }
+        public virtual IEnumerable<UniversityAdminDTO> Admins { get; set; }
         /// <summary>
         /// List of university moderators
         /// </summary>
-        public virtual IQueryable<UniversityModeratorDTO> Moderators { get; set; }
+        public virtual IEnumerable<UniversityModeratorDTO> Moderators { get; set; }
         /// <summary>
         /// List of university lectures
         /// </summary>
-        public virtual IQueryable<LectureDTO> Lectures { get; set; }
+        public virtual IEnumerable<LectureDTO> Lectures { get; set; }
     }
 }

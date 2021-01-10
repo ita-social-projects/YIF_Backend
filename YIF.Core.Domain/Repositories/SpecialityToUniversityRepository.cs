@@ -35,12 +35,14 @@ namespace YIF.Core.Domain.Repositories
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
 
         public Task<IEnumerable<SpecialityToUniversityDTO>> Find(Expression<Func<SpecialityToUniversity, bool>> predicate)
         {
-            var list = _context.SpecialityToUniversities.Where(predicate).AsNoTracking().ToList();
+            var list = _context.SpecialityToUniversities.Where(predicate)
+                .Include(x => x.University)
+                .ToList();
 
             if (list != null || list.Count > 0)
             {

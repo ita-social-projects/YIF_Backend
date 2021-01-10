@@ -54,32 +54,32 @@ namespace YIF.Core.Service.Concrete.Services
                 // Get all specialities by name
                 var specialities = await _specialityRepository.Find(x => x.Speciality.Name == filterModel.SpecialityName);
 
-                if (filteredUniversities.Count() > 1)
+                if (filteredUniversities != null && filteredUniversities.Count() > 1)
                 {
                     // Inner join between directions and specialities 
                     filteredUniversities = filteredUniversities.Where(x => specialities.Any(y => y.UniversityId == x.Id));
                 }
                 else
                 {
-                    filteredUniversities = specialities.Select(x => x.University);
+                    filteredUniversities = specialities.Select(x => x.University).ToList();
                 }
             } 
 
-            Expression<Func<University, bool>> linqFunc = null;
             if (filterModel.UniversityName != string.Empty)
             {
-                if(filteredUniversities.Count() > 1)
+                if(filteredUniversities != null && filteredUniversities.Count() > 1)
                 {
                     filteredUniversities = filteredUniversities.Where(x => x.Name == filterModel.UniversityName);
                 } else
                 {
-                    linqFunc = (x => x.Name.ToLower().Contains(filterModel.UniversityName));
-                    filteredUniversities = await _universityRepository.Find(linqFunc);
+                    var universities = await _universityRepository.Find(x => x.Name == filterModel.UniversityName);
+                    filteredUniversities = universities.AsEnumerable();
                 }
             } 
 
             result.Object = _mapper.Map<IEnumerable<UniversityFilterResponseApiModel>>(filteredUniversities.ToList());
             return result.Set(true);
+
         }
     }
 }
