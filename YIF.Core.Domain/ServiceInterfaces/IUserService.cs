@@ -17,7 +17,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> RegisterUser(RegisterApiModel registerModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> RefreshToken(TokenRequestApiModel tokenApiModel);
-
+        Task<bool> ChangeUserPhoto(ImageApiModel model, string userId);
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(string id);
 

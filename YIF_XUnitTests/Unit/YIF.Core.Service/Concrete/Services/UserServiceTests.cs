@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -28,13 +30,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IRecaptchaService> _recaptcha;
         private readonly Mock<IEmailService> _emailServise;
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
         private readonly UserDTO _userDTOStub;
         private readonly UserApiModel _userVMStub;
 
-        public UserServiceTests()
+        public UserServiceTests(IWebHostEnvironment env, IConfiguration configuration)
         {
             _userRepository = new Mock<IRepository<DbUser, UserDTO>>();
             _jwtService = new Mock<IJwtService>();
@@ -43,6 +47,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _recaptcha = new Mock<IRecaptchaService>();
             _emailServise = new Mock<IEmailService>();
+            _env = env;
+            _configuration = configuration;
             _testService = new UserService(
                 _userRepository.Object,
                 _userManager.Object,
@@ -50,7 +56,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _jwtService.Object,
                 _mapperMock.Object,
                 _recaptcha.Object,
-                _emailServise.Object);
+                _emailServise.Object,
+                _env, _configuration);
 
             _userDTOStub = new UserDTO();
             _userVMStub = new UserApiModel();
@@ -339,7 +346,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null, null, null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null);
             service.Dispose();
             // Assert
             Assert.True(result);

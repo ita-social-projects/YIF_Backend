@@ -87,6 +87,35 @@ namespace YIF.Core.Domain.Repositories
             return true;
         }
 
+        public async Task<bool> UpdateUserPhoto(DbUser user, string photo)
+        {
+            if (user == null || string.IsNullOrWhiteSpace(photo)) return false;
+
+            var userProfile = _context.UserProfiles.Find(user.Id);
+
+            if (userProfile == null)
+            {
+                _context.UserProfiles.Add(new UserProfile
+                {
+                    Id = user.Id,
+                    Name = "unknown",
+                    MiddleName = "unknown",
+                    Surname = "unknown",
+                    DateOfBirth = null,
+                    RegistrationDate = DateTime.Now,
+                    Photo = photo
+                });
+            }
+            else
+            {
+                userProfile.Photo = photo;
+                _context.UserProfiles.Update(userProfile);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> Delete(string id)
         {
             DbUser user = _context.Users.Find(id);

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 
@@ -67,6 +69,37 @@ namespace YIF_Backend.Controllers
                 _logger.LogError("There is a problem with format");
                 return new ResponseApiModel<object> { StatusCode = 400, Message = $"Bad format:  {id}" }.Response();
             }
+        }
+
+
+        /// <summary>
+        /// Change User Photo. Size limit 10 мб
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="200">if change user photo request correct</response>
+        /// <response code="400">If change user photo request incorrect.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        [HttpPost("ChangeImage")]
+        [RequestSizeLimit(10 * 1024 * 1024)]
+        [Authorize]
+        public async Task<IActionResult> ChangeUserPhoto([FromBody] ImageApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { error = "Invalid image api model" });
+            }
+
+            var id = User.FindFirst("id")?.Value;
+            
+            var result = await _userService.ChangeUserPhoto(model, id);
+            
+            if (result)
+                return Ok();
+            else
+                return BadRequest();
         }
     }
 }

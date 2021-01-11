@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -27,6 +31,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IMapper _mapper;
         private readonly IRecaptchaService _recaptcha;
         private readonly IEmailService _emailService;
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
@@ -34,7 +40,9 @@ namespace YIF.Core.Service.Concrete.Services
             IJwtService _IJwtService,
             IMapper mapper,
             IRecaptchaService recaptcha,
-            IEmailService emailService)
+            IEmailService emailService,
+            IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -43,6 +51,8 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
             _recaptcha = recaptcha;
             _emailService = emailService;
+            _env = env;
+            _configuration = configuration;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -206,6 +216,49 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
+        public async Task<bool> ChangeUserPhoto(ImageApiModel model, string userId)
+        {
+            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+
+            string base64 = model.Photo;
+            if (base64.Contains(","))
+            {
+                base64 = base64.Split(',')[1];
+            }
+
+            var bmp = base64.FromBase64StringToImage();
+
+            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
+            var folerName = _configuration.GetValue<string>("ImagesPath");
+            var path = Path.Combine(serverPath, folerName);
+
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+
+            string ext = ".jpg";
+            string fileName = Guid.NewGuid().ToString("D") + ext;
+            string filePathSave = Path.Combine(path, fileName);
+
+            string filePathDelete = null;
+            if (user.UserProfile != null)
+                filePathDelete = Path.Combine(path, user.UserProfile.Photo);
+
+            bmp.Save(filePathSave, ImageFormat.Jpeg);
+
+            var result = await _userRepository.UpdateUserPhoto(user, fileName);
+
+            if (!result)
+            {
+                return false;
+            }
+
+            if (File.Exists(filePathDelete))
+            {
+                File.Delete(filePathDelete);
+            }
+
+            return true;
+        }
+
         public Task<bool> UpdateUser(UserDTO user)
         {
             throw new NotImplementedException();
@@ -222,7 +275,7 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         // =========================   For test authorize endpoint:   =========================
-        
+
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
             var result = new ResponseApiModel<RolesByTokenResponseApiModel>();

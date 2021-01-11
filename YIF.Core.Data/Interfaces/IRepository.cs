@@ -18,5 +18,7 @@ namespace YIF.Core.Data.Interfaces
         Task<IEnumerable<K>> GetAll();
         Task<IEnumerable<K>> Find(Expression<Func<T, bool>> predicate);
         Task<bool> UpdateUserToken(DbUser user, string refreshToken);
+        Task<bool> UpdateUserPhoto(DbUser user, string photo);
+
     }
 }
