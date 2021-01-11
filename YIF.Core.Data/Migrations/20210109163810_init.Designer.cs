@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210104123508_IdForGraduateAndAdminAdded")]
-    partial class IdForGraduateAndAdminAdded
+    [Migration("20210109163810_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

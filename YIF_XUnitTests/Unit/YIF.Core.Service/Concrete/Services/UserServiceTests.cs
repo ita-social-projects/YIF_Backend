@@ -26,6 +26,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IRecaptchaService> _recaptcha;
+        private readonly Mock<IEmailService> _emailServise;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -39,7 +41,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock = new Mock<IMapper>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
-            _testService = new UserService(_userRepository.Object, _userManager.Object, _signInManager, _jwtService.Object, _mapperMock.Object);
+            _recaptcha = new Mock<IRecaptchaService>();
+            _emailServise = new Mock<IEmailService>();
+            _testService = new UserService(
+                _userRepository.Object,
+                _userManager.Object,
+                _signInManager,
+                _jwtService.Object,
+                _mapperMock.Object,
+                _recaptcha.Object,
+                _emailServise.Object);
 
             _userDTOStub = new UserDTO();
             _userVMStub = new UserApiModel();
@@ -132,8 +143,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("test@gmail.com", "test", "PAssword123_", "PAssword123_")]
-        public async Task RegisterUser_ShouldReturnResponseModelWithToken_WhenDataCorrect(string email, string username, string password, string confirmPassword)
+        [InlineData("test@gmail.com", "test", "PAssword123_", "PAssword123_", "_recaptcha")]
+        public async Task RegisterUser_ShouldReturnResponseModelWithToken_WhenDataCorrect(string email, string username, string password, string confirmPassword, string recaptcha)
         {
             // Arrange
             var token = "some correct token";
@@ -142,9 +153,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Email = email,
                 Username = username,
                 Password = password,
-                ConfirmPassword = confirmPassword
+                ConfirmPassword = confirmPassword,
+                RecaptchaToken = recaptcha
             };
 
+            _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(string.Empty));
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
@@ -160,8 +173,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("test123@gmail.com", "test123", "PAssword123_", "PAssword123_")]
-        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameEmailExists(string email, string username, string password, string confirmPassword)
+        [InlineData("test123@gmail.com", "test123", "PAssword123_", "PAssword123_", "recaptcha_")]
+        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameEmailExists(string email, string username, string password, string confirmPassword, string recaptcha)
         {
             // Arrange
             var userData = new RegisterApiModel
@@ -169,7 +182,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Email = email,
                 Username = username,
                 Password = password,
-                ConfirmPassword = confirmPassword
+                ConfirmPassword = confirmPassword,
+                RecaptchaToken = recaptcha
             };
 
             var dbUser = new DbUser
@@ -178,6 +192,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 UserName = username
             };
 
+            _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(dbUser));
 
             // Act
@@ -190,8 +205,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("test123@gmail.com", "test123", "PAssword123_", "PAssword123_")]
-        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameNameExists(string email, string username, string password, string confirmPassword)
+        [InlineData("test123@gmail.com", "test123", "PAssword123_", "PAssword123_", "recaptcha_")]
+        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameNameExists(string email, string username, string password, string confirmPassword, string recaptcha)
         {
             // Arrange
             var message = $"User name '{username}' is already taken.";
@@ -201,7 +216,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Email = email,
                 Username = username,
                 Password = password,
-                ConfirmPassword = confirmPassword
+                ConfirmPassword = confirmPassword,
+                RecaptchaToken = recaptcha
             };
 
             var dbUser = new DbUser
@@ -210,6 +226,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 UserName = username
             };
 
+            _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
@@ -223,10 +240,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("test123@gmail.com", "test123", "PAssword122_", "PAssword123_", "Password and confirm password does not compare")]
-        [InlineData("test123@gmail.com", "test123", "PAssword12", "PAssword12", "Passwords must have at least one non alphanumeric character.")]
-        [InlineData("test123@gmail.com", "test123", "pass", "pass", "Passwords must be at least 6 characters.")]
-        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenPasswordIsBad(string email, string username, string password, string confirmPassword, string message)
+        [InlineData("test123@gmail.com", "test123", "PAssword122_", "PAssword123_", "recaptcha_", "Паролі не співпадають!")]
+        [InlineData("test123@gmail.com", "test123", "PAssword12", "PAssword12", "recaptcha_", "Пароль має містити щонайменше один спеціальний символ!")]
+        [InlineData("test123@gmail.com", "test123", "pass", "pass", "recaptcha_", "Пароль має містити мінімум 8 символів і максимум 20 (включно)!")]
+        public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenPasswordIsBad(string email, string username, string password, string confirmPassword, string recaptcha, string message)
         {
             // Arrange
             var userData = new RegisterApiModel
@@ -234,7 +251,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Email = email,
                 Username = username,
                 Password = password,
-                ConfirmPassword = confirmPassword
+                ConfirmPassword = confirmPassword,
+                RecaptchaToken = recaptcha
             };
 
             var dbUser = new DbUser
@@ -243,6 +261,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 UserName = username
             };
 
+            _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
@@ -260,8 +279,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var token = "some correct token";
-            var loginAM = new LoginApiModel { Email = "email@gmail.com", Password = "password" };
+            var loginAM = new LoginApiModel { Email = "email@gmail.com", Password = "password", RecaptchaToken = "recaptcha" };
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginAM.Email, PasswordHash = loginAM.Password };
+
+            _recaptcha.Setup(x => x.IsValid(loginAM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(loginAM.Email)).ReturnsAsync(user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
@@ -276,16 +297,19 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("d@gmail.com", "QWerty-1")]
-        [InlineData("qtoni6@gmail.com", "d")]
-        [InlineData("", "")]
-        public async Task LoginUser_ShouldReturnFalse_WhenEmailOrPasswordAreIncorrect(string email, string password)
+        [InlineData("d@gmail.com", "QWerty-1", "recaptcha")]
+        [InlineData("qtoni6@gmail.com", "d", "recaptcha")]
+        [InlineData("", "", "")]
+        public async Task LoginUser_ShouldReturnFalse_WhenEmailOrPasswordAreIncorrect(string email, string password, string recaptcha)
         {
             // Arrange
-            var loginVM = new LoginApiModel { Email = email, Password = password };
+            var loginVM = new LoginApiModel { Email = email, Password = password, RecaptchaToken = recaptcha };
             var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = email, PasswordHash = password };
+
+            _recaptcha.Setup(x => x.IsValid(loginVM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(email)).ReturnsAsync(email == "" ? null : user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Failed;
+
             // Act
             var result = await _testService.LoginUser(loginVM);
             // Assert
@@ -315,7 +339,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null);
             service.Dispose();
             // Assert
             Assert.True(result);

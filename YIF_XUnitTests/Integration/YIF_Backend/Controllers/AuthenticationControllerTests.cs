@@ -28,14 +28,15 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("qtoni6@gmail.com", "QWerty-1")]
-        public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string email, string password)
+        [InlineData("qtoni6@gmail.com", "QWerty-1", "recaptcha")]
+        public async Task Post_EndpointsReturnJwt_IfLoginAndPasswordCorrect(string email, string password, string recaptcha)
         {
             // Arrange
             var user = new LoginApiModel
             {
                 Email = email,
-                Password = password
+                Password = password,
+                RecaptchaToken = recaptcha
             };
 
             var json = JsonConvert.SerializeObject(user);
@@ -59,15 +60,16 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("d@gmail.com", "QWerty-1")]
-        [InlineData("qtoni6@gmail.com", "d")]
-        public async Task Post_EndpointsReturnError_IfLoginOrPasswordIncorrect(string email, string password)
+        [InlineData("d@gmail.com", "QWerty-1", "recaptcha")]
+        [InlineData("qtoni6@gmail.com", "d", "recaptcha")]
+        public async Task Post_EndpointsReturnError_IfLoginOrPasswordIncorrect(string email, string password, string recaptcha)
         {
             // Arrange
             var user = new LoginApiModel
             {
                 Email = email,
-                Password = password
+                Password = password,
+                RecaptchaToken = recaptcha
             };
 
             var json = JsonConvert.SerializeObject(user);

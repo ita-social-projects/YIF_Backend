@@ -25,17 +25,24 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IRecaptchaService _recaptcha;
+        private readonly IEmailService _emailService;
+
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
-            IMapper mapper)
+            IMapper mapper,
+            IRecaptchaService recaptcha,
+            IEmailService emailService)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = _IJwtService;
             _mapper = mapper;
+            _recaptcha = recaptcha;
+            _emailService = emailService;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -77,6 +84,14 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
+            var validator = new RegisterValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(registerModel);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString());
+            }
+
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null)
             {
@@ -94,7 +109,7 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = registerModel.Username
             };
 
-            var graduate = new Graduate();
+            var graduate = new Graduate { UserId = dbUser.Id };
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
             if (registerResult != string.Empty)
@@ -117,6 +132,14 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel)
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
+
+            var validator = new LoginValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(loginModel);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString());
+            }
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)
@@ -152,15 +175,26 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                return result.Set(false, "Invalid client request");
+                return result.Set(false, "Invalid client request. Invalid token.");
             }
+
             var userId = claims.First(claim => claim.Type == "id").Value;
 
-            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
+            var user = await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
 
-            if (user == null || user.Token == null || user.Token.RefreshToken != refreshToken || user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null)
             {
-                return result.Set(false, "Invalid client request");
+                return result.Set(false, "Invalid client request. User doesn't exist.");
+            }
+
+            if (user.Token == null || user.Token.RefreshToken != refreshToken)
+            {
+                return result.Set(false, "Invalid client request. You must log in first.");
+            }
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return result.Set(false, "Invalid client request. Refresh token expired.");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
@@ -186,10 +220,6 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _userRepository.Dispose();
         }
-
-
-
-
 
         // =========================   For test authorize endpoint:   =========================
         
