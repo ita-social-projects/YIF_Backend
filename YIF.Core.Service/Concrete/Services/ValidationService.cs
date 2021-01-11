@@ -73,8 +73,8 @@ namespace YIF.Core.Service.Concrete.Services
                 .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
 
             RuleFor(x => x.Username).NotNull().WithMessage("Ім'я користувача є обов'язковим!")
-                .Length(2, 20).WithMessage("Ім'я користувача має містити мінімум 2 символа і максимум 20 (включно)!")
-                .Matches(@"[a-zA-z]+").WithMessage("Пароль має містити щонайменше одну латинську літеру!");
+                .Length(2, 100).WithMessage("Ім'я користувача має містити мінімум 2 символа і максимум 100 (включно)!")
+                .Matches(@"[a-zA-z]+").WithMessage("Ім'я користувача має містити щонайменше одну латинську літеру!");
 
             RuleFor(x => x.Password).NotNull().WithMessage("Пароль є обов'язковим!")
                 .Length(8, 20).WithMessage("Пароль має містити мінімум 8 символів і максимум 20 (включно)!")
