@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -21,13 +22,15 @@ namespace YIF_Backend.Controllers
             _universityService = universityService;
         }
 
-        [HttpPost("GetUniversityByFilter")] // FIX
-        public async Task<IActionResult> GetUniversityByFilter([FromBody]FilterApiModel model)
+        [HttpGet("GetUniversityByFilter")]
+        public async Task<IActionResult> GetUniversityByFilter(string DirectionName, string SpecialityName, string UniversityName)
         {
-            if(!ModelState.IsValid)
+            var model = new FilterApiModel
             {
-                return BadRequest();
-            }
+                DirectionName = DirectionName,
+                SpecialityName = SpecialityName,
+                UniversityName = UniversityName
+            };
 
             var result = await _universityService.GetUniversityByFilter(model);
 

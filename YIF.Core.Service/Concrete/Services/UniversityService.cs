@@ -41,15 +41,15 @@ namespace YIF.Core.Service.Concrete.Services
             IEnumerable<UniversityDTO> filteredUniversities = null;
 
             // Check if we must filter universities by direction name
-            if(filterModel.DirectionName != string.Empty)
+            if(filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
             {
                 // Get all directions by name
                 var directions = await _directionRepository.Find(x => x.Direction.Name == filterModel.DirectionName);
                 // Get universities by these directions
-                filteredUniversities = directions.Select(x => x.University);
+                filteredUniversities = directions.Select(x => x.University).ToList();
             }
 
-            if(filterModel.SpecialityName != string.Empty)
+            if(filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)
             {
                 // Get all specialities by name
                 var specialities = await _specialityRepository.Find(x => x.Speciality.Name == filterModel.SpecialityName);
@@ -65,7 +65,7 @@ namespace YIF.Core.Service.Concrete.Services
                 }
             } 
 
-            if (filterModel.UniversityName != string.Empty)
+            if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
             {
                 if(filteredUniversities != null && filteredUniversities.Count() > 1)
                 {
