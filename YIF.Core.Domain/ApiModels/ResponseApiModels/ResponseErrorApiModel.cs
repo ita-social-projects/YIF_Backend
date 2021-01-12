@@ -7,7 +7,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Gets or sets error for response result.
         /// </summary>
-        /// <example>Поле є обов'язким</example>
+        /// <example>Поле є обов'язковим.</example>
         [Required]
         public string Message { get; set; }
     }
