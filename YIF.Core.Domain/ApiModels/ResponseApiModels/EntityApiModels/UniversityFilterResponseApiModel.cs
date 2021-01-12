@@ -19,5 +19,18 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// Path of the university image in project directory
         /// </summary>
         public string ImagePath { get; set; }
+
+
+        public UniversityFilterResponseApiModel(
+            string Id = null
+            ,string Name = null
+            ,string Description = null
+            ,string ImagePath = null)
+        {
+            this.Id = Id;
+            this.Name = Name;
+            this.Description = Description;
+            this.ImagePath = ImagePath;
+        }
     }
 }
