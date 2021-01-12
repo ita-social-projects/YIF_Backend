@@ -8,6 +8,6 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         /// Base64 image
         /// </summary>
         [Required]
-        public string Photo { get; set; }
+        public string PhotoBase64 { get; set; }
     }
 }

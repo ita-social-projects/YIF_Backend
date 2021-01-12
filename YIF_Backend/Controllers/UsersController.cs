@@ -82,7 +82,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        [HttpPost("ChangeImage")]
+        [HttpPost("ChangePhoto")]
         [RequestSizeLimit(10 * 1024 * 1024)]
         [Authorize]
         public async Task<IActionResult> ChangeUserPhoto([FromBody] ImageApiModel model)

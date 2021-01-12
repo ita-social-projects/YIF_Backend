@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -220,13 +219,11 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
 
-            string base64 = model.Photo;
+            string base64 = model.PhotoBase64;
             if (base64.Contains(","))
             {
                 base64 = base64.Split(',')[1];
             }
-
-            var bmp = base64.FromBase64StringToImage();
 
             var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
             var folerName = _configuration.GetValue<string>("ImagesPath");
