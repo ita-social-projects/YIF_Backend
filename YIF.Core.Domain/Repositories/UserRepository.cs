@@ -11,7 +11,6 @@ using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.Models.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
@@ -24,8 +23,8 @@ namespace YIF.Core.Domain.Repositories
         private readonly UserManager<DbUser> _userManager;
 
         public UserRepository(IApplicationDbContext context,
-                              IMapper mapper, 
-                              UserManager<DbUser> userManager, 
+                              IMapper mapper,
+                              UserManager<DbUser> userManager,
                               EFDbContext dbContext)
         {
             _context = context;
@@ -34,7 +33,7 @@ namespace YIF.Core.Domain.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword ,string role)
+        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword, string role)
         {
             var result = await _userManager.CreateAsync(dbUser, userPassword);
             if (result.Succeeded)
@@ -59,6 +58,16 @@ namespace YIF.Core.Domain.Repositories
                 }
             }
             return false;
+        }
+
+        public async Task<DbUser> GetUserWithToken(string userId)
+        {
+            return await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<DbUser> GetUserWithUserProfile(string userId)
+        {
+            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
         }
 
         public async Task<bool> UpdateUserToken(DbUser user, string refreshToken)

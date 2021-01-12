@@ -189,7 +189,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             var userId = claims.First(claim => claim.Type == "id").Value;
 
-            var user = await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await _userRepository.GetUserWithToken(userId);
 
             if (user == null)
             {
@@ -217,7 +217,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<bool> ChangeUserPhoto(ImageApiModel model, string userId)
         {
-            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await _userRepository.GetUserWithUserProfile(userId);
 
             string base64 = model.PhotoBase64;
             if (base64.Contains(","))

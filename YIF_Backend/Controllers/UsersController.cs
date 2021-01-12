@@ -9,6 +9,7 @@ using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Service.Concrete.Services;
 
 namespace YIF_Backend.Controllers
 {
@@ -80,22 +81,26 @@ namespace YIF_Backend.Controllers
         /// <response code="400">If change user photo request incorrect.</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(OkResult), 200)]
+        [ProducesResponseType(typeof(ResponseErrorApiModel), 400)]
         [ProducesResponseType(500)]
         [HttpPost("ChangePhoto")]
         [RequestSizeLimit(10 * 1024 * 1024)]
         [Authorize]
         public async Task<IActionResult> ChangeUserPhoto([FromBody] ImageApiModel model)
         {
-            if (!ModelState.IsValid)
+            ImageBase64Validator validator = new ImageBase64Validator();
+            var validResults = validator.Validate(model);
+
+            if (!validResults.IsValid)
             {
-                return BadRequest(new { error = "Invalid image api model" });
+                return BadRequest(new ResponseErrorApiModel { Message = validResults.ToString() });
             }
 
             var id = User.FindFirst("id")?.Value;
-            
+
             var result = await _userService.ChangeUserPhoto(model, id);
-            
+
             if (result)
                 return Ok();
             else
