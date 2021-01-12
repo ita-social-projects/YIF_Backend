@@ -242,7 +242,9 @@ namespace YIF.Core.Service.Concrete.Services
             if (user.UserProfile != null)
                 filePathDelete = Path.Combine(path, user.UserProfile.Photo);
 
-            bmp.Save(filePathSave, ImageFormat.Jpeg);
+            //Convert Base64 Encoded string to Byte Array.
+            byte[] imageBytes = Convert.FromBase64String(base64);
+            File.WriteAllBytes(filePathSave, imageBytes);
 
             var result = await _userRepository.UpdateUserPhoto(user, fileName);
 
