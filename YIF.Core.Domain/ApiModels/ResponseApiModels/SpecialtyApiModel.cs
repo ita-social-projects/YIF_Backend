@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using YIF.Core.Domain.DtoModels;
 
 namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
@@ -23,8 +21,8 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string DirectionId { get; set; }
         /// <summary>
-        /// Navigation property for the direction to which this specialty belongs.
+        /// Gets or sets the direction name to which this specialty belongs.
         /// </summary>
-        public virtual DirectionDTO Direction { get; set; }
+        public string DirectionName { get; set; }
     }
 }

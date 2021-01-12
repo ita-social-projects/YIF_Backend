@@ -12,8 +12,7 @@ namespace YIF.Core.Domain.Repositories
     {
         private readonly EFDbContext _context;
         private readonly IMapper _mapper;
-        public SpecialtyRepository(EFDbContext context,
-                                    IMapper mapper)
+        public SpecialtyRepository(EFDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -29,12 +28,6 @@ namespace YIF.Core.Domain.Repositories
         public async Task<SpecialtyDTO> GetById(string id)
         {
             var specialty = await _context.Specialities.FirstOrDefaultAsync(x => x.Id == id);
-            return _mapper.Map<SpecialtyDTO>(specialty);
-        }
-
-        public async Task<SpecialtyDTO> GetByName(string name)
-        {
-            var specialty = await _context.Specialities.FirstOrDefaultAsync(x => x.Name == name);
             return _mapper.Map<SpecialtyDTO>(specialty);
         }
     }

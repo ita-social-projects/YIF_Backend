@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Interfaces;
@@ -28,25 +29,35 @@ namespace YIF.Core.Service.Concrete.Services
             var specialties = (List<SpecialtyDTO>)await _specialtyRepository.GetAllSpecialties();
             if (specialties.Count < 1)
             {
-                return result.Set(false, $"There are no specialties");
+                return result.Set(false, "Спеціальностей немає");
             }
-            result.Object = _mapper.Map<IEnumerable<UserApiModel>>(users);
+            result.Object = _mapper.Map<IEnumerable<SpecialtyApiModel>>(specialties);
             return result.Set(true);
         }
 
-        public async Task<ResponseApiModel<SpecialtyNamesApiModel>> GetAllSpecialtiesNames()
+        public async Task<ResponseApiModel<SpecialtyNamesResponseApiModel>> GetAllSpecialtiesNames()
         {
-            throw new NotImplementedException();
+            var result = new ResponseApiModel<SpecialtyNamesResponseApiModel>();
+            var specialties = (List<SpecialtyDTO>)await _specialtyRepository.GetAllSpecialties();
+            if (specialties.Count < 1)
+            {
+                return result.Set(false, "Спеціальностей немає");
+            }
+            var names = specialties.Select(x => x.Name).ToList();
+            result.Object = new SpecialtyNamesResponseApiModel(names);
+            return result.Set(true);
         }
 
         public async Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyById(string id)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyByName(string name)
-        {
-            throw new NotImplementedException();
+            var result = new ResponseApiModel<SpecialtyApiModel>();
+            var specialtiy = await _specialtyRepository.GetById(id);
+            if (specialtiy == null)
+            {
+                return result.Set(false, $"Спеціальність не знайдена із таким id:  {id}.");
+            }
+            result.Object = _mapper.Map<SpecialtyApiModel>(specialtiy);
+            return result.Set(true);
         }
     }
 }

@@ -17,6 +17,7 @@ using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.University;
 using YIF.Core.Domain.DtoModels.UniversityAdmin;
 using YIF.Core.Domain.DtoModels.UniversityModerator;
@@ -43,9 +44,10 @@ namespace YIF_Backend
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<ISpecialtyRepository<SpecialtyDTO>, SpecialtyRepository>();
+            services.AddTransient<ISpecialtyService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
-
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();

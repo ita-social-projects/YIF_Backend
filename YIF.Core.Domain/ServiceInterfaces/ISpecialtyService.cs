@@ -7,9 +7,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface ISpecialtyService : IDisposable
     {
-        Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyByName(string name);
         Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyById(string id);
         Task<ResponseApiModel<IEnumerable<SpecialtyApiModel>>> GetAllSpecialties();
-        Task<ResponseApiModel<SpecialtyNamesApiModel>> GetAllSpecialtiesNames();
+        Task<ResponseApiModel<SpecialtyNamesResponseApiModel>> GetAllSpecialtiesNames();
     }
 }
