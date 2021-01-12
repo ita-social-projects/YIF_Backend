@@ -47,6 +47,11 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
             Message = message;
         }
 
+        public ResponseApiModel(bool success, string message = null)
+        {
+            StatusCode = success ? 200 : 400;
+            Message = message;
+        }
 
         /// <summary>
         /// Sets properties of the class.
