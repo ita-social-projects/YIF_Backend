@@ -67,10 +67,8 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<DbUser> GetUserWithUserProfile(string userId)
         {
-            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
-            if (user.UserProfile == null)
-                await SetDefaultUserProfileIfEmpty(userId);
-            return user;
+            await SetDefaultUserProfileIfEmpty(userId);
+            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
         }
 
         public async Task<bool> SetDefaultUserProfileIfEmpty(string userId)
