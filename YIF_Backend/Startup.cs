@@ -3,10 +3,13 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -55,6 +58,12 @@ namespace YIF_Backend
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
             #endregion
+
+            services.Configure<FormOptions>(options =>
+            {
+                // Set the limit to 10 MB
+                options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
+            });
 
             #region Swagger
             services.AddSwaggerGen(c =>
@@ -169,12 +178,21 @@ namespace YIF_Backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            #region  InitStaticFiles Images
+            string pathRoot = InitStaticFilesService.CreateFolderServer(env, this.Configuration,
+                    new string[] { "ImagesPath" });
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(pathRoot),
+                RequestPath = new PathString('/' + Configuration.GetValue<string>("UrlImages"))
+            });
+            #endregion
+
+            // app.UseHttpsRedirection();
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             #region CORS
