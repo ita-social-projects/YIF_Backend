@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -21,6 +22,15 @@ namespace YIF.Core.Service.Mapping
             CreateMap<UserDTO, UserApiModel>()
                 .ReverseMap();
 
+            CreateMap<DbUser, UserProfileDTO>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile.MiddleName))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile.Surname))
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
+                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
+
+            CreateMap<UserProfileDTO, UserProfileApiModel>().ReverseMap();
         }
     }
 

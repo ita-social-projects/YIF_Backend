@@ -1,23 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
-using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.University;
 using YIF.Core.Domain.DtoModels.UniversityAdmin;
 using YIF.Core.Domain.DtoModels.UniversityModerator;
-using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -78,7 +71,7 @@ namespace YIF.Core.Service.Concrete.Services
                 Email = universityAdminModel.Email,
                 UserName = universityAdminModel.Email
             };
-            
+
             var universityModerator = new UniversityModerator();
             //TO DO зачем його передавать то шо више
             var registerResult = await _userRepository.Create(dbUser, universityModerator, universityAdminModel.Password, ProjectRoles.UniversityModerator);
@@ -87,8 +80,8 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(409, registerResult);
             }
-           
-           
+
+
             await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
             var admin = await _universityAdminRepository.GetByUniversityId(university.Id);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,6 +9,7 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
@@ -20,10 +22,13 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ILogger<UsersController> _logger;
-        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger)
+        private readonly IMapper _mapper;
+
+        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger, IMapper mapper)
         {
             _userService = userService;
             _logger = logger;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -72,17 +77,37 @@ namespace YIF_Backend.Controllers
             }
         }
 
-
         /// <summary>
-        /// Change User Photo. Size limit 10 мб
+        /// Get information about authorized user
         /// </summary>
         /// <returns>Status code</returns>
-        /// <response code="200">if change user photo request correct</response>
-        /// <response code="400">If change user photo request incorrect.</response>
-        /// <response code="401">If user is unauthorized, token is bad/expired</response>
-        [ProducesResponseType(200)]
-        [ProducesResponseType(typeof(OkResult), 200)]
-        [ProducesResponseType(typeof(ResponseErrorApiModel), 400)]
+        /// <response code="200">if get information about current user is correct</response>
+        /// <response code="400">if get information about current user is incorrect.</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired</response>
+        [ProducesResponseType(typeof(UserProfileApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(500)]
+        [HttpGet("Current")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUserFullInfo()
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var userDto = await _userService.GetUserProfileInfoById(userId);
+            if (userDto == null)
+                return BadRequest(new DescriptionResponseApiModel { Message = "Зазначеного юзера не існує." });
+            var profile = _mapper.Map<UserProfileApiModel>(userDto);
+            return Ok(profile);
+        }
+
+        /// <summary>
+        /// Change User Photo. Size limit 10 MB
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="200">If change user photo request is correct</response>
+        /// <response code="400">If change user photo request is incorrect.</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired</response>
+        [ProducesResponseType(typeof(ImageApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(500)]
         [HttpPost("ChangePhoto")]
         [RequestSizeLimit(10 * 1024 * 1024)]
@@ -94,17 +119,17 @@ namespace YIF_Backend.Controllers
 
             if (!validResults.IsValid)
             {
-                return BadRequest(new ResponseErrorApiModel { Message = validResults.ToString() });
+                return BadRequest(new DescriptionResponseApiModel { Message = validResults.ToString() });
             }
 
             var id = User.FindFirst("id")?.Value;
 
             var result = await _userService.ChangeUserPhoto(model, id);
 
-            if (result)
-                return Ok();
+            if (result != null)
+                return Ok(new ImageApiModel { Photo = result.Photo });
             else
-                return BadRequest();
+                return BadRequest(new DescriptionResponseApiModel { Message = "Фото не змінено." });
         }
     }
 }

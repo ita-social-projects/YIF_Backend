@@ -11,7 +11,7 @@ using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
@@ -67,7 +67,33 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<DbUser> GetUserWithUserProfile(string userId)
         {
-            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+            if (user.UserProfile == null)
+                await SetDefaultUserProfileIfEmpty(userId);
+            return user;
+        }
+
+        public async Task<bool> SetDefaultUserProfileIfEmpty(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId)) return false;
+
+            var userProfile = _context.UserProfiles.Find(userId);
+            if (userProfile == null)
+            {
+                _context.UserProfiles.Add(new UserProfile
+                {
+                    Id = userId,
+                    Name = "unknown",
+                    MiddleName = "unknown",
+                    Surname = "unknown",
+                    DateOfBirth = null,
+                    RegistrationDate = DateTime.Now,
+                    Photo = null
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateUserToken(DbUser user, string refreshToken)

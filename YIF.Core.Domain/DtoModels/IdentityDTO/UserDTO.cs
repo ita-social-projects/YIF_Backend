@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace YIF.Core.Domain.Models.IdentityDTO
+namespace YIF.Core.Domain.DtoModels.IdentityDTO
 {
     public class UserDTO
     {
