@@ -13,6 +13,9 @@ using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.School;
+using YIF.Core.Domain.DtoModels.SchoolAdmin;
+using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.DtoModels.University;
 using YIF.Core.Domain.DtoModels.UniversityAdmin;
 using YIF.Core.Domain.DtoModels.UniversityModerator;
@@ -32,6 +35,9 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IUniversityAdminRepository<UniversityAdminDTO> _universityAdminRepository;
         private readonly IUniversityRepository<UniversityDTO> _universityRepository;
         private readonly IUniversityModeratorRepository<UniversityModeratorDTO> _universityModeratorRepository;
+        private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
+        private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
+        private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         public SuperAdminService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -39,7 +45,10 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IUniversityRepository<UniversityDTO> universityRepository,
             IUniversityAdminRepository<UniversityAdminDTO> universityAdminRepository,
-            IUniversityModeratorRepository<UniversityModeratorDTO> universityModeratorRepository)
+            IUniversityModeratorRepository<UniversityModeratorDTO> universityModeratorRepository,
+            ISchoolRepository<SchoolDTO> schoolRepository,
+            ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
+            ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -49,6 +58,9 @@ namespace YIF.Core.Service.Concrete.Services
             _universityAdminRepository = universityAdminRepository;
             _universityRepository = universityRepository;
             _universityModeratorRepository = universityModeratorRepository;
+            _schoolRepository = schoolRepository;
+            _schoolAdminRepository = schoolAdminRepository;
+            _schoolModeratorRepository = schoolModeratorRepository;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -68,7 +80,7 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
-            if (searchUser.Result != null)
+            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
                 return result.Set(409, "User already exist");
             }
@@ -79,9 +91,7 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = universityAdminModel.Email
             };
             
-            var universityModerator = new UniversityModerator();
-            //TO DO зачем його передавать то шо више
-            var registerResult = await _userRepository.Create(dbUser, universityModerator, universityAdminModel.Password, ProjectRoles.UniversityModerator);
+            var registerResult = await _userRepository.Create(dbUser, null, universityAdminModel.Password, ProjectRoles.UniversityAdmin);
 
             if (registerResult != string.Empty)
             {
@@ -90,7 +100,7 @@ namespace YIF.Core.Service.Concrete.Services
            
            
             await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
-            var admin = await _universityAdminRepository.GetByUniversityId(university.Id);
+            var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
 
             UniversityModerator toAdd = new UniversityModerator();
             toAdd.UniversityId = university.Id;
@@ -114,5 +124,89 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(201);
         }
 
+        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel)
+        {
+            var result = new ResponseApiModel<AuthenticateResponseApiModel>();
+
+            //take uni
+            var school = await _schoolRepository.GetByName(schoolAdminModel.SchoolName);
+            if (school == null)
+            {
+                return result.Set(false, "There is no school with name " + schoolAdminModel.SchoolName + " in our database");
+            }
+
+            var adminCheck = await _schoolAdminRepository.GetBySchoolId(school.Id);
+            if (adminCheck != null)
+            {
+                return result.Set(409, "Admin for this uni already exists( 1 school can have only 1 admin )");
+            }
+
+            var searchUser = _userManager.FindByEmailAsync(schoolAdminModel.Email);
+            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
+            {
+                return result.Set(409, "User already exist");
+            }
+
+            var dbUser = new DbUser
+            {
+                Email = schoolAdminModel.Email,
+                UserName = schoolAdminModel.Email
+            };
+
+            //TO DO зачем його передавать то шо више
+            var registerResult = await _userRepository.Create(dbUser, null, schoolAdminModel.Password, ProjectRoles.SchoolAdmin);
+
+            if (registerResult != string.Empty)
+            {
+                return result.Set(409, registerResult);
+            }
+
+
+            await _schoolAdminRepository.AddSchoolAdmin(new SchoolAdmin { SchoolId = school.Id });
+            var admin = await _schoolAdminRepository.GetBySchoolIdWithoutIsDeletedCheck(school.Id);
+
+            SchoolModerator toAdd = new SchoolModerator();
+            toAdd.SchoolId = school.Id;
+            toAdd.UserId = dbUser.Id;
+            toAdd.AdminId = admin.Id;
+            await _schoolModeratorRepository.AddSchoolModerator(toAdd);
+
+
+            //to do change logic and response model
+
+
+            var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
+            var refreshToken = _jwtService.CreateRefreshToken();
+
+            await _userRepository.UpdateUserToken(dbUser, refreshToken);
+
+            await _signInManager.SignInAsync(dbUser, isPersistent: false);
+
+            result.Object = new AuthenticateResponseApiModel { Token = token, RefreshToken = refreshToken };
+
+            return result.Set(201);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            string ch = await _universityAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
+            if (ch == null)
+                {
+                return result.Set(false, "User with such Id was not found");
+            }
+            return result.Set(200,new DescriptionResponseApiModel() { Message = ch});
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            string ch = await _schoolAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
+            if (ch == null)
+            {
+                return result.Set(false, "User with such Id was not found");
+            }
+            return result.Set(200, new DescriptionResponseApiModel() { Message = ch });
+        }
     }
 }

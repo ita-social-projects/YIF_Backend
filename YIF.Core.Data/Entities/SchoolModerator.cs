@@ -18,7 +18,9 @@ namespace YIF.Core.Data.Entities
         public virtual SchoolAdmin Admin { get; set; }
         /// <summary>
         /// Link to Identity user
-        /// </summary>      
+        /// </summary>
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
         public virtual DbUser User { get; set; }
     }
 }
