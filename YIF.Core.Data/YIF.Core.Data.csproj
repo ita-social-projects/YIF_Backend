@@ -5,15 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20210112122927_SchoolModAdmin_UniModAdmin_connectionDelete.cs" />
-    <Compile Remove="Migrations\20210112122927_SchoolModAdmin_UniModAdmin_connectionDelete.Designer.cs" />
-    <Compile Remove="Migrations\20210112165226_AddCascaseDeleteForUniModerator.cs" />
-    <Compile Remove="Migrations\20210112165226_AddCascaseDeleteForUniModerator.Designer.cs" />
-    <Compile Remove="Migrations\20210112170101_AddCascaseDeleteForUniModerator.cs" />
-    <Compile Remove="Migrations\20210112170101_AddCascaseDeleteForUniModerator.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.9" />

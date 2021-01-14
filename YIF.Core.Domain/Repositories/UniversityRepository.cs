@@ -42,9 +42,7 @@ namespace YIF.Core.Domain.Repositories
         [ExcludeFromCodeCoverage]
         public void Dispose()
         {
-            var list = await _context.Universities.ToListAsync();
-            
-            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
+            _context.Dispose();
         }
 
         public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
