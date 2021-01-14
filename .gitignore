@@ -3,6 +3,8 @@ coverage.opencover.xml
 
 #ignore folder with logs
 Logs/
+#ignore folder with files
+Uploaded/
 
 # Default ignored files
 /shelf/

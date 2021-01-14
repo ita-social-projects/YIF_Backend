@@ -14,23 +14,23 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UniversityRepository : IRepository<University, UniversityDTO>
+    public class DirectionToUniversityRepository : IRepository<DirectionToUniversity, DirectionToUniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public UniversityRepository(IApplicationDbContext context, IMapper mapper)
+        public DirectionToUniversityRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword)
+        public Task<string> Create(DirectionToUniversity dbUser, object entityUser, string userPassword)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword, string role)
+        public Task<string> Create(DirectionToUniversity dbUser, object entityUser, string userPassword, string role)
         {
             throw new NotImplementedException();
         }
@@ -39,36 +39,39 @@ namespace YIF.Core.Domain.Repositories
         {
             throw new NotImplementedException();
         }
-        public async Task<IEnumerable<UniversityDTO>> GetAllUniversities()
+
+        [ExcludeFromCodeCoverage]
+        public void Dispose()
         {
-            var list = await _context.Universities.ToListAsync();
-            
-            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
+            _context.Dispose();
         }
 
-        public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
+        public Task<IEnumerable<DirectionToUniversityDTO>> Find(Expression<Func<DirectionToUniversity, bool>> predicate)
         {
-            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+            var list = _context.DirectionsToUniversities.Where(predicate)
+                .Include(x => x.University)
+                .Include(x => x.Direction)
+                .AsNoTracking().ToList();
 
-            if (universities != null || universities.Count > 0)
+            if (list != null || list.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
+                return Task.FromResult(_mapper.Map<IEnumerable<DirectionToUniversityDTO>>(list));
             }
 
             return null;
         }
 
-        public Task<UniversityDTO> Get(string id)
+        public Task<DirectionToUniversityDTO> Get(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UniversityDTO>> GetAll()
+        public Task<IEnumerable<DirectionToUniversityDTO>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<UniversityDTO> GetByEmail(string email)
+        public Task<DirectionToUniversityDTO> GetByEmail(string email)
         {
             throw new NotImplementedException();
         }
@@ -88,7 +91,7 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(University item)
+        public Task<bool> Update(DirectionToUniversity item)
         {
             throw new NotImplementedException();
         }
