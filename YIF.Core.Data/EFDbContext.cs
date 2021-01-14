@@ -35,7 +35,7 @@ namespace YIF.Core.Data
         public DbSet<Graduate> Graduates { get; set; }
         public DbSet<School> Schools { get; set; }
         public DbSet<Token> Tokens { get; set; }
-        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<UserProfile> UserProfiles { get ; set; }
         #endregion
 
         public async Task<int> SaveChangesAsync()

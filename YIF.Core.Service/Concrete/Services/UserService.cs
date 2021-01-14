@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -16,7 +13,7 @@ using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -24,15 +21,12 @@ namespace YIF.Core.Service.Concrete.Services
     public class UserService : IUserService<DbUser>
     {
         private readonly IRepository<DbUser, UserDTO> _userRepository;
-        private readonly ITokenRepository _tokenRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IRecaptchaService _recaptcha;
         private readonly IEmailService _emailService;
-        private readonly IWebHostEnvironment _env;
-        private readonly IConfiguration _configuration;
 
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
@@ -40,10 +34,7 @@ namespace YIF.Core.Service.Concrete.Services
             IJwtService _IJwtService,
             IMapper mapper,
             IRecaptchaService recaptcha,
-            IEmailService emailService,
-            IWebHostEnvironment env,
-            IConfiguration configuration,
-            ITokenRepository tokenRepository)
+            IEmailService emailService)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -52,9 +43,6 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
             _recaptcha = recaptcha;
             _emailService = emailService;
-            _env = env;
-            _configuration = configuration;
-            _tokenRepository = tokenRepository;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -124,8 +112,6 @@ namespace YIF.Core.Service.Concrete.Services
             var graduate = new Graduate { UserId = dbUser.Id };
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
-            await _userRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
-
             if (registerResult != string.Empty)
             {
                 return result.Set(409, registerResult);
@@ -134,7 +120,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
+            await _userRepository.UpdateUserToken(dbUser, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
@@ -170,7 +156,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(user, refreshToken);
+            await _userRepository.UpdateUserToken(user, refreshToken);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -194,7 +180,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             var userId = claims.First(claim => claim.Type == "id").Value;
 
-            var user = await _userRepository.GetUserWithToken(userId);
+            var user = await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user == null)
             {
@@ -214,60 +200,10 @@ namespace YIF.Core.Service.Concrete.Services
             var newAccessToken = _jwtService.CreateToken(claims);
             var newRefreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(user, newRefreshToken);
+            await _userRepository.UpdateUserToken(user, newRefreshToken);
 
             result.Object = new AuthenticateResponseApiModel() { Token = newAccessToken, RefreshToken = newRefreshToken };
             return result.Set(true);
-        }
-
-        public async Task<UserProfileDTO> GetUserProfileInfoById(string userId)
-        {
-            var user = await _userRepository.GetUserWithUserProfile(userId);
-            return _mapper.Map<UserProfileDTO>(user);
-        }
-
-
-        public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
-        {
-            var user = await _userRepository.GetUserWithUserProfile(userId);
-
-            string base64 = model.Photo;
-            if (base64.Contains(","))
-            {
-                base64 = base64.Split(',')[1];
-            }
-
-            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
-            var folerName = _configuration.GetValue<string>("ImagesPath");
-            var path = Path.Combine(serverPath, folerName);
-
-            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
-
-            string ext = ".jpg";
-            string fileName = Guid.NewGuid().ToString("D") + ext;
-            string filePathSave = Path.Combine(path, fileName);
-
-            string filePathDelete = null;
-            if (user.UserProfile != null && user.UserProfile.Photo != null)
-                filePathDelete = Path.Combine(path, user.UserProfile.Photo);
-
-            //Convert Base64 Encoded string to Byte Array.
-            byte[] imageBytes = Convert.FromBase64String(base64);
-            File.WriteAllBytes(filePathSave, imageBytes);
-
-            var result = await _userRepository.UpdateUserPhoto(user, fileName);
-
-            if (!result)
-            {
-                return null;
-            }
-
-            if (File.Exists(filePathDelete))
-            {
-                File.Delete(filePathDelete);
-            }
-
-            return new ImageApiModel { Photo = fileName };
         }
 
         public Task<bool> UpdateUser(UserDTO user)
@@ -286,7 +222,7 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         // =========================   For test authorize endpoint:   =========================
-
+        
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
             var result = new ResponseApiModel<RolesByTokenResponseApiModel>();

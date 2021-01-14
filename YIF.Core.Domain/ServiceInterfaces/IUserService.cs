@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.Models.IdentityDTO;
 
 namespace YIF.Core.Domain.ServiceInterfaces
 {
@@ -17,12 +17,13 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> RegisterUser(RegisterApiModel registerModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> RefreshToken(TokenRequestApiModel tokenApiModel);
-        Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId);
-        Task<UserProfileDTO> GetUserProfileInfoById(string userId);
+
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(string id);
 
         void Dispose();
+
+
 
         // =========================   For test authorize endpoint:   =========================
         Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id);

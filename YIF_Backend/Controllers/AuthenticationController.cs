@@ -67,7 +67,15 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
         /// <response code="200">Returns object with tokens</response>
-        /// <response code="400">If refresh token request incorrect.</response>
+        /// <response code="400">
+        /// <para>If refresh token request incorrect.</para> 
+        /// <para>Errors:</para>
+        /// <para>Model state is not valid.</para>
+        /// <para>Invalid client request. Invalid token.</para>
+        /// <para>Invalid client request. User doesn't exist</para>
+        /// <para>Invalid client request. You must log in first.</para>
+        /// <para>Invalid client request. Refresh token expired.</para>
+        /// </response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(500)]

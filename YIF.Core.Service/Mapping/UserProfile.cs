@@ -4,11 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
-using YIF.Core.Data.Entities;
-using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -24,28 +21,6 @@ namespace YIF.Core.Service.Mapping
             CreateMap<UserDTO, UserApiModel>()
                 .ReverseMap();
 
-            CreateMap<SpecialityToUniversity, SpecialityToUniversityDTO>()
-                .ReverseMap();
-            CreateMap<Speciality, SpecialityDTO>()
-                .ReverseMap();
-            CreateMap<University, UniversityDTO>()
-                .ReverseMap();
-            CreateMap<Direction, DirectionDTO>()
-                .ReverseMap();
-            CreateMap<DirectionToUniversity, DirectionToUniversityDTO>()
-               .ReverseMap();
-            CreateMap<UniversityAdmin, UniversityAdminDTO>()
-                .ReverseMap();
-            CreateMap<UniversityModerator, UniversityModeratorDTO>()
-                .ReverseMap();
-            CreateMap<Lecture, LectureDTO>()
-                .ReverseMap();
-
-            CreateMap<UniversityDTO, UniversityFilterResponseApiModel>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath));
         }
     }
 

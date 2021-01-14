@@ -14,7 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Controllers\UsersController.cs~RF95655c.TMP" />
     <None Remove="index.html" />
   </ItemGroup>
 
@@ -49,6 +48,10 @@
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Uploaded\" />
   </ItemGroup>
 
 </Project>

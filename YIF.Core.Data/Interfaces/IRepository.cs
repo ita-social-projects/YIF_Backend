@@ -17,11 +17,6 @@ namespace YIF.Core.Data.Interfaces
         Task<K> GetByEmail(string email);
         Task<IEnumerable<K>> GetAll();
         Task<IEnumerable<K>> Find(Expression<Func<T, bool>> predicate);
-        Task<DbUser> GetUserWithToken(string userId);
-        Task<DbUser> GetUserWithUserProfile(string userId);
-        Task<bool> SetDefaultUserProfileIfEmpty(string userId);
         Task<bool> UpdateUserToken(DbUser user, string refreshToken);
-        Task<bool> UpdateUserPhoto(DbUser user, string photo);
-
     }
 }

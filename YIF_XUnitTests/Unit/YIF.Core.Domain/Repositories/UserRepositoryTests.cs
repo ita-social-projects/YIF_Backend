@@ -10,7 +10,7 @@ using YIF.Core.Data;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
@@ -147,7 +147,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         [Fact]
         public async Task Get_ShouldReturnUserDTO_WhenUserIsFoundInDatabase()
         {
-            //b0c4ff23 - 8244 - 455e-8429 - c4a1e7297925
             // Arrange
             _dbContextMock.Setup(s => s.Users.FindAsync(_userStub.Id)).ReturnsAsync(_userStub);
             _mapperMock.Setup(s => s.Map<UserDTO>(_userStub)).Returns(_userDTOStub);
@@ -155,7 +154,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var result = await _testRepo.Get(_userStub.Id);
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(_listDTO[0].Email, result.Email);
+            Assert.Equal(_listDTO[0].Id, result.Id);
         }
 
         [Fact]

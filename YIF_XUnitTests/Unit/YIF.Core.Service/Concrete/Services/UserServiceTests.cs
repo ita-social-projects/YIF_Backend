@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -14,9 +12,7 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
@@ -26,15 +22,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private readonly UserService _testService;
         private readonly Mock<IRepository<DbUser, UserDTO>> _userRepository;
-        private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IRecaptchaService> _recaptcha;
         private readonly Mock<IEmailService> _emailServise;
-        private readonly Mock<IWebHostEnvironment> _env;
-        private readonly Mock<IConfiguration> _configuration;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -42,17 +35,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly UserApiModel _userVMStub;
 
         public UserServiceTests()
-        {           
+        {
             _userRepository = new Mock<IRepository<DbUser, UserDTO>>();
-            _tokenRepository = new Mock<ITokenRepository>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _recaptcha = new Mock<IRecaptchaService>();
             _emailServise = new Mock<IEmailService>();
-            _env = new Mock<IWebHostEnvironment>();
-            _configuration = new Mock<IConfiguration>();
             _testService = new UserService(
                 _userRepository.Object,
                 _userManager.Object,
@@ -60,9 +50,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _jwtService.Object,
                 _mapperMock.Object,
                 _recaptcha.Object,
-                _emailServise.Object,
-                _env.Object, _configuration.Object,
-                _tokenRepository.Object);
+                _emailServise.Object);
 
             _userDTOStub = new UserDTO();
             _userVMStub = new UserApiModel();
@@ -213,7 +201,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.False(result.Success);
             Assert.Null(result.Object);
-            Assert.Equal("Електронна пошта вже існує!", result.Message);
+            Assert.Equal("User already exist", result.Message);
         }
 
         [Theory]
@@ -286,23 +274,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.Equal(message, result.Message);
         }
 
-        //[Fact]
+        [Fact]
         public async Task LoginUser_ShouldReturnResponseModelWithToken_WhenEmailAndPasswordAreCorrect()
         {
             // Arrange
             var token = "some correct token";
-            var loginAM = new LoginApiModel 
-            { 
-                Email = "stepan@gmail.com",
-                Password = "QWerty-1",
-                RecaptchaToken = "recaptcha"
-            };
-            var user = new DbUser 
-            { 
-                Id = Guid.NewGuid().ToString("D"),
-                Email = loginAM.Email,
-                PasswordHash = loginAM.Password 
-            };
+            var loginAM = new LoginApiModel { Email = "email@gmail.com", Password = "password", RecaptchaToken = "recaptcha" };
+            var user = new DbUser { Id = Guid.NewGuid().ToString("D"), Email = loginAM.Email, PasswordHash = loginAM.Password };
 
             _recaptcha.Setup(x => x.IsValid(loginAM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(loginAM.Email)).ReturnsAsync(user);
@@ -310,7 +288,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _jwtService.Setup(s => s.CreateRefreshToken()).Returns(token);
-            _tokenRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
+            _userRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
             // Act
             var result = await _testService.LoginUser(loginAM);
             // Assert
@@ -320,8 +298,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1", "recaptcha")]
-        //[InlineData("qtoni6@gmail.com", "d", "recaptcha")]
-        //[InlineData("", "", "")]
+        [InlineData("qtoni6@gmail.com", "d", "recaptcha")]
+        [InlineData("", "", "")]
         public async Task LoginUser_ShouldReturnFalse_WhenEmailOrPasswordAreIncorrect(string email, string password, string recaptcha)
         {
             // Arrange
@@ -336,7 +314,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await _testService.LoginUser(loginVM);
             // Assert
             Assert.False(result.Success);
-            Assert.Equal("Логін або пароль неправильний!", result.Message);
+            Assert.Equal("Login or password is incorrect", result.Message);
         }
 
         [Fact]
@@ -361,7 +339,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null,null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null);
             service.Dispose();
             // Assert
             Assert.True(result);
