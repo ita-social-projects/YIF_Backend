@@ -46,7 +46,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
             _dbEFContextMock = new Mock<EFDbContext>();
-            _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
+            _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
             _newUserPassword = "QWerty-1";
             _listDTO = new List<UserDTO>();
@@ -192,7 +192,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var result = false;
             context.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
+            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock);
             repo.Dispose();
             // Assert
             Assert.True(result);

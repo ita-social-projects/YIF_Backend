@@ -12,6 +12,7 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.Models.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
@@ -38,9 +39,9 @@ namespace YIF.Core.Domain.Repositories
                 await _userManager.AddToRoleAsync(dbUser, role);
                 if (entityUser != null)
                 {
-                    await _dbContext.AddAsync(entityUser);
+                    await _context.AddAsync(entityUser);
                 }
-                await _dbContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 return string.Empty;
             }
             return result.Errors.First().Description;

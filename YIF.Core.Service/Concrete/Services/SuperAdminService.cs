@@ -10,6 +10,10 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.DtoModels.School;
+using YIF.Core.Domain.DtoModels.SchoolAdmin;
+using YIF.Core.Domain.DtoModels.SchoolModerator;
+using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services

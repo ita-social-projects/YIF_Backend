@@ -10,6 +10,7 @@ namespace YIF.Core.Data.Interfaces
     public interface IApplicationDbContext : IDisposable
     {
         DbSet<SuperAdmin> SuperAdmins { get; set; }
+        DbSet<UserProfile> UserProfiles { get; set; }
         DbSet<UniversityModerator> UniversityModerators { get; set; }
         DbSet<UniversityAdmin> UniversityAdmins { get; set; }
         DbSet<Lecture> Lectures { get; set; }
