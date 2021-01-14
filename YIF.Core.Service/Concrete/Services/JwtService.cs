@@ -40,7 +40,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             var jwt = new JwtSecurityToken(
                 signingCredentials: signinCredentials,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddMinutes(10),
                 claims: claims);
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);

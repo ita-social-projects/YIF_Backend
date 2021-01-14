@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -25,17 +29,30 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IRecaptchaService _recaptcha;
+        private readonly IEmailService _emailService;
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
+
         public UserService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
-            IMapper mapper)
+            IMapper mapper,
+            IRecaptchaService recaptcha,
+            IEmailService emailService,
+            IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = _IJwtService;
             _mapper = mapper;
+            _recaptcha = recaptcha;
+            _emailService = emailService;
+            _env = env;
+            _configuration = configuration;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -77,6 +94,14 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
+            var validator = new RegisterValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(registerModel);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString());
+            }
+
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null)
             {
@@ -94,8 +119,8 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = registerModel.Username
             };
 
-            var graduate = new Graduate();
-            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password);
+            var graduate = new Graduate { UserId = dbUser.Id };
+            var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
             if (registerResult != string.Empty)
             {
@@ -117,6 +142,14 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel)
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
+
+            var validator = new LoginValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(loginModel);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString());
+            }
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)
@@ -152,15 +185,26 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                return result.Set(false, "Invalid client request");
+                return result.Set(false, "Invalid client request. Invalid token.");
             }
+
             var userId = claims.First(claim => claim.Type == "id").Value;
 
-            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == userId);
+            var user = await _userRepository.GetUserWithToken(userId);
 
-            if (user == null || user.Token == null || user.Token.RefreshToken != refreshToken || user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            if (user == null)
             {
-                return result.Set(false, "Invalid client request");
+                return result.Set(false, "Invalid client request. User doesn't exist.");
+            }
+
+            if (user.Token == null || user.Token.RefreshToken != refreshToken)
+            {
+                return result.Set(false, "Invalid client request. You must log in first.");
+            }
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return result.Set(false, "Invalid client request. Refresh token expired.");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
@@ -170,6 +214,49 @@ namespace YIF.Core.Service.Concrete.Services
 
             result.Object = new AuthenticateResponseApiModel() { Token = newAccessToken, RefreshToken = newRefreshToken };
             return result.Set(true);
+        }
+
+        public async Task<bool> ChangeUserPhoto(ImageApiModel model, string userId)
+        {
+            var user = await _userRepository.GetUserWithUserProfile(userId);
+
+            string base64 = model.PhotoBase64;
+            if (base64.Contains(","))
+            {
+                base64 = base64.Split(',')[1];
+            }
+
+            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
+            var folerName = _configuration.GetValue<string>("ImagesPath");
+            var path = Path.Combine(serverPath, folerName);
+
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+
+            string ext = ".jpg";
+            string fileName = Guid.NewGuid().ToString("D") + ext;
+            string filePathSave = Path.Combine(path, fileName);
+
+            string filePathDelete = null;
+            if (user.UserProfile != null)
+                filePathDelete = Path.Combine(path, user.UserProfile.Photo);
+
+            //Convert Base64 Encoded string to Byte Array.
+            byte[] imageBytes = Convert.FromBase64String(base64);
+            File.WriteAllBytes(filePathSave, imageBytes);
+
+            var result = await _userRepository.UpdateUserPhoto(user, fileName);
+
+            if (!result)
+            {
+                return false;
+            }
+
+            if (File.Exists(filePathDelete))
+            {
+                File.Delete(filePathDelete);
+            }
+
+            return true;
         }
 
         public Task<bool> UpdateUser(UserDTO user)
@@ -185,6 +272,44 @@ namespace YIF.Core.Service.Concrete.Services
         public void Dispose()
         {
             _userRepository.Dispose();
+        }
+
+        // =========================   For test authorize endpoint:   =========================
+
+        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
+            result.Object = new RolesByTokenResponseApiModel("Not Valid");
+
+            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                result.Object.TokenStatus = "Valid, but expired";
+            }
+
+            result.Object.TokenStatus = "Valid";
+            result.Object.Roles = await _userManager.GetRolesAsync(user);
+
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
+
+            result = await GetAllUsers();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            return result.Set(200, result.Object.Where(
+                    u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
+                    u.Roles.Contains(ProjectRoles.UniversityAdmin)
+                    ));
         }
     }
 }

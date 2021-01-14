@@ -3,17 +3,19 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
@@ -21,11 +23,13 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.University;
+using YIF.Core.Domain.DtoModels.UniversityAdmin;
+using YIF.Core.Domain.DtoModels.UniversityModerator;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
-using YIF.Core.Service.Mapping;
 
 namespace YIF_Backend
 {
@@ -51,14 +55,25 @@ namespace YIF_Backend
             services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
             services.AddTransient<ITokenRepository,TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<IRecaptchaService, RecaptchaService>();
+            services.AddTransient<IEmailService, SendGridService>();
+
+            services.AddTransient<ISuperAdminService, SuperAdminService>();
+            services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
+            services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
+            services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
             services.AddTransient<IUniversityService<University>, UniversityService>();
             #endregion
 
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
-
-            //services.AddTransient<IValidator<User>, UserValidation>();
             #endregion
+
+            services.Configure<FormOptions>(options =>
+            {
+                // Set the limit to 10 MB
+                options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
+            });
 
             #region Swagger
             services.AddSwaggerGen(c =>
@@ -66,15 +81,14 @@ namespace YIF_Backend
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "YPS API",
-                    Description = "A project  ASP.NET Core Web API",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    Title = "YIF API",
+                    Description = "A project ASP.NET Core Web API",
                     Contact = new OpenApiContact
                     {
-                        Name = "Team YPS",
-                        Email = string.Empty,
-                    },
-
+                        Name = "Team YIF",
+                        Email = "yifteam2020@gmail.com",
+                        Url = new Uri("https://github.com/ita-social-projects/YIF_Backend/blob/dev/README.md")
+                    }
                 });
 
                 c.AddSecurityDefinition("Bearer",
@@ -84,23 +98,29 @@ namespace YIF_Backend
                          Type = SecuritySchemeType.Http,
                          Scheme = "bearer"
                      });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
-                        new OpenApiSecurityScheme{
-                            Reference = new OpenApiReference{
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
                                 Id = "Bearer",
                                 Type = ReferenceType.SecurityScheme
                             }
-                        },new List<string>()
+                        },
+                        new List<string>()
                     }
                 });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                if (File.Exists(xmlPath))
-                {
-                    c.IncludeXmlComments(xmlPath);
-                }
 
+                foreach (string xmlFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.xml"))
+                {
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    if (File.Exists(xmlPath))
+                    {
+                        c.IncludeXmlComments(xmlPath);
+                    }
+                }
             });
             #endregion
 
@@ -168,10 +188,21 @@ namespace YIF_Backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            #region  InitStaticFiles Images
+            string pathRoot = InitStaticFilesService.CreateFolderServer(env, this.Configuration,
+                    new string[] { "ImagesPath" });
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(pathRoot),
+                RequestPath = new PathString('/' + Configuration.GetValue<string>("UrlImages"))
+            });
+            #endregion
+
+            // app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             #region CORS
@@ -184,14 +215,16 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            // SeederDB.SeedData(app.ApplicationServices);
+            //SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.IndexStream = () => GetType().Assembly.GetManifestResourceStream("YIF_Backend.Swagger.index.html");
+
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
             });
             #endregion
 

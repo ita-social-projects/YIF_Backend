@@ -1,7 +1,10 @@
 coverage.opencover.xml
+#appsettings.json
 
 #ignore folder with logs
 Logs/
+#ignore folder with files
+Uploaded/
 
 # Default ignored files
 /shelf/

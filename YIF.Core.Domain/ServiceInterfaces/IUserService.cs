@@ -17,10 +17,16 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> RegisterUser(RegisterApiModel registerModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> RefreshToken(TokenRequestApiModel tokenApiModel);
-
+        Task<bool> ChangeUserPhoto(ImageApiModel model, string userId);
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(string id);
 
         void Dispose();
+
+
+
+        // =========================   For test authorize endpoint:   =========================
+        Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id);
+        Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id);
     }
 }

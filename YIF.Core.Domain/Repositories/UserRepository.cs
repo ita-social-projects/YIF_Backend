@@ -7,35 +7,40 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.Models.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
+        private readonly EFDbContext _dbContext;
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
 
-        public UserRepository(IApplicationDbContext context, IMapper mapper, UserManager<DbUser> userManager)
+        public UserRepository(IApplicationDbContext context,
+                              IMapper mapper,
+                              UserManager<DbUser> userManager,
+                              EFDbContext dbContext)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
+            _dbContext = dbContext;
         }
 
-        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword)
+        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword, string role)
         {
             var result = await _userManager.CreateAsync(dbUser, userPassword);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(dbUser, ProjectRoles.Graduate);
-                await _context.AddAsync(entityUser);
-                await _context.SaveChangesAsync();
+                await _userManager.AddToRoleAsync(dbUser, role);
+                await _dbContext.AddAsync(entityUser);
+                await _dbContext.SaveChangesAsync();
                 return string.Empty;
             }
             return result.Errors.First().Description;
@@ -54,6 +59,71 @@ namespace YIF.Core.Domain.Repositories
             }
             return false;
         }       
+
+        public async Task<DbUser> GetUserWithToken(string userId)
+        {
+            return await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<DbUser> GetUserWithUserProfile(string userId)
+        {
+            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<bool> UpdateUserToken(DbUser user, string refreshToken)
+        {
+            if (user == null) return false;
+
+            var tokendb = _context.Tokens.Find(user.Id);
+
+            if (tokendb == null)
+            {
+                _context.Tokens.Add(new Token
+                {
+                    Id = user.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                });
+            }
+            else
+            {
+                tokendb.RefreshToken = refreshToken;
+                tokendb.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                _context.Tokens.Update(tokendb);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateUserPhoto(DbUser user, string photo)
+        {
+            if (user == null || string.IsNullOrWhiteSpace(photo)) return false;
+
+            var userProfile = _context.UserProfiles.Find(user.Id);
+
+            if (userProfile == null)
+            {
+                _context.UserProfiles.Add(new UserProfile
+                {
+                    Id = user.Id,
+                    Name = "unknown",
+                    MiddleName = "unknown",
+                    Surname = "unknown",
+                    DateOfBirth = null,
+                    RegistrationDate = DateTime.Now,
+                    Photo = photo
+                });
+            }
+            else
+            {
+                userProfile.Photo = photo;
+                _context.UserProfiles.Update(userProfile);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<bool> Delete(string id)
         {
@@ -83,7 +153,15 @@ namespace YIF.Core.Domain.Repositories
             }
             throw new KeyNotFoundException("User not found:  " + id);
         }
-
+        public async Task<UserDTO> GetByEmail(string email)
+        {
+            var user = await _dbContext.Users.FindAsync(email);
+            if (user != null)
+            {
+                return _mapper.Map<UserDTO>(user);
+            }
+            throw new KeyNotFoundException("User not found:  " + email);
+        }
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
             var list = await _context.Users.ToListAsync();
