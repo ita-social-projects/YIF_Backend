@@ -4,53 +4,102 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using YIF.Core.Data;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.DtoModels.University;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UniversityRepository : IUniversityRepository<UniversityDTO>
+    public class UniversityRepository : IRepository<University, UniversityDTO>
     {
-        private readonly EFDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        public UniversityRepository(EFDbContext context, 
-                                    IMapper mapper)
+
+        public UniversityRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
-        public  Task<string> AddUniversity(University university)
+
+        public Task<string> Create(University dbUser, object entityUser, string userPassword)
         {
             throw new NotImplementedException();
         }
-        public async Task<IEnumerable<UniversityDTO>> GetAllUniversities()
+
+        public Task<string> Create(University dbUser, object entityUser, string userPassword, string role)
         {
-            var list = await _context.Universities.ToListAsync();
-            
-            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
+            throw new NotImplementedException();
         }
 
-        public async Task<UniversityDTO> GetByName(string name)
+        public Task<bool> Delete(string id)
         {
-            var university = await _context.Universities.
-                Where(p=>p.Name == name).
-                FirstOrDefaultAsync();
-            if (university != null)
+            throw new NotImplementedException();
+        }
+        [ExcludeFromCodeCoverage]
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
+
+        public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
+        {
+            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+
+            if (universities != null || universities.Count > 0)
             {
-                return _mapper.Map<UniversityDTO>(university);
+                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
             }
+
             return null;
         }
 
-
-        [ExcludeFromCodeCoverage]
-        public async void Dispose()
+        public Task<UniversityDTO> Get(string id)
         {
-            await _context.DisposeAsync();
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<UniversityDTO>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UniversityDTO> GetByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DbUser> GetUserWithToken(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DbUser> GetUserWithUserProfile(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Update(University item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateUserPhoto(DbUser user, string photo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
