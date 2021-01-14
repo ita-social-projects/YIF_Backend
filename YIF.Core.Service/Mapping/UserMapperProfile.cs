@@ -12,9 +12,9 @@ using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Mapping
 {
-    public class UserProfile : Profile
+    public class UserMapperProfile : Profile
     {
-        public UserProfile()
+        public UserMapperProfile()
         {
             AllowNullCollections = true;
             CreateMap<DbUser, UserDTO>()

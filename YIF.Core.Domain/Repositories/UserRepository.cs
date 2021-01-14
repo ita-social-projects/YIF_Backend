@@ -54,7 +54,7 @@ namespace YIF.Core.Domain.Repositories
                 }
             }
             return false;
-        }       
+        }
 
         public async Task<DbUser> GetUserWithToken(string userId)
         {
@@ -63,30 +63,68 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<DbUser> GetUserWithUserProfile(string userId)
         {
-            await SetDefaultUserProfileIfEmpty(userId);
-            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
-        }
-
-        public async Task<bool> SetDefaultUserProfileIfEmpty(string userId)
-        {
-            if (string.IsNullOrWhiteSpace(userId)) return false;
-
+            //if (string.IsNullOrWhiteSpace(userId)) return false;
             var userProfile = _context.UserProfiles.Find(userId);
             if (userProfile == null)
             {
-                _context.UserProfiles.Add(new UserProfile
-                {
-                    Id = userId,
-                    Name = "unknown",
-                    MiddleName = "unknown",
-                    Surname = "unknown",
-                    DateOfBirth = null,
-                    RegistrationDate = DateTime.Now,
-                    Photo = null
-                });
+                await SetDefaultUserProfileIfEmpty(userId);
             }
+            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+        }
 
+        public async Task<UserProfile> SetDefaultUserProfileIfEmpty(string userId)
+        {
+            var profile = new UserProfile
+            {
+                Id = userId,
+                Name = "unknown",
+                MiddleName = "unknown",
+                Surname = "unknown",
+                DateOfBirth = null,
+                RegistrationDate = DateTime.Now,
+                Photo = null
+            };
+            _context.UserProfiles.Add(profile);
             await _context.SaveChangesAsync();
+            return profile;
+        }
+
+        public async Task<bool> SetUserProfile(UserProfile profile, string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId)) return false;
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) throw new KeyNotFoundException("Користувача не знайдено:  " + userId);
+
+            user.UserProfile = profile;
+            _context.UserProfiles.Update(user.UserProfile);
+            await _context.SaveChangesAsync();
+
+
+
+
+            return _mapper.Map<UserDTO>(user);
+
+
+
+
+
+            var userProfile = _context.UserProfiles.Find(user.Id);
+
+
+
+            return true;
+
+
+
+
+
+
+
+
+
+            await SetDefaultUserProfileIfEmpty(userId);
+            //return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
             return true;
         }
 
@@ -124,23 +162,11 @@ namespace YIF.Core.Domain.Repositories
 
             if (userProfile == null)
             {
-                _context.UserProfiles.Add(new UserProfile
-                {
-                    Id = user.Id,
-                    Name = "unknown",
-                    MiddleName = "unknown",
-                    Surname = "unknown",
-                    DateOfBirth = null,
-                    RegistrationDate = DateTime.Now,
-                    Photo = photo
-                });
-            }
-            else
-            {
-                userProfile.Photo = photo;
-                _context.UserProfiles.Update(userProfile);
+                userProfile = await SetDefaultUserProfileIfEmpty(user.Id);
             }
 
+            userProfile.Photo = photo;
+            _context.UserProfiles.Update(userProfile);
             await _context.SaveChangesAsync();
             return true;
         }

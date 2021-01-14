@@ -99,6 +99,29 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Creates user profile
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="201">If the user profile successfully created/updated.</response>
+        /// <response code="400">If the request to set the user profile is incorrect.</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
+        [ProducesResponseType(201)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(500)]
+        [HttpPost("SetCurrentProfile")]
+        [Authorize]
+        public async Task<IActionResult> SetUserProfile([FromBody] UserProfileApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            }
+            var id = User.FindFirst("id")?.Value;
+            var result = await _userService.SetUserProfileInfoById(model, id);
+            return result.Success ? Ok() : (IActionResult)BadRequest(new DescriptionResponseApiModel { Message = "Профіль користувача не встановлено." });
+        }
+
+        /// <summary>
         /// Change User Photo. Size limit 10 MB
         /// </summary>
         /// <returns>Status code</returns>

@@ -226,6 +226,35 @@ namespace YIF.Core.Service.Concrete.Services
             return _mapper.Map<UserProfileDTO>(user);
         }
 
+        public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
+        {
+            var result = new ResponseApiModel<UserProfileApiModel>();
+            var profileDTO = _mapper.Map<UserProfileDTO>(model);
+            var profile = _mapper.Map<UserProfile>(profileDTO);
+            try
+            {
+                var res = await _userRepository.SetUserProfile(profile, userId);
+                return res ? result.Set(true) : result.Set(false, "");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return result.Set(false, ex.Message);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
 
         public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
         {
