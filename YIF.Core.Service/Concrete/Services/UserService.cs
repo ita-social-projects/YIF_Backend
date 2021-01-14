@@ -16,7 +16,7 @@ using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -124,6 +124,8 @@ namespace YIF.Core.Service.Concrete.Services
             var graduate = new Graduate { UserId = dbUser.Id };
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
 
+            await _userRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
+
             if (registerResult != string.Empty)
             {
                 return result.Set(409, registerResult);
@@ -218,11 +220,18 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<bool> ChangeUserPhoto(ImageApiModel model, string userId)
+        public async Task<UserProfileDTO> GetUserProfileInfoById(string userId)
+        {
+            var user = await _userRepository.GetUserWithUserProfile(userId);
+            return _mapper.Map<UserProfileDTO>(user);
+        }
+
+
+        public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
 
-            string base64 = model.PhotoBase64;
+            string base64 = model.Photo;
             if (base64.Contains(","))
             {
                 base64 = base64.Split(',')[1];
@@ -239,7 +248,7 @@ namespace YIF.Core.Service.Concrete.Services
             string filePathSave = Path.Combine(path, fileName);
 
             string filePathDelete = null;
-            if (user.UserProfile != null)
+            if (user.UserProfile != null && user.UserProfile.Photo != null)
                 filePathDelete = Path.Combine(path, user.UserProfile.Photo);
 
             //Convert Base64 Encoded string to Byte Array.
@@ -250,7 +259,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!result)
             {
-                return false;
+                return null;
             }
 
             if (File.Exists(filePathDelete))
@@ -258,7 +267,7 @@ namespace YIF.Core.Service.Concrete.Services
                 File.Delete(filePathDelete);
             }
 
-            return true;
+            return new ImageApiModel { Photo = fileName };
         }
 
         public Task<bool> UpdateUser(UserDTO user)

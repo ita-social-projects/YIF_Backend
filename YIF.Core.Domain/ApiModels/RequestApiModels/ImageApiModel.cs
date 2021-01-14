@@ -5,9 +5,8 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
     public class ImageApiModel
     {
         /// <summary>
-        /// Base64 image
+        /// User photo
         /// </summary>
-        [Required]
-        public string PhotoBase64 { get; set; }
+        public string Photo { get; set; }
     }
 }

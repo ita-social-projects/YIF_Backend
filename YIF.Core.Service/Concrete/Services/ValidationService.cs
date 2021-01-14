@@ -27,11 +27,11 @@ namespace YIF.Core.Service.Concrete.Services
             //    .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
 
             RuleFor(x => x.Email)
-                .NotNull().WithMessage("Електронна пошта є обов'язковою!")
+                .NotEmpty().WithMessage("Електронна пошта є обов'язковою!")
                 .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
 
             RuleFor(x => x.Password)
-                .NotNull().WithMessage("Пароль є обов'язковим!")
+                .NotEmpty().WithMessage("Пароль є обов'язковим!")
                 .Length(8, 20).WithMessage("Пароль має містити мінімум 8 символів і максимум 20 (включно)!")
                 .Matches(@"[A-Z]+").WithMessage("Пароль має містити щонайменше одну літеру верхнього регістру!")
                 .Matches(@"[a-z]+").WithMessage("Пароль має містити щонайменше одну літеру нижнього регістру!")
@@ -70,14 +70,17 @@ namespace YIF.Core.Service.Concrete.Services
             //    .NotNull().WithMessage("Recaptcha є обов'язковою!")
             //    .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
 
-            RuleFor(x => x.Email).NotNull().WithMessage("Електронна пошта є обов'язковою!")
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Електронна пошта є обов'язковою!")
                 .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
 
-            RuleFor(x => x.Username).NotNull().WithMessage("Ім'я користувача є обов'язковим!")
+            RuleFor(x => x.Username)
+                .NotEmpty().WithMessage("Ім'я користувача є обов'язковим!")
                 .Length(2, 100).WithMessage("Ім'я користувача має містити мінімум 2 символа і максимум 100 (включно)!")
                 .Matches(@"[a-zA-z]+").WithMessage("Ім'я користувача має містити щонайменше одну латинську літеру!");
 
-            RuleFor(x => x.Password).NotNull().WithMessage("Пароль є обов'язковим!")
+            RuleFor(x => x.Password)
+                .NotEmpty().WithMessage("Пароль є обов'язковим!")
                 .Length(8, 20).WithMessage("Пароль має містити мінімум 8 символів і максимум 20 (включно)!")
                 .Matches(@"[A-Z]+").WithMessage("Пароль має містити щонайменше одну латинську літеру верхнього регістру!")
                 .Matches(@"[a-z]+").WithMessage("Пароль має містити щонайменше одну латинську літеру нижнього регістру!")
@@ -109,8 +112,7 @@ namespace YIF.Core.Service.Concrete.Services
         {
             CascadeMode = CascadeMode.Stop;
 
-            RuleFor(x => x.PhotoBase64)
-                .NotNull().WithMessage("Фото є обов'язковим.")
+            RuleFor(x => x.Photo)
                 .NotEmpty().WithMessage("Фото є обов'язковим.")
                 .Must(e => e.Contains("image")).WithMessage("Введіть фото у форматі base64 з типом image.")
                 .Must(IsBase64).WithMessage("Введіть фото у форматі base64.");

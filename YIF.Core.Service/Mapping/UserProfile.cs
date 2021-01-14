@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.DtoModels.EntityDTO;
