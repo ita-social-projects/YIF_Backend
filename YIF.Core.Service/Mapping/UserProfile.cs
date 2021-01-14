@@ -8,6 +8,7 @@ using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Mapping
 {

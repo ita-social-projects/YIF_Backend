@@ -82,6 +82,11 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> Update(University item)
         {
             throw new NotImplementedException();

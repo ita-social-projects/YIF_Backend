@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {

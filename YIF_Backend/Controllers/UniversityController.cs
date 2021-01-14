@@ -33,10 +33,10 @@ namespace YIF_Backend.Controllers
                 UniversityName = UniversityName
             };
 
-            if(model.GetType().GetProperties().Any(x => x.GetValue(model) == null)) // FIX
-            {
-                return BadRequest(new ResponseApiModel<Object>(400,"Property cannot be null"));
-            }
+            //if(model.GetType().GetProperties().Any(x => x.GetValue(model) == null)) // FIX
+            //{
+            //    return BadRequest(new ResponseApiModel<Object>(400,"Property cannot be null"));
+            //}
 
             var result = await _universityService.GetUniversityByFilter(model);
 

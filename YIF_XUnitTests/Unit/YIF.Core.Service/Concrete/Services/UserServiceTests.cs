@@ -14,6 +14,7 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
