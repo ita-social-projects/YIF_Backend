@@ -11,8 +11,7 @@ namespace YIF.Core.Service.Mapping
     {
         public UniversityAdminMappers()
         {
-            CreateMap<UniversityAdmin, UniversityAdminDTO>()
-                                                .ReverseMap();
+            CreateMap<UniversityAdmin, UniversityAdminDTO>().ReverseMap();
         }
     }
 }

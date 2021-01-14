@@ -5,10 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
@@ -42,14 +40,13 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<UniversityDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var list = await _context.Universities.ToListAsync();
+
+            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 
         [ExcludeFromCodeCoverage]
-        public void Dispose()
-        {
-            _context.Dispose();
-        }
+        public void Dispose() => _context.Dispose();
 
         public async Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
         {

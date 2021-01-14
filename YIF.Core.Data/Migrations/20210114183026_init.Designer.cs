@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210111191911_init")]
+    [Migration("20210114183026_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,6 +229,9 @@ namespace YIF.Core.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -692,15 +695,15 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany("Admins")
-                        .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UniversityId");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityModerator", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.UniversityAdmin", "Admin")
                         .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId");
+                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany("Moderators")

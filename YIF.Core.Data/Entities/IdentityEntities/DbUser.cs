@@ -6,5 +6,6 @@ namespace YIF.Core.Data.Entities.IdentityEntities
     {
         public virtual Token Token { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }
