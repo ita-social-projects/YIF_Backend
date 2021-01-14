@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF_Backend.Controllers
@@ -31,6 +32,11 @@ namespace YIF_Backend.Controllers
                 SpecialityName = SpecialityName,
                 UniversityName = UniversityName
             };
+
+            if(model.GetType().GetProperties().Any(x => x.GetValue(model) == null)) // FIX
+            {
+                return BadRequest(new ResponseApiModel<Object>(400,"Property cannot be null"));
+            }
 
             var result = await _universityService.GetUniversityByFilter(model);
 
