@@ -77,7 +77,7 @@ namespace YIF.Core.Service.Concrete.Services
                 }
             } 
 
-            result.Object = _mapper.Map<IEnumerable<UniversityFilterResponseApiModel>>(filteredUniversities.ToList());
+            result.Object = _mapper.Map<IEnumerable<UniversityFilterResponseApiModel>>(filteredUniversities.Distinct().ToList());
             return result.Set(true);
 
         }
