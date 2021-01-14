@@ -3,10 +3,13 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,12 +18,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using YIF.Core.Data;
+using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.DtoModels;
-using YIF.Core.Domain.DtoModels.University;
-using YIF.Core.Domain.DtoModels.UniversityAdmin;
-using YIF.Core.Domain.DtoModels.UniversityModerator;
+using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -43,20 +45,33 @@ namespace YIF_Backend
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
+            services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
+            services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
+            services.AddTransient<IRepository<DirectionToUniversity, DirectionToUniversityDTO>, DirectionToUniversityRepository>();
+            services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
+            services.AddTransient<ITokenRepository,TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<ISpecialtyRepository<SpecialtyDTO>, SpecialtyRepository>();
             services.AddTransient<ISpecialtyService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
-            services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
+            //services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
+            services.AddTransient<IUniversityService<University>, UniversityService>();
             #endregion
 
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
             #endregion
+
+            services.Configure<FormOptions>(options =>
+            {
+                // Set the limit to 10 MB
+                options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
+            });
 
             #region Swagger
             services.AddSwaggerGen(c =>
@@ -171,12 +186,21 @@ namespace YIF_Backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            #region  InitStaticFiles Images
+            string pathRoot = InitStaticFilesService.CreateFolderServer(env, this.Configuration,
+                    new string[] { "ImagesPath" });
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(pathRoot),
+                RequestPath = new PathString('/' + Configuration.GetValue<string>("UrlImages"))
+            });
+            #endregion
+
+            // app.UseHttpsRedirection();
             app.UseRouting();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             #region CORS

@@ -14,23 +14,23 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UniversityRepository : IRepository<University, UniversityDTO>
+    public class SpecialityRepository : IRepository<Speciality, SpecialityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public UniversityRepository(IApplicationDbContext context, IMapper mapper)
+        public SpecialityRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword)
+        public Task<string> Create(Speciality dbUser, object entityUser, string userPassword)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword, string role)
+        public Task<string> Create(Speciality dbUser, object entityUser, string userPassword, string role)
         {
             throw new NotImplementedException();
         }
@@ -39,35 +39,37 @@ namespace YIF.Core.Domain.Repositories
         {
             throw new NotImplementedException();
         }
+
         [ExcludeFromCodeCoverage]
         public void Dispose()
         {
-            _context.Dispose();
+            throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
+        public Task<IEnumerable<SpecialityDTO>> Find(Expression<Func<Speciality, bool>> predicate)
         {
-            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+            var specialities = _context.Specialities.Where(predicate)
+                .AsNoTracking().ToList();
 
-            if (universities != null || universities.Count > 0)
+            if (specialities != null || specialities.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
+                return Task.FromResult(_mapper.Map<IEnumerable<SpecialityDTO>>(specialities));
             }
 
             return null;
         }
 
-        public Task<UniversityDTO> Get(string id)
+        public Task<SpecialityDTO> Get(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UniversityDTO>> GetAll()
+        public Task<IEnumerable<SpecialityDTO>> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public Task<UniversityDTO> GetByEmail(string email)
+        public Task<SpecialityDTO> GetByEmail(string email)
         {
             throw new NotImplementedException();
         }
@@ -87,7 +89,7 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(University item)
+        public Task<bool> Update(Speciality item)
         {
             throw new NotImplementedException();
         }
