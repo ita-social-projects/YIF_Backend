@@ -102,5 +102,10 @@ namespace YIF.Core.Domain.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
     }
 }

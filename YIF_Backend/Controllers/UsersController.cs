@@ -100,7 +100,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Change User Photo. Size limit 10 MB
+        /// Change authorized user photo. Size limit 10 MB
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">If change user photo request is correct</response>

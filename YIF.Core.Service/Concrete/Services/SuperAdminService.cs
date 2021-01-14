@@ -8,16 +8,11 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.DtoModels.SchoolAdmin;
 using YIF.Core.Domain.DtoModels.SchoolModerator;
-using YIF.Core.Domain.DtoModels.University;
-using YIF.Core.Domain.DtoModels.UniversityAdmin;
-using YIF.Core.Domain.DtoModels.UniversityModerator;
-using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.Repositories;
-using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -30,7 +25,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IUniversityAdminRepository<UniversityAdminDTO> _universityAdminRepository;
-        private readonly IRepository<University,UniversityDTO> _universityRepository;
+        private readonly IRepository<University, UniversityDTO> _universityRepository;
         private readonly IUniversityModeratorRepository<UniversityModeratorDTO> _universityModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
@@ -64,7 +59,7 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
             //take uni
-            var universities = await _universityRepository.Find(x=> x.Name == universityAdminModel.UniversityName);
+            var universities = await _universityRepository.Find(x => x.Name == universityAdminModel.UniversityName);
             var university = universities.First();
 
             if (university == null)
@@ -89,7 +84,7 @@ namespace YIF.Core.Service.Concrete.Services
                 Email = universityAdminModel.Email,
                 UserName = universityAdminModel.Email
             };
-            
+
             var registerResult = await _userRepository.Create(dbUser, null, universityAdminModel.Password, ProjectRoles.UniversityAdmin);
 
             if (registerResult != string.Empty)
@@ -191,10 +186,10 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             string ch = await _universityAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
-                {
+            {
                 return result.Set(false, "User with such Id was not found");
             }
-            return result.Set(200,new DescriptionResponseApiModel() { Message = ch});
+            return result.Set(200, new DescriptionResponseApiModel() { Message = ch });
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
