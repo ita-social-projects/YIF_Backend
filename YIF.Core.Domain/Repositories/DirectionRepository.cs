@@ -24,17 +24,23 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public Task<string> Create(Direction dbUser, object entityUser, string userPassword)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<string> Create(Direction dbUser, object entityUser, string userPassword, string role)
+        public async Task<bool> Update(Direction item)
         {
             throw new NotImplementedException();
         }
 
         public Task<bool> Delete(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DirectionDTO> Get(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<DirectionDTO>> GetAll()
         {
             throw new NotImplementedException();
         }
@@ -45,61 +51,16 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<DirectionDTO>> Find(Expression<Func<Direction, bool>> predicate)
+        public async Task<IEnumerable<DirectionDTO>> Find(Expression<Func<Direction, bool>> predicate)
         {
-            var directions = _context.Directions.Where(predicate).AsNoTracking().ToList();
+            var directions = await _context.Directions.Where(predicate).AsNoTracking().ToListAsync();
 
             if (directions != null || directions.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<DirectionDTO>>(directions));
+                return _mapper.Map<IEnumerable<DirectionDTO>>(directions);
             }
 
             return null;
-        }
-
-        public Task<DirectionDTO> Get(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<DirectionDTO>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DirectionDTO> GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithToken(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithUserProfile(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Update(Direction item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserPhoto(DbUser user, string photo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

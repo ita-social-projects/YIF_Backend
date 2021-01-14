@@ -13,9 +13,9 @@ namespace YIF_Backend.Controllers
     [Produces("application/json")]
     public class SpecialtyController : ControllerBase
     {
-        private readonly ISpecialtyService _specialtyService;
+        private readonly ISpecialityService _specialtyService;
         private readonly ILogger<SpecialtyController> _logger;
-        public SpecialtyController(ISpecialtyService specialtyService, ILogger<SpecialtyController> logger)
+        public SpecialtyController(ISpecialityService specialtyService, ILogger<SpecialtyController> logger)
         {
             _specialtyService = specialtyService;
             _logger = logger;

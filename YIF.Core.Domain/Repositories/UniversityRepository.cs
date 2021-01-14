@@ -25,12 +25,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> Create(University dbUser, object entityUser, string userPassword, string role)
+        public async Task<bool> Update(University item)
         {
             throw new NotImplementedException();
         }
@@ -39,67 +34,33 @@ namespace YIF.Core.Domain.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<UniversityDTO> Get(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<UniversityDTO>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         [ExcludeFromCodeCoverage]
         public void Dispose()
         {
             _context.Dispose();
         }
 
-        public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
+        public async Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
         {
-            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+            var universities = await _context.Universities.Where(predicate).AsNoTracking().ToListAsync();
 
             if (universities != null || universities.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
+                return _mapper.Map<IEnumerable<UniversityDTO>>(universities);
             }
 
             return null;
-        }
-
-        public Task<UniversityDTO> Get(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<UniversityDTO>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UniversityDTO> GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithToken(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithUserProfile(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Update(University item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserPhoto(DbUser user, string photo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

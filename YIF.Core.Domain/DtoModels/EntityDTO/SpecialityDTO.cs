@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace YIF.Core.Domain.DtoModels.EntityDTO
+﻿namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class SpecialityDTO
     {
+        /// <summary>
+        /// Gets or sets the primary key for this specialty.
+        /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// Speciality name
+        /// Gets or sets the specialty name for this specialty.
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Id of the speciality direction
+        /// Gets or sets the direction id to which this specialty belongs
         /// </summary>
         public string DirectionId { get; set; }
         /// <summary>
-        /// Speciality description
+        /// Gets or sets the description for this specialty
         /// </summary>
         public string Description { get; set; }
-
+        /// <summary>
+        /// Navigation property for the direction to which this specialty belongs.
+        /// </summary>
         public virtual DirectionDTO Direction { get; set; }
     }
 }

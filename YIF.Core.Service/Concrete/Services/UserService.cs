@@ -23,7 +23,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class UserService : IUserService<DbUser>
     {
-        private readonly IRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly ITokenRepository _tokenRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
@@ -34,7 +34,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
-        public UserService(IRepository<DbUser, UserDTO> userRepository,
+        public UserService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,

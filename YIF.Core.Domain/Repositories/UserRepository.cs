@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
@@ -15,7 +14,7 @@ using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UserRepository : IRepository<DbUser, UserDTO>
+    public class UserRepository : IUserRepository<DbUser, UserDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;

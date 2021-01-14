@@ -23,7 +23,6 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
@@ -44,7 +43,7 @@ namespace YIF_Backend
         {
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
-            services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
             services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
@@ -52,12 +51,10 @@ namespace YIF_Backend
             services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
             services.AddTransient<ITokenRepository,TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
-            services.AddTransient<ISpecialtyRepository<SpecialtyDTO>, SpecialtyRepository>();
-            services.AddTransient<ISpecialtyService, SpecialtyService>();
+            services.AddTransient<ISpecialityService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
-            //services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
             services.AddTransient<IUniversityService<University>, UniversityService>();

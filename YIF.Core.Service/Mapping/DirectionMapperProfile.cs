@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using YIF.Core.Data.Entities;
-using YIF.Core.Domain.DtoModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -10,15 +10,6 @@ namespace YIF.Core.Service.Mapping
         {
             AllowNullCollections = true;
             CreateMap<Direction, DirectionDTO>().ReverseMap();
-            //CreateMap<DirectionDTO, DirectionApiModel>().ReverseMap();
-
-            //.ForMember(dto => dto.Specialities, opt => opt.MapFrom(x => x.Specialities));
-            //.ForMember(dto => dto.Roles, opt => opt.MapFrom<GetRolesResolver>());
-            //CreateMap<DirectionDTO, Direction>()
-            //    //.ForMember(dto => dto.Specialities, opt => opt.MapFrom(x => x.Specialities));
-            //    .AfterMap<SetRolesResolver>();
-            //CreateMap<UserDTO, UserApiModel>()
-            //    .ReverseMap();
         }
     }
 }
