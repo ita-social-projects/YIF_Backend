@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using YIF.Core.Data.Entities;
-using YIF.Core.Domain.DtoModels.University;
+using YIF.Core.Domain.DtoModels.EntityDTO;
+
 namespace YIF.Core.Service.Mapping
 {
     public class UniversityMappers : Profile

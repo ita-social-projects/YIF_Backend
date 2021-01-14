@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Data.Entities;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 
@@ -22,15 +24,28 @@ namespace YIF.Core.Service.Mapping
             CreateMap<UserDTO, UserApiModel>()
                 .ReverseMap();
 
-            CreateMap<DbUser, UserProfileDTO>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
-                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile.MiddleName))
-                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile.Surname))
-                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo))
-                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
-                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
+            CreateMap<SpecialityToUniversity, SpecialityToUniversityDTO>()
+                .ReverseMap();
+            CreateMap<Speciality, SpecialityDTO>()
+                .ReverseMap();
+            CreateMap<University, UniversityDTO>()
+                .ReverseMap();
+            CreateMap<Direction, DirectionDTO>()
+                .ReverseMap();
+            CreateMap<DirectionToUniversity, DirectionToUniversityDTO>()
+               .ReverseMap();
+            CreateMap<UniversityAdmin, UniversityAdminDTO>()
+                .ReverseMap();
+            CreateMap<UniversityModerator, UniversityModeratorDTO>()
+                .ReverseMap();
+            CreateMap<Lecture, LectureDTO>()
+                .ReverseMap();
 
-            CreateMap<UserProfileDTO, UserProfileApiModel>().ReverseMap();
+            CreateMap<UniversityDTO, UniversityFilterResponseApiModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath));
         }
     }
 

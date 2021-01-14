@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -7,10 +8,8 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.DtoModels.University;
-using YIF.Core.Domain.DtoModels.UniversityAdmin;
-using YIF.Core.Domain.DtoModels.UniversityModerator;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -23,14 +22,14 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IUniversityAdminRepository<UniversityAdminDTO> _universityAdminRepository;
-        private readonly IUniversityRepository<UniversityDTO> _universityRepository;
+        private readonly IRepository<University,UniversityDTO> _universityRepository;
         private readonly IUniversityModeratorRepository<UniversityModeratorDTO> _universityModeratorRepository;
         public SuperAdminService(IRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper,
-            IUniversityRepository<UniversityDTO> universityRepository,
+            IRepository<University, UniversityDTO> universityRepository,
             IUniversityAdminRepository<UniversityAdminDTO> universityAdminRepository,
             IUniversityModeratorRepository<UniversityModeratorDTO> universityModeratorRepository)
         {
@@ -48,7 +47,9 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
             //take uni
-            var university = await _universityRepository.GetByName(universityAdminModel.UniversityName);
+            var universities = await _universityRepository.Find(x=> x.Name == universityAdminModel.UniversityName);
+            var university = universities.First();
+
             if (university == null)
             {
                 return result.Set(false, "There is no university with name" + universityAdminModel.UniversityName + "in our database");

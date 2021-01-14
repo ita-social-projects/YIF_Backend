@@ -631,7 +631,7 @@ namespace YIF.Core.Data
                             DirectionId = directions[i].Id
                         });
 
-                        for (int j = 0; j < new Random().Next(1,
+                        for (int j = 0; j < new Random().Next(specialities.Where(x => x.DirectionId == directions[i].Id).Count()-3,
                              specialities.Where(x => x.DirectionId == directions[i].Id).Count());
                              j++)
                         {
