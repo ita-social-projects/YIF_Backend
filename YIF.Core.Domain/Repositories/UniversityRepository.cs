@@ -39,10 +39,11 @@ namespace YIF.Core.Domain.Repositories
         {
             throw new NotImplementedException();
         }
-        [ExcludeFromCodeCoverage]
-        public void Dispose()
+        public async Task<IEnumerable<UniversityDTO>> GetAllUniversities()
         {
-            _context.Dispose();
+            var list = await _context.Universities.ToListAsync();
+            
+            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 
         public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
@@ -100,6 +101,11 @@ namespace YIF.Core.Domain.Repositories
         public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
         {
             throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

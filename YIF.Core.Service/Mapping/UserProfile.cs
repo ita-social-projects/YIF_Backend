@@ -46,6 +46,16 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath));
+
+            CreateMap<DbUser, UserProfileDTO>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile.MiddleName))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile.Surname))
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
+                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
+
+            CreateMap<UserProfileDTO, UserProfileApiModel>().ReverseMap();
         }
     }
 

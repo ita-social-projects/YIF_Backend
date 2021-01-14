@@ -10,9 +10,10 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task<string> AddUniAdmin(UniversityAdmin universityAdmin);
-        Task<bool> Delete(string id);
+        Task<string> Delete(string adminId);
         Task<K> GetById(string id);
         Task<K> GetByUniversityId(string universityId);
+        Task<K> GetByUniversityIdWithoutIsDeletedCheck(string universityId);
         Task<IEnumerable<K>> GetAllUniAdmins();
     }
 }

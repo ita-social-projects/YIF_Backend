@@ -9,7 +9,6 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
@@ -100,7 +99,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Change User Photo. Size limit 10 MB
+        /// Change authorized user photo. Size limit 10 MB
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">If change user photo request is correct</response>

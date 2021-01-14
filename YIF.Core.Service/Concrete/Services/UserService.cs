@@ -105,7 +105,7 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
-            if (searchUser.Result != null)
+            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
                 return result.Set(409, "User already exist");
             }

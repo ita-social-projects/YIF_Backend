@@ -23,7 +23,9 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.DtoModels.School;
+using YIF.Core.Domain.DtoModels.SchoolAdmin;
+using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
@@ -50,7 +52,7 @@ namespace YIF_Backend
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
             services.AddTransient<IRepository<DirectionToUniversity, DirectionToUniversityDTO>, DirectionToUniversityRepository>();
             services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
-            services.AddTransient<ITokenRepository,TokenRepository>();
+            services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
@@ -59,6 +61,10 @@ namespace YIF_Backend
             //services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
+
+            services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
+            services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
+            services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
             services.AddTransient<IUniversityService<University>, UniversityService>();
             #endregion
 
