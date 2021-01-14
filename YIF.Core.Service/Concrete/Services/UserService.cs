@@ -234,7 +234,7 @@ namespace YIF.Core.Service.Concrete.Services
             try
             {
                 var res = await _userRepository.SetUserProfile(profile, userId);
-                return res ? result.Set(true) : result.Set(false, "");
+                return res ? result.Set(true) : result.Set(false, "Профіль користувача не встановлено.");
             }
             catch (KeyNotFoundException ex)
             {

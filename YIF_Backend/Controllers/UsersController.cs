@@ -102,10 +102,10 @@ namespace YIF_Backend.Controllers
         /// Creates user profile
         /// </summary>
         /// <returns>Status code</returns>
-        /// <response code="201">If the user profile successfully created/updated.</response>
+        /// <response code="200">If the user profile successfully created/updated.</response>
         /// <response code="400">If the request to set the user profile is incorrect.</response>
         /// <response code="401">If user is unauthorized or token is bad/expired.</response>
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(500)]
         [HttpPost("SetCurrentProfile")]
@@ -118,7 +118,7 @@ namespace YIF_Backend.Controllers
             }
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.SetUserProfileInfoById(model, id);
-            return result.Success ? Ok() : (IActionResult)BadRequest(new DescriptionResponseApiModel { Message = "Профіль користувача не встановлено." });
+            return result.Success ? Ok() : (IActionResult)BadRequest(result.Description);
         }
 
         /// <summary>
