@@ -42,7 +42,8 @@ namespace YIF.Core.Service.Concrete.Services
             IRecaptchaService recaptcha,
             IEmailService emailService,
             IWebHostEnvironment env,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ITokenRepository tokenRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -53,6 +54,7 @@ namespace YIF.Core.Service.Concrete.Services
             _emailService = emailService;
             _env = env;
             _configuration = configuration;
+            _tokenRepository = tokenRepository;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()

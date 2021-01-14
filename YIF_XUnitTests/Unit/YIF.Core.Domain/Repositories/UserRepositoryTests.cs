@@ -46,7 +46,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
             _dbEFContextMock = new Mock<EFDbContext>();
-            _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
+            _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
             _newUserPassword = "QWerty-1";
             _listDTO = new List<UserDTO>();
@@ -147,6 +147,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         [Fact]
         public async Task Get_ShouldReturnUserDTO_WhenUserIsFoundInDatabase()
         {
+            //b0c4ff23 - 8244 - 455e-8429 - c4a1e7297925
             // Arrange
             _dbContextMock.Setup(s => s.Users.FindAsync(_userStub.Id)).ReturnsAsync(_userStub);
             _mapperMock.Setup(s => s.Map<UserDTO>(_userStub)).Returns(_userDTOStub);
@@ -154,7 +155,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var result = await _testRepo.Get(_userStub.Id);
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(_listDTO[0].Id, result.Id);
+            Assert.Equal(_listDTO[0].Email, result.Email);
         }
 
         [Fact]
@@ -192,7 +193,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var result = false;
             context.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock, _dbEFContextMock.Object);
+            var repo = new UserRepository(context.Object, _mapperMock.Object, _userManagerMock);
             repo.Dispose();
             // Assert
             Assert.True(result);

@@ -17,20 +17,17 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
-        private readonly EFDbContext _dbContext;
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
 
         public UserRepository(IApplicationDbContext context,
                               IMapper mapper,
-                              UserManager<DbUser> userManager,
-                              EFDbContext dbContext)
+                              UserManager<DbUser> userManager)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
-            _dbContext = dbContext;
         }
 
         public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword, string role)
@@ -39,8 +36,8 @@ namespace YIF.Core.Domain.Repositories
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(dbUser, role);
-                await _dbContext.AddAsync(entityUser);
-                await _dbContext.SaveChangesAsync();
+                await _context.AddAsync(entityUser);
+                await _context.SaveChangesAsync();
                 return string.Empty;
             }
             return result.Errors.First().Description;
@@ -155,7 +152,7 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<UserDTO> GetByEmail(string email)
         {
-            var user = await _dbContext.Users.FindAsync(email);
+            var user = await _context.Users.FindAsync(email);
             if (user != null)
             {
                 return _mapper.Map<UserDTO>(user);
