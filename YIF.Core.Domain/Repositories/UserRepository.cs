@@ -11,40 +11,33 @@ using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
-using YIF.Core.Domain.Models.IdentityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
     public class UserRepository : IRepository<DbUser, UserDTO>
     {
-        private readonly EFDbContext _dbContext;
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
 
         public UserRepository(IApplicationDbContext context,
-                              IMapper mapper, 
-                              UserManager<DbUser> userManager, 
-                              EFDbContext dbContext)
+                              IMapper mapper,
+                              UserManager<DbUser> userManager)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
-            _dbContext = dbContext;
         }
 
-        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword ,string role)
+        public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword, string role)
         {
             var result = await _userManager.CreateAsync(dbUser, userPassword);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(dbUser, role);
-                if (entityUser != null)
-                {
-                    await _dbContext.AddAsync(entityUser);
-                }
-                await _dbContext.SaveChangesAsync();
+                await _context.AddAsync(entityUser);
+                await _context.SaveChangesAsync();
                 return string.Empty;
             }
             return result.Errors.First().Description;
@@ -62,6 +55,40 @@ namespace YIF.Core.Domain.Repositories
                 }
             }
             return false;
+        }       
+
+        public async Task<DbUser> GetUserWithToken(string userId)
+        {
+            return await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<DbUser> GetUserWithUserProfile(string userId)
+        {
+            await SetDefaultUserProfileIfEmpty(userId);
+            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
+        public async Task<bool> SetDefaultUserProfileIfEmpty(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId)) return false;
+
+            var userProfile = _context.UserProfiles.Find(userId);
+            if (userProfile == null)
+            {
+                _context.UserProfiles.Add(new UserProfile
+                {
+                    Id = userId,
+                    Name = "unknown",
+                    MiddleName = "unknown",
+                    Surname = "unknown",
+                    DateOfBirth = null,
+                    RegistrationDate = DateTime.Now,
+                    Photo = null
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateUserToken(DbUser user, string refreshToken)
@@ -84,6 +111,35 @@ namespace YIF.Core.Domain.Repositories
                 tokendb.RefreshToken = refreshToken;
                 tokendb.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
                 _context.Tokens.Update(tokendb);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateUserPhoto(DbUser user, string photo)
+        {
+            if (user == null || string.IsNullOrWhiteSpace(photo)) return false;
+
+            var userProfile = _context.UserProfiles.Find(user.Id);
+
+            if (userProfile == null)
+            {
+                _context.UserProfiles.Add(new UserProfile
+                {
+                    Id = user.Id,
+                    Name = "unknown",
+                    MiddleName = "unknown",
+                    Surname = "unknown",
+                    DateOfBirth = null,
+                    RegistrationDate = DateTime.Now,
+                    Photo = photo
+                });
+            }
+            else
+            {
+                userProfile.Photo = photo;
+                _context.UserProfiles.Update(userProfile);
             }
 
             await _context.SaveChangesAsync();
@@ -120,7 +176,7 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<UserDTO> GetByEmail(string email)
         {
-            var user = await _dbContext.Users.FindAsync(email);
+            var user = await _context.Users.FindAsync(email);
             if (user != null)
             {
                 return _mapper.Map<UserDTO>(user);

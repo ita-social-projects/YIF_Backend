@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -17,8 +17,10 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class UsersControllerTests
     {
         private static readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
+        private static readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private static readonly Mock<ILogger<UsersController>> _logger = new Mock<ILogger<UsersController>>();
-        private static readonly UsersController _testControl = new UsersController(_userService.Object, _logger.Object);
+
+        private static readonly UsersController _testControl = new UsersController(_userService.Object, _logger.Object, _mapper.Object);
         private static readonly string _guid = Guid.NewGuid().ToString("D");
 
         [Fact]
