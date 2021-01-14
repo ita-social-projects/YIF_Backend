@@ -9,6 +9,7 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Data.Interfaces;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -33,7 +34,7 @@ namespace YIF.Core.Service.Mapping
             CreateMap<Direction, DirectionDTO>()
                 .ReverseMap();
             CreateMap<DirectionToUniversity, DirectionToUniversityDTO>()
-               .ReverseMap();
+                .ReverseMap();
             CreateMap<UniversityAdmin, UniversityAdminDTO>()
                 .ReverseMap();
             CreateMap<UniversityModerator, UniversityModeratorDTO>()
@@ -46,6 +47,27 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath));
+
+            CreateMap<DbUser, UserProfileDTO>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile.MiddleName))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile.Surname))
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
+                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
+
+            CreateMap<UserProfile, UserProfileDTO>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.UserName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.PhoneNumber));
+
+            CreateMap<UserProfileDTO, UserProfile>()
+                .AfterMap<SetUserInUserProfileResolver>();
+
+            CreateMap<UserProfileDTO, UserProfileApiModel>()
+                .AfterMap<SetSchoolInUserProfileApiModelResolver>();
+
+            //CreateMap<UserProfileDTO, UserProfileApiModel>().ReverseMap();
         }
     }
 
@@ -83,6 +105,36 @@ namespace YIF.Core.Service.Mapping
                 }
                 _manager.AddToRolesAsync(user, userDTO.Roles);
             }
+        }
+    }
+
+    public class SetUserInUserProfileResolver : IMappingAction<UserProfileDTO, UserProfile>
+    {
+        private static UserManager<DbUser> _manager;
+        public SetUserInUserProfileResolver(UserManager<DbUser> manager)
+        {
+            _manager = manager;
+        }
+        public void Process(UserProfileDTO profileDTO, UserProfile profile, ResolutionContext context)
+        {
+            var user = _manager.FindByIdAsync(profileDTO.Id).Result;
+            profile.User = user;
+        }
+    }
+
+    public class SetSchoolInUserProfileApiModelResolver : IMappingAction<UserProfileDTO, UserProfileApiModel>
+    {
+        private static IApplicationDbContext _context;
+        //private static UserManager<DbUser> _manager;
+        public SetSchoolInUserProfileApiModelResolver(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public void Process(UserProfileDTO source, UserProfileApiModel destination, ResolutionContext context)
+        {
+            _context.Schools.FindAsync()
+            throw new NotImplementedException();
         }
     }
 }
