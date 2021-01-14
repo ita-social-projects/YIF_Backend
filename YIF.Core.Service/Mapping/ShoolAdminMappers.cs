@@ -13,12 +13,9 @@ namespace YIF.Core.Service.Mapping
     {
         public ShoolAdminMappers()
         {
-            CreateMap<SchoolAdmin, SchoolAdminDTO>()
-                                                .ReverseMap();
-            CreateMap<School, SchoolDTO>()
-                                       .ReverseMap();
-            CreateMap<SchoolModerator, SchoolModeratorDTO>()
-                                                         .ReverseMap();
+            CreateMap<SchoolAdmin, SchoolAdminDTO>().ReverseMap();
+            CreateMap<School, SchoolDTO>().ReverseMap();
+            CreateMap<SchoolModerator, SchoolModeratorDTO>().ReverseMap();
         }
     }
 }
