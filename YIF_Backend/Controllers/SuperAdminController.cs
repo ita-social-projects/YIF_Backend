@@ -25,7 +25,7 @@ namespace YIF_Backend.Controllers
             _logger = logger;
         }
         /// <summary>
-        /// Registers a new user and logs in.
+        /// Adds University Admin and Moderator.
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
         /// <response code="201">Returns object with tokens</response>
@@ -35,14 +35,71 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
-        [HttpPost("AddUniversityModerator")]
-        public async Task<IActionResult> AddUniversityModerator([FromBody] UniversityAdminApiModel model)
+        [HttpPost("AddUniversityAdmin")]
+        public async Task<IActionResult> AddUniversityAdmin([FromBody] UniversityAdminApiModel model)
         {
             if (!ModelState.IsValid)
             {
                 return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
             }
             var result = await _superAdminService.AddUniversityAdmin(model);
+            return result.Response();
+        }
+        /// <summary>
+        /// Adds School Admin and Moderator returns token.
+        /// </summary>
+        /// <returns>Object with user token and refresh token</returns>
+        /// <response code="201">Returns object with tokens</response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="409">If email or password incorrect</response>
+        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(500)]
+        [HttpPost("AddSchoolAdmin")]
+        public async Task<IActionResult> AddSchoolAdmin([FromBody] SchoolAdminApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
+            }
+            var result = await _superAdminService.AddSchoolAdmin(model);
+            return result.Response();
+        }
+
+        /// <summary>
+        /// Delete University admin(sets its asp.net user IsDeleted to true.
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="201">Sucesss message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(500)]
+        [HttpPost("DeleteUniversityAdmin")]
+        public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
+            }
+            var result = await _superAdminService.DeleteUniversityAdmin(model);
+            return result.Response();
+        }
+
+        /// <summary>
+        /// Delete School admin(sets its asp.net user IsDeleted to true.
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="201">Sucesss message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(500)]
+        [HttpPost("DeleteSchoolAdmin")]
+        public async Task<IActionResult> DeleteSchoolAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
+            }
+            var result = await _superAdminService.DeleteSchoolAdmin(model);
             return result.Response();
         }
     }

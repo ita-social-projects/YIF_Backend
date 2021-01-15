@@ -229,6 +229,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -690,15 +693,15 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany("Admins")
-                        .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UniversityId");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UniversityModerator", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.UniversityAdmin", "Admin")
                         .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId");
+                        .HasForeignKey("YIF.Core.Data.Entities.UniversityModerator", "AdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany("Moderators")
