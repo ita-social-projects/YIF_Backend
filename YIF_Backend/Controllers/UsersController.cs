@@ -93,7 +93,7 @@ namespace YIF_Backend.Controllers
             var userId = User.FindFirst("id")?.Value;
             var userDto = await _userService.GetUserProfileInfoById(userId);
             if (userDto == null)
-                return BadRequest(new DescriptionResponseApiModel { Message = "Зазначеного юзера не існує." });
+                return BadRequest(new DescriptionResponseApiModel("Зазначеного юзера не існує."));
             var profile = _mapper.Map<UserProfileApiModel>(userDto);
             return Ok(profile);
         }
@@ -118,7 +118,7 @@ namespace YIF_Backend.Controllers
             }
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.SetUserProfileInfoById(model, id);
-            return result.Success ? Ok() : (IActionResult)BadRequest(result.Description);
+            return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Data.Others;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
@@ -92,43 +93,42 @@ namespace YIF.Core.Domain.Repositories
             return profile;
         }
 
-        public async Task<bool> SetUserProfile(UserProfile profile, string userId)
+        public async Task<UserDTO> SetUserProfile(UserProfile profile, string userId, string schoolName = null)
         {
-            if (string.IsNullOrWhiteSpace(userId)) return false;
+            if (string.IsNullOrWhiteSpace(userId)) throw new ArgumentException("ID користувача не можу бути пустим!");
 
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
             if (user == null) throw new KeyNotFoundException("Користувача не знайдено:  " + userId);
 
-            user.UserProfile = profile;
+            if (user.UserProfile == null)
+            {
+                user.UserProfile = await SetDefaultUserProfileIfEmpty(userId);
+            }
+
+            user.UserProfile.Name = profile.Name;
+            user.UserProfile.Surname = profile.Surname;
+            user.UserProfile.MiddleName = profile.MiddleName;
+            user.UserProfile.User.PhoneNumber = profile.User.PhoneNumber;
+
+            if (schoolName != null)
+            {
+                var graduate = await _context.Graduates.FirstOrDefaultAsync(x => x.UserId == userId);
+                if (graduate == null) throw new ArgumentException("Користувач не належить до ролі:  " + ProjectRoles.Graduate + 
+                    ". Це поле не потрібно заповняти для цього коритувача.");
+
+                if (graduate.School?.Name != schoolName)
+                {
+                    var school = await _context.Schools.FirstOrDefaultAsync(x => x.Name == schoolName);
+                    if (school == null) throw new ArgumentException("Не знайдено зазначеної школи:  " + schoolName);
+                    graduate.SchoolId = school.Id;
+                }
+
+            }
+
             _context.UserProfiles.Update(user.UserProfile);
             await _context.SaveChangesAsync();
 
-
-
-
             return _mapper.Map<UserDTO>(user);
-
-
-
-
-
-            var userProfile = _context.UserProfiles.Find(user.Id);
-
-
-
-            return true;
-
-
-
-
-
-
-
-
-
-            await SetDefaultUserProfileIfEmpty(userId);
-            //return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
-            return true;
         }
 
         public async Task<bool> UpdateUserToken(DbUser user, string refreshToken)

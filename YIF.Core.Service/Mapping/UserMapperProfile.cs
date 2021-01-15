@@ -67,7 +67,11 @@ namespace YIF.Core.Service.Mapping
             CreateMap<UserProfileDTO, UserProfileApiModel>()
                 .AfterMap<SetSchoolInUserProfileApiModelResolver>();
 
-            //CreateMap<UserProfileDTO, UserProfileApiModel>().ReverseMap();
+            //CreateMap<UserProfileApiModel, UserProfileDTO>();
+            //CreateMap<UserProfileApiModel, UserProfileDTO>()
+            //    .AfterMap<SetOtherFieldsInUserProfileDtoResolver>();
+
+            CreateMap<UserProfileApiModel, UserProfile>();
         }
     }
 
@@ -117,24 +121,42 @@ namespace YIF.Core.Service.Mapping
         }
         public void Process(UserProfileDTO profileDTO, UserProfile profile, ResolutionContext context)
         {
-            var user = _manager.FindByIdAsync(profileDTO.Id).Result;
-            profile.User = user;
+            profile.User = _manager.FindByIdAsync(profileDTO.Id).Result;
         }
     }
 
     public class SetSchoolInUserProfileApiModelResolver : IMappingAction<UserProfileDTO, UserProfileApiModel>
     {
         private static IApplicationDbContext _context;
-        //private static UserManager<DbUser> _manager;
         public SetSchoolInUserProfileApiModelResolver(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public void Process(UserProfileDTO source, UserProfileApiModel destination, ResolutionContext context)
+        public void Process(UserProfileDTO profileDTO, UserProfileApiModel profile, ResolutionContext context)
         {
-            _context.Schools.FindAsync()
-            throw new NotImplementedException();
+            profile.SchoolName = _context.Graduates.FirstOrDefault(x => x.UserId == profileDTO.Id)?.School.Name;
+        }
+    }
+
+    public class SetOtherFieldsInUserProfileDtoResolver : IMappingAction<UserProfileApiModel, UserProfileDTO>
+    {
+        private static IApplicationDbContext _context;
+        public SetOtherFieldsInUserProfileDtoResolver(IApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public void Process(UserProfileApiModel profileApi, UserProfileDTO profileDTO, ResolutionContext context)
+        {
+            var profile = _context.UserProfiles.FirstOrDefault(x => x.User.Email == profileApi.Email);
+            profileDTO.Id = profile.Id;
+            //profileDTO. = profile.DateOfBirth;
+            profileDTO.DateOfBirth = profile.DateOfBirth;
+
+
+
+
         }
     }
 }
