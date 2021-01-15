@@ -25,7 +25,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class UserServiceTests
     {
         private readonly UserService _testService;
-        private readonly Mock<IRepository<DbUser, UserDTO>> _userRepository;
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
         private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
@@ -43,7 +43,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public UserServiceTests()
         {           
-            _userRepository = new Mock<IRepository<DbUser, UserDTO>>();
+            _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
             _tokenRepository = new Mock<ITokenRepository>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
@@ -357,7 +357,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public void Dispose_ShouldDisposeDatabase()
         {
             // Arrange
-            var repo = new Mock<IRepository<DbUser, UserDTO>>();
+            var repo = new Mock<IUserRepository<DbUser, UserDTO>>();
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
