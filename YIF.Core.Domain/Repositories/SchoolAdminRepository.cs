@@ -17,19 +17,16 @@ namespace YIF.Core.Domain.Repositories
 {
     public class SchoolAdminRepository : ISchoolAdminRepository<SchoolAdminDTO>
     {
-        private readonly EFDbContext _dbContext;
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
 
         public SchoolAdminRepository(IApplicationDbContext context,
                                          IMapper mapper,
-                                         EFDbContext dbContext,
                                          UserManager<DbUser> userManager)
         {
-            _context = context;
+            _dbContext = context;
             _mapper = mapper;
-            _dbContext = dbContext;
             _userManager = userManager;
         }
         public async Task<string> AddSchoolAdmin(SchoolAdmin schoolAdmin)
@@ -53,7 +50,7 @@ namespace YIF.Core.Domain.Repositories
 
                                 };
 
-            if (schoolAdmin != null)
+            if (schoolAdmin.Count() != 0)
             {
                 return await schoolAdmin.FirstOrDefaultAsync();
             }
@@ -95,9 +92,9 @@ namespace YIF.Core.Domain.Repositories
         }
 
         [ExcludeFromCodeCoverage]
-        public async void Dispose()
+        public void Dispose()
         {
-            await _dbContext.DisposeAsync();
+            _dbContext.Dispose();
         }
     }
 }

@@ -14,12 +14,12 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UniversityModeratorRepository : IUniversityModeratorRepository<UniversityModeratorDTO>
     {
-        private readonly EFDbContext _dbContext;
+        private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
         public UniversityModeratorRepository(IMapper mapper,
                               UserManager<DbUser> userManager,
-                              EFDbContext dbContext)
+                              IApplicationDbContext dbContext)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -27,9 +27,6 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<string> AddUniModerator(UniversityModerator universityModerator)
         {
-            //UniversityModerator q = new UniversityModerator();
-            //q.UniversityId = universityModerator.UniversityId;
-            //q.UserId = universityModerator.UserId;
              await _dbContext.UniversityModerators.AddAsync(universityModerator);
              await _dbContext.SaveChangesAsync();
              return string.Empty;
@@ -40,9 +37,9 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public async void Dispose()
+        public  void Dispose()
         {
-            await _dbContext.DisposeAsync();
+             _dbContext.Dispose();
         }
 
         public Task<IEnumerable<UniversityModeratorDTO>> GetAllUniModerators()
