@@ -46,7 +46,7 @@ namespace YIF_Backend
         {
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
-            services.AddTransient<IRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
             services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
@@ -54,11 +54,10 @@ namespace YIF_Backend
             services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
             services.AddTransient<ITokenRepository, TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
+            services.AddTransient<ISpecialityService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
-
             services.AddTransient<ISuperAdminService, SuperAdminService>();
-            //services.AddTransient<IUniversityRepository<UniversityDTO>, UniversityRepository>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
 

@@ -19,7 +19,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SuperAdminService : ISuperAdminService
     {
-        private readonly IRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
@@ -30,7 +30,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
-        public SuperAdminService(IRepository<DbUser, UserDTO> userRepository,
+        public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,

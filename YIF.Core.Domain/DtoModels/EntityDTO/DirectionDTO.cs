@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class DirectionDTO
     {
+        /// <summary>
+        /// Gets or sets the primary key for this direction.
+        /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// Speciality name
+        /// Gets or sets the direction name for this direction.
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// List of specialities
+        /// Navigation property for the specialties this direction belongs to.
         /// </summary>
         public virtual IEnumerable<SpecialityDTO> Specialities { get; set; }
     }

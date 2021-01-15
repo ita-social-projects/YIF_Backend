@@ -35,7 +35,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
-        public ResponseApiModel() { }
+        //public ResponseApiModel() { }
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
@@ -47,6 +47,11 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
             Message = message;
         }
 
+        public ResponseApiModel(bool success = false, string message = null)
+        {
+            StatusCode = success ? 200 : 400;
+            Message = message;
+        }
 
         /// <summary>
         /// Sets properties of the class.

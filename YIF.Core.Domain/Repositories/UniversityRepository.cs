@@ -5,10 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
@@ -25,12 +23,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<string> Create(University dbUser, object entityUser, string userPassword)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> Create(University dbUser, object entityUser, string userPassword, string role)
+        public async Task<bool> Update(University item)
         {
             throw new NotImplementedException();
         }
@@ -39,73 +32,32 @@ namespace YIF.Core.Domain.Repositories
         {
             throw new NotImplementedException();
         }
-        public async Task<IEnumerable<UniversityDTO>> GetAllUniversities()
+
+        public async Task<UniversityDTO> Get(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<UniversityDTO>> GetAll()
         {
             var list = await _context.Universities.ToListAsync();
-            
+
             return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 
-        public Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
+        [ExcludeFromCodeCoverage]
+        public void Dispose() => _context.Dispose();
+
+        public async Task<IEnumerable<UniversityDTO>> Find(Expression<Func<University, bool>> predicate)
         {
-            var universities = _context.Universities.Where(predicate).AsNoTracking().ToList();
+            var universities = await _context.Universities.Where(predicate).AsNoTracking().ToListAsync();
 
             if (universities != null || universities.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<UniversityDTO>>(universities));
+                return _mapper.Map<IEnumerable<UniversityDTO>>(universities);
             }
 
             return null;
-        }
-
-        public Task<UniversityDTO> Get(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<UniversityDTO>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UniversityDTO> GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithToken(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithUserProfile(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Update(University item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserPhoto(DbUser user, string photo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
         }
     }
 }
