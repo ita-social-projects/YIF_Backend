@@ -105,7 +105,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">If the user profile successfully created/updated.</response>
         /// <response code="400">If the request to set the user profile is incorrect.</response>
         /// <response code="401">If user is unauthorized or token is bad/expired.</response>
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(UserProfileApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(500)]
         [HttpPost("SetCurrentProfile")]

@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Data.Entities;
-using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -56,22 +57,21 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
 
+            CreateMap<UserProfileApiModel, UserProfile>()
+                .ConvertUsing<GetExistingUserProfileResolver>();
+
+            CreateMap<DbUser, UserProfileApiModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile.Surname))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile.MiddleName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .AfterMap<SetSchoolInUserProfileApiModelResolver>();
+
             CreateMap<UserProfile, UserProfileDTO>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.PhoneNumber));
-
-            CreateMap<UserProfileDTO, UserProfile>()
-                .AfterMap<SetUserInUserProfileResolver>();
-
-            CreateMap<UserProfileDTO, UserProfileApiModel>()
-                .AfterMap<SetSchoolInUserProfileApiModelResolver>();
-
-            //CreateMap<UserProfileApiModel, UserProfileDTO>();
-            //CreateMap<UserProfileApiModel, UserProfileDTO>()
-            //    .AfterMap<SetOtherFieldsInUserProfileDtoResolver>();
-
-            CreateMap<UserProfileApiModel, UserProfile>();
         }
     }
 
@@ -112,20 +112,7 @@ namespace YIF.Core.Service.Mapping
         }
     }
 
-    public class SetUserInUserProfileResolver : IMappingAction<UserProfileDTO, UserProfile>
-    {
-        private static UserManager<DbUser> _manager;
-        public SetUserInUserProfileResolver(UserManager<DbUser> manager)
-        {
-            _manager = manager;
-        }
-        public void Process(UserProfileDTO profileDTO, UserProfile profile, ResolutionContext context)
-        {
-            profile.User = _manager.FindByIdAsync(profileDTO.Id).Result;
-        }
-    }
-
-    public class SetSchoolInUserProfileApiModelResolver : IMappingAction<UserProfileDTO, UserProfileApiModel>
+    public class SetSchoolInUserProfileApiModelResolver : IMappingAction<DbUser, UserProfileApiModel>
     {
         private static IApplicationDbContext _context;
         public SetSchoolInUserProfileApiModelResolver(IApplicationDbContext context)
@@ -133,30 +120,31 @@ namespace YIF.Core.Service.Mapping
             _context = context;
         }
 
-        public void Process(UserProfileDTO profileDTO, UserProfileApiModel profile, ResolutionContext context)
+        public void Process(DbUser user, UserProfileApiModel profile, ResolutionContext context)
         {
-            profile.SchoolName = _context.Graduates.FirstOrDefault(x => x.UserId == profileDTO.Id)?.School.Name;
+            profile.SchoolName = _context.Graduates.Include(s => s.School).FirstOrDefault(x => x.UserId == user.Id)?.School?.Name;
         }
     }
 
-    public class SetOtherFieldsInUserProfileDtoResolver : IMappingAction<UserProfileApiModel, UserProfileDTO>
+    public class GetExistingUserProfileResolver : ITypeConverter<UserProfileApiModel, UserProfile>
     {
-        private static IApplicationDbContext _context;
-        public SetOtherFieldsInUserProfileDtoResolver(IApplicationDbContext context)
+        private static UserManager<DbUser> _userManager;
+        public GetExistingUserProfileResolver(UserManager<DbUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
-        public void Process(UserProfileApiModel profileApi, UserProfileDTO profileDTO, ResolutionContext context)
+        public UserProfile Convert(UserProfileApiModel profileApi, UserProfile profile, ResolutionContext context)
         {
-            var profile = _context.UserProfiles.FirstOrDefault(x => x.User.Email == profileApi.Email);
-            profileDTO.Id = profile.Id;
-            //profileDTO. = profile.DateOfBirth;
-            profileDTO.DateOfBirth = profile.DateOfBirth;
-
-
-
-
+            var user = _userManager.Users.Include(u => u.UserProfile).FirstOrDefault(x => x.Email == profileApi.Email);
+            user.PhoneNumber = profileApi.PhoneNumber;
+            profile = user.UserProfile ?? new UserProfile() { RegistrationDate = DateTime.Now };
+            profile.Id = user.Id;
+            profile.Name = profileApi.Name;
+            profile.Surname = profileApi.Surname;
+            profile.MiddleName = profileApi.MiddleName;
+            profile.User = user;
+            return profile;
         }
     }
 }

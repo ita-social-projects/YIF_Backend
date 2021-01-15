@@ -12,6 +12,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
     public interface IUserService<T> where T : class
     {
         Task<ResponseApiModel<UserApiModel>> GetUserById(string id);
+        Task<ResponseApiModel<UserApiModel>> GetUserByEmail(string email);
         Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers();
         Task<ResponseApiModel<IEnumerable<UserApiModel>>> FindUser(Expression<Func<T, bool>> predicate);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel);
