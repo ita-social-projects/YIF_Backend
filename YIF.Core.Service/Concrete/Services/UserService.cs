@@ -84,6 +84,21 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
+        public async Task<ResponseApiModel<UserApiModel>> GetUserByEmail(string email)
+        {
+            var result = new ResponseApiModel<UserApiModel>();
+            try
+            {
+                var user = await _userRepository.GetByEmail(email);
+                result.Object = _mapper.Map<UserApiModel>(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return result.Set(404, ex.Message);
+            }
+            return result.Set(true);
+        }
+
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> FindUser(Expression<Func<DbUser, bool>> predicate)
         {
             var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
@@ -226,6 +241,30 @@ namespace YIF.Core.Service.Concrete.Services
             return _mapper.Map<UserProfileDTO>(user);
         }
 
+        public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
+        {
+            var result = new ResponseApiModel<UserProfileApiModel>(false, "Профіль користувача не встановлено.");
+
+            var newEmail = model.Email;
+            model.Email = (await _userManager.FindByIdAsync(userId)).Email;
+            var profile = _mapper.Map<UserProfile>(model);
+            profile.User.Email = newEmail;
+
+            try
+            {
+                var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
+                result.Object = _mapper.Map<UserProfileApiModel>(user);
+                return result.Set(true);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return result.Set(false, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return result.Set(false, ex.Message);
+            }
+        }
 
         public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
         {

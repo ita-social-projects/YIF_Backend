@@ -93,13 +93,36 @@ namespace YIF_Backend.Controllers
             var userId = User.FindFirst("id")?.Value;
             var userDto = await _userService.GetUserProfileInfoById(userId);
             if (userDto == null)
-                return BadRequest(new DescriptionResponseApiModel { Message = "Зазначеного юзера не існує." });
+                return BadRequest(new DescriptionResponseApiModel("Зазначеного юзера не існує."));
             var profile = _mapper.Map<UserProfileApiModel>(userDto);
             return Ok(profile);
         }
 
         /// <summary>
-        /// Change authorized user photo. Size limit 10 MB
+        /// Creates user profile
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="200">If the user profile successfully created/updated.</response>
+        /// <response code="400">If the request to set the user profile is incorrect.</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
+        [ProducesResponseType(typeof(UserProfileApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(500)]
+        [HttpPost("SetCurrentProfile")]
+        [Authorize]
+        public async Task<IActionResult> SetUserProfile([FromBody] UserProfileApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            }
+            var id = User.FindFirst("id")?.Value;
+            var result = await _userService.SetUserProfileInfoById(model, id);
+            return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
+        }
+
+        /// <summary>
+        /// Change User Photo. Size limit 10 MB
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">If change user photo request is correct</response>

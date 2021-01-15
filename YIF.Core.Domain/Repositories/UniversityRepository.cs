@@ -41,7 +41,6 @@ namespace YIF.Core.Domain.Repositories
         public async Task<IEnumerable<UniversityDTO>> GetAll()
         {
             var list = await _context.Universities.ToListAsync();
-
             return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 

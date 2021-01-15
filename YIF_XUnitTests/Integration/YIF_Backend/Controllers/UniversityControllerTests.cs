@@ -64,7 +64,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-            Assert.True(contentJsonObj.Count > 1);
+            Assert.True(contentJsonObj.Count >= 1);
         }
 
         [Theory]
@@ -102,7 +102,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-            Assert.True(contentJsonObj.Count > 1);
+            Assert.True(contentJsonObj.Count >= 1);
         }
 
         #endregion
