@@ -243,11 +243,13 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
             var userDto = _mapper.Map<UserProfileDTO>(user);
-            
+
             var school = await _schoolGraduate.GetSchoolByUserId(userId);
 
             var userProfile = _mapper.Map<UserProfileApiModel>(userDto);
-            userProfile = _mapper.Map(school, userProfile);
+
+            if (school != null)
+                userProfile = _mapper.Map(school, userProfile);
 
             return userProfile;
         }
