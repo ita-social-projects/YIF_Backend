@@ -160,6 +160,7 @@ namespace YIF_XUnitTests
     // For mocking IdentityUser managers
     public class FakeUserManager<T> : UserManager<T> where T : class
     {
+        public T Obj { get; set; }
         public IdentityResult ResIsSucces { get; set; } = IdentityResult.Success;
         public FakeUserManager()
             : base(new Mock<IUserStore<T>>().Object,
@@ -172,6 +173,10 @@ namespace YIF_XUnitTests
                   new Mock<IServiceProvider>().Object,
                   new Mock<ILogger<UserManager<T>>>().Object)
         { }
+        public override Task<T> FindByIdAsync(string userId)
+        {
+            return Task.FromResult(Obj);
+        }
         public override Task<IdentityResult> CreateAsync(T user, string password)
         {
             var error = new IdentityError();
