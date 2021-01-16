@@ -46,7 +46,7 @@ namespace YIF_Backend.Controllers
             var id = User.FindFirst("id")?.Value;
             result.Object.Id = id;
 
-            return await Task.FromResult(result.Set(true).Response());
+            return await Task.FromResult(Ok(result.Object));
         }
 
 
@@ -65,7 +65,7 @@ namespace YIF_Backend.Controllers
         {
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.GetCurrentUserRolesUsingAuthorize(id);
-            return result.Response();
+            return Ok(result.Object);
         }
 
 
@@ -87,7 +87,7 @@ namespace YIF_Backend.Controllers
         {
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.GetAdminsUsingAuthorize(id);
-            return result.Response();
+            return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
         }
     }
 }

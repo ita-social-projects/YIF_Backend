@@ -79,7 +79,7 @@ namespace YIF.Core.Service.Concrete.Services
             }
             catch (KeyNotFoundException ex)
             {
-                return result.Set(404, ex.Message);
+                return result.Set(false, ex.Message);
             }
             return result.Set(true);
         }
@@ -94,7 +94,7 @@ namespace YIF.Core.Service.Concrete.Services
             }
             catch (KeyNotFoundException ex)
             {
-                return result.Set(404, ex.Message);
+                return result.Set(false, ex.Message);
             }
             return result.Set(true);
         }
@@ -122,12 +122,12 @@ namespace YIF.Core.Service.Concrete.Services
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                return result.Set(409, "User already exist");
+                return result.Set(false, "Користувач вже існує");
             }
 
             if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
             {
-                return result.Set(false, "Password and confirm password does not compare");
+                return result.Set(false, "Пароль та підтвердження пароля не співпадають");
             }
 
             var dbUser = new DbUser
@@ -143,7 +143,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (registerResult != string.Empty)
             {
-                return result.Set(409, registerResult);
+                return result.Set(false, registerResult);
             }
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
@@ -153,9 +153,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new AuthenticateResponseApiModel { Token = token, RefreshToken = refreshToken };
-
-            return result.Set(201);
+            return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> LoginUser(LoginApiModel loginModel)
@@ -173,13 +171,13 @@ namespace YIF.Core.Service.Concrete.Services
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)
             {
-                return result.Set(false, "Login or password is incorrect");
+                return result.Set(false, "Логін або пароль неправильний");
             }
 
             var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
             if (!loginResult.Succeeded)
             {
-                return result.Set(false, "Login or password is incorrect");
+                return result.Set(false, "Логін або пароль неправильний");
             }
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
@@ -189,9 +187,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            result.Object = new AuthenticateResponseApiModel() { Token = token, RefreshToken = refreshToken };
-
-            return result.Set(true);
+            return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> RefreshToken(TokenRequestApiModel tokenApiModel)
@@ -204,7 +200,7 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                return result.Set(false, "Invalid client request. Invalid token.");
+                return result.Set(false, "Помилка запиту. Помилковий токен.");
             }
 
             var userId = claims.First(claim => claim.Type == "id").Value;
@@ -213,17 +209,17 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (user == null)
             {
-                return result.Set(false, "Invalid client request. User doesn't exist.");
+                return result.Set(false, "Помилка запиту. Користувача не існує.");
             }
 
             if (user.Token == null || user.Token.RefreshToken != refreshToken)
             {
-                return result.Set(false, "Invalid client request. You must log in first.");
+                return result.Set(false, "Помилка запиту. Спочатку потрібно авторизуватись.");
             }
 
             if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                return result.Set(false, "Invalid client request. Refresh token expired.");
+                return result.Set(false, "Помилка запиту. Термін дії рефреш-токена закінчився.");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
@@ -231,8 +227,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _tokenRepository.UpdateUserToken(user, newRefreshToken);
 
-            result.Object = new AuthenticateResponseApiModel() { Token = newAccessToken, RefreshToken = newRefreshToken };
-            return result.Set(true);
+            return result.Set(new AuthenticateResponseApiModel(newAccessToken, newRefreshToken), true);
         }
 
         public async Task<UserProfileDTO> GetUserProfileInfoById(string userId)
@@ -350,16 +345,12 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
 
-            result = await GetAllUsers();
-            if (!result.Success)
-            {
-                return result;
-            }
-
-            return result.Set(200, result.Object.Where(
+            var users = (await GetAllUsers()).Object;
+            result.Object = users.Where(
                     u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
                     u.Roles.Contains(ProjectRoles.UniversityAdmin)
-                    ));
+                    );
+            return result.Object.Count() > 0 ? result.Set(true) : result.Set(false, "Адміністраторів немає");
         }
     }
 }

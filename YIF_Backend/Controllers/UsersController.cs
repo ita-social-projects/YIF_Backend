@@ -41,7 +41,8 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetAllUsersAsync()
         {
             var result = await _userService.GetAllUsers();
-            return result.Response();
+            _logger.LogInformation("Getting all users");
+            return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
         }
 
         /// <summary>
@@ -61,18 +62,18 @@ namespace YIF_Backend.Controllers
                 Guid guid = Guid.Parse(id);
                 var result = await _userService.GetUserById(guid.ToString("D"));
                 _logger.LogInformation("Trying to get a user");
-                return result.Response();
+                return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
 
             }
             catch (ArgumentNullException)
             {
                 _logger.LogError("Null user is not allowed");
-                return new ResponseApiModel<object> { StatusCode = 400, Message = "The string to be parsed is null." }.Response();
+                return BadRequest(new DescriptionResponseApiModel("Рядок для аналізу не має значення."));
             }
             catch (FormatException)
             {
                 _logger.LogError("There is a problem with format");
-                return new ResponseApiModel<object> { StatusCode = 400, Message = $"Bad format:  {id}" }.Response();
+                return BadRequest(new DescriptionResponseApiModel($"Неправильний формат:  {id}."));
             }
         }
 
@@ -112,10 +113,7 @@ namespace YIF_Backend.Controllers
         [Authorize]
         public async Task<IActionResult> SetUserProfile([FromBody] UserProfileApiModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
-            }
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.SetUserProfileInfoById(model, id);
             return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
@@ -141,17 +139,16 @@ namespace YIF_Backend.Controllers
 
             if (!validResults.IsValid)
             {
-                return BadRequest(new DescriptionResponseApiModel { Message = validResults.ToString() });
+                return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
             }
 
             var id = User.FindFirst("id")?.Value;
 
             var result = await _userService.ChangeUserPhoto(model, id);
 
-            if (result != null)
-                return Ok(new ImageApiModel { Photo = result.Photo });
-            else
-                return BadRequest(new DescriptionResponseApiModel { Message = "Фото не змінено." });
+            return result != null
+                ? Ok(new ImageApiModel { Photo = result.Photo })
+                : (IActionResult)BadRequest(new DescriptionResponseApiModel("Фото не змінено."));
         }
     }
 }

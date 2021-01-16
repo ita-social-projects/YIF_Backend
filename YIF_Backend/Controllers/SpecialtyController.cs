@@ -33,12 +33,7 @@ namespace YIF_Backend.Controllers
         {
             var result = await _specialtyService.GetAllSpecialties();
             _logger.LogInformation("Getting all spetialties");
-            if (result.Success)
-            {
-                return Ok(result.Object);
-            }
-            _logger.LogInformation("There are no spetialties in database");
-            return NotFound(result.Description);
+            return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
         }
 
         /// <summary>
