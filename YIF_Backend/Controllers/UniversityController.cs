@@ -23,6 +23,14 @@ namespace YIF_Backend.Controllers
             _universityService = universityService;
         }
 
+
+        /// <summary>
+        /// Creates user profile
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="200">If the user profile successfully created/updated.</response>
+        [ProducesResponseType(typeof(UniversityFilterResponseApiModel), 200)]
+        [ProducesResponseType(500)]
         [HttpGet("GetUniversityByFilter")]
         public async Task<IActionResult> GetUniversityByFilter(string DirectionName, string SpecialityName, string UniversityName)
         {
@@ -40,7 +48,7 @@ namespace YIF_Backend.Controllers
 
             var result = await _universityService.GetUniversityByFilter(model);
 
-            return result.Response(200);
+            return Ok(result.Object);
         }
     }
 }
