@@ -21,6 +21,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId);
         Task<UserProfileDTO> GetUserProfileInfoById(string userId);
         Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId);
+        Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model);
+
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(string id);
 

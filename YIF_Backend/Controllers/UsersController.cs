@@ -153,5 +153,22 @@ namespace YIF_Backend.Controllers
             else
                 return BadRequest(new DescriptionResponseApiModel { Message = "Фото не змінено." });
         }
+    
+        /// <summary>
+        /// Send reset password mail
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordByEmailApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userService.ResetPasswordByEmail(model);
+
+            return result.Response();
+        }
     }
 }
