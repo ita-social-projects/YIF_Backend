@@ -42,5 +42,28 @@ namespace YIF_Backend.Controllers
 
             return result.Response(200);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUniversityById(string id)
+        {
+            var result = await _universityService.GetUniversityById(id);
+            return result.Response(200);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUniversitiesPage(int page = 1, int pageSize = 10)
+        {
+            var result = new UniversitiesPageResponseApiModel();
+            try
+            {
+                var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+                result = await _universityService.GetUniversitiesPage(page, pageSize, url);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new DescriptionResponseApiModel { Message = e.Message });
+            }
+            return Ok(result);
+        }
     }
 }

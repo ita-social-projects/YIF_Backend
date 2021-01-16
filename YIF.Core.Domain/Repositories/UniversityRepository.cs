@@ -35,7 +35,12 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<UniversityDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var university = await _context.Universities.FindAsync(id);
+            if (university != null)
+            {
+                return _mapper.Map<UniversityDTO>(university);
+            }
+            throw new KeyNotFoundException("User not found:  " + id);
         }
 
         public async Task<IEnumerable<UniversityDTO>> GetAll()

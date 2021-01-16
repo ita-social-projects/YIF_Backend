@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace YIF.Core.Domain.DtoModels.EntityDTO
+namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class UniversityDTO
+    public class UniversityResponseApiModel
     {
         public string Id { get; set; }
         /// <summary>
@@ -54,22 +53,5 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// End date of the entrance campaign
         /// </summary>
         public DateTime EndOfCampaign { get; set; }
-
-        /// <summary>
-        /// List of university admins
-        /// </summary>
-        public virtual IEnumerable<UniversityAdminDTO> Admins { get; set; }
-        /// <summary>
-        /// List of university moderators
-        /// </summary>
-        public virtual IEnumerable<UniversityModeratorDTO> Moderators { get; set; }
-        /// <summary>
-        /// List of university lectures
-        /// </summary>
-        public virtual IEnumerable<LectureDTO> Lectures { get; set; }
-        /// <summary>
-        /// List of graduates who liked the university
-        /// </summary>
-        public virtual ICollection<UniversityToGraduateDTO> UniversityGraduates { get; set; }
     }
 }
