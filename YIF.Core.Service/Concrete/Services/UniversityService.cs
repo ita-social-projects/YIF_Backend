@@ -15,13 +15,13 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class UniversityService : IUniversityService<University>
     {
-        private readonly IRepository<University, UniversityDTO> _universityRepository;
+        private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
         private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialityRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
         private readonly IMapper _mapper;
 
         public UniversityService(
-            IRepository<University, UniversityDTO> universityRepository,
+            IUniversityRepository<University, UniversityDTO> universityRepository,
             IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialityRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IMapper mapper)
@@ -80,23 +80,21 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
         
-        public async Task<ResponseApiModel<UniversityResponseApiModel>> GetUniversityById(string id)
+        public async Task<UniversityResponseApiModel> GetUniversityById(string universityId, string userId = null)
         {
-            var result = new ResponseApiModel<UniversityResponseApiModel>();
-            try
-            {
-                var university = await _universityRepository.Get(id);
-                result.Object = _mapper.Map<UniversityResponseApiModel>(university);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return result.Set(404, ex.Message);
-            }
             
-            return result.Set(true);
+            var university = await _universityRepository.Get(universityId);
+
+            if (university == null)
+                throw new KeyNotFoundException();
+
+            var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
+            university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;
+
+            return _mapper.Map<UniversityResponseApiModel>(university);
         }
 
-        public async Task<UniversitiesPageResponseApiModel> GetUniversitiesPage(int page = 1, int pageSize = 10, string url = null)
+        public async Task<UniversitiesPageResponseApiModel> GetUniversitiesPage(int page = 1, int pageSize = 10, string url = null, string userId = null)
         {
             if (pageSize <= 0)
                 throw new Exception("Invalid page size");
@@ -132,6 +130,12 @@ namespace YIF.Core.Service.Concrete.Services
                 prevPage = new UriBuilder(url);
                 query["page"] = (page - 1).ToString();
                 prevPage.Query = query.ToString();
+            }
+
+            var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
+            foreach (var university in universitiesOnPage)
+            {
+                university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;
             }
 
             var result = new UniversitiesPageResponseApiModel

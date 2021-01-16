@@ -53,5 +53,9 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// End date of the entrance campaign
         /// </summary>
         public DateTime EndOfCampaign { get; set; }
+        /// <summary>
+        /// Is the university favorite
+        /// </summary>
+        public bool IsFavorite { get; set; }
     }
 }

@@ -12,7 +12,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UniversityRepository : IRepository<University, UniversityDTO>
+    public class UniversityRepository : IUniversityRepository<University, UniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -50,6 +50,18 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 
+        public async Task<IEnumerable<UniversityDTO>> GetFavoritesByUserId(string userId)
+        {
+            var universities = from universityToGraduate in _context.UniversitiesToGraduates
+                    join university in _context.Universities on universityToGraduate.UniversityId equals university.Id
+                    join graduate in _context.Graduates on universityToGraduate.GraduateId equals graduate.Id
+                    where (graduate.UserId == userId)
+                    select university;
+
+            var list = await universities.ToListAsync();
+            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
+        }
+
         [ExcludeFromCodeCoverage]
         public void Dispose() => _context.Dispose();
 
@@ -63,6 +75,21 @@ namespace YIF.Core.Domain.Repositories
             }
 
             return null;
+        }
+
+        public Task<string> AddUniversity(University university)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UniversityDTO> GetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<UniversityDTO>> GetAllUniversities()
+        {
+            throw new NotImplementedException();
         }
     }
 }

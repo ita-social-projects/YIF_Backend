@@ -679,6 +679,23 @@ namespace YIF.Core.Data
             }
         }
 
+        public static void SeedFavoriteUniversities(EFDbContext context)
+        {
+            if (context.UniversitiesToGraduates.Count() == 0)
+            {
+                var favoriteUniversities = new List<UniversityToGraduate>();
+
+                favoriteUniversities.Add(new UniversityToGraduate 
+                { 
+                    GraduateId = "0ccc8964-7b45-4d6a-af44-247f04a97932",
+                    UniversityId = "e2bd4ad9-060b-4d53-8222-9f3e5efbcfc7"
+                });
+
+                context.UniversitiesToGraduates.AddRange(favoriteUniversities);
+                context.SaveChanges();
+            }
+        }
+
         public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
             if (context.DirectionsToUniversities.Count() == 0 || context.SpecialityToUniversities.Count() == 0)
@@ -1115,6 +1132,7 @@ namespace YIF.Core.Data
                 SeederDB.SeedUniversityAdmins(context);
                 await SeederDB.SeedUniversityModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);
+                SeederDB.SeedFavoriteUniversities(context);
                 #endregion
             }
 
