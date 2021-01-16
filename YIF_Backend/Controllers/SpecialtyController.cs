@@ -79,12 +79,11 @@ namespace YIF_Backend.Controllers
                 Guid guid = Guid.Parse(id);
                 var result = await _specialtyService.GetSpecialtyById(guid.ToString("D"));
                 _logger.LogInformation("Trying to get a specialty");
-
                 if (result.Success)
                 {
                     return Ok(result.Object);
                 }
-                _logger.LogInformation("There is problem with request");
+                _logger.LogInformation("The specialty hasn't found");
                 return NotFound(result.Description);
             }
             catch (ArgumentNullException)
