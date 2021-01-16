@@ -1,17 +1,22 @@
 ﻿version: "3.8"
 services:
-    ms-sql-server:
-        container_name: ms-sql-server
-        image: mcr.microsoft.com/mssql/server:2019-latest
+    yifsql:
+        container_name: yifsql
+        image: mcr.microsoft.com/mssql/server:2017-latest
         ports:
             - "1433:1433"
         environment:
             ACCEPT_EULA: "Y"
             SA_PASSWORD: "YIF_Backend_DB_MyKeyOnlyInMyHeart"
             MSSQL_PID: "Express"
-    web-api:
-        container_name: web-api-ps
-        image: web-api
-        build: .
+    yifbackend:
+        container_name: yifbackend
+        image: smethan/yifbackend:latest
+        build:
+            context: .
+            dockerfile: Dockerfile.VM
         ports:
-            - "8080:80"
+            - "5000:80"
+        restart: always
+        depends_on:
+            - yifsql

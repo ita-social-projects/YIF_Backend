@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -1008,6 +1010,10 @@ namespace YIF.Core.Data
                 var managerRole = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var context = scope.ServiceProvider.GetRequiredService<EFDbContext>();
 
+                Console.WriteLine("Database migrating ... ");
+                context.Database.Migrate();
+                Console.WriteLine("Database migrated");
+                Console.WriteLine("Database seeding ... ");
 
                 // Roles: 7
                 // SuperAdmins: 1
@@ -1043,6 +1049,8 @@ namespace YIF.Core.Data
                 await SeederDB.SeedUniversityModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);
                 #endregion
+
+                Console.WriteLine("Database seeded.");
             }
 
         }

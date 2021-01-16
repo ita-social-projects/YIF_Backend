@@ -1,0 +1,41 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
+pipeline {
+	agent { label 'master' }
+    // triggers { pollSCM('* * * * *') }
+	options {
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+        timestamps()
+    }
+	
+    stages {
+        stage ('Docker-compose down') {
+            steps {
+                dir(".") {
+                    echo " ---> Docker-compose down <--- "
+                    sh "docker-compose down || true"
+                }
+            }
+        }
+
+        stage ('Docker-compose up --build') {
+            steps {
+                dir(".") {
+                    echo " ---> Docker-compose up --build <--- "
+                    sh "docker-compose up -d --build"
+                }
+            }
+        }
+
+        stage ('Remove dangling images') {
+            steps {
+                dir(".") {
+                    echo " ---> Remove dangling images  <--- "
+                    sh "docker rmi \$(docker images --filter 'dangling=true' -q --no-trunc) || true"
+                    deleteDir()
+                }
+            }
+        }
+    }
+}
