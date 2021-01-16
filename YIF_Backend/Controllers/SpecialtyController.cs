@@ -26,7 +26,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of specialties</returns>
         /// <response code="200">Returns a list of specialties</response>
-        [HttpGet]
+        [HttpGet("All")]
         [ProducesResponseType(typeof(IEnumerable<SpecialtyApiModel>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllSpecialtiesAsync()
@@ -37,13 +37,8 @@ namespace YIF_Backend.Controllers
             {
                 return Ok(result.Object);
             }
-            if (result.Message.Contains("Спеціальностей немає"))
-            {
-                _logger.LogInformation("There are no spetialties in database");
-                return NotFound(result.Description);
-            }
-            _logger.LogInformation("There is problem with request");
-            return BadRequest(result.Description);
+            _logger.LogInformation("There are no spetialties in database");
+            return NotFound(result.Description);
         }
 
         /// <summary>
@@ -51,7 +46,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of specialties names</returns>
         /// <response code="200">Returns a list of specialties names</response>
-        [HttpGet("names")]
+        [HttpGet("Names")]
         [ProducesResponseType(typeof(SpecialtyNamesResponseApiModel), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllSpecialtiesNamesAsync()
@@ -62,13 +57,8 @@ namespace YIF_Backend.Controllers
             {
                 return Ok(result.Object);
             }
-            if (result.Message.Contains("Спеціальностей немає"))
-            {
-                _logger.LogInformation("There are no spetialties in database");
-                return NotFound(result.Description);
-            }
-            _logger.LogInformation("There is problem with request");
-            return BadRequest(result.Description);
+            _logger.LogInformation("There are no spetialties in database");
+            return NotFound(result.Description);
         }
 
         /// <summary>

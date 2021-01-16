@@ -63,7 +63,7 @@ namespace YIF.Core.Service.Concrete.Services
             var users = (List<UserDTO>)await _userRepository.GetAll();
             if (users.Count < 1)
             {
-                return result.Set(404, $"There are not users in database");
+                return result.Set(false, $"Користувачів немає");
             }
             result.Object = _mapper.Map<IEnumerable<UserApiModel>>(users);
             return result.Set(true);
