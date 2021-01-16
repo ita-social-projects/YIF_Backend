@@ -7,7 +7,11 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
     public class ResetPasswordByEmailApiModel
     {
-        [Required]
+        /// <summary>
+        /// Email of user
+        /// </summary>
+        /// <example>example@gmail.com</example>
+        [Required, StringLength(255)]
         public string UserEmail { get; set; }
     }
 }

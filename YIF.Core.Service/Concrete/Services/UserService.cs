@@ -372,12 +372,12 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(400, "Введіть коректний емейл");
             }
 
-            if (user == null)
+            if (user == null || user.IsDeleted)
             {
                 return result.Set(404, "Такий емейл не є зареєстрованим");
             }
 
-            var url = "url";
+            var url = _configuration.GetValue<string>("ServerUrl") + $"password/reset/{user.Id}";
             var html = $@"<p>&nbsp;</p>
 <!-- HIDDEN PREHEADER TEXT -->
 <table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
