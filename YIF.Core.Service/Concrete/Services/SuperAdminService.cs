@@ -30,6 +30,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
+        private readonly ITokenRepository _tokenRepository;
         public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -40,7 +41,8 @@ namespace YIF.Core.Service.Concrete.Services
             IUniversityModeratorRepository<UniversityModeratorDTO> universityModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
-            ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository)
+            ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
+            ITokenRepository tokenRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -53,6 +55,7 @@ namespace YIF.Core.Service.Concrete.Services
             _schoolRepository = schoolRepository;
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
+            _tokenRepository = tokenRepository;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -109,7 +112,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _userRepository.UpdateUserToken(dbUser, refreshToken);
+            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
@@ -172,7 +175,7 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _userRepository.UpdateUserToken(dbUser, refreshToken);
+            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
