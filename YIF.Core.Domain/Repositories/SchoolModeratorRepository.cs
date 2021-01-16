@@ -14,12 +14,12 @@ namespace YIF.Core.Domain.Repositories
 {
     public class SchoolModeratorRepository : ISchoolModeratorRepository<SchoolModeratorDTO>
     {
-        private readonly EFDbContext _dbContext;
+        private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
         public SchoolModeratorRepository(IMapper mapper,
                               UserManager<DbUser> userManager,
-                              EFDbContext dbContext)
+                              IApplicationDbContext dbContext)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -32,9 +32,9 @@ namespace YIF.Core.Domain.Repositories
             return string.Empty;
         }
 
-        public async void Dispose()
+        public void Dispose()
         {
-            await _dbContext.DisposeAsync();
+            _dbContext.Dispose();
         }
     }
 }
