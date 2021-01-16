@@ -367,6 +367,11 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<ResetPasswordByEmailApiModel>();
             var user = await _userManager.FindByEmailAsync(model.UserEmail);
 
+            if(model.UserEmail == string.Empty || model.UserEmail == null)
+            {
+                return result.Set(400, "Введіть коректний емейл");
+            }
+
             if (user == null)
             {
                 return result.Set(404, "Такий емейл не є зареєстрованим");
