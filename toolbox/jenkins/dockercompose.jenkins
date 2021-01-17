@@ -19,10 +19,10 @@ pipeline {
             }
         }
 
-        stage ('Docker-compose up --build') {
+        stage ('Docker-compose up') {
             steps {
                 dir(".") {
-                    echo " ---> Docker-compose up --build <--- "
+                    echo " ---> Docker-compose up <--- "
                     sh "docker-compose up -d || true"
                 }
             }
