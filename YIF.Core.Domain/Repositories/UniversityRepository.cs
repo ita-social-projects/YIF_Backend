@@ -23,7 +23,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public async Task<bool> Update(University item)
+        public Task<bool> Update(University item)
         {
             throw new NotImplementedException();
         }
@@ -46,7 +46,6 @@ namespace YIF.Core.Domain.Repositories
         public async Task<IEnumerable<UniversityDTO>> GetAll()
         {
             var list = await _context.Universities.ToListAsync();
-
             return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 

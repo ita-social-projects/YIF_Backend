@@ -17,6 +17,7 @@ using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -33,6 +34,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduate;
 
         public UserService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
@@ -43,7 +45,8 @@ namespace YIF.Core.Service.Concrete.Services
             IEmailService emailService,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ITokenRepository tokenRepository)
+            ITokenRepository tokenRepository,
+            ISchoolGraduateRepository<SchoolDTO> schoolGraduate)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -55,6 +58,7 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
             _tokenRepository = tokenRepository;
+            _schoolGraduate = schoolGraduate;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -75,6 +79,21 @@ namespace YIF.Core.Service.Concrete.Services
             try
             {
                 var user = await _userRepository.Get(id);
+                result.Object = _mapper.Map<UserApiModel>(user);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return result.Set(404, ex.Message);
+            }
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<UserApiModel>> GetUserByEmail(string email)
+        {
+            var result = new ResponseApiModel<UserApiModel>();
+            try
+            {
+                var user = await _userRepository.GetByEmail(email);
                 result.Object = _mapper.Map<UserApiModel>(user);
             }
             catch (KeyNotFoundException ex)
@@ -220,12 +239,45 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<UserProfileDTO> GetUserProfileInfoById(string userId)
+        public async Task<UserProfileApiModel> GetUserProfileInfoById(string userId)
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
-            return _mapper.Map<UserProfileDTO>(user);
+            var userDto = _mapper.Map<UserProfileDTO>(user);
+
+            var school = await _schoolGraduate.GetSchoolByUserId(userId);
+
+            var userProfile = _mapper.Map<UserProfileApiModel>(userDto);
+
+            if (school != null)
+                userProfile = _mapper.Map(school, userProfile);
+
+            return userProfile;
         }
 
+        public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
+        {
+            var result = new ResponseApiModel<UserProfileApiModel>(false, "Профіль користувача не встановлено.");
+
+            var newEmail = model.Email;
+            model.Email = (await _userManager.FindByIdAsync(userId)).Email;
+            var profile = _mapper.Map<UserProfile>(model);
+            profile.User.Email = newEmail;
+
+            try
+            {
+                var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
+                result.Object = _mapper.Map<UserProfileApiModel>(user);
+                return result.Set(true);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return result.Set(false, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return result.Set(false, ex.Message);
+            }
+        }
 
         public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
         {

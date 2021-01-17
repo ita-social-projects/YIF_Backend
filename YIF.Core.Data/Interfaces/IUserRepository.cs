@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
@@ -10,8 +11,8 @@ namespace YIF.Core.Data.Interfaces
         Task<K> GetByEmail(string email);
         Task<T> GetUserWithToken(string userId);
         Task<T> GetUserWithUserProfile(string userId);
-        Task<bool> SetDefaultUserProfileIfEmpty(string userId);
-        Task<bool> UpdateUserToken(T user, string refreshToken);
+        Task<UserProfile> SetDefaultUserProfileIfEmpty(string userId);
+        Task<T> SetUserProfile(UserProfile profile, string userId, string schoolName = null);
         Task<bool> UpdateUserPhoto(T user, string photo);
     }
 }

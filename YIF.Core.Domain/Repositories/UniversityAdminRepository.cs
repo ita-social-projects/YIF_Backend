@@ -16,18 +16,15 @@ namespace YIF.Core.Domain.Repositories
 {
     public class UniversityAdminRepository : IUniversityAdminRepository<UniversityAdminDTO>
     {
-        private readonly EFDbContext _dbContext;
-        private readonly IApplicationDbContext _context;
+        private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
         public UniversityAdminRepository(IApplicationDbContext context,
                                          IMapper mapper,
-                                         EFDbContext dbContext,
                                          UserManager<DbUser> userManager)
         {
-            _context = context;
+            _dbContext = context;
             _mapper = mapper;
-            _dbContext = dbContext;
             _userManager = userManager;
         }
 
@@ -75,7 +72,7 @@ namespace YIF.Core.Domain.Repositories
 
                                 };
 
-            if (universityAdmin != null)
+            if (universityAdmin.Count() != 0)
             {
                 return await universityAdmin.FirstOrDefaultAsync();
             }
@@ -103,9 +100,9 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
         [ExcludeFromCodeCoverage]
-        public async void Dispose()
+        public  void Dispose()
         {
-            await _dbContext.DisposeAsync();
+            _dbContext.Dispose();
         }
 
 

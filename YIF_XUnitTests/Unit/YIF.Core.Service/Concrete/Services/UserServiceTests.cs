@@ -15,6 +15,7 @@ using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.Models.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -25,7 +26,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class UserServiceTests
     {
         private readonly UserService _testService;
-        private readonly Mock<IRepository<DbUser, UserDTO>> _userRepository;
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
         private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
@@ -35,6 +36,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IEmailService> _emailServise;
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<ISchoolGraduateRepository<SchoolDTO>> _schoolGraduate;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -42,8 +44,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly UserApiModel _userVMStub;
 
         public UserServiceTests()
-        {           
-            _userRepository = new Mock<IRepository<DbUser, UserDTO>>();
+        {
+            _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
             _tokenRepository = new Mock<ITokenRepository>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
@@ -53,16 +55,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _emailServise = new Mock<IEmailService>();
             _env = new Mock<IWebHostEnvironment>();
             _configuration = new Mock<IConfiguration>();
-            //_testService = new UserService(
-            //    _userRepository.Object,
-            //    _userManager.Object,
-            //    _signInManager,
-            //    _jwtService.Object,
-            //    _mapperMock.Object,
-            //    _recaptcha.Object,
-            //    _emailServise.Object,
-            //    _env.Object, _configuration.Object,
-            //    _tokenRepository.Object);
+            _schoolGraduate = new Mock<ISchoolGraduateRepository<SchoolDTO>>();
+            _testService = new UserService(
+                _userRepository.Object,
+                _userManager.Object,
+                _signInManager,
+                _jwtService.Object,
+                _mapperMock.Object,
+                _recaptcha.Object,
+                _emailServise.Object,
+                _env.Object, _configuration.Object,
+                _tokenRepository.Object,
+                _schoolGraduate.Object);
 
             _userDTOStub = new UserDTO();
             _userVMStub = new UserApiModel();
@@ -171,7 +175,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            //_userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(string.Empty));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(string.Empty));
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(x => x.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
@@ -240,7 +244,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            //_userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
             // Act
             var result = await _testService.RegisterUser(userData);
@@ -291,17 +295,17 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var token = "some correct token";
-            var loginAM = new LoginApiModel 
-            { 
-                Email = "stepan@gmail.com",
+            var loginAM = new LoginApiModel
+            {
+                Email = "6necum.how@silentsuite.com",
                 Password = "QWerty-1",
                 RecaptchaToken = "recaptcha"
             };
-            var user = new DbUser 
-            { 
+            var user = new DbUser
+            {
                 Id = Guid.NewGuid().ToString("D"),
                 Email = loginAM.Email,
-                PasswordHash = loginAM.Password 
+                PasswordHash = loginAM.Password
             };
 
             _recaptcha.Setup(x => x.IsValid(loginAM.RecaptchaToken)).Returns(true);
@@ -357,12 +361,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public void Dispose_ShouldDisposeDatabase()
         {
             // Arrange
-            var repo = new Mock<IRepository<DbUser, UserDTO>>();
+            var repo = new Mock<IUserRepository<DbUser, UserDTO>>();
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            //var service = new UserService(repo.Object, null, null, null, null, null, null, null, null,null);
-            //service.Dispose();
+            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null, null);
+            service.Dispose();
             // Assert
             Assert.True(result);
         }
