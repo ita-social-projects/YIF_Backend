@@ -35,7 +35,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
-        //public ResponseApiModel() { }
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
