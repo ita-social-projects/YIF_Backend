@@ -297,7 +297,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var token = "some correct token";
             var loginAM = new LoginApiModel
             {
-                Email = "stepan@gmail.com",
+                Email = "6necum.how@silentsuite.com",
                 Password = "QWerty-1",
                 RecaptchaToken = "recaptcha"
             };
