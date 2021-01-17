@@ -169,7 +169,7 @@ namespace YIF_Backend.Controllers
                 return BadRequest();
             }
 
-            var result = await _userService.ResetPasswordByEmail(model);
+            var result = await _userService.ResetPasswordByEmail(model,Request);
 
             return result.Response();
         }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -337,7 +338,7 @@ namespace YIF.Core.Service.Concrete.Services
             _userRepository.Dispose();
         }
 
-        public async Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model)
+        public async Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model,HttpRequest request)
         {
             var result = new ResponseApiModel<ResetPasswordByEmailApiModel>();
             var user = await _userManager.FindByEmailAsync(model.UserEmail);
@@ -352,7 +353,8 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(404, "Такий емейл не є зареєстрованим");
             }
 
-            var url = _configuration.GetSection("ServerUrl").Value + $"password/reset/{user.Id}";
+            var serverUrl = $"{request.Scheme}://{request.Host}/";
+            var url = serverUrl + $"password/reset/{user.Id}";
             var html = $@"<p>&nbsp;</p>
 <!-- HIDDEN PREHEADER TEXT -->
 <table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
@@ -416,6 +418,7 @@ namespace YIF.Core.Service.Concrete.Services
 </tr>
 </tbody>
 </table>";
+
             _emailService.SendAsync(model.UserEmail, "Відновлення паролю", html);
 
             result.Object = model;

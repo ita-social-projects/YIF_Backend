@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId);
         Task<UserProfileApiModel> GetUserProfileInfoById(string userId);
         Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId);
-        Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model);
+        Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request);
 
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(string id);

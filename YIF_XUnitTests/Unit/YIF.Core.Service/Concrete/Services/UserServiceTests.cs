@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
@@ -37,6 +38,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ISchoolGraduateRepository<SchoolDTO>> _schoolGraduate;
+        private readonly Mock<HttpRequest> _request;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -56,6 +58,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _env = new Mock<IWebHostEnvironment>();
             _configuration = new Mock<IConfiguration>();
             _schoolGraduate = new Mock<ISchoolGraduateRepository<SchoolDTO>>();
+            _request = new Mock<HttpRequest>();
             _testService = new UserService(
                 _userRepository.Object,
                 _userManager.Object,
@@ -373,13 +376,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Email = email
             };
 
+            _request.SetupAllProperties();
             _userManager.Setup(s => s.FindByEmailAsync(userModel.Email)).ReturnsAsync(userModel);
-            _configuration.Setup(c => c.GetSection(It.IsAny<String>())).Returns(new Mock<IConfigurationSection>().Object);
             _emailService.Setup(s => s.SendAsync(apiModel.UserEmail, "", ""))
                 .ReturnsAsync(null);
 
             // Act
-            var result = await _testService.ResetPasswordByEmail(apiModel);
+            var result = await _testService.ResetPasswordByEmail(apiModel, _request.Object);
 
             // Assert
             Assert.True(result.Success);
