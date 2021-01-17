@@ -11,6 +11,7 @@ using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.DtoModels.School;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -56,6 +57,11 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo))
                 .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
+
+            CreateMap<UserProfileDTO, UserProfileApiModel>();
+            CreateMap<SchoolDTO, UserProfileApiModel>()
+                .ForMember(dest => dest.Name, opt => opt.Ignore())
+                .ForMember(dest => dest.SchoolName, opt => opt.MapFrom(src => src.Name));
 
             CreateMap<UserProfileApiModel, UserProfile>()
                 .ConvertUsing<GetExistingUserProfileResolver>();

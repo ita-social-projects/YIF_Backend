@@ -22,12 +22,12 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<bool> Update(Speciality item)
+        public Task<bool> Update(Speciality item)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Delete(string id)
+        public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
         }

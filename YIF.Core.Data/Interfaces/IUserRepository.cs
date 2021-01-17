@@ -13,7 +13,6 @@ namespace YIF.Core.Data.Interfaces
         Task<T> GetUserWithUserProfile(string userId);
         Task<UserProfile> SetDefaultUserProfileIfEmpty(string userId);
         Task<T> SetUserProfile(UserProfile profile, string userId, string schoolName = null);
-        Task<bool> UpdateUserToken(T user, string refreshToken);
         Task<bool> UpdateUserPhoto(T user, string photo);
     }
 }

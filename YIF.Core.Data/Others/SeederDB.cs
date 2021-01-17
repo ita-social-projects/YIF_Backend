@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -631,7 +632,7 @@ namespace YIF.Core.Data
                             DirectionId = directions[i].Id
                         });
 
-                        for (int j = 0; j < new Random().Next(specialities.Where(x => x.DirectionId == directions[i].Id).Count()-3,
+                        for (int j = 0; j < new Random().Next(specialities.Where(x => x.DirectionId == directions[i].Id).Count() - 3,
                              specialities.Where(x => x.DirectionId == directions[i].Id).Count());
                              j++)
                         {
@@ -1008,43 +1009,51 @@ namespace YIF.Core.Data
                 var managerRole = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var context = scope.ServiceProvider.GetRequiredService<EFDbContext>();
 
+                Console.WriteLine("Database migrating ... ");
+                context.Database.Migrate();
+                Console.WriteLine("Database migrated");
 
-                // Roles: 7
-                // SuperAdmins: 1
+                if (context.Users.Count() == 0)
+                {
+                    Console.WriteLine("Database seeding ... ");
 
-                // Schools: 4
-                // SchoolAdmins: 5
-                // SchoolModerators: 10
-                // Graduates: 11
+                    // Roles: 7
+                    // SuperAdmins: 1
 
-                // Directions: 1
-                // Specialities: 6
-                // Universities: 3
-                // UniversityAdmins: 3
-                // UniversityModerators: 9
-                // Lectures: 9
+                    // Schools: 4
+                    // SchoolAdmins: 5
+                    // SchoolModerators: 10
+                    // Graduates: 11
 
-                await SeederDB.SeedRoles(managerRole);
-                await SeederDB.SeedSuperAdmin(context, manager);
+                    // Directions: 1
+                    // Specialities: 6
+                    // Universities: 3
+                    // UniversityAdmins: 3
+                    // UniversityModerators: 9
+                    // Lectures: 9
 
-                #region School
-                SeederDB.SeedSchools(context);
-                SeederDB.SeedSchoolAdmins(context);
-                await SeederDB.SeedSchoolModerators(context, manager);
-                await SeederDB.SeedGraduates(context, manager);
-                #endregion
+                    await SeederDB.SeedRoles(managerRole);
+                    await SeederDB.SeedSuperAdmin(context, manager);
 
-                #region University
-                SeederDB.SeedDirections(context);
-                SeederDB.SeedSpecialities(context);
-                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                SeederDB.SeedUniversities(context);
-                SeederDB.SeedUniversityAdmins(context);
-                await SeederDB.SeedUniversityModerators(context, manager);
-                await SeederDB.SeedLectures(context, manager);
-                #endregion
+                    #region School
+                    SeederDB.SeedSchools(context);
+                    SeederDB.SeedSchoolAdmins(context);
+                    await SeederDB.SeedSchoolModerators(context, manager);
+                    await SeederDB.SeedGraduates(context, manager);
+                    #endregion
+
+                    #region University
+                    SeederDB.SeedDirections(context);
+                    SeederDB.SeedSpecialities(context);
+                    SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
+                    SeederDB.SeedUniversities(context);
+                    SeederDB.SeedUniversityAdmins(context);
+                    await SeederDB.SeedUniversityModerators(context, manager);
+                    await SeederDB.SeedLectures(context, manager);
+                    #endregion
+                }
+                Console.WriteLine("Database seeded.");
             }
-
         }
     }
 }
