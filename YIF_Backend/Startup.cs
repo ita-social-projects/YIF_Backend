@@ -47,6 +47,7 @@ namespace YIF_Backend
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
             services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
             services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
@@ -65,6 +66,7 @@ namespace YIF_Backend
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
             services.AddTransient<IUniversityService<University>, UniversityService>();
+            services.AddTransient<IDirectionService, DirectionService>();
             #endregion
 
             #region FluentValidation
