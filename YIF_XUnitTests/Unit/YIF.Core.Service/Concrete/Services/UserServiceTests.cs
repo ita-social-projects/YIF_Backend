@@ -393,7 +393,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null,null);
             service.Dispose();
             // Assert
             Assert.True(result);
