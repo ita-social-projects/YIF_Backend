@@ -9,6 +9,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
     {
         Task<ResponseApiModel<IEnumerable<UniversityFilterResponseApiModel>>> GetUniversityByFilter(FilterApiModel filterModel);
         Task<UniversityResponseApiModel> GetUniversityById(string universityId, string userId = null);
-        Task<UniversitiesPageResponseApiModel> GetUniversitiesPage(int page, int pageSize, string url = null, string userId = null);
+        Task<PageResponseApiModel<UniversityResponseApiModel>> GetUniversitiesPage(int page, int pageSize, string url = null, string userId = null);
+        Task<IEnumerable<UniversityResponseApiModel>> GetFavoriteUniversities(string userId);
     }
 }

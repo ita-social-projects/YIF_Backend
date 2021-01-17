@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,23 +95,71 @@ namespace YIF.Core.Service.Concrete.Services
             return _mapper.Map<UniversityResponseApiModel>(university);
         }
 
-        public async Task<UniversitiesPageResponseApiModel> GetUniversitiesPage(int page = 1, int pageSize = 10, string url = null, string userId = null)
+        public async Task<PageResponseApiModel<UniversityResponseApiModel>> GetUniversitiesPage(int page = 1, int pageSize = 10, string url = null, string userId = null)
+        {
+            var universities =  _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await _universityRepository.GetAll());
+            var result = new PageResponseApiModel<UniversityResponseApiModel>();
+
+            if (universities == null || universities.Count() == 0)
+                throw new NotFoundException();
+
+            try
+            {
+                result = GetPageFromCollection(universities, page, pageSize, url);
+            }
+            catch
+            {
+                throw;
+            }
+
+            // Set the value to favorites
+            var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
+            foreach (var university in result.ResponseList)
+            {
+                university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<UniversityResponseApiModel>> GetFavoriteUniversities(string userId)
+        {
+            var favoriteUnivesistes = await _universityRepository.GetFavoritesByUserId(userId);
+            if (favoriteUnivesistes == null || favoriteUnivesistes.Count() == 0)
+            {
+                throw new NotFoundException();
+            }
+
+            foreach (var university in favoriteUnivesistes)
+            {
+                university.IsFavorite = true;
+            }
+
+            return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUnivesistes);
+        }
+
+        private PageResponseApiModel<T> GetPageFromCollection<T>(IEnumerable<T> list, int pageNumber, int pageSize, string url = null)
         {
             if (pageSize <= 0)
-                throw new Exception("Invalid page size");
+                throw new BadRequestException("Введено неправильний розмір сторінки");
 
-            var universities = await _universityRepository.GetAll();
-            var count = universities.Count();
+            var count = list.Count();
             var totalPages = (int)Math.Ceiling((double)count / pageSize);
 
-            if (page <= 0 || page > totalPages)
-                throw new Exception("Invalid page");
+            if (pageNumber <= 0 || pageNumber > totalPages)
+                throw new BadRequestException("Введено неправильний номер сторінки");
 
-            var universitiesOnPage = universities
-                .OrderBy(x => x.Id)
-                .Skip((page - 1) * pageSize)
+            var itemsOnPage = list
+                .OrderBy(x => {
+                    var test = x.GetType().GetProperty("Id").GetValue(x).ToString();
+                    if (test != null)
+                        return test;
+                    return x.GetHashCode().ToString();
+                })
+                .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
-                        
+
+            // Add url for next and prev pages
             var currentUrl = new UriBuilder(url);
             UriBuilder nextPage = null;
             UriBuilder prevPage = null;
@@ -118,35 +167,29 @@ namespace YIF.Core.Service.Concrete.Services
             var query = HttpUtility.ParseQueryString(currentUrl.Query);
             query["pageSize"] = pageSize.ToString();
 
-            if (page + 1 <= totalPages)
+            if (pageNumber + 1 <= totalPages)
             {
                 nextPage = new UriBuilder(url);
-                query["page"] = (page + 1).ToString();
+                query["page"] = (pageNumber + 1).ToString();
                 nextPage.Query = query.ToString();
             }
 
-            if (page - 1 > 0)
+            if (pageNumber - 1 > 0)
             {
                 prevPage = new UriBuilder(url);
-                query["page"] = (page - 1).ToString();
+                query["page"] = (pageNumber - 1).ToString();
                 prevPage.Query = query.ToString();
             }
 
-            var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
-            foreach (var university in universitiesOnPage)
+            var result = new PageResponseApiModel<T>
             {
-                university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;
-            }
-
-            var result = new UniversitiesPageResponseApiModel
-            {
-                CurrentPage = page,
+                CurrentPage = pageNumber,
                 PageSize = pageSize,
                 TotalPages = totalPages,
-                Universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(universitiesOnPage),
+                ResponseList = itemsOnPage,
                 NextPage = nextPage?.ToString(),
                 PrevPage = prevPage?.ToString()
-            };           
+            };
 
             return result;
         }
