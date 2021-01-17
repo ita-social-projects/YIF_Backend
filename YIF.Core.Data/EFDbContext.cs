@@ -29,6 +29,7 @@ namespace YIF.Core.Data
         public DbSet<Speciality> Specialities { get; set; }
         public DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
         public DbSet<SpecialityToUniversity> SpecialityToUniversities { get; set; }
+        public DbSet<UniversityToGraduate> UniversitiesToGraduates { get; set; }
 
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
@@ -78,6 +79,19 @@ namespace YIF.Core.Data
                 .WithOne(x => x.University)
                 .HasForeignKey(x => x.UniversityId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UniversityToGraduate>()
+                .HasKey(ug => new { ug.UniversityId, ug.GraduateId });
+
+            builder.Entity<UniversityToGraduate>()
+                    .HasOne(ug => ug.University)
+                    .WithMany(u => u.UniversityGraduates)
+                    .HasForeignKey(ug => ug.UniversityId);
+
+            builder.Entity<UniversityToGraduate>()
+                    .HasOne(ug => ug.Graduate)
+                    .WithMany(g => g.UniversityGraduates)
+                    .HasForeignKey(ug => ug.GraduateId);
 
             //builder.Entity<University>()//потестить каскадку
             //    .HasMany(x => x.Admins)

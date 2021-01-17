@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210115145600_UpdatedUniversity")]
+    partial class UpdatedUniversity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -526,21 +528,6 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("UniversityModerators");
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.UniversityToGraduate", b =>
-                {
-                    b.Property<string>("UniversityId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("GraduateId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UniversityId", "GraduateId");
-
-                    b.HasIndex("GraduateId");
-
-                    b.ToTable("UniversitiesToGraduates");
-                });
-
             modelBuilder.Entity("YIF.Core.Data.Entities.UserProfile", b =>
                 {
                     b.Property<string>("Id")
@@ -753,21 +740,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.UniversityToGraduate", b =>
-                {
-                    b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
-                        .WithMany("UniversityGraduates")
-                        .HasForeignKey("GraduateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("YIF.Core.Data.Entities.University", "University")
-                        .WithMany("UniversityGraduates")
-                        .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UserProfile", b =>

@@ -61,6 +61,7 @@ namespace YIF_Backend
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
+            services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
 
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
@@ -219,7 +220,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger
