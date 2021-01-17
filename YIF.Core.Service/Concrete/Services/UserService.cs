@@ -324,50 +324,12 @@ namespace YIF.Core.Service.Concrete.Services
             _userRepository.Dispose();
         }
 
-        // =========================   For test authorize endpoint:   =========================
-
-        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
-        {
-            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
-            result.Object = new RolesByTokenResponseApiModel("Not Valid");
-
-            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                result.Object.TokenStatus = "Valid, but expired";
-            }
-
-            result.Object.TokenStatus = "Valid";
-            result.Object.Roles = await _userManager.GetRolesAsync(user);
-
-            return result.Set(true);
-        }
-
-        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id)
-        {
-            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
-
-            result = await GetAllUsers();
-            if (!result.Success)
-            {
-                return result;
-            }
-
-            return result.Set(200, result.Object.Where(
-                    u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
-                    u.Roles.Contains(ProjectRoles.UniversityAdmin)
-                    ));
-        }
-
         public async Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model)
         {
             var result = new ResponseApiModel<ResetPasswordByEmailApiModel>();
             var user = await _userManager.FindByEmailAsync(model.UserEmail);
 
-            if(model.UserEmail == string.Empty || model.UserEmail == null)
+            if (model.UserEmail == string.Empty || model.UserEmail == null)
             {
                 return result.Set(400, "Введіть коректний емейл");
             }
@@ -377,7 +339,7 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(404, "Такий емейл не є зареєстрованим");
             }
 
-            var url = _configuration.GetValue<string>("ServerUrl") + $"password/reset/{user.Id}";
+            var url = _configuration.GetSection("ServerUrl").Value + $"password/reset/{user.Id}";
             var html = $@"<p>&nbsp;</p>
 <!-- HIDDEN PREHEADER TEXT -->
 <table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
@@ -441,11 +403,51 @@ namespace YIF.Core.Service.Concrete.Services
 </tr>
 </tbody>
 </table>";
-            _emailService.SendAsync(model.UserEmail,"Відновлення паролю", html);
+            _emailService.SendAsync(model.UserEmail, "Відновлення паролю", html);
 
             result.Object = model;
 
             return result.Set(true);
         }
+
+        // =========================   For test authorize endpoint:   =========================
+
+        public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
+            result.Object = new RolesByTokenResponseApiModel("Not Valid");
+
+            var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                result.Object.TokenStatus = "Valid, but expired";
+            }
+
+            result.Object.TokenStatus = "Valid";
+            result.Object.Roles = await _userManager.GetRolesAsync(user);
+
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAdminsUsingAuthorize(string id)
+        {
+            var result = new ResponseApiModel<IEnumerable<UserApiModel>>();
+
+            result = await GetAllUsers();
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            return result.Set(200, result.Object.Where(
+                    u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
+                    u.Roles.Contains(ProjectRoles.UniversityAdmin)
+                    ));
+        }
+
+        
     }
 }
