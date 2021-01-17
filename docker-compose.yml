@@ -3,20 +3,33 @@ services:
     yifsql:
         container_name: yifsql
         image: mcr.microsoft.com/mssql/server:2017-latest
+        networks:
+            - yif
         ports:
             - "1433:1433"
         environment:
             ACCEPT_EULA: "Y"
             SA_PASSWORD: "YIF_Backend_DB_MyKeyOnlyInMyHeart"
             MSSQL_PID: "Express"
+        restart: always
+        volumes:
+            - yifsqldata:/var/opt/mssql/data
     yifbackend:
         container_name: yifbackend
         image: smethan/yifbackend:latest
         build:
             context: .
             dockerfile: Dockerfile.VM
+        networks:
+            - yif
         ports:
             - "5000:80"
         restart: always
         depends_on:
             - yifsql
+networks:
+    yif:
+        name: yif
+        driver: bridge
+volumes:
+    yifsqldata:

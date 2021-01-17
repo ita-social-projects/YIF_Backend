@@ -23,7 +23,7 @@ pipeline {
             steps {
                 dir(".") {
                     echo " ---> Docker-compose up --build <--- "
-                    sh "docker-compose up -d --build || true"
+                    sh "docker-compose up -d || true"
                 }
             }
         }
