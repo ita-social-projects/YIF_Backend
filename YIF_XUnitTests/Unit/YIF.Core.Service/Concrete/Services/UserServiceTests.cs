@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
@@ -33,10 +34,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IRecaptchaService> _recaptcha;
-        private readonly Mock<IEmailService> _emailServise;
+        private readonly Mock<IEmailService> _emailService;
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ISchoolGraduateRepository<SchoolDTO>> _schoolGraduate;
+        private readonly Mock<HttpRequest> _request;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -52,10 +54,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _recaptcha = new Mock<IRecaptchaService>();
-            _emailServise = new Mock<IEmailService>();
+            _emailService = new Mock<IEmailService>();
             _env = new Mock<IWebHostEnvironment>();
             _configuration = new Mock<IConfiguration>();
             _schoolGraduate = new Mock<ISchoolGraduateRepository<SchoolDTO>>();
+            _request = new Mock<HttpRequest>();
             _testService = new UserService(
                 _userRepository.Object,
                 _userManager.Object,
@@ -63,7 +66,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _jwtService.Object,
                 _mapperMock.Object,
                 _recaptcha.Object,
-                _emailServise.Object,
+                _emailService.Object,
                 _env.Object, _configuration.Object,
                 _tokenRepository.Object,
                 _schoolGraduate.Object);
@@ -357,6 +360,34 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.ThrowsAsync<NotImplementedException>(() => _testService.UpdateUser(_userDTOStub));
         }
 
+        [Theory]
+        [InlineData("email@gmail.com")]
+        public async void Send_ResetPasswordEmail(string email)
+        {
+            // Arrange
+            var apiModel = new ResetPasswordByEmailApiModel
+            {
+                UserEmail = email
+            };
+
+            var userModel = new DbUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email
+            };
+
+            _request.SetupAllProperties();
+            _userManager.Setup(s => s.FindByEmailAsync(userModel.Email)).ReturnsAsync(userModel);
+            _emailService.Setup(s => s.SendAsync(apiModel.UserEmail, "", ""))
+                .ReturnsAsync(null);
+
+            // Act
+            var result = await _testService.ResetPasswordByEmail(apiModel, _request.Object);
+
+            // Assert
+            Assert.True(result.Success);
+        }
+
         [Fact]
         public void Dispose_ShouldDisposeDatabase()
         {
@@ -365,7 +396,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null, null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null,null);
             service.Dispose();
             // Assert
             Assert.True(result);

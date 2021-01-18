@@ -152,5 +152,26 @@ namespace YIF_Backend.Controllers
             else
                 return BadRequest(new DescriptionResponseApiModel { Message = "Фото не змінено." });
         }
+
+        /// <summary>
+        /// Send reset password mail
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">When user exist and email have been sended</response>
+        /// <response code="404">If user doesn`t exist</response>
+        [ProducesResponseType(typeof(ResetPasswordByEmailApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordByEmailApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userService.ResetPasswordByEmail(model,Request);
+
+            return result.Response();
+        }
     }
 }
