@@ -102,5 +102,27 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.DeleteSchoolAdmin(model);
             return result.Response();
         }
+
+        /// <summary>
+        /// Adds Universty Beta.
+        /// </summary>
+        /// <returns>Object with user token and refresh token</returns>
+        /// <response code="201"></response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="409">Uni Already exists</response>
+        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(500)]
+        [HttpPost("AddUniversity")]
+        public async Task<IActionResult> AddUniversity([FromBody] UniversityPostApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
+            }
+            var result = await _superAdminService.AddUniversity(model);
+            return result.Response();
+        }
     }
 }
