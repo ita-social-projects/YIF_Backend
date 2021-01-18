@@ -192,7 +192,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(false, "User with such Id was not found");
             }
-            return result.Set(200, new DescriptionResponseApiModel() { Message = ch });
+            return result.Set(201, new DescriptionResponseApiModel() { Message = ch });
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
@@ -203,7 +203,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(false, "User with such Id was not found");
             }
-            return result.Set(200, new DescriptionResponseApiModel() { Message = ch });
+            return result.Set(201, new DescriptionResponseApiModel() { Message = ch });
         }
     }
 }
