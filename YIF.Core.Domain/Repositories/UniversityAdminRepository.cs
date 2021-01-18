@@ -71,7 +71,6 @@ namespace YIF.Core.Domain.Repositories
                                     UniversityId = admins.Id,
 
                                 };
-
             if (universityAdmin.Count() != 0)
             {
                 return await universityAdmin.FirstOrDefaultAsync();

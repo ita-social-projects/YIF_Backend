@@ -72,7 +72,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="201">Sucesss message</response>
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 201)]
         [ProducesResponseType(500)]
         [HttpPost("DeleteUniversityAdmin")]
         public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
@@ -90,7 +90,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="201">Sucesss message</response>
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 201)]
         [ProducesResponseType(500)]
         [HttpPost("DeleteSchoolAdmin")]
         public async Task<IActionResult> DeleteSchoolAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
