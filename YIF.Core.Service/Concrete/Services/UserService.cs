@@ -20,6 +20,7 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Service.Concrete.Services.ValidatorServices;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -428,9 +429,28 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
         {
+            var result = new ResponseApiModel<ChangePasswordApiModel>();
 
+            var validator = new ChangePasswordValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(model);
+
+            if (!validResults.IsValid)
+            {
+                return result.Set(false, validResults.ToString());
+            }
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            var changeResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!changeResult.Succeeded)
+            {
+                return result.Set(false, "Сталася якась помилка"); 
+            }
+
+            result.Object = model;
+
+            return result.Set(true);
         }
-        
+
         // =========================   For test authorize endpoint:   =========================
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
