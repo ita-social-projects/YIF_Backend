@@ -426,6 +426,11 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
+        public async Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
+        {
+
+        }
+        
         // =========================   For test authorize endpoint:   =========================
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
