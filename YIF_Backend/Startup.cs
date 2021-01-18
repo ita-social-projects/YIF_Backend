@@ -29,6 +29,7 @@ using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF_Backend.Infrastructure.Middleware;
 
 namespace YIF_Backend
 {
@@ -204,6 +205,8 @@ namespace YIF_Backend
                 RequestPath = new PathString('/' + Configuration.GetValue<string>("UrlImages"))
             });
             #endregion
+
+            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
             // app.UseHttpsRedirection();
             app.UseRouting();
