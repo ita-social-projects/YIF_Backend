@@ -47,6 +47,7 @@ namespace YIF_Backend
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
             services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
             services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
@@ -60,11 +61,13 @@ namespace YIF_Backend
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
+            services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
 
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
             services.AddTransient<IUniversityService<University>, UniversityService>();
+            services.AddTransient<IDirectionService, DirectionService>();
             #endregion
 
             #region FluentValidation
@@ -217,7 +220,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger

@@ -92,10 +92,9 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetCurrentUserFullInfo()
         {
             var userId = User.FindFirst("id")?.Value;
-            var userDto = await _userService.GetUserProfileInfoById(userId);
-            if (userDto == null)
+            var profile = await _userService.GetUserProfileInfoById(userId);
+            if (profile == null)
                 return BadRequest(new DescriptionResponseApiModel("Зазначеного юзера не існує."));
-            var profile = _mapper.Map<UserProfileApiModel>(userDto);
             return Ok(profile);
         }
 
@@ -120,7 +119,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Change User Photo. Size limit 10 MB
+        /// Change authorized user photo. Size limit 10 MB
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">If change user photo request is correct</response>

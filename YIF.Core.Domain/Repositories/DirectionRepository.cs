@@ -5,10 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
@@ -25,7 +23,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public async Task<bool> Update(Direction item)
+        public Task<bool> Update(Direction item)
         {
             throw new NotImplementedException();
         }
@@ -35,20 +33,21 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<DirectionDTO> Get(string id)
+        public Task<DirectionDTO> Get(string id)
         {
             throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<DirectionDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var directions = await _context.Directions.ToListAsync();
+            return _mapper.Map<IEnumerable<DirectionDTO>>(directions);
         }
 
         [ExcludeFromCodeCoverage]
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
 
         public async Task<IEnumerable<DirectionDTO>> Find(Expression<Func<Direction, bool>> predicate)

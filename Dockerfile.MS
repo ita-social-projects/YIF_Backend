@@ -19,7 +19,7 @@ EXPOSE 443
 # Install Sonar Scanner, Coverlet and Java (required for Sonar Scanner)
 RUN apt-get update && apt-get install -y openjdk-11-jdk
 RUN dotnet tool install --global dotnet-sonarscanner
-RUN dotnet tool install --global coverlet.console
+RUN dotnet tool install --global coverlet.console --version 1.7.2
 ENV PATH="$PATH:/root/.dotnet/tools"
 
 # Restore NuGet packages

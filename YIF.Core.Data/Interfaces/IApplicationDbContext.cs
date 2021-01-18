@@ -25,6 +25,8 @@ namespace YIF.Core.Data.Interfaces
         DbSet<DbUser> Users { get; set; }
         DbSet<Token> Tokens { get; set; }
         DbSet<UserProfile> UserProfiles { get; set; }
+        DbSet<UniversityToGraduate> UniversitiesToGraduates { get; set; }
+
         Task<int> SaveChangesAsync();
         int SaveChanges();
 

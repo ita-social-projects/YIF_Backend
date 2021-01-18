@@ -12,7 +12,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UniversityRepository : IRepository<University, UniversityDTO>
+    public class UniversityRepository : IUniversityRepository<University, UniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -23,7 +23,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public async Task<bool> Update(University item)
+        public Task<bool> Update(University item)
         {
             throw new NotImplementedException();
         }
@@ -35,12 +35,29 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<UniversityDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var university = await _context.Universities.FindAsync(id);
+            if (university != null)
+            {
+                return _mapper.Map<UniversityDTO>(university);
+            }
+            throw new KeyNotFoundException("User not found:  " + id);
         }
 
         public async Task<IEnumerable<UniversityDTO>> GetAll()
         {
             var list = await _context.Universities.ToListAsync();
+            return _mapper.Map<IEnumerable<UniversityDTO>>(list);
+        }
+
+        public async Task<IEnumerable<UniversityDTO>> GetFavoritesByUserId(string userId)
+        {
+            var universities = from universityToGraduate in _context.UniversitiesToGraduates
+                    join university in _context.Universities on universityToGraduate.UniversityId equals university.Id
+                    join graduate in _context.Graduates on universityToGraduate.GraduateId equals graduate.Id
+                    where (graduate.UserId == userId)
+                    select university;
+
+            var list = await universities.ToListAsync();
             return _mapper.Map<IEnumerable<UniversityDTO>>(list);
         }
 
@@ -57,6 +74,21 @@ namespace YIF.Core.Domain.Repositories
             }
 
             return null;
+        }
+
+        public Task<string> AddUniversity(University university)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UniversityDTO> GetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<UniversityDTO>> GetAllUniversities()
+        {
+            throw new NotImplementedException();
         }
     }
 }
