@@ -31,6 +31,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IUniversityRepository<University, UniversityDTO> _universityRepositoryAdditional;
         public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -42,7 +43,8 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
-            ITokenRepository tokenRepository)
+            ITokenRepository tokenRepository,
+            IUniversityRepository<University, UniversityDTO> universityRepositoryAdditional)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -56,6 +58,7 @@ namespace YIF.Core.Service.Concrete.Services
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
+            _universityRepositoryAdditional = universityRepositoryAdditional;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -150,9 +153,7 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = schoolAdminModel.Email
             };
 
-            //TO DO зачем його передавать то шо више
             var registerResult = await _userRepository.Create(dbUser, null, schoolAdminModel.Password, ProjectRoles.SchoolAdmin);
-
             if (registerResult != string.Empty)
             {
                 return result.Set(409, registerResult);
@@ -192,7 +193,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(false, "User with such Id was not found");
             }
-            return result.Set(200, new DescriptionResponseApiModel() { Message = ch });
+            return result.Set(201, new DescriptionResponseApiModel() { Message = ch });
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
@@ -203,7 +204,21 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 return result.Set(false, "User with such Id was not found");
             }
-            return result.Set(200, new DescriptionResponseApiModel() { Message = ch });
+            return result.Set(201, new DescriptionResponseApiModel() { Message = ch });
+        }
+
+        public async  Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            var ch = await _universityRepositoryAdditional.GetByName(uniPostApiModel.Name);
+            if (ch != null)
+            {
+                return result.Set(409, "University with such name already exists");
+            }
+            await _universityRepositoryAdditional.AddUniversity(_mapper.Map<University>(uniPostApiModel));
+            return result.Set(201, new DescriptionResponseApiModel() { Message = "University was added" });
+
         }
     }
 }

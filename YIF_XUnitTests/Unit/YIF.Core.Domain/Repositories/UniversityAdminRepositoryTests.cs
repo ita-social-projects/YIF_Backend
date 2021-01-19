@@ -82,21 +82,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             Assert.Equal(a,"User IsDeleted was updated");
         }
 
-        [Fact]
-        public async Task GetByUniversityId_RetursNullForBadId()
-        {
-            //Arrange
-            //Act
-            var a = await _universtityAdminRepository.GetByUniversityId("sdfs");
-            //Assert
-            Assert.Equal(a, null);
-        }
+        //[Fact]
+        //public async Task GetByUniversityId_RetursNullForBadId()
+        //{
+        //    //Arrange
+        //    //Act
+        //    var a = await _universtityAdminRepository.GetByUniversityId("sdfs");
+        //    //Assert
+        //    Assert.Equal(a, null);
+        //}
 
         //[Fact] // not finished no dea how to fx it
         //public async Task GetByUniversityId_ReturnsValidDto()
         //{
         //    //Arrange
-            
+
         //    //Act
         //    var a = await _universtityAdminRepository.GetByUniversityId("007a43f8-7553-4eec-9e91-898a9cba37c9");
         //    //Assert
