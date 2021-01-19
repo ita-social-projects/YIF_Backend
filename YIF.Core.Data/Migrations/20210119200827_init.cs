@@ -79,8 +79,17 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    Abbreviation = table.Column<string>(nullable: true),
+                    Site = table.Column<string>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    ImagePath = table.Column<string>(nullable: true)
+                    ImagePath = table.Column<string>(nullable: true),
+                    Lat = table.Column<float>(nullable: false),
+                    Lon = table.Column<float>(nullable: false),
+                    StartOfCampaign = table.Column<DateTime>(nullable: false),
+                    EndOfCampaign = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -409,6 +418,30 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UniversitiesToGraduates",
+                columns: table => new
+                {
+                    GraduateId = table.Column<string>(nullable: false),
+                    UniversityId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UniversitiesToGraduates", x => new { x.UniversityId, x.GraduateId });
+                    table.ForeignKey(
+                        name: "FK_UniversitiesToGraduates_Graduates_GraduateId",
+                        column: x => x.GraduateId,
+                        principalTable: "Graduates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UniversitiesToGraduates_Universities_UniversityId",
+                        column: x => x.UniversityId,
+                        principalTable: "Universities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SchoolModerators",
                 columns: table => new
                 {
@@ -579,6 +612,11 @@ namespace YIF.Core.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UniversitiesToGraduates_GraduateId",
+                table: "UniversitiesToGraduates",
+                column: "GraduateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UniversityAdmins_UniversityId",
                 table: "UniversityAdmins",
                 column: "UniversityId");
@@ -622,9 +660,6 @@ namespace YIF.Core.Data.Migrations
                 name: "DirectionsToUniversities");
 
             migrationBuilder.DropTable(
-                name: "Graduates");
-
-            migrationBuilder.DropTable(
                 name: "Lectures");
 
             migrationBuilder.DropTable(
@@ -643,6 +678,9 @@ namespace YIF.Core.Data.Migrations
                 name: "tblUserProfiles");
 
             migrationBuilder.DropTable(
+                name: "UniversitiesToGraduates");
+
+            migrationBuilder.DropTable(
                 name: "UniversityModerators");
 
             migrationBuilder.DropTable(
@@ -655,16 +693,19 @@ namespace YIF.Core.Data.Migrations
                 name: "Specialities");
 
             migrationBuilder.DropTable(
+                name: "Graduates");
+
+            migrationBuilder.DropTable(
                 name: "UniversityAdmins");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Directions");
 
             migrationBuilder.DropTable(
                 name: "Schools");
 
             migrationBuilder.DropTable(
-                name: "Directions");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Universities");
