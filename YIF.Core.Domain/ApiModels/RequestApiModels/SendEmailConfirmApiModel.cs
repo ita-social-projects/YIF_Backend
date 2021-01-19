@@ -4,7 +4,7 @@ using System.Text;
 
 namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
-    public class SendEmailApproveApiModel
+    public class SendEmailConfirmApiModel
     {
         /// <summary>
         /// User email, where will the letter come 
