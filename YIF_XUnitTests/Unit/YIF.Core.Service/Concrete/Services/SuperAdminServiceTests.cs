@@ -35,7 +35,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
         private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
-
+        private readonly Mock<ITokenRepository> _tokenRepostory;
+        private readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityRepositoryAdditonal;
         private readonly SuperAdminService superAdminService;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
@@ -69,7 +70,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
             _tokenRepository = new Mock<ITokenRepository>();
             _dbContextMock = new Mock<IApplicationDbContext>();
-
+            _tokenRepostory = new Mock<ITokenRepository>();
+            _universityRepositoryAdditonal = new Mock<IUniversityRepository<University, UniversityDTO>>();
             superAdminService = new SuperAdminService(
                                                     _userRepository.Object,
                                                     _userManager.Object,
@@ -82,7 +84,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _schoolRepository.Object,
                                                     _schoolAdminRepository.Object,
                                                     _schoolModeratorRepository.Object,
-                                                    _tokenRepository.Object);
+                                                    _tokenRepostory.Object,
+                                                    _universityRepositoryAdditonal.Object);
 
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));

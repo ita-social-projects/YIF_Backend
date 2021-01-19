@@ -152,5 +152,22 @@ namespace YIF_Backend.Controllers
             var result = await _userService.ResetPasswordByEmail(model, Request);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Change the user password
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Password have been updated</response>
+        /// <response code="400">Password have not been updated</response>
+        [ProducesResponseType(typeof(ChangePasswordApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPut("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordApiModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            var result = await _userService.ChangeUserPassword(model);
+            return Ok(result.Object);
+        }
     }
 }

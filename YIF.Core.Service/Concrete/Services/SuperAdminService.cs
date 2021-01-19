@@ -33,6 +33,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IUniversityRepository<University, UniversityDTO> _universityRepositoryAdditional;
         public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -44,7 +45,8 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
-            ITokenRepository tokenRepository)
+            ITokenRepository tokenRepository,
+            IUniversityRepository<University, UniversityDTO> universityRepositoryAdditional)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -58,6 +60,7 @@ namespace YIF.Core.Service.Concrete.Services
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
+            _universityRepositoryAdditional = universityRepositoryAdditional;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -150,9 +153,7 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = schoolAdminModel.Email
             };
 
-            //TO DO зачем його передавать то шо више
             var registerResult = await _userRepository.Create(dbUser, null, schoolAdminModel.Password, ProjectRoles.SchoolAdmin);
-
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
@@ -202,6 +203,20 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
+        }
+
+        public async  Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            var ch = await _universityRepositoryAdditional.GetByName(uniPostApiModel.Name);
+            if (ch != null)
+            {
+                throw new InvalidOperationException("Університет із таким іменем вже існує");
+            }
+            await _universityRepositoryAdditional.AddUniversity(_mapper.Map<University>(uniPostApiModel));
+            return result.Set(new DescriptionResponseApiModel("Університет додано"), true);
+
         }
     }
 }
