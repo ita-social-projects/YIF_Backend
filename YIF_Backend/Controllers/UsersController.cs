@@ -169,5 +169,47 @@ namespace YIF_Backend.Controllers
             var result = await _userService.ChangeUserPassword(model);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Send confirm email mail
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">When mail have been sended</response>
+        /// <response code="400">When mail not have been sended</response>
+        [ProducesResponseType(typeof(SendEmailConfirmApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [HttpPost("SendConfirmEmailMail")]
+        public async Task<IActionResult> SendConfirmEmailMail([FromBody] SendEmailConfirmApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userService.SendEmailConfirmMail(model, Request);
+
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Confirm user email
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">When email have been cofirm</response>
+        /// <response code="404">When email not have been confirm</response>
+        [ProducesResponseType(typeof(ConfirmEmailApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [HttpPut("ConfirmUserEmail")]
+        public async Task<IActionResult> ConfirmUserEmail([FromBody] ConfirmEmailApiModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var result = await _userService.ConfirmUserEmail(model);
+
+            return Ok(result.Object);
+        }
     }
 }

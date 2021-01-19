@@ -366,6 +366,58 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
+        [InlineData("anataly@gmail.com")]
+        public async void Send_ConfirmEmail_Mail(string email)
+        {
+            // Arrange
+            var apiModel = new SendEmailConfirmApiModel
+            {
+                UserEmail = email
+            };
+
+            var userModel = new DbUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email
+            };
+
+            _request.SetupAllProperties();
+            _userManager.Setup(s => s.FindByEmailAsync(userModel.Email)).ReturnsAsync(userModel);
+            _userManager.Setup(s => s.GenerateEmailConfirmationTokenAsync(userModel)).Returns(Task.FromResult("Token"));
+            _emailService.Setup(s => s.SendAsync(apiModel.UserEmail, "", ""))
+                .ReturnsAsync(null);
+            // Act
+            var result = await _testService.SendEmailConfirmMail(apiModel, _request.Object);
+
+            // Assert
+            Assert.True(result.Success);
+        }
+
+        [Theory]
+        [InlineData("34cc87d9-6d76-44ac-9dda-15852feb9e72", "token")]
+        public async void ConfirmUserEmail(string id,string token)
+        {
+            // Arrange
+            var apiModel = new ConfirmEmailApiModel
+            {
+                Id = id,
+                Token = token
+            };
+            var userModel = new DbUser
+            {
+                Id = id
+            };
+
+            _userManager.Setup(s => s.FindByIdAsync(userModel.Id)).ReturnsAsync(userModel);
+            _userManager.Setup(s => s.ConfirmEmailAsync(userModel, token)).Returns(Task.FromResult(new IdentityResult()));
+            // Act
+            var result = await _testService.ConfirmUserEmail(apiModel);
+
+            // Assert
+            Assert.True(result.Success);
+        }
+
+        [Theory]
         [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3", "QWerty-1", "QWerty-12", "QWerty-12",
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
         public async void ChangePassword_WithCorrectData(string id,
