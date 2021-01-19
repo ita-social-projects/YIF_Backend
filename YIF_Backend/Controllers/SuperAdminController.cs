@@ -112,7 +112,7 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _superAdminService.AddUniversity(model);
-            return Ok(result.Object);
+            return Created("", result.Object);
         }
     }
 }
