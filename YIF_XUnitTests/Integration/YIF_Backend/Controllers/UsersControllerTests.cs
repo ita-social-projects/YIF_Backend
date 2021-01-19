@@ -74,7 +74,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             {
                 UserEmail = email
             }), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("ResetPassword", content);
+            var response = await _client.PutAsync("ResetPassword", content);
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
@@ -91,7 +91,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             {
                 UserEmail = email
             }), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("ResetPassword", content);
+            var response = await _client.PutAsync("ResetPassword", content);
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
