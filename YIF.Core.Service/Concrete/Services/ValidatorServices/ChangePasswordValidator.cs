@@ -43,7 +43,7 @@ namespace YIF.Core.Service.Concrete.Services.ValidatorServices
                  .Matches(@"[0-9]+").WithMessage("Пароль має містити щонайменше одну цифру!")
                  .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
-            RuleFor(x => x.ConfirmNewPassword)
+            RuleFor(x => x.NewPassword)
                 .Equal(x => x.ConfirmNewPassword).WithMessage("Пароль і новий пароль не співпадають");
         }
 

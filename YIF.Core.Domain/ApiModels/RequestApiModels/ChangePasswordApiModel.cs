@@ -14,14 +14,17 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         /// <summary>
         /// User old password
         /// </summary>
+        /// <example>QWerty-1</example>
         public string OldPassword { get; set; }
         /// <summary>
         /// User new password
         /// </summary>
+        /// <example>QWerty-12</example>
         public string NewPassword { get; set; }
         /// <summary>
         /// Confirm new password
         /// </summary>
+        /// <example>QWerty-12</example>
         public string ConfirmNewPassword { get; set; }
         /// <summary>
         /// Google Recaptcha Token

@@ -161,7 +161,7 @@ namespace YIF_Backend.Controllers
         /// <response code="404">If user doesn`t exist</response>
         [ProducesResponseType(typeof(ResetPasswordByEmailApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [HttpPost("ResetPassword")]
+        [HttpPut("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordByEmailApiModel model)
         {
             if (!ModelState.IsValid)
@@ -185,7 +185,7 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Not valid model");
             }
 
             var result = await _userService.ChangeUserPassword(model);
