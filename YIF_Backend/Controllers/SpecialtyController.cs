@@ -26,24 +26,16 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of specialties</returns>
         /// <response code="200">Returns a list of specialties</response>
-        [HttpGet]
+        /// <response code="404">If there are not specialties</response>
+        [HttpGet("All")]
         [ProducesResponseType(typeof(IEnumerable<SpecialtyApiModel>), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllSpecialtiesAsync()
         {
             var result = await _specialtyService.GetAllSpecialties();
             _logger.LogInformation("Getting all spetialties");
-            if (result.Success)
-            {
-                return Ok(result.Object);
-            }
-            if (result.Message.Contains("Спеціальностей немає"))
-            {
-                _logger.LogInformation("There are no spetialties in database");
-                return NotFound(result.Description);
-            }
-            _logger.LogInformation("There is problem with request");
-            return BadRequest(result.Description);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -51,24 +43,16 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of specialties names</returns>
         /// <response code="200">Returns a list of specialties names</response>
-        [HttpGet("names")]
+        /// <response code="404">If there are not specialties</response>
+        [HttpGet("Names")]
         [ProducesResponseType(typeof(SpecialtyNamesResponseApiModel), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllSpecialtiesNamesAsync()
         {
             var result = await _specialtyService.GetAllSpecialtiesNames();
             _logger.LogInformation("Getting all spetialties names");
-            if (result.Success)
-            {
-                return Ok(result.Object);
-            }
-            if (result.Message.Contains("Спеціальностей немає"))
-            {
-                _logger.LogInformation("There are no spetialties in database");
-                return NotFound(result.Description);
-            }
-            _logger.LogInformation("There is problem with request");
-            return BadRequest(result.Description);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -76,37 +60,18 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>A specialty</returns>
         /// <response code="200">Returns a specialty</response>
+        /// <response code="404">If specialty not found</response>
         /// <param name="id" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Specialty ID</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(IEnumerable<SpecialtyApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpecialtyAsync(string id)
         {
-            try
-            {
-                Guid guid = Guid.Parse(id);
-                var result = await _specialtyService.GetSpecialtyById(guid.ToString("D"));
-                _logger.LogInformation("Trying to get a specialty");
-
-                if (result.Success)
-                {
-                    return Ok(result.Object);
-                }
-                _logger.LogInformation("There is problem with request");
-                return NotFound(result.Description);
-            }
-            catch (ArgumentNullException)
-            {
-                _logger.LogError("Null specialty is not allowed");
-                return BadRequest(new DescriptionResponseApiModel("Рядок для аналізу не має значення."));
-            }
-            catch (FormatException)
-            {
-                _logger.LogError("There is a problem with format");
-                return BadRequest(new DescriptionResponseApiModel($"Неправильний формат:  {id}."));
-            }
+            Guid guid = Guid.Parse(id);
+            var result = await _specialtyService.GetSpecialtyById(guid.ToString("D"));
+            _logger.LogInformation("Getting a specialty");
+            return Ok(result.Object);
         }
     }
 }

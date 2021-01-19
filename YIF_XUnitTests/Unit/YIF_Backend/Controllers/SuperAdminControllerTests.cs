@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
+using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -27,9 +26,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         }
         [Theory]
-        [InlineData(201, "UniName","email@gmailcom", "Password1+")]
-        [InlineData(201, "", "email@gmailcom", "Password1+")]
-        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(int statusCode, string uniName, string email, string password)
+        [InlineData("UniName", "email@gmailcom", "Password1+")]
+        [InlineData("", "email@gmailcom", "Password1+")]
+        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string uniName, string email, string password)
         {
             // Arrange
             var requestModel = new UniversityAdminApiModel
@@ -37,10 +36,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 UniversityName = uniName,
                 Email = email,
                 Password = password
-                
             };
 
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = statusCode, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = true, Object = GetTestJwt()[0] };
             _superAdminService.Setup(x => x.AddUniversityAdmin(requestModel)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -53,7 +51,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("NotInDatabaseUniName", "email@gmailcom", "Password1+")]
-        public async Task AddUniAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataСorrect(string uniName, string email, string password)
+        public async Task AddUniAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataInСorrect(string uniName, string email, string password)
         {
             // Arrange
             var requestModel = new UniversityAdminApiModel
@@ -61,19 +59,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 UniversityName = uniName,
                 Email = email,
                 Password = password
-
             };
 
-            var ErrorMessage = "ExampleErrorMessage";
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 409, Message = ErrorMessage };
-            _superAdminService.Setup(x => x.AddUniversityAdmin(requestModel)).Returns(Task.FromResult(responseModel));
+            var error = new NotFoundException("ExampleErrorMessage");
+            _superAdminService.Setup(x => x.AddUniversityAdmin(requestModel)).Throws(error);
 
-            // Act
-            var result = await superAdminController.AddUniversityAdmin(requestModel);
             // Assert
-            var responseResult = Assert.IsType<ConflictObjectResult>(result);
-            var model = (DescriptionResponseApiModel)responseResult.Value;
-            Assert.Equal(ErrorMessage, model.Message);
+            var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.AddUniversityAdmin(requestModel));
+            Assert.Equal(error.Message, exeption.Message);
         }
 
 
@@ -89,10 +82,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 SchoolName = schoolName,
                 Email = email,
                 Password = password
-
             };
 
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 201, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = true, Object = GetTestJwt()[0] };
             _superAdminService.Setup(x => x.AddSchoolAdmin(requestModel)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -105,7 +97,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("NotInDatabaseSchoolName", "email@gmailcom", "Password1+")]
-        public async Task AddSchoolAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataСorrect(string schoolName, string email, string password)
+        public async Task AddSchoolAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataInСorrect(string schoolName, string email, string password)
         {
             // Arrange
             var requestModel = new SchoolAdminApiModel
@@ -113,44 +105,73 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 SchoolName = schoolName,
                 Email = email,
                 Password = password
-
             };
 
-            var ErrorMessage = "ExampleErrorMessage";
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 409, Message = ErrorMessage };
-            _superAdminService.Setup(x => x.AddSchoolAdmin(requestModel)).Returns(Task.FromResult(responseModel));
+            var error = new NotFoundException("ExampleErrorMessage");
+            _superAdminService.Setup(x => x.AddSchoolAdmin(requestModel)).Throws(error);
 
-            // Act
-            var result = await superAdminController.AddSchoolAdmin(requestModel);
             // Assert
-            var responseResult = Assert.IsType<ConflictObjectResult>(result);
-            var model = (DescriptionResponseApiModel)responseResult.Value;
-            Assert.Equal(ErrorMessage, model.Message);
+            var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.AddSchoolAdmin(requestModel));
+            Assert.Equal(error.Message, exeption.Message);
         }
 
 
-        //[Theory]
-        //[InlineData("okId")]
-        //public async Task DeleteSchoolAdmin_ReturnsResponseMessage_IfDataСorrect(string schoolAdminId)
-        //{
-        //    // Arrange
-        //    var requestModel = new SchoolUniAdminDeleteApiModel
-        //    {
-        //        Id = schoolAdminId
+        [Theory]
+        [InlineData(true, "succes")]
+        [InlineData(false, "wrong")]
+        public async Task DeleteUniversityAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
+        {
+            // Arrange
+            var requestModel = new SchoolUniAdminDeleteApiModel { Id = "id" };
+            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
+            var error = new NotFoundException(message);
 
-        //    };
+            if (success)
+            {
+                _superAdminService.Setup(x => x.DeleteUniversityAdmin(requestModel)).Returns(Task.FromResult(responseModel));
+                // Act
+                var result = await superAdminController.DeleteUniversityAdmin(requestModel);
+                // Assert
+                var responseResult = Assert.IsType<OkObjectResult>(result);
+                var model = (DescriptionResponseApiModel)responseResult.Value;
+                Assert.Equal(responseModel.Object.Message, model.Message);
+            }
+            else
+            {
+                _superAdminService.Setup(x => x.DeleteUniversityAdmin(requestModel)).Throws(error);
+                // Assert
+                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DeleteUniversityAdmin(requestModel));
+                Assert.Equal(error.Message, exeption.Message);
+            }
+        }
+        [Theory]
+        [InlineData(true, "succes")]
+        [InlineData(false, "wrong")]
+        public async Task DeleteSchoolAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
+        {
+            // Arrange
+            var requestModel = new SchoolUniAdminDeleteApiModel { Id = "id" };
+            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
+            var error = new NotFoundException(message);
 
-        //    var responseModel = new ResponseApiModel<DescriptionResponseApiModel> { StatusCode = 201,Message = "User IsDeleted was updated" };
-        //    _superAdminService.Setup(x => x.DeleteSchoolAdmin(requestModel)).Returns(Task.FromResult(responseModel));
-
-        //    // Act
-        //    var result = await superAdminController.DeleteSchoolAdmin(requestModel);
-        //    // Assert
-        //    var responseResult = Assert.IsType<CreatedResult>(result);
-        //    var model = (DescriptionResponseApiModel)responseResult.Value;
-        //    Assert.Equal("User IsDeleted was updated", model.Object.Message);
-        //}
-
+            if (success)
+            {
+                _superAdminService.Setup(x => x.DeleteSchoolAdmin(requestModel)).Returns(Task.FromResult(responseModel));
+                // Act
+                var result = await superAdminController.DeleteSchoolAdmin(requestModel);
+                // Assert
+                var responseResult = Assert.IsType<OkObjectResult>(result);
+                var model = (DescriptionResponseApiModel)responseResult.Value;
+                Assert.Equal(responseModel.Object.Message, model.Message);
+            }
+            else
+            {
+                _superAdminService.Setup(x => x.DeleteSchoolAdmin(requestModel)).Throws(error);
+                // Assert
+                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DeleteSchoolAdmin(requestModel));
+                Assert.Equal(error.Message, exeption.Message);
+            }
+        }
 
 
         private List<AuthenticateResponseApiModel> GetTestJwt()

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using System;
+using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -23,7 +22,11 @@ namespace YIF.Core.Service.Concrete.Services
         }
         public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirections()
         {
-            var directions = await _repositoryDirection.GetAll();
+            var directions = (List<DirectionDTO>)await _repositoryDirection.GetAll();
+            if (directions.Count < 1)
+            {
+                throw new NotFoundException("Напрями відсутні.");
+            }
             return _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions);
         }
     }

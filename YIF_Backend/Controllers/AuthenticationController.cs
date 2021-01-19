@@ -28,16 +28,12 @@ namespace YIF_Backend.Controllers
         [HttpPost("LoginUser")]
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
-            }
-
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.LoginUser(model);
-            return result.Response();
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -51,15 +47,12 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterApiModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
-            }
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.RegisterUser(model);
-            return result.Response();
+            return Created("", result.Object);
         }
 
         /// <summary>
@@ -70,16 +63,13 @@ namespace YIF_Backend.Controllers
         /// <response code="400">If refresh token request incorrect.</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> Refresh([FromBody] TokenRequestApiModel tokenApiModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return new ResponseApiModel<object>(400, "Model state is not valid.").Response();
-            }
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.RefreshToken(tokenApiModel);
-            return result.Response();
+            return Ok(result.Object);
         }
     }
 }

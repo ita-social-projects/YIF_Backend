@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
 using Moq;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
-using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.School;
@@ -34,6 +33,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
+        private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
         private readonly Mock<ITokenRepository> _tokenRepostory;
         private readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityRepositoryAdditonal;
@@ -68,6 +68,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
+            _tokenRepository = new Mock<ITokenRepository>();
             _dbContextMock = new Mock<IApplicationDbContext>();
             _tokenRepostory = new Mock<ITokenRepository>();
             _universityRepositoryAdditonal = new Mock<IUniversityRepository<University, UniversityDTO>>();
@@ -107,8 +108,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             }; 
             _universityRepository.Setup(p => p.Find(It.IsAny<Expression<Func<University, bool>>>()))
                                                                                                 .ReturnsAsync(listNull);
-            var result = superAdminService.AddUniversityAdmin(model);
-            Assert.Equal(result.Result.Message, "There is no university with name" +model.UniversityName+ "in our database");
+
+            // Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddUniversityAdmin(model));
         }
 
         [Fact]
@@ -130,8 +132,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                                                                 .ReturnsAsync(list);
             _universityAdminRepository.Setup(p => p.GetByUniversityId("id"))
                                                                           .ReturnsAsync(universityAdmin);
-            var result = superAdminService.AddUniversityAdmin(model);
-            Assert.Equal("Admin for this uni already exists( 1 university can have only 1 admin )",result.Result.Message);
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddUniversityAdmin(model));
         }
         [Fact]
         public async Task AddUniAdmin_UserAlreadyExists_returnsResult()
@@ -158,8 +161,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                                           .ReturnsAsync(universityAdmin);
             _userManager.Setup(p => p.FindByEmailAsync("Email")).
                                                             ReturnsAsync(user);
-            var result = superAdminService.AddUniversityAdmin(model);
-            Assert.Equal("User already exist", result.Result.Message);
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddUniversityAdmin(model));
         }
 
         [Fact]
@@ -172,7 +176,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Act
             var a = await superAdminService.DeleteUniversityAdmin(model);
             //Assert
-            Assert.Equal(a.Object.Message, "User IsDeleted was updated");
+            Assert.Equal("User IsDeleted was updated", a.Object.Message);
         }
 
     }

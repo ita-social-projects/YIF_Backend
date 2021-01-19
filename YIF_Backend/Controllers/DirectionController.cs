@@ -22,7 +22,7 @@ namespace YIF_Backend.Controllers
         /// <returns>List of directions</returns>
         /// <response code="200">Return a list of directions</response>
         [ProducesResponseType(typeof(DirectionsResponseApiModel), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("All")]
         public async Task<IActionResult> GetAllDirections()
         {

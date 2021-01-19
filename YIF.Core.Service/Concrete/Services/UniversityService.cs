@@ -83,11 +83,10 @@ namespace YIF.Core.Service.Concrete.Services
         
         public async Task<UniversityResponseApiModel> GetUniversityById(string universityId, string userId = null)
         {
-            
             var university = await _universityRepository.Get(universityId);
 
             if (university == null)
-                throw new KeyNotFoundException();
+                throw new NotFoundException("Університету з таким id не існує.");
 
             var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
             university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;
@@ -101,7 +100,7 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new PageResponseApiModel<UniversityResponseApiModel>();
 
             if (universities == null || universities.Count() == 0)
-                throw new NotFoundException();
+                throw new NotFoundException("Університети не було знайдено.");
 
             try
             {
@@ -127,7 +126,7 @@ namespace YIF.Core.Service.Concrete.Services
             var favoriteUnivesistes = await _universityRepository.GetFavoritesByUserId(userId);
             if (favoriteUnivesistes == null || favoriteUnivesistes.Count() == 0)
             {
-                throw new NotFoundException();
+                throw new NotFoundException("Немає вибраних університетів.");
             }
 
             foreach (var university in favoriteUnivesistes)

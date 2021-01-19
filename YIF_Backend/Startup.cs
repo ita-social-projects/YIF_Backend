@@ -29,6 +29,7 @@ using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF_Backend.Infrastructure.Middleware;
 
 namespace YIF_Backend
 {
@@ -205,6 +206,8 @@ namespace YIF_Backend
             });
             #endregion
 
+            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
             // app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
@@ -220,7 +223,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            SeederDB.SeedData(app.ApplicationServices);
+            //SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger

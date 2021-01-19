@@ -27,7 +27,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task GetUserAsync_EndpointReturnSuccessAndCorrectViewModel_IfUserExists()
         {
             // Arrange
-            var responseModel = new ResponseApiModel<UserApiModel> { StatusCode = 200, Object = GetTestUsers()[0] };
+            var responseModel = new ResponseApiModel<UserApiModel> { Success = true, Object = GetTestUsers()[0] };
             _userService.Setup(x => x.GetUserById(_guid)).Returns(Task.FromResult(responseModel));
             // Act
             var result = await _testControl.GetUserAsync(_guid);
@@ -38,38 +38,11 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task GetUserAsync_EndpointReturnNotFound_IfUserNotExists()
-        {
-            // Arrange
-            var request = Guid.NewGuid().ToString("D");
-            var responseModel = new ResponseApiModel<UserApiModel> { StatusCode = 404, Object = null, Message = "User not found:  " + request };
-            _userService.Setup(x => x.GetUserById(request)).Returns(Task.FromResult(responseModel));
-            // Act
-            var result = await _testControl.GetUserAsync(request);
-            // Assert
-            var responseResult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.StartsWith("User not found", ((DescriptionResponseApiModel)responseResult.Value).Message);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("d")]
-        public async Task GetUserAsync_EndpointReturnBadRequest_IfRequestIsNotValidOrEmpty(string request)
-        {
-            // Act
-            var result = await _testControl.GetUserAsync(request);
-            // Assert
-            var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.True(((DescriptionResponseApiModel)responseResult.Value).Message.Contains("The string to be parsed is null") ||
-                ((DescriptionResponseApiModel)responseResult.Value).Message.Contains("Bad format"));
-        }
-
-        [Fact]
         public async Task GetAllUsersAsync_EndpointReturnAllUsers()
         {
             // Arrange
             var request = Guid.NewGuid().ToString("D");
-            var responseModel = new ResponseApiModel<IEnumerable<UserApiModel>> { StatusCode = 200, Object = (IEnumerable<UserApiModel>)GetTestUsers() };
+            var responseModel = new ResponseApiModel<IEnumerable<UserApiModel>> { Success = true, Object = (IEnumerable<UserApiModel>)GetTestUsers() };
             _userService.Setup(x => x.GetAllUsers()).Returns(Task.FromResult(responseModel));
             // Act
             var result = await _testControl.GetAllUsersAsync();
