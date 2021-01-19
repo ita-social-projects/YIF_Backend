@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -12,7 +11,6 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.Repositories;
 using YIF.Core.Service.Concrete.Services;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services

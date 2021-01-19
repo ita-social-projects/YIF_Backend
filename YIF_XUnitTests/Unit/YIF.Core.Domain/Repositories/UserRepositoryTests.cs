@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -163,9 +164,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         {
             // Arrange
             _dbContextMock.Setup(s => s.Users.FindAsync(_userStub3.Id)).ReturnsAsync((DbUser)null);
+            // Act
+            var result = await _testRepo.Get(_userStub3.Id);
             // Assert
-            var exeption = await Assert.ThrowsAsync<KeyNotFoundException>(() => _testRepo.Get(_userStub3.Id));
-            Assert.StartsWith("User not found", exeption.Message);
+            Assert.Null(result);
         }
 
         [Fact]

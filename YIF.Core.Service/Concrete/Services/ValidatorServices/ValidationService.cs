@@ -45,7 +45,7 @@ namespace YIF.Core.Service.Concrete.Services
         private bool IsEmailExist(string email)
         {
             _user = _userManager.FindByEmailAsync(email).Result;
-            return _user != null ? true : false;
+            return _user != null;
         }
 
         private bool IsPasswordCorrect(string password)
@@ -96,13 +96,13 @@ namespace YIF.Core.Service.Concrete.Services
         private bool IsEmailNotExist(string email)
         {
             var user = _userManager.FindByEmailAsync(email).Result;
-            return user == null ? true : false;
+            return user == null;
         }
 
         private bool IsUsernameNotExist(string username)
         {
             var user = _userManager.FindByNameAsync(username).Result;
-            return user == null ? true : false;
+            return user == null;
         }
     }
 

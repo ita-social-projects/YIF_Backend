@@ -165,20 +165,12 @@ namespace YIF.Core.Domain.Repositories
         public async Task<UserDTO> Get(string id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                return _mapper.Map<UserDTO>(user);
-            }
-            throw new KeyNotFoundException("User not found:  " + id);
+            return _mapper.Map<UserDTO>(user);
         }
         public async Task<UserDTO> GetByEmail(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
-            if (user != null)
-            {
-                return _mapper.Map<UserDTO>(user);
-            }
-            throw new KeyNotFoundException("User not found:  " + email);
+            return _mapper.Map<UserDTO>(user);
         }
         public async Task<IEnumerable<UserDTO>> GetAll()
         {

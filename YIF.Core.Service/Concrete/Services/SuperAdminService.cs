@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -70,19 +72,19 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (university == null)
             {
-                return result.Set(false, "There is no university with name" + universityAdminModel.UniversityName + "in our database");
+                throw new NotFoundException("В базі даних немає університету із назвою: " + universityAdminModel.UniversityName);
             }
 
             var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
             if (adminCheck != null)
             {
-                return result.Set(409, "Admin for this uni already exists( 1 university can have only 1 admin )");
+                throw new InvalidOperationException("Адміністратор цього університету вже існує (1 університет може мати лише 1 адміністратора)");
             }
 
             var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                return result.Set(409, "User already exist");
+                throw new InvalidOperationException("Користувач вже існує");
             }
 
             var dbUser = new DbUser
@@ -95,7 +97,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (registerResult != string.Empty)
             {
-                return result.Set(409, registerResult);
+                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
 
 
@@ -119,9 +121,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new AuthenticateResponseApiModel { Token = token, RefreshToken = refreshToken };
-
-            return result.Set(201);
+            return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel)
@@ -132,19 +132,19 @@ namespace YIF.Core.Service.Concrete.Services
             var school = await _schoolRepository.GetByName(schoolAdminModel.SchoolName);
             if (school == null)
             {
-                return result.Set(false, "There is no school with name " + schoolAdminModel.SchoolName + " in our database");
+                throw new NotFoundException("В базі даних немає школи із назвою: " + schoolAdminModel.SchoolName);
             }
 
             var adminCheck = await _schoolAdminRepository.GetBySchoolId(school.Id);
             if (adminCheck != null)
             {
-                return result.Set(409, "Admin for this uni already exists( 1 school can have only 1 admin )");
+                throw new InvalidOperationException("Адміністратор цієї школи вже існує (1 школа може мати лише 1 адміністратора)");
             }
 
             var searchUser = _userManager.FindByEmailAsync(schoolAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                return result.Set(409, "User already exist");
+                throw new InvalidOperationException("Користувач вже існує");
             }
 
             var dbUser = new DbUser
@@ -156,7 +156,7 @@ namespace YIF.Core.Service.Concrete.Services
             var registerResult = await _userRepository.Create(dbUser, null, schoolAdminModel.Password, ProjectRoles.SchoolAdmin);
             if (registerResult != string.Empty)
             {
-                return result.Set(409, registerResult);
+                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
 
 
@@ -180,9 +180,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            result.Object = new AuthenticateResponseApiModel { Token = token, RefreshToken = refreshToken };
-
-            return result.Set(201);
+            return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
@@ -191,9 +189,9 @@ namespace YIF.Core.Service.Concrete.Services
             string ch = await _universityAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
             {
-                return result.Set(false, "User with such Id was not found");
+                throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
             }
-            return result.Set(201, new DescriptionResponseApiModel() { Message = ch });
+            return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
@@ -202,9 +200,9 @@ namespace YIF.Core.Service.Concrete.Services
             string ch = await _schoolAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
             {
-                return result.Set(false, "User with such Id was not found");
+                throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
             }
-            return result.Set(201, new DescriptionResponseApiModel() { Message = ch });
+            return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
         public async  Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
@@ -214,10 +212,10 @@ namespace YIF.Core.Service.Concrete.Services
             var ch = await _universityRepositoryAdditional.GetByName(uniPostApiModel.Name);
             if (ch != null)
             {
-                return result.Set(409, "University with such name already exists");
+                throw new InvalidOperationException("Університет із таким іменем вже існує");
             }
             await _universityRepositoryAdditional.AddUniversity(_mapper.Map<University>(uniPostApiModel));
-            return result.Set(201, new DescriptionResponseApiModel() { Message = "University was added" });
+            return result.Set(new DescriptionResponseApiModel("Університет додано"), true);
 
         }
     }

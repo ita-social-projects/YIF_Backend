@@ -14,7 +14,7 @@
         /// <param name="message">Sets the message to describe.</param>
         public DescriptionResponseApiModel(string message = null)
         {
-            Message = message;
+            this.Message = message;
         }
 
         /// <summary>
