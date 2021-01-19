@@ -520,7 +520,7 @@ namespace YIF.Core.Service.Concrete.Services
             var user = await _userManager.FindByIdAsync(model.Id);
 
             if (user == null || user.IsDeleted)
-            {
+            { 
                 return result.Set(404, "Такий емейл не є зареєстрованим");
             }
 
