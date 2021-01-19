@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -33,7 +35,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = password
             };
 
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 200, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = true, Object = GetTestJwt()[0] };
             _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -54,20 +56,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 Email = email,
                 Password = password,
-
             };
 
             var error = "Login or password is incorrect";
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 400, Message = error };
-            _userService.Setup(x => x.LoginUser(request)).Returns(Task.FromResult(responseModel));
-
-            // Act
-            var result = await _testControl.LoginUser(request);
+            _userService.Setup(x => x.LoginUser(request)).Throws(new BadRequestException(error));
 
             // Assert
-            var responseResult = Assert.IsType<BadRequestObjectResult>(result);
-            var model = (DescriptionResponseApiModel)responseResult.Value;
-            Assert.Equal(error, model.Message);
+            var exeption = await Assert.ThrowsAsync<BadRequestException>(() => _testControl.LoginUser(request));
+            Assert.Equal(error, exeption.Message);
         }
 
         [Theory]
@@ -83,7 +79,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 201, Object = GetTestJwt()[0] };
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = true, Object = GetTestJwt()[0] };
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
 
             // Act
@@ -108,17 +104,51 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 ConfirmPassword = confirmPassword
             };
 
-            var error = "error message";
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { StatusCode = 409, Message = error };
-            _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
-
-            // Act
-            var result = await _testControl.RegisterUser(request);
+            var error = new InvalidOperationException("error message");
+            _userService.Setup(x => x.RegisterUser(request)).Throws(error);
 
             // Assert
-            var responseResult = Assert.IsType<ConflictObjectResult>(result);
-            var model = (DescriptionResponseApiModel)responseResult.Value;
-            Assert.Equal(error, model.Message);
+            var exeption = await Assert.ThrowsAsync<InvalidOperationException>(() => _testControl.RegisterUser(request));
+            Assert.Equal(error.Message, exeption.Message);
+        }
+
+        [Fact]
+        public async Task Refresh_EndpointsReturnsNewJwt_ifDataСorrect()
+        {
+            // Arrange
+            var request = new TokenRequestApiModel
+            {
+                Token = "token",
+                RefreshToken = "refreshToken"
+            };
+
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = true, Object = GetTestJwt()[0] };
+            _userService.Setup(x => x.RefreshToken(request)).Returns(Task.FromResult(responseModel));
+
+            // Act
+            var result = await _testControl.Refresh(request);
+
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            var model = (AuthenticateResponseApiModel)responseResult.Value;
+            Assert.Equal(responseModel.Object.Token, model.Token);
+        }
+
+        [Fact]
+        public async Task Refresh_EndpointsReturnsException_ifDataIncorrect()
+        {
+            // Arrange
+            var request = new TokenRequestApiModel
+            {
+                Token = "token",
+                RefreshToken = "refreshToken"
+            };
+            var error = new BadRequestException("error message");
+            _userService.Setup(x => x.RefreshToken(request)).Throws(error);
+
+            // Assert
+            var exeption = await Assert.ThrowsAsync<BadRequestException>(() => _testControl.Refresh(request));
+            Assert.Equal(error.Message, exeption.Message);
         }
 
         private List<AuthenticateResponseApiModel> GetTestJwt()

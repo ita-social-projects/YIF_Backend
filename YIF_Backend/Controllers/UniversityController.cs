@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SendGrid.Helpers.Errors.Model;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -88,6 +86,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Returns all favorite universities</returns>
         /// <response code="200">Returns the page with universities</response>
+        /// <response code="404">If user doesn't have favorite universites</response>
         [ProducesResponseType(typeof(IEnumerable<UniversityResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]

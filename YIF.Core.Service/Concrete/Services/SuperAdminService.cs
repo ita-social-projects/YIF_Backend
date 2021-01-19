@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -67,19 +69,19 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (university == null)
             {
-                return result.Set(false, "В базі даних немає університету із назвою: " + universityAdminModel.UniversityName);
+                throw new NotFoundException("В базі даних немає університету із назвою: " + universityAdminModel.UniversityName);
             }
 
             var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
             if (adminCheck != null)
             {
-                return result.Set(false, "Адміністратор цього університету вже існує (1 університет може мати лише 1 адміністратора)");
+                throw new InvalidOperationException("Адміністратор цього університету вже існує (1 університет може мати лише 1 адміністратора)");
             }
 
             var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                return result.Set(false, "Користувач вже існує");
+                throw new InvalidOperationException("Користувач вже існує");
             }
 
             var dbUser = new DbUser
@@ -92,7 +94,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (registerResult != string.Empty)
             {
-                return result.Set(false, registerResult);
+                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
 
 
@@ -127,19 +129,19 @@ namespace YIF.Core.Service.Concrete.Services
             var school = await _schoolRepository.GetByName(schoolAdminModel.SchoolName);
             if (school == null)
             {
-                return result.Set(false, "В базі даних немає школи із назвою: " + schoolAdminModel.SchoolName);
+                throw new NotFoundException("В базі даних немає школи із назвою: " + schoolAdminModel.SchoolName);
             }
 
             var adminCheck = await _schoolAdminRepository.GetBySchoolId(school.Id);
             if (adminCheck != null)
             {
-                return result.Set(false, "Адміністратор цього університету вже існує (1 університет може мати лише 1 адміністратора)");
+                throw new InvalidOperationException("Адміністратор цієї школи вже існує (1 школа може мати лише 1 адміністратора)");
             }
 
             var searchUser = _userManager.FindByEmailAsync(schoolAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                return result.Set(false, "Користувач вже існує");
+                throw new InvalidOperationException("Користувач вже існує");
             }
 
             var dbUser = new DbUser
@@ -153,7 +155,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (registerResult != string.Empty)
             {
-                return result.Set(false, registerResult);
+                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
 
 
@@ -186,7 +188,7 @@ namespace YIF.Core.Service.Concrete.Services
             string ch = await _universityAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
             {
-                return result.Set(false, "Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
+                throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
@@ -197,7 +199,7 @@ namespace YIF.Core.Service.Concrete.Services
             string ch = await _schoolAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
             {
-                return result.Set(false, "Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
+                throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }

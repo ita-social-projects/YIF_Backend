@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +69,7 @@ namespace YIF.Core.Service.Concrete.Services
             var users = (List<UserDTO>)await _userRepository.GetAll();
             if (users.Count < 1)
             {
-                return result.Set(false, $"Користувачів немає");
+                throw new NotFoundException("Користувачів немає");
             }
             result.Object = _mapper.Map<IEnumerable<UserApiModel>>(users);
             return result.Set(true);
@@ -76,30 +78,24 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<UserApiModel>> GetUserById(string id)
         {
             var result = new ResponseApiModel<UserApiModel>();
-            try
+            var user = await _userRepository.Get(id);
+            if (user == null)
             {
-                var user = await _userRepository.Get(id);
-                result.Object = _mapper.Map<UserApiModel>(user);
+                throw new NotFoundException("Користувача не знайдено:  " + id);
             }
-            catch (KeyNotFoundException ex)
-            {
-                return result.Set(false, ex.Message);
-            }
+            result.Object = _mapper.Map<UserApiModel>(user);
             return result.Set(true);
         }
 
         public async Task<ResponseApiModel<UserApiModel>> GetUserByEmail(string email)
         {
             var result = new ResponseApiModel<UserApiModel>();
-            try
+            var user = await _userRepository.GetByEmail(email);
+            if (user == null)
             {
-                var user = await _userRepository.GetByEmail(email);
-                result.Object = _mapper.Map<UserApiModel>(user);
+                throw new NotFoundException("Користувача не знайдено із такою електронною скринькою:  " + email);
             }
-            catch (KeyNotFoundException ex)
-            {
-                return result.Set(false, ex.Message);
-            }
+            result.Object = _mapper.Map<UserApiModel>(user);
             return result.Set(true);
         }
 
@@ -120,18 +116,18 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!validResults.IsValid)
             {
-                return result.Set(false, validResults.ToString());
+                throw new BadRequestException(validResults.ToString());
             }
 
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                return result.Set(false, "Користувач вже існує");
+                throw new InvalidOperationException("Користувач вже існує");
             }
 
             if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
             {
-                return result.Set(false, "Пароль та підтвердження пароля не співпадають");
+                throw new BadRequestException("Пароль та підтвердження пароля не співпадають");
             }
 
             var dbUser = new DbUser
@@ -147,7 +143,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (registerResult != string.Empty)
             {
-                return result.Set(false, registerResult);
+                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
@@ -169,19 +165,19 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!validResults.IsValid)
             {
-                return result.Set(false, validResults.ToString());
+                throw new BadRequestException(validResults.ToString());
             }
 
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user == null)
             {
-                return result.Set(false, "Логін або пароль неправильний");
+                throw new BadRequestException("Логін або пароль неправильний");
             }
 
             var loginResult = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false, false);
             if (!loginResult.Succeeded)
             {
-                return result.Set(false, "Логін або пароль неправильний");
+                throw new BadRequestException("Логін або пароль неправильний");
             }
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
@@ -204,7 +200,7 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                return result.Set(false, "Помилка запиту. Помилковий токен.");
+                throw new BadRequestException("Помилка запиту. Помилковий токен.");
             }
 
             var userId = claims.First(claim => claim.Type == "id").Value;
@@ -213,17 +209,17 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (user == null)
             {
-                return result.Set(false, "Помилка запиту. Користувача не існує.");
+                throw new BadRequestException("Помилка запиту. Користувача не існує.");
             }
 
             if (user.Token == null || user.Token.RefreshToken != refreshToken)
             {
-                return result.Set(false, "Помилка запиту. Спочатку потрібно авторизуватись.");
+                throw new BadRequestException("Помилка запиту. Спочатку потрібно авторизуватись.");
             }
 
             if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                return result.Set(false, "Помилка запиту. Термін дії рефреш-токена закінчився.");
+                throw new BadRequestException("Помилка запиту. Термін дії рефреш-токена закінчився.");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
@@ -246,32 +242,24 @@ namespace YIF.Core.Service.Concrete.Services
             if (school != null)
                 userProfile = _mapper.Map(school, userProfile);
 
+            if (userProfile == null)
+                throw new NotFoundException("Зазначеного користувача не існує.");
+
             return userProfile;
         }
 
         public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
         {
-            var result = new ResponseApiModel<UserProfileApiModel>(false, "Профіль користувача не встановлено.");
+            var result = new ResponseApiModel<UserProfileApiModel>();
 
             var newEmail = model.Email;
             model.Email = (await _userManager.FindByIdAsync(userId)).Email;
             var profile = _mapper.Map<UserProfile>(model);
             profile.User.Email = newEmail;
 
-            try
-            {
-                var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
-                result.Object = _mapper.Map<UserProfileApiModel>(user);
-                return result.Set(true);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return result.Set(false, ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return result.Set(false, ex.Message);
-            }
+            var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
+            result.Object = _mapper.Map<UserProfileApiModel>(user);
+            return result.Set(true);
         }
 
         public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
@@ -306,7 +294,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!result)
             {
-                return null;
+                throw new BadRequestException("Фото не змінено.");
             }
 
             if (File.Exists(filePathDelete))
@@ -332,7 +320,100 @@ namespace YIF.Core.Service.Concrete.Services
             _userRepository.Dispose();
         }
 
-        // =========================   For test authorize endpoint:   =========================
+        public async Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request)
+        {
+            var result = new ResponseApiModel<ResetPasswordByEmailApiModel>();
+            var user = await _userManager.FindByEmailAsync(model.UserEmail);
+
+            if (model.UserEmail == string.Empty || model.UserEmail == null)
+            {
+                throw new BadRequestException("Введіть коректну електронну скриньку.");
+            }
+
+            if (user == null || user.IsDeleted)
+            {
+                throw new NotFoundException("Така електронна скринька не зареєестрована.");
+            }
+
+            var serverUrl = $"{request.Scheme}://{request.Host}/";
+            var url = serverUrl + $"password/reset/{user.Id}";
+            var html = $@"<p>&nbsp;</p>
+<!-- HIDDEN PREHEADER TEXT -->
+<table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
+<tbody>
+<tr>
+<td align=""center"" bgcolor=""#FFA73B"">
+<table style=""max-width: 600px;"" border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td style=""padding: 40px 10px 40px 10px;"" align=""center"" valign=""top"">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style=""padding: 0px 10px 0px 10px;"" align=""center"" bgcolor=""#FFA73B"">
+<table style=""max-width: 600px;"" border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td style=""padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;"" align=""center"" valign=""top"" bgcolor=""#ffffff"">
+<h1 style=""font-size: 48px; font-weight: 400; margin: 2;"">Відновлення паролю</h1>
+<img style=""display: block; border: 0px;"" src="" https://img.icons8.com/clouds/100/000000/handshake.png"" width=""125"" height=""120"" /></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style=""padding: 0px 10px 0px 10px;"" align=""center"" bgcolor=""#f4f4f4"">
+<table style=""max-width: 600px;"" border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td align=""left"" bgcolor=""#ffffff"">
+<table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr style=""height: 39px;"">
+<td style=""padding: 20px 30px 60px; height: 39px;"" align=""center"" bgcolor=""#ffffff"">
+<table border=""0"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B""><a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Змінити пароль</a></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style=""padding: 30px 10px 0px 10px;"" align=""center"" bgcolor=""#f4f4f4"">&nbsp;</td>
+</tr>
+<tr>
+<td style=""padding: 0px 10px 0px 10px;"" align=""center"" bgcolor=""#f4f4f4"">&nbsp;</td>
+</tr>
+</tbody>
+</table>";
+
+            await _emailService.SendAsync(model.UserEmail, "Відновлення паролю", html);
+
+            result.Object = model;
+
+            return result.Set(true);
+        }
+
+
+
+
+
+
+        // =========================   For test endpoint:   =========================
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
@@ -363,7 +444,13 @@ namespace YIF.Core.Service.Concrete.Services
                     u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
                     u.Roles.Contains(ProjectRoles.UniversityAdmin)
                     );
+            if (result.Object.Count() < 0)
+            {
+                throw new NotFoundException("Адміністраторів немає");
+            }
             return result.Object.Count() > 0 ? result.Set(true) : result.Set(false, "Адміністраторів немає");
         }
+
+
     }
 }

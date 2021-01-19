@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace YIF.Core.Service.Concrete.Services
             var specialties = (List<SpecialityDTO>)await _specialtyRepository.GetAll();
             if (specialties.Count < 1)
             {
-                return result.Set(false, "Спеціальностей немає");
+                throw new NotFoundException("Спеціальностей немає.");
             }
             result.Object = _mapper.Map<IEnumerable<SpecialtyApiModel>>(specialties);
             return result.Set(true);
@@ -40,7 +41,7 @@ namespace YIF.Core.Service.Concrete.Services
             var specialties = (List<SpecialityDTO>)await _specialtyRepository.GetAll();
             if (specialties.Count < 1)
             {
-                return result.Set(false, "Спеціальностей немає");
+                throw new NotFoundException("Спеціальностей немає.");
             }
             var names = specialties.Select(x => x.Name).ToList();
             result.Object = new SpecialtyNamesResponseApiModel(names);
@@ -53,7 +54,7 @@ namespace YIF.Core.Service.Concrete.Services
             var specialtiy = await _specialtyRepository.Get(id);
             if (specialtiy == null)
             {
-                return result.Set(false, $"Спеціальність не знайдена із таким id:  {id}.");
+                throw new NotFoundException($"Спеціальність не знайдена із таким id:  {id}.");
             }
             result.Object = _mapper.Map<SpecialtyApiModel>(specialtiy);
             return result.Set(true);

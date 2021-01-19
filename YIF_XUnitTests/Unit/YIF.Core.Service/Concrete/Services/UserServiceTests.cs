@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +18,6 @@ using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.School;
-using YIF.Core.Domain.Models.IdentityDTO;
-using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
@@ -33,10 +33,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IRecaptchaService> _recaptcha;
-        private readonly Mock<IEmailService> _emailServise;
+        private readonly Mock<IEmailService> _emailService;
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ISchoolGraduateRepository<SchoolDTO>> _schoolGraduate;
+        private readonly Mock<HttpRequest> _request;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -52,10 +53,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _recaptcha = new Mock<IRecaptchaService>();
-            _emailServise = new Mock<IEmailService>();
+            _emailService = new Mock<IEmailService>();
             _env = new Mock<IWebHostEnvironment>();
             _configuration = new Mock<IConfiguration>();
             _schoolGraduate = new Mock<ISchoolGraduateRepository<SchoolDTO>>();
+            _request = new Mock<HttpRequest>();
             _testService = new UserService(
                 _userRepository.Object,
                 _userManager.Object,
@@ -63,7 +65,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _jwtService.Object,
                 _mapperMock.Object,
                 _recaptcha.Object,
-                _emailServise.Object,
+                _emailService.Object,
                 _env.Object, _configuration.Object,
                 _tokenRepository.Object,
                 _schoolGraduate.Object);
@@ -109,11 +111,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetAll_ShouldReturnFalse_IfThereAreNoUsers()
         {
             _userRepository.Setup(s => s.GetAll()).Returns(Task.FromResult(new List<UserDTO>().AsEnumerable()));
-            // Act
-            var result = await _testService.GetAllUsers();
             //Assert
-            Assert.False(result.Success);
-            Assert.Null(result.Object);
+            await Assert.ThrowsAsync<NotFoundException>(() => _testService.GetAllUsers());
         }
 
         [Fact]
@@ -130,17 +129,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public void GetUserById_ShouldReturnException_IfUserNotFoundIn()
+        public async Task GetUserById_ShouldReturnException_IfUserNotFoundIn()
         {
             // Arrange
             _userRepository.Setup(s => s.Get(It.IsAny<string>()))
-                .Throws(new KeyNotFoundException("User not found:  {someId}"));
-            // Act
-            var result = _testService.GetUserById(_userDTOStub.Id).Result;
+                .Throws(new NotFoundException("User not found:  {someId}"));
             //Assert
-            Assert.False(result.Success);
-            Assert.Null(result.Object);
-            Assert.StartsWith("User not found", result.Message);
+            await Assert.ThrowsAsync<NotFoundException>(() => _testService.GetUserById(_userDTOStub.Id));
         }
 
         [Fact]
@@ -211,13 +206,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(dbUser));
 
-            // Act
-            var result = await _testService.RegisterUser(userData);
-
             // Assert
-            Assert.False(result.Success);
-            Assert.Null(result.Object);
-            Assert.Equal("Електронна пошта вже існує!", result.Message);
+            await Assert.ThrowsAsync<BadRequestException>(() => _testService.RegisterUser(userData));
         }
 
         [Theory]
@@ -225,7 +215,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task RegisterUser_ShouldReturnBadRequestWithMessage_WhenUserWithSameNameExists(string email, string username, string password, string confirmPassword, string recaptcha)
         {
             // Arrange
-            var message = $"User name '{username}' is already taken.";
+            var message = "message";
 
             var userData = new RegisterApiModel
             {
@@ -244,15 +234,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
+            _userRepository.Setup(x => x.SetDefaultUserProfileIfEmpty(It.IsAny<string>())).Verifiable();
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
-            // Act
-            var result = await _testService.RegisterUser(userData);
-
             // Assert
-            Assert.False(result.Success);
-            Assert.Null(result.Object);
-            Assert.Equal(message, result.Message);
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _testService.RegisterUser(userData));
         }
 
         [Theory]
@@ -281,23 +267,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
             //_userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
-            // Act
-            var result = await _testService.RegisterUser(userData);
-
             // Assert
-            Assert.False(result.Success);
-            Assert.Null(result.Object);
-            Assert.Equal(message, result.Message);
+            await Assert.ThrowsAsync<BadRequestException>(() => _testService.RegisterUser(userData));
         }
 
-        //[Fact]
+        [Fact]
         public async Task LoginUser_ShouldReturnResponseModelWithToken_WhenEmailAndPasswordAreCorrect()
         {
             // Arrange
             var token = "some correct token";
             var loginAM = new LoginApiModel
             {
-                Email = "6necum.how@silentsuite.com",
+                Email = "necum.how@silentsuite.com",
                 Password = "QWerty-1",
                 RecaptchaToken = "recaptcha"
             };
@@ -310,6 +291,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(loginAM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(loginAM.Email)).ReturnsAsync(user);
+            _userManager.Setup(s => s.CheckPasswordAsync(user, loginAM.Password)).ReturnsAsync(true);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
@@ -336,11 +318,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userManager.Setup(s => s.FindByEmailAsync(email)).ReturnsAsync(email == "" ? null : user);
             _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Failed;
 
-            // Act
-            var result = await _testService.LoginUser(loginVM);
             // Assert
-            Assert.False(result.Success);
-            Assert.Equal("Логін або пароль неправильний!", result.Message);
+            await Assert.ThrowsAsync<BadRequestException>(() => _testService.LoginUser(loginVM));
         }
 
         [Fact]
@@ -357,6 +336,34 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.ThrowsAsync<NotImplementedException>(() => _testService.UpdateUser(_userDTOStub));
         }
 
+        [Theory]
+        [InlineData("email@gmail.com")]
+        public async void Send_ResetPasswordEmail(string email)
+        {
+            // Arrange
+            var apiModel = new ResetPasswordByEmailApiModel
+            {
+                UserEmail = email
+            };
+
+            var userModel = new DbUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email
+            };
+
+            _request.SetupAllProperties();
+            _userManager.Setup(s => s.FindByEmailAsync(userModel.Email)).ReturnsAsync(userModel);
+            _emailService.Setup(s => s.SendAsync(apiModel.UserEmail, "", ""))
+                .ReturnsAsync(null);
+
+            // Act
+            var result = await _testService.ResetPasswordByEmail(apiModel, _request.Object);
+
+            // Assert
+            Assert.True(result.Success);
+        }
+
         [Fact]
         public void Dispose_ShouldDisposeDatabase()
         {
@@ -365,7 +372,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = false;
             repo.Setup(x => x.Dispose()).Callback(() => result = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null, null);
+            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null,null);
             service.Dispose();
             // Assert
             Assert.True(result);

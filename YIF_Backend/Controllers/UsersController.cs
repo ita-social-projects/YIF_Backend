@@ -35,14 +35,16 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of users</returns>
         /// <response code="200">Returns a list of users</response>
+        /// <response code="404">If there are no users</response>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllUsersAsync()
         {
             var result = await _userService.GetAllUsers();
             _logger.LogInformation("Getting all users");
-            return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -50,31 +52,18 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of users</returns>
         /// <response code="200">Returns a user</response>
+        /// <response code="404">If user not found</response>
         /// <param name="id" example="01f75261-2feb-4a34-93fb-ab26bf16cbe7">User ID</param>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetUserAsync(string id)
         {
-            try
-            {
-                Guid guid = Guid.Parse(id);
-                var result = await _userService.GetUserById(guid.ToString("D"));
-                _logger.LogInformation("Trying to get a user");
-                return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
-
-            }
-            catch (ArgumentNullException)
-            {
-                _logger.LogError("Null user is not allowed");
-                return BadRequest(new DescriptionResponseApiModel("Рядок для аналізу не має значення."));
-            }
-            catch (FormatException)
-            {
-                _logger.LogError("There is a problem with format");
-                return BadRequest(new DescriptionResponseApiModel($"Неправильний формат:  {id}."));
-            }
+            Guid guid = Guid.Parse(id);
+            var result = await _userService.GetUserById(guid.ToString("D"));
+            _logger.LogInformation("Getting a user by Id");
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -84,17 +73,17 @@ namespace YIF_Backend.Controllers
         /// <response code="200">if get information about current user is correct</response>
         /// <response code="400">if get information about current user is incorrect.</response>
         /// <response code="401">If user is unauthorized or token is bad/expired</response>
+        /// <response code="404">If user not found</response>
         [ProducesResponseType(typeof(UserProfileApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("Current")]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserFullInfo()
         {
             var userId = User.FindFirst("id")?.Value;
             var profile = await _userService.GetUserProfileInfoById(userId);
-            if (profile == null)
-                return BadRequest(new DescriptionResponseApiModel("Зазначеного юзера не існує."));
             return Ok(profile);
         }
 
@@ -107,7 +96,7 @@ namespace YIF_Backend.Controllers
         /// <response code="401">If user is unauthorized or token is bad/expired.</response>
         [ProducesResponseType(typeof(UserProfileApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("SetCurrentProfile")]
         [Authorize]
         public async Task<IActionResult> SetUserProfile([FromBody] UserProfileApiModel model)
@@ -115,7 +104,7 @@ namespace YIF_Backend.Controllers
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.SetUserProfileInfoById(model, id);
-            return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -127,7 +116,7 @@ namespace YIF_Backend.Controllers
         /// <response code="401">If user is unauthorized or token is bad/expired</response>
         [ProducesResponseType(typeof(ImageApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("ChangePhoto")]
         [RequestSizeLimit(10 * 1024 * 1024)]
         [Authorize]
@@ -136,18 +125,32 @@ namespace YIF_Backend.Controllers
             ImageBase64Validator validator = new ImageBase64Validator();
             var validResults = validator.Validate(model);
 
-            if (!validResults.IsValid)
-            {
-                return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
-            }
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
 
             var id = User.FindFirst("id")?.Value;
 
             var result = await _userService.ChangeUserPhoto(model, id);
 
-            return result != null
-                ? Ok(new ImageApiModel { Photo = result.Photo })
-                : (IActionResult)BadRequest(new DescriptionResponseApiModel("Фото не змінено."));
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Send reset password mail
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">When user exist and email have been sended</response>
+        /// <response code="400">If current email is not correct</response>
+        /// <response code="404">If user doesn`t exist</response>
+        [ProducesResponseType(typeof(ResetPasswordByEmailApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordByEmailApiModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            var result = await _userService.ResetPasswordByEmail(model, Request);
+            return Ok(result.Object);
         }
     }
 }

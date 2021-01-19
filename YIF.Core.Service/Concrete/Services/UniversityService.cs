@@ -86,7 +86,7 @@ namespace YIF.Core.Service.Concrete.Services
             var university = await _universityRepository.Get(universityId);
 
             if (university == null)
-                throw new KeyNotFoundException("Університету з таким id не існує.");
+                throw new NotFoundException("Університету з таким id не існує.");
 
             var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
             university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;

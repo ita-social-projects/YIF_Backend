@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -32,7 +35,7 @@ namespace YIF_Backend.Infrastructure.Middleware
             catch (Exception error)
             {
                 var response = context.Response;
-                response.ContentType = "application/json";
+                response.ContentType = "application/json; charset=utf-8";
 
                 var desctiption = new DescriptionResponseApiModel(error.Message);
                 if (error is BadImageFormatException) desctiption.Message = "Неправильний формат зображення";
@@ -55,6 +58,7 @@ namespace YIF_Backend.Infrastructure.Middleware
                         response.StatusCode = (int)HttpStatusCode.Conflict;
                         break;
                     case KeyNotFoundException a:
+                    case NotFoundException b:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     case ArgumentNullException a:
@@ -63,6 +67,7 @@ namespace YIF_Backend.Infrastructure.Middleware
                     case ArgumentException d:
                     case FormatException e:
                     case BadRequestException f:
+                    case SecurityTokenException g:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     default:

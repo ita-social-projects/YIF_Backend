@@ -26,17 +26,15 @@ namespace YIF_Backend.Controllers
             _userService = userService;
         }
 
-
-
         /// <summary>
         /// TEST authorize:  Get current user id by using token authorize.
         /// </summary>
         /// <returns>List of current user id</returns>
         /// <response code="200">Returns current user id</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
-        [HttpGet("my_id")]
+        [HttpGet("My_id")]
         [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserIdUsingAuthorizeAsync()
         {
@@ -49,17 +47,15 @@ namespace YIF_Backend.Controllers
             return await Task.FromResult(Ok(result.Object));
         }
 
-
-
         /// <summary>
         /// TEST authorize:  Get current user roles by using token authorize.
         /// </summary>
         /// <returns>List of current user roles</returns>
         /// <response code="200">Returns current user roles</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
-        [HttpGet("my_roles")]
+        [HttpGet("My_roles")]
         [ProducesResponseType(typeof(RolesByTokenResponseApiModel), 200)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserRolesUsingAuthorizeAsync()
         {
@@ -68,8 +64,6 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
-
-
         /// <summary>
         /// TEST authorize:  Get all admins of the similar institution as a current user by using token authorize.
         /// </summary>
@@ -77,17 +71,31 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Returns list of admins of the similar institution</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user doesn't have enough rights</response>
-        /// <response code="404">If database is empty or current user not found</response>
-        [HttpGet("admins")]
+        /// <response code="404">If users not found</response>
+        [HttpGet("Admins")]
         [Authorize(Roles = "SuperAdmin,UniversityModerator,SchoolModerator")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAdminsUsingAuthorizeAsync()
         {
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.GetAdminsUsingAuthorize(id);
-            return result.Success ? Ok(result.Object) : (IActionResult)NotFound(result.Description);
+            return Ok(result.Object);
+        }
+
+
+
+        /// <summary>
+        /// TEST exception middleware:  Creates server error for test of the exception middleware.
+        /// </summary>
+        /// <returns>Server error for exception middleware test</returns>
+        /// <response code="500">Returns server error for exception middleware test</response>
+        [HttpGet("ServerError")]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public void CreateServerError()
+        {
+            throw new System.Exception("Test server error has run successfully");
         }
     }
 }

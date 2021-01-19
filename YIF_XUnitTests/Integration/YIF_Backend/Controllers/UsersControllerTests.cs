@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_Backend;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
@@ -56,6 +59,40 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("intelIdea@gmail.com")]
+        public async Task Send_ResetPassword_IfEmail_Correct(string email)
+        {
+            // Act
+            var content = new StringContent(JsonConvert.SerializeObject(new ResetPasswordByEmailApiModel
+            {
+                UserEmail = email
+            }), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("ResetPassword", content);
+
+            // Assert
+            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Theory]
+        [InlineData("notExist@gmail.com")]
+        public async Task Send_ResetPassword_IfEmail_InCorrect(string email)
+        {
+            // Act
+            var content = new StringContent(JsonConvert.SerializeObject(new ResetPasswordByEmailApiModel
+            {
+                UserEmail = email
+            }), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("ResetPassword", content);
+
+            // Assert
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
         }
