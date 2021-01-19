@@ -71,7 +71,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("DeleteUniversityAdmin")]
+        [HttpPut("DeleteUniversityAdmin")]
         public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
         {
             if (!ModelState.IsValid) return BadRequest("Модель не валідна");
@@ -88,7 +88,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("DeleteSchoolAdmin")]
+        [HttpPut("DeleteSchoolAdmin")]
         public async Task<IActionResult> DeleteSchoolAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
