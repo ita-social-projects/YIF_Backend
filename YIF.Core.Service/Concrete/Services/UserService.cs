@@ -426,6 +426,15 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
+        public Task<ResponseApiModel<SendEmailApproveApiModel>> SendEmailApproveMail(SendEmailApproveApiModel model)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<ResponseApiModel<object>> ApproveUserEmail(string UserId)
+        {
+            throw new NotImplementedException();
+        }
+
         // =========================   For test authorize endpoint:   =========================
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
@@ -463,7 +472,6 @@ namespace YIF.Core.Service.Concrete.Services
                     u.Roles.Contains(ProjectRoles.UniversityAdmin)
                     ));
         }
-
-        
+       
     }
 }
