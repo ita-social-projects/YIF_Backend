@@ -388,17 +388,17 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Id = Guid.NewGuid().ToString()
             };
 
-            var result = new IdentityResult();
-
+            _recaptcha.Setup(x => x.IsValid(model.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByIdAsync(model.UserId)).ReturnsAsync(user);
             _userManager.Setup(s => s.ChangePasswordAsync(user, model.OldPassword, model.NewPassword))
-                .ReturnsAsync(result);
+                .ReturnsAsync(IdentityResult.Success);
+            _userManager.Setup(s => s.CheckPasswordAsync(user, model.OldPassword)).ReturnsAsync(true);
 
             // Act
             var myResult = await _testService.ChangeUserPassword(model);
 
             // Assert
-            Assert.False(myResult.Success);
+            Assert.True(myResult.Success);
         }
 
         [Fact]

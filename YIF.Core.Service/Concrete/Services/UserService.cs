@@ -418,7 +418,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!validResults.IsValid)
             {
-                return result.Set(false, validResults.ToString());
+                throw new ArgumentException(validResults.ToString());
             }
 
             var user = await _userManager.FindByIdAsync(model.UserId);
