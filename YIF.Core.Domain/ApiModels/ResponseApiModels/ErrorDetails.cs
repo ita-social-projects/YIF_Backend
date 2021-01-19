@@ -10,11 +10,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         public string ErrorId { get; set; }
 
         /// <summary>
-        /// Gets or sets the status code for this error.
-        /// </summary>
-        public int StatusCode { get; set; }
-
-        /// <summary>
         /// Gets or sets the request path for this error.
         /// </summary>
         public string RequestPath { get; set; }

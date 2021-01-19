@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
@@ -75,9 +77,14 @@ namespace YIF_Backend.Infrastructure.Middleware
                         break;
                 }
 
-                details.StatusCode = response.StatusCode;
-
-                var result = response.StatusCode == 500 ? JsonSerializer.Serialize(details) : JsonSerializer.Serialize(desctiption);
+                var jsonOptions = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    Formatting = Formatting.Indented
+                };
+                var result = response.StatusCode == 500
+                    ? JsonConvert.SerializeObject(details, jsonOptions)
+                    : JsonConvert.SerializeObject(desctiption, jsonOptions);
                 await response.WriteAsync(result);
             }
         }

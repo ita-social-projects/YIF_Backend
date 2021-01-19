@@ -81,7 +81,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var contentJsonObj = JObject.Parse(content);
 
-            var message = contentJsonObj["Message"].ToString();
+            var message = contentJsonObj["message"].ToString();
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
