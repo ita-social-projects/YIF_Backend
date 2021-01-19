@@ -440,12 +440,12 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (model.UserEmail == string.Empty || model.UserEmail == null)
             {
-                return result.Set(400, "Введіть коректний емейл");
+                throw new ArgumentException("Введіть коректний емейл");
             }
 
             if (user == null || user.IsDeleted)
             {
-                return result.Set(404, "Такий емейл не є зареєстрованим");
+                throw new NotFoundException("Такий емейл не є зареєстрованим");
             }
 
             var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -527,20 +527,20 @@ namespace YIF.Core.Service.Concrete.Services
             var user = await _userManager.FindByIdAsync(model.Id);
 
             if (user == null || user.IsDeleted)
-            { 
-                return result.Set(404, "Такий емейл не є зареєстрованим");
+            {
+                throw new NotFoundException("Такий емейл не є зареєстрованим");
             }
 
             if(user.EmailConfirmed)
             {
-                return result.Set(400, "Емейл вже підтвердженний");
+                throw new ArgumentException("Емейл вже підтвердженний");
             }
 
             await _userManager.ConfirmEmailAsync(user, model.Token);
 
             result.Object = model;
 
-            return result.Set(200);
+            return result.Set(true);
         }
 
         // =========================   For test authorize endpoint:   =========================

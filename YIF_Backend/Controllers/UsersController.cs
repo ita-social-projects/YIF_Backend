@@ -188,7 +188,7 @@ namespace YIF_Backend.Controllers
 
             var result = await _userService.SendEmailConfirmMail(model, Request);
 
-            return result.Response();
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace YIF_Backend.Controllers
 
             var result = await _userService.ConfirmUserEmail(model);
 
-            return result.Response();
+            return Ok(result.Object);
         }
     }
 }
