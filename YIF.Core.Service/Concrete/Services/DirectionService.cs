@@ -20,7 +20,7 @@ namespace YIF.Core.Service.Concrete.Services
             _repositoryDirection = repositoryDirection;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirections()
+        public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirections(int page, int pageSize, string url)
         {
             var directions = (List<DirectionDTO>)await _repositoryDirection.GetAll();
             if (directions.Count < 1)
