@@ -21,14 +21,14 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of directions</returns>
         /// <response code="200">Return a list of directions</response>
-        [ProducesResponseType(typeof(DirectionsResponseApiModel), 200)]
+        [ProducesResponseType(typeof(PageResponseApiModel<DirectionResponseApiModel>), 200)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("All")]
         public async Task<IActionResult> GetAllDirections(int page = 1, int pageSize = 10)
         {
             var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
             var directions = await _directionService.GetAllDirections(page, pageSize, url);
-            return Ok(new DirectionsResponseApiModel { Directions = directions });
+            return Ok(directions);
         }
     }
 }
