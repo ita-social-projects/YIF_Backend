@@ -11,6 +11,7 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
@@ -23,12 +24,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityReposotiry = new Mock<IUniversityRepository<University, UniversityDTO>>();
         private static readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
         private static readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
+        private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
 
         private static readonly UniversityService universityService = new UniversityService(
             _universityReposotiry.Object,
             _specialityRepository.Object,
             _directionRepository.Object,
-            _mapperMock.Object);       
+            _mapperMock.Object,
+            _paginationService.Object);       
 
         [Fact]
         public async Task Get_UniversityByNameAndDirection()
