@@ -108,7 +108,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Change authorized user photo. Size limit 10 MB
+        /// Change authorized user photo. Size limit 20 MB
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">If change user photo request is correct</response>
@@ -118,7 +118,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("ChangePhoto")]
-        [RequestSizeLimit(10 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 20971520)]
+        [RequestSizeLimit(20971520)]
         [Authorize]
         public async Task<IActionResult> ChangeUserPhoto([FromBody] ImageApiModel model)
         {

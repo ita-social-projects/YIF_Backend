@@ -1118,8 +1118,8 @@ namespace YIF.Core.Data
                     #region University
                     SeederDB.SeedDirections(context);
                     SeederDB.SeedSpecialities(context);
-                    SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
                     SeederDB.SeedUniversities(context);
+                    SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
                     SeederDB.SeedUniversityAdmins(context);
                     await SeederDB.SeedUniversityModerators(context, manager);
                     await SeederDB.SeedLectures(context, manager);

@@ -515,7 +515,7 @@ namespace YIF.Core.Service.Concrete.Services
 </tbody>
 </table>";
 
-            _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
+            _ = _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
 
             result.Object = model;
 
@@ -531,7 +531,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException("Такий емейл не є зареєстрованим");
             }
 
-            if(user.EmailConfirmed)
+            if (user.EmailConfirmed)
             {
                 throw new ArgumentException("Емейл вже підтвердженний");
             }
@@ -580,6 +580,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return result.Object.Count() > 0 ? result.Set(true) : result.Set(false, "Адміністраторів немає");
         }
-       
+
     }
 }

@@ -75,12 +75,6 @@ namespace YIF_Backend
             services.AddMvc().AddFluentValidation();
             #endregion
 
-            services.Configure<FormOptions>(options =>
-            {
-                // Set the limit to 10 MB
-                options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
-            });
-
             #region Swagger
             services.AddSwaggerGen(c =>
             {
