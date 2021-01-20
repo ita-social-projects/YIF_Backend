@@ -69,6 +69,7 @@ namespace YIF_Backend
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
             services.AddTransient<IUniversityService<University>, UniversityService>();
             services.AddTransient<IDirectionService, DirectionService>();
+            services.AddTransient<IPaginationService, PaginationService>();
             #endregion
 
             #region FluentValidation
