@@ -45,6 +45,18 @@ namespace YIF_Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region CORS
+            services.AddCors();
+            #endregion
+
+            services.Configure<FormOptions>(options =>
+            {
+                // Set the limit to 100 MB
+                options.ValueCountLimit = 1024;
+                options.KeyLengthLimit = 1024 * 2;
+                options.ValueLengthLimit = 1024 * 1024 * 100;
+            });
+
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
@@ -70,17 +82,12 @@ namespace YIF_Backend
             services.AddTransient<IUniversityService<University>, UniversityService>();
             services.AddTransient<IDirectionService, DirectionService>();
             services.AddTransient<ISchoolService, SchoolService>();
+            services.AddTransient<IPaginationService, PaginationService>();
             #endregion
 
             #region FluentValidation
             services.AddMvc().AddFluentValidation();
             #endregion
-
-            services.Configure<FormOptions>(options =>
-            {
-                // Set the limit to 10 MB
-                options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
-            });
 
             #region Swagger
             services.AddSwaggerGen(c =>
@@ -129,15 +136,6 @@ namespace YIF_Backend
                     }
                 }
             });
-            #endregion
-
-            #region CORS
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
             #endregion
 
             #region EntityFramework
@@ -215,12 +213,10 @@ namespace YIF_Backend
             app.UseAuthorization();
 
             #region CORS
-            app.UseCors(builder => builder
-                 .AllowAnyHeader()
-                 .AllowAnyMethod()
-                 .SetIsOriginAllowed((host) => true)
-                 .AllowCredentials()
-             );
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
             #endregion
 
             #region Seeder

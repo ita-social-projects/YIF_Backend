@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -20,24 +18,26 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialityRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
         private readonly IMapper _mapper;
+        private readonly IPaginationService _paginationService;
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
             IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialityRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IPaginationService paginationService)
         {
             _universityRepository = universityRepository;
             _specialityRepository = specialityRepository;
             _directionRepository = directionRepository;
             _mapper = mapper;
+            _paginationService = paginationService;
         }
 
-        public async Task<ResponseApiModel<IEnumerable<UniversityFilterResponseApiModel>>> GetUniversityByFilter(FilterApiModel filterModel)
+        public async Task<IEnumerable<UniversityResponseApiModel>> GetUniversityByFilter(FilterApiModel filterModel)
         {
-            var result = new ResponseApiModel<IEnumerable<UniversityFilterResponseApiModel>>();
             // Filtered list of universities 
-            IEnumerable<UniversityDTO> filteredUniversities = null;
+            IEnumerable<UniversityDTO> filteredUniversities = await _universityRepository.GetAll();
 
             // Check if we must filter universities by direction name
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
@@ -77,10 +77,9 @@ namespace YIF.Core.Service.Concrete.Services
                 }
             }
 
-            result.Object = _mapper.Map<IEnumerable<UniversityFilterResponseApiModel>>(filteredUniversities.Distinct().ToList());
-            return result.Set(true);
+            return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());
         }
-        
+
         public async Task<UniversityResponseApiModel> GetUniversityById(string universityId, string userId = null)
         {
             var university = await _universityRepository.Get(universityId);
@@ -94,9 +93,12 @@ namespace YIF.Core.Service.Concrete.Services
             return _mapper.Map<UniversityResponseApiModel>(university);
         }
 
-        public async Task<PageResponseApiModel<UniversityResponseApiModel>> GetUniversitiesPage(int page = 1, int pageSize = 10, string url = null, string userId = null)
+        public async Task<PageResponseApiModel<UniversityResponseApiModel>> GetUniversitiesPage(
+            FilterApiModel filterModel,
+            PageApiModel pageModel,
+            string userId = null)
         {
-            var universities =  _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await _universityRepository.GetAll());
+            var universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await GetUniversityByFilter(filterModel));
             var result = new PageResponseApiModel<UniversityResponseApiModel>();
 
             if (universities == null || universities.Count() == 0)
@@ -104,7 +106,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             try
             {
-                result = GetPageFromCollection(universities, page, pageSize, url);
+                result = _paginationService.GetPageFromCollection(universities, pageModel);
             }
             catch
             {
@@ -135,62 +137,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUnivesistes);
-        }
-
-        private PageResponseApiModel<T> GetPageFromCollection<T>(IEnumerable<T> list, int pageNumber, int pageSize, string url = null)
-        {
-            if (pageSize <= 0)
-                throw new BadRequestException("Введено неправильний розмір сторінки");
-
-            var count = list.Count();
-            var totalPages = (int)Math.Ceiling((double)count / pageSize);
-
-            if (pageNumber <= 0 || pageNumber > totalPages)
-                throw new BadRequestException("Введено неправильний номер сторінки");
-
-            var itemsOnPage = list
-                .OrderBy(x => {
-                    var test = x.GetType().GetProperty("Id").GetValue(x).ToString();
-                    if (test != null)
-                        return test;
-                    return x.GetHashCode().ToString();
-                })
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
-
-            // Add url for next and prev pages
-            var currentUrl = new UriBuilder(url);
-            UriBuilder nextPage = null;
-            UriBuilder prevPage = null;
-
-            var query = HttpUtility.ParseQueryString(currentUrl.Query);
-            query["pageSize"] = pageSize.ToString();
-
-            if (pageNumber + 1 <= totalPages)
-            {
-                nextPage = new UriBuilder(url);
-                query["page"] = (pageNumber + 1).ToString();
-                nextPage.Query = query.ToString();
-            }
-
-            if (pageNumber - 1 > 0)
-            {
-                prevPage = new UriBuilder(url);
-                query["page"] = (pageNumber - 1).ToString();
-                prevPage.Query = query.ToString();
-            }
-
-            var result = new PageResponseApiModel<T>
-            {
-                CurrentPage = pageNumber,
-                PageSize = pageSize,
-                TotalPages = totalPages,
-                ResponseList = itemsOnPage,
-                NextPage = nextPage?.ToString(),
-                PrevPage = prevPage?.ToString()
-            };
-
-            return result;
         }
     }
 }

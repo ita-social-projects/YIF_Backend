@@ -497,19 +497,18 @@ namespace YIF.Core.Data
 
         #region University
 
-        public static void SeedDirections(EFDbContext context)
+        public async static Task SeedDirections(EFDbContext context)
         {
             if (context.Directions.Count() == 0)
             {
-                var directions = new List<Direction>();
-
-                directions.Add(new Direction
-                {
-                    Name = "Інформаційні технології"
+                await context.Directions.AddRangeAsync(new List<Direction> { 
+                    new Direction { Name = "Соціальні та поведінкові науки" },
+                    new Direction { Name = "Математика та статистика" },
+                    new Direction { Name = "Інформаційні технології" },
+                    new Direction { Name = "Автоматизація та приладобудування" },
+                    new Direction { Name = "Електрична інженерія" },
                 });
-
-                context.Directions.AddRange(directions);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
 
@@ -1116,10 +1115,10 @@ namespace YIF.Core.Data
                     #endregion
 
                     #region University
-                    SeederDB.SeedDirections(context);
+                    await SeederDB.SeedDirections(context);
                     SeederDB.SeedSpecialities(context);
-                    SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
                     SeederDB.SeedUniversities(context);
+                    SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
                     SeederDB.SeedUniversityAdmins(context);
                     await SeederDB.SeedUniversityModerators(context, manager);
                     await SeederDB.SeedLectures(context, manager);

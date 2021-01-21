@@ -23,6 +23,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<UserProfileApiModel> GetUserProfileInfoById(string userId);
         Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId);
         Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request);
+        Task<ResponseApiModel<SendEmailConfirmApiModel>> SendEmailConfirmMail(SendEmailConfirmApiModel model,HttpRequest request);
+        Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model);
         Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model);
 
         Task<bool> UpdateUser(UserDTO user);

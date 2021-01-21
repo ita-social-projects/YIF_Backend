@@ -266,7 +266,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            //_userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
             // Assert
             await Assert.ThrowsAsync<BadRequestException>(() => _testService.RegisterUser(userData));
@@ -360,6 +360,58 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             var result = await _testService.ResetPasswordByEmail(apiModel, _request.Object);
+
+            // Assert
+            Assert.True(result.Success);
+        }
+
+        [Theory]
+        [InlineData("anataly@gmail.com")]
+        public async void Send_ConfirmEmail_Mail(string email)
+        {
+            // Arrange
+            var apiModel = new SendEmailConfirmApiModel
+            {
+                UserEmail = email
+            };
+
+            var userModel = new DbUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Email = email
+            };
+
+            _request.SetupAllProperties();
+            _userManager.Setup(s => s.FindByEmailAsync(userModel.Email)).ReturnsAsync(userModel);
+            _userManager.Setup(s => s.GenerateEmailConfirmationTokenAsync(userModel)).Returns(Task.FromResult("Token"));
+            _emailService.Setup(s => s.SendAsync(apiModel.UserEmail, "", ""))
+                .ReturnsAsync(null);
+            // Act
+            var result = await _testService.SendEmailConfirmMail(apiModel, _request.Object);
+
+            // Assert
+            Assert.True(result.Success);
+        }
+
+        [Theory]
+        [InlineData("34cc87d9-6d76-44ac-9dda-15852feb9e72", "token")]
+        public async void ConfirmUserEmail(string id,string token)
+        {
+            // Arrange
+            var apiModel = new ConfirmEmailApiModel
+            {
+                Id = id,
+                Token = token
+            };
+            var userModel = new DbUser
+            {
+                Id = id
+            };
+
+            _userManager.Setup(s => s.FindByIdAsync(userModel.Id)).ReturnsAsync(userModel);
+            _userManager.Setup(s => s.ConfirmEmailAsync(userModel, token)).Returns(Task.FromResult(new IdentityResult()));
+            // Act
+            var result = await _testService.ConfirmUserEmail(apiModel);
 
             // Assert
             Assert.True(result.Success);

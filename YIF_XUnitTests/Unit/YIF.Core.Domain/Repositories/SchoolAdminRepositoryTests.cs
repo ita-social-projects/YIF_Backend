@@ -65,7 +65,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             string a = await _schoolAdminRepository.Delete("sdfsdf");
 
             //Assert
-            Assert.Equal(a, null);
+            Assert.Null(a);
         }
 
         [Fact]
@@ -76,7 +76,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Act
             string a = await _schoolAdminRepository.Delete("3b16d794-7aaa-4ca5-943a-36d328f86ed3");
             //Assert
-            Assert.Equal(a, "User IsDeleted was updated");
+            Assert.Equal("User IsDeleted was updated", a);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Act
             var a = await _schoolAdminRepository.GetBySchoolId("sdfs");
             //Assert
-            Assert.Equal(a, null);
+            Assert.Null(a);
         }
     }
 }

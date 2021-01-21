@@ -433,6 +433,116 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
+        public async Task<ResponseApiModel<SendEmailConfirmApiModel>> SendEmailConfirmMail(SendEmailConfirmApiModel model, HttpRequest request)
+        {
+            var result = new ResponseApiModel<SendEmailConfirmApiModel>();
+            var user = await _userManager.FindByEmailAsync(model.UserEmail);
+
+            if (model.UserEmail == string.Empty || model.UserEmail == null)
+            {
+                throw new ArgumentException("Введіть коректний емейл");
+            }
+
+            if (user == null || user.IsDeleted)
+            {
+                throw new NotFoundException("Такий емейл не є зареєстрованим");
+            }
+
+            var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var serverUrl = $"{request.Scheme}://{request.Host}/";
+            var url = serverUrl + $"email/approve?id={user.Id}&token={confirmToken}";
+            var html = $@"<p>&nbsp;</p>
+<!-- HIDDEN PREHEADER TEXT -->
+<table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
+<tbody>
+<tr>
+<td align=""center"" bgcolor=""#FFA73B"">
+<table style=""max-width: 600px;"" border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td style=""padding: 40px 10px 40px 10px;"" align=""center"" valign=""top"">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style=""padding: 0px 10px 0px 10px;"" align=""center"" bgcolor=""#FFA73B"">
+<table style=""max-width: 600px;"" border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td style=""padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;"" align=""center"" valign=""top"" bgcolor=""#ffffff"">
+<h1 style=""font-size: 48px; font-weight: 400; margin: 2;"">Підтвердження пошти</h1>
+<img style=""display: block; border: 0px;"" src="" https://img.icons8.com/clouds/100/000000/handshake.png"" width=""125"" height=""120"" /></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style=""padding: 0px 10px 0px 10px;"" align=""center"" bgcolor=""#f4f4f4"">
+<table style=""max-width: 600px;"" border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td align=""left"" bgcolor=""#ffffff"">
+<table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr style=""height: 39px;"">
+<td style=""padding: 20px 30px 60px; height: 39px;"" align=""center"" bgcolor=""#ffffff"">
+<table border=""0"" cellspacing=""0"" cellpadding=""0"">
+<tbody>
+<tr>
+<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B""><a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Підтвердити</a></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style=""padding: 30px 10px 0px 10px;"" align=""center"" bgcolor=""#f4f4f4"">&nbsp;</td>
+</tr>
+<tr>
+<td style=""padding: 0px 10px 0px 10px;"" align=""center"" bgcolor=""#f4f4f4"">&nbsp;</td>
+</tr>
+</tbody>
+</table>";
+
+            _ = _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
+
+            result.Object = model;
+
+            return result.Set(true);
+        }
+        public async Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model)
+        {
+            var result = new ResponseApiModel<ConfirmEmailApiModel>();
+            var user = await _userManager.FindByIdAsync(model.Id);
+
+            if (user == null || user.IsDeleted)
+            {
+                throw new NotFoundException("Такий емейл не є зареєстрованим");
+            }
+
+            if (user.EmailConfirmed)
+            {
+                throw new ArgumentException("Емейл вже підтвердженний");
+            }
+
+            await _userManager.ConfirmEmailAsync(user, model.Token);
+
+            result.Object = model;
+
+            return result.Set(true);
+        }
+
         // =========================   For test authorize endpoint:   =========================
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
@@ -470,7 +580,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return result.Object.Count() > 0 ? result.Set(true) : result.Set(false, "Адміністраторів немає");
         }
-
 
     }
 }

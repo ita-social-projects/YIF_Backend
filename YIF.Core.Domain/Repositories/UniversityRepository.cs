@@ -94,10 +94,5 @@ namespace YIF.Core.Domain.Repositories
             }
             return null;
         }
-
-        public Task<IEnumerable<UniversityDTO>> GetAllUniversities()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
