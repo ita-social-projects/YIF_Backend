@@ -31,7 +31,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialityRepository.Object,
             _directionRepository.Object,
             _mapperMock.Object,
-            _paginationService.Object);       
+            _paginationService.Object);
 
         [Fact]
         public async Task Get_UniversityByNameAndDirection()
@@ -41,55 +41,60 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 Name = "Name"
             };
+
             var direction = new DirectionDTO
             {
                 Name = "Direction"
             };
 
-            var apiModel = new FilterApiModel() 
+            var apiModel = new FilterApiModel()
             {
                 DirectionName = "Direction",
                 SpecialityName = "",
                 UniversityName = "Name"
             };
+
             var directionsList = new List<DirectionToUniversityDTO>
             {
                 new DirectionToUniversityDTO
-                    {
-                        Direction = direction,
-                        DirectionId = "Direction",
-                        UniversityId = "university",
-                        University = university
-                    }
+                {
+                    Direction = direction,
+                    DirectionId = "Direction",
+                    UniversityId = "university",
+                    University = university
+                }
             };
+
             var universitiesList = new List<UniversityDTO>
             {
                 university
             };
 
-           
+            _universityReposotiry.Setup(x => x.GetAll())
+                .ReturnsAsync(universitiesList);
 
-            _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToUniversity,bool>>>()))
+            _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))
                 .ReturnsAsync(directionsList);
 
             _universityReposotiry.Setup(x => x.Find(x => x.Name == apiModel.UniversityName))
                 .ReturnsAsync(universitiesList);
 
-            _mapperMock.Setup(x => x.Map<IEnumerable<UniversityFilterResponseApiModel>>(universitiesList))
-                .Returns(new List<UniversityFilterResponseApiModel> 
+            _mapperMock.Setup(x => x.Map<IEnumerable<UniversityResponseApiModel>>(universitiesList))
+                .Returns(new List<UniversityResponseApiModel>
                 {
-                    new UniversityFilterResponseApiModel
+                    new UniversityResponseApiModel
                     {
                         Name = "Name"
                     }
-                } );
+                });
 
             // Act
             var results = await universityService.GetUniversityByFilter(apiModel);
+
             // Assert
-            Assert.True(results.Object.Count() > 0);
+            Assert.True(results.Count() > 0);
         }
-    
+
         [Fact]
         public async Task Get_UniversityBySpeciality()
         {
@@ -98,6 +103,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 Name = "Name"
             };
+
             var speciality = new SpecialityDTO
             {
                 Name = "Speciality"
@@ -109,30 +115,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 SpecialityName = "Speciality",
                 UniversityName = ""
             };
+
             var specialityList = new List<SpecialityToUniversityDTO>
             {
                 new SpecialityToUniversityDTO
-                    {
-                        Speciality = speciality,
-                        SpecialityId = "",
-                        UniversityId = "",
-                        University = university
-                    }
+                {
+                    Speciality = speciality,
+                    SpecialityId = "",
+                    UniversityId = "",
+                    University = university
+                }
             };
+
             var universitiesList = new List<UniversityDTO>
             {
                 university
             };
 
-
+            _universityReposotiry.Setup(x => x.GetAll())
+                .ReturnsAsync(universitiesList);
 
             _specialityRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialityToUniversity, bool>>>()))
                 .ReturnsAsync(specialityList);
 
-            _mapperMock.Setup(x => x.Map<IEnumerable<UniversityFilterResponseApiModel>>(universitiesList))
-                .Returns(new List<UniversityFilterResponseApiModel>
+            _mapperMock.Setup(x => x.Map<IEnumerable<UniversityResponseApiModel>>(universitiesList))
+                .Returns(new List<UniversityResponseApiModel>
                 {
-                    new UniversityFilterResponseApiModel
+                    new UniversityResponseApiModel
                     {
                         Name = "Name"
                     }
@@ -140,8 +149,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             var results = await universityService.GetUniversityByFilter(apiModel);
+
             // Assert
-            Assert.True(results.Object.Count() > 0);
+            Assert.True(results.Count() > 0);
         }
     }
 }

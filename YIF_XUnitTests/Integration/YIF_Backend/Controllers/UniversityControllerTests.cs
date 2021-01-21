@@ -20,7 +20,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             var clientOptions = new WebApplicationFactoryClientOptions
             {
-                BaseAddress = new Uri("https://localhost:44324/api/University/GetUniversityByFilter")
+                BaseAddress = new Uri("https://localhost:44324/api/University")
             };
 
             var appFactory = new WebApplicationFactory<Startup>();
@@ -37,7 +37,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.GetAsync($"?DirectionName={DirectionName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
-            var contentJsonObj = JArray.Parse(content);
+            var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -56,7 +56,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.GetAsync($"?SpecialityName={SpecialityName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
-            var contentJsonObj = JArray.Parse(content);
+            var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -75,7 +75,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.GetAsync($"?UniversityName={UniversityName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
-            var contentJsonObj = JArray.Parse(content);
+            var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -94,7 +94,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.GetAsync($"?DirectionName={DirectionName}&SpecialityName={SpecialityName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
-            var contentJsonObj = JArray.Parse(content);
+            var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -116,15 +116,12 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.GetAsync($"?DirectionName={DirectionName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
-            var contentJsonObj = JArray.Parse(content);
+            var contentJsonObj = JObject.Parse(content).GetValue("message").ToString();
 
-            // Assert
-            response.EnsureSuccessStatusCode();
-
-            Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+            // Assert            
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
-            Assert.False(contentJsonObj.Count > 1);
         }
 
         #endregion
