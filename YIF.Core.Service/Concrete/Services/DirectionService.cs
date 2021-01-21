@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -31,9 +32,16 @@ namespace YIF.Core.Service.Concrete.Services
             if (directions == null || directions.Count() == 0)
                 throw new NotFoundException("Напрями не знайдено.");
 
+            var pageModel = new PageApiModel
+            {
+                Page = page,
+                PageSize = pageSize,
+                Url = url
+            };
+
             try
             {
-                return _paginationService.GetPageFromCollection(directions, page, pageSize, url);
+                return _paginationService.GetPageFromCollection(directions, pageModel);
             }
             catch
             {

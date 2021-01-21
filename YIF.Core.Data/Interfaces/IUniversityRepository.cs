@@ -11,7 +11,7 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<string> AddUniversity(University university);
         Task<K> GetByName(string name);
-        Task<IEnumerable<K>> GetAllUniversities();
         Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
+
     }
 }

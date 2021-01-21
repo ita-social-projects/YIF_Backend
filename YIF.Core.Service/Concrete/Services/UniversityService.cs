@@ -34,11 +34,10 @@ namespace YIF.Core.Service.Concrete.Services
             _paginationService = paginationService;
         }
 
-        public async Task<ResponseApiModel<IEnumerable<UniversityFilterResponseApiModel>>> GetUniversityByFilter(FilterApiModel filterModel)
+        public async Task<IEnumerable<UniversityResponseApiModel>> GetUniversityByFilter(FilterApiModel filterModel)
         {
-            var result = new ResponseApiModel<IEnumerable<UniversityFilterResponseApiModel>>();
             // Filtered list of universities 
-            IEnumerable<UniversityDTO> filteredUniversities = null;
+            IEnumerable<UniversityDTO> filteredUniversities = await _universityRepository.GetAll();
 
             // Check if we must filter universities by direction name
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
@@ -78,8 +77,7 @@ namespace YIF.Core.Service.Concrete.Services
                 }
             }
 
-            result.Object = _mapper.Map<IEnumerable<UniversityFilterResponseApiModel>>(filteredUniversities.Distinct().ToList());
-            return result.Set(true);
+            return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());
         }
 
         public async Task<UniversityResponseApiModel> GetUniversityById(string universityId, string userId = null)
@@ -96,12 +94,11 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<PageResponseApiModel<UniversityResponseApiModel>> GetUniversitiesPage(
-            int page = 1, 
-            int pageSize = 10, 
-            string url = null, 
+            FilterApiModel filterModel,
+            PageApiModel pageModel,
             string userId = null)
         {
-            var universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await _universityRepository.GetAll());
+            var universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await GetUniversityByFilter(filterModel));
             var result = new PageResponseApiModel<UniversityResponseApiModel>();
 
             if (universities == null || universities.Count() == 0)
@@ -109,7 +106,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             try
             {
-                result = _paginationService.GetPageFromCollection(universities, page, pageSize, url);
+                result = _paginationService.GetPageFromCollection(universities, pageModel);
             }
             catch
             {

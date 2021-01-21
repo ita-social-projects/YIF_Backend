@@ -22,30 +22,6 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get university by filter.
-        /// </summary>
-        /// <returns>Returns university by filter</returns>
-        /// <response code="200">Returns university</response>
-        /// <response code="400">If filter is incorrect</response>
-        [ProducesResponseType(typeof(IEnumerable<UniversityFilterResponseApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet("GetUniversityByFilter")]
-        public async Task<IActionResult> GetUniversityByFilter(string DirectionName, string SpecialityName, string UniversityName)
-        {
-            var model = new FilterApiModel
-            {
-                DirectionName = DirectionName,
-                SpecialityName = SpecialityName,
-                UniversityName = UniversityName
-            };
-
-            var result = await _universityService.GetUniversityByFilter(model);
-
-            return Ok(result.Object);
-        }
-
-        /// <summary>
         /// Get university by id.
         /// </summary>
         /// <returns>Returns university by id</returns>
@@ -73,11 +49,30 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet]
-        public async Task<IActionResult> GetUniversitiesPage(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> GetUniversitiesPage(
+            string DirectionName, 
+            string SpecialityName, 
+            string UniversityName, 
+            int page = 1, 
+            int pageSize = 10)
         {
             var userId = User.FindFirst("id")?.Value;
-            var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
-            var result = await _universityService.GetUniversitiesPage(page, pageSize, url, userId);
+
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialityName = SpecialityName,
+                UniversityName = UniversityName
+            };
+
+            var pageModel = new PageApiModel
+            {
+                Page = page,
+                PageSize = pageSize,
+                Url = $"{Request.Scheme}://{Request.Host}{Request.Path}"
+            };
+
+            var result = await _universityService.GetUniversitiesPage(filterModel, pageModel, userId);
             return Ok(result);
         }
 
