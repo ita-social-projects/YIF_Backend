@@ -12,7 +12,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class DirectionRepository : IRepository<Direction, DirectionDTO>
+    public class DirectionRepository : IDirectionRepository<Direction, DirectionDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -60,6 +60,16 @@ namespace YIF.Core.Domain.Repositories
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<string>> GetNames()
+        {
+            return await _context.Directions
+                .Select(d => d.Name)
+                .Where(n => n != null && n != string.Empty)
+                .OrderBy(n => n)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

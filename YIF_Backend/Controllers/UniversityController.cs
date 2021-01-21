@@ -93,5 +93,22 @@ namespace YIF_Backend.Controllers
             var result = await _universityService.GetFavoriteUniversities(userId);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get all univesity abbreviations.
+        /// </summary>
+        /// <returns>List of univesity abbreviations</returns>
+        /// <response code="200">Returns a list of univesity abbreviations</response>
+        /// <response code="404">If there are not univesities</response>
+        [HttpGet("Names")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("Abbreviations")]
+        public async Task<IActionResult> GetUniversityAbbreviations()
+        {
+            var result = await _universityService.GetUniversityAbbreviations();
+            return Ok(result);
+        }
     }
 }

@@ -9,6 +9,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
     {
         Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyById(string id);
         Task<ResponseApiModel<IEnumerable<SpecialtyApiModel>>> GetAllSpecialties();
-        Task<ResponseApiModel<SpecialtyNamesResponseApiModel>> GetAllSpecialtiesNames();
+        Task<IEnumerable<string>> GetAllSpecialtiesNames();
     }
 }

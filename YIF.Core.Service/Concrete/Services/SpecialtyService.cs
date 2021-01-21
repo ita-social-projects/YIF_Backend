@@ -13,9 +13,9 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SpecialtyService : ISpecialityService
     {
-        private readonly IRepository<Speciality, SpecialityDTO> _specialtyRepository;
+        private readonly ISpecialtyRepository<Speciality, SpecialityDTO> _specialtyRepository;
         private readonly IMapper _mapper;
-        public SpecialtyService(IRepository<Speciality, SpecialityDTO> specialtyRepository, IMapper mapper)
+        public SpecialtyService(ISpecialtyRepository<Speciality, SpecialityDTO> specialtyRepository, IMapper mapper)
         {
             _specialtyRepository = specialtyRepository;
             _mapper = mapper;
@@ -35,17 +35,15 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseApiModel<SpecialtyNamesResponseApiModel>> GetAllSpecialtiesNames()
+        public async Task<IEnumerable<string>> GetAllSpecialtiesNames()
         {
-            var result = new ResponseApiModel<SpecialtyNamesResponseApiModel>();
-            var specialties = (List<SpecialityDTO>)await _specialtyRepository.GetAll();
-            if (specialties.Count < 1)
+            var specialties = await _specialtyRepository.GetNames();
+            if (specialties == null || specialties.Count() == 0)
             {
                 throw new NotFoundException("Спеціальностей немає.");
             }
-            var names = specialties.Select(x => x.Name).ToList();
-            result.Object = new SpecialtyNamesResponseApiModel(names);
-            return result.Set(true);
+
+            return specialties;
         }
 
         public async Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyById(string id)

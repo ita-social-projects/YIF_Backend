@@ -45,14 +45,14 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Returns a list of specialties names</response>
         /// <response code="404">If there are not specialties</response>
         [HttpGet("Names")]
-        [ProducesResponseType(typeof(SpecialtyNamesResponseApiModel), 200)]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllSpecialtiesNamesAsync()
         {
             var result = await _specialtyService.GetAllSpecialtiesNames();
             _logger.LogInformation("Getting all spetialties names");
-            return Ok(result.Object);
+            return Ok(result);
         }
 
         /// <summary>

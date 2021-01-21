@@ -138,5 +138,15 @@ namespace YIF.Core.Service.Concrete.Services
 
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUnivesistes);
         }
+
+        public async Task<IEnumerable<string>> GetUniversityAbbreviations()
+        {
+            var abbreviations = await _universityRepository.GetAbbreviations();
+
+            if (abbreviations == null || abbreviations.Count() == 0)
+                throw new NotFoundException("Університети не було знайдено");
+
+            return abbreviations;
+        }
     }
 }

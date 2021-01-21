@@ -12,7 +12,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class SpecialityRepository : IRepository<Speciality, SpecialityDTO>
+    public class SpecialityRepository : ISpecialtyRepository<Speciality, SpecialityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -61,6 +61,16 @@ namespace YIF.Core.Domain.Repositories
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<string>> GetNames()
+        {
+            return await _context.Specialities
+                 .Select(s => s.Name)
+                 .Where(n => n != null && n != string.Empty)
+                 .OrderBy(n => n)
+                 .AsNoTracking()
+                 .ToListAsync();
         }
     }
 }

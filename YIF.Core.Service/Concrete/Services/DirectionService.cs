@@ -15,11 +15,11 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class DirectionService : IDirectionService
     {
-        private readonly IRepository<Direction, DirectionDTO> _repositoryDirection;
+        private readonly IDirectionRepository<Direction, DirectionDTO> _repositoryDirection;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
 
-        public DirectionService(IRepository<Direction, DirectionDTO> repositoryDirection, IMapper mapper,
+        public DirectionService(IDirectionRepository<Direction, DirectionDTO> repositoryDirection, IMapper mapper,
             IPaginationService paginationService)
         {
             _repositoryDirection = repositoryDirection;
@@ -47,6 +47,16 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new Exception("Проблема з пагінацією.");
             }
+        }
+
+        public async Task<IEnumerable<string>> GetDirectionNames()
+        {
+             var names = await _repositoryDirection.GetNames();
+
+            if (names == null || names.Count() == 0)
+                throw new NotFoundException("Напрями не було знайдено");
+
+            return names;
         }
     }
 }

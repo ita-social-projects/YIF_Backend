@@ -11,5 +11,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<UniversityResponseApiModel> GetUniversityById(string universityId, string userId = null);
         Task<PageResponseApiModel<UniversityResponseApiModel>> GetUniversitiesPage(FilterApiModel filterModel, PageApiModel pageModel, string userId = null);
         Task<IEnumerable<UniversityResponseApiModel>> GetFavoriteUniversities(string userId);
+        Task<IEnumerable<string>> GetUniversityAbbreviations();
     }
 }
