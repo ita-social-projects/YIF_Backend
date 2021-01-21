@@ -13,12 +13,4 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string Name { get; set; }
     }
-
-    public class DirectionsResponseApiModel
-    {
-        /// <summary>
-        /// Get or set the directions.
-        /// </summary>
-        public IEnumerable<DirectionResponseApiModel> Directions { get; set; }
-    }
 }

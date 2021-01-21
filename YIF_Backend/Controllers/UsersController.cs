@@ -118,8 +118,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("ChangePhoto")]
-        [RequestFormLimits(MultipartBodyLengthLimit = 20971520)]
-        [RequestSizeLimit(20971520)]
+        [RequestSizeLimit(100 * 1024 * 1024)]     // set the maximum file size limit to 100 MB
         [Authorize]
         public async Task<IActionResult> ChangeUserPhoto([FromBody] ImageApiModel model)
         {

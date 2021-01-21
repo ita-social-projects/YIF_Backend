@@ -8,6 +8,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface IDirectionService
     {
-        Task<IEnumerable<DirectionResponseApiModel>> GetAllDirections();
+        Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(int page, int pageSize, string url);
     }
 }
