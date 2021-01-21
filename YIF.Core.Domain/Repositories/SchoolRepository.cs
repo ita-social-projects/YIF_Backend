@@ -38,5 +38,11 @@ namespace YIF.Core.Domain.Repositories
         {
             await _context.DisposeAsync();
         }
+
+        public async Task<IEnumerable<SchoolDTO>> GetAll()
+        {
+            var schools = await _context.Schools.ToListAsync();
+            return _mapper.Map<IEnumerable<SchoolDTO>>(schools);
+        }
     }
 }
