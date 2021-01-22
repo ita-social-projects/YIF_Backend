@@ -99,11 +99,11 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Adds Universty Beta.
         /// </summary>
-        /// <returns>Object with user token and refresh token</returns>
+        /// <returns></returns>
         /// <response code="201"></response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="409">Uni Already exists</response>
-        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]

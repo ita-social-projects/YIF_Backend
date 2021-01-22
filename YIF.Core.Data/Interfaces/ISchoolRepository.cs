@@ -9,5 +9,8 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task<K> GetByName(string name);
+
+        Task<IEnumerable<K>> GetAll();
+        Task<IEnumerable<string>> GetAllAsStrings();
     }
 }
