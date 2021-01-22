@@ -44,5 +44,15 @@ namespace YIF.Core.Domain.Repositories
             var schools = await _context.Schools.ToListAsync();
             return _mapper.Map<IEnumerable<SchoolDTO>>(schools);
         }
+
+        public async Task<IEnumerable<string>> GetAllAsStrings()
+        {
+            return await _context.Schools
+                .Select(d => d.Name)
+                .Where(n => n != null && n != string.Empty)
+                .OrderBy(n => n)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

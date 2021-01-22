@@ -33,5 +33,17 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<IEnumerable<SchoolOnlyNameResponseApiModel>>(schools);
             return result.Set(true);
         }
+
+        public async Task<ResponseApiModel<IEnumerable<string>>> GetAllSchoolNamesAsStrings()
+        {
+            var result = new ResponseApiModel<IEnumerable<string>>();
+            var schools = await _schoolRepository.GetAllAsStrings();
+            if (schools.Count() == 0)
+            {
+                throw new NotFoundException("Шкіл немає");
+            }
+            result.Object = schools;
+            return result.Set(true);
+        }
     }
 }

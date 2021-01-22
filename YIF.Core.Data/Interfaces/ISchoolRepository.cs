@@ -11,5 +11,6 @@ namespace YIF.Core.Data.Interfaces
         Task<K> GetByName(string name);
 
         Task<IEnumerable<K>> GetAll();
+        Task<IEnumerable<string>> GetAllAsStrings();
     }
 }

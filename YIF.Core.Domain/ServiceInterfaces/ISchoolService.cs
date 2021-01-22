@@ -9,5 +9,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
     public interface ISchoolService
     {
         Task<ResponseApiModel<IEnumerable<SchoolOnlyNameResponseApiModel>>> GetAllSchoolNames();
+        Task<ResponseApiModel<IEnumerable<string>>> GetAllSchoolNamesAsStrings();
     }
 }

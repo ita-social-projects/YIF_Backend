@@ -37,9 +37,26 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<SchoolOnlyNameResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllUsersAsync()
+        public async Task<IActionResult> GetAllSchoolsAsync()
         {
             var result = await _schoolService.GetAllSchoolNames();
+            _logger.LogInformation("GetAllSchoolNames");
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get all SchoolNames.
+        /// </summary>
+        /// <returns>List of users</returns>
+        /// <response code="200">Returns a list of school names</response>
+        /// <response code="404">If there are no schools</response>
+        [HttpGet("GetAllSchoolNamesAsStringsAsync")]
+        [ProducesResponseType(typeof(IEnumerable<SchoolOnlyNameResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllSchoolNamesAsStringsAsync()
+        {
+            var result = await _schoolService.GetAllSchoolNamesAsStrings();
             _logger.LogInformation("GetAllSchoolNames");
             return Ok(result.Object);
         }
