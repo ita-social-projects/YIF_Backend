@@ -9,5 +9,6 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         public string DirectionName { get; set; }
         public string UniversityName { get; set; }
         public string SpecialityName { get; set; }
+        public string UniversityAbbreviation { get; set; }
     }
 }

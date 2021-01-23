@@ -61,9 +61,9 @@ namespace YIF_Backend
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
-            //services.AddTransient<IRepository<University, UniversityDTO>, UniversityRepository>();
-            services.AddTransient<ISpecialtyRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
-            services.AddTransient<IDirectionRepository<Direction, DirectionDTO>, DirectionRepository>();
+            services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
+            services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
+            services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
             services.AddTransient<IRepository<DirectionToUniversity, DirectionToUniversityDTO>, DirectionToUniversityRepository>();
             services.AddTransient<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>, SpecialityToUniversityRepository>();
             services.AddTransient<ITokenRepository, TokenRepository>();
@@ -74,7 +74,6 @@ namespace YIF_Backend
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
-            services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
 
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
@@ -219,7 +218,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger

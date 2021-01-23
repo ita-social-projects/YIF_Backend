@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 
@@ -48,9 +49,21 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllSpecialtiesNamesAsync()
+        public async Task<IActionResult> GetAllSpecialtiesNamesAsync(
+            string DirectionName,
+            string SpecialityName,
+            string UniversityName,
+            string UniversityAbbreviation)
         {
-            var result = await _specialtyService.GetAllSpecialtiesNames();
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialityName = SpecialityName,
+                UniversityName = UniversityName,
+                UniversityAbbreviation = UniversityAbbreviation
+            };
+
+            var result = await _specialtyService.GetSpecialtiesNamesByFilter(filterModel); 
             _logger.LogInformation("Getting all spetialties names");
             return Ok(result);
         }

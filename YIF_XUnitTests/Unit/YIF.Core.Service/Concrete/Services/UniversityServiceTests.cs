@@ -89,7 +89,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 });
 
             // Act
-            var results = await universityService.GetUniversityByFilter(apiModel);
+            var results = await universityService.GetUniversitiesByFilter(apiModel);
 
             // Assert
             Assert.True(results.Count() > 0);
@@ -101,12 +101,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var university = new UniversityDTO
             {
-                Name = "Name"
+                Name = "Name",
+                Id = ""
             };
 
             var speciality = new SpecialityDTO
             {
                 Name = "Speciality"
+            };
+
+            var direction = new DirectionDTO
+            {
+                Name = "Direction"
             };
 
             var apiModel = new FilterApiModel()
@@ -127,6 +133,17 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 }
             };
 
+            var directionList = new List<DirectionToUniversityDTO>
+            {
+                new DirectionToUniversityDTO
+                {
+                    Direction = direction,
+                    DirectionId = "",
+                    UniversityId = "",
+                    University = university
+                }
+            };
+
             var universitiesList = new List<UniversityDTO>
             {
                 university
@@ -138,6 +155,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialityRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialityToUniversity, bool>>>()))
                 .ReturnsAsync(specialityList);
 
+            _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))
+                .ReturnsAsync(directionList);
+
             _mapperMock.Setup(x => x.Map<IEnumerable<UniversityResponseApiModel>>(universitiesList))
                 .Returns(new List<UniversityResponseApiModel>
                 {
@@ -148,7 +168,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 });
 
             // Act
-            var results = await universityService.GetUniversityByFilter(apiModel);
+            var results = await universityService.GetUniversitiesByFilter(apiModel);
 
             // Assert
             Assert.True(results.Count() > 0);

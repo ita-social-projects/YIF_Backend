@@ -94,15 +94,5 @@ namespace YIF.Core.Domain.Repositories
             }
             return null;
         }
-
-        public async Task<IEnumerable<string>> GetAbbreviations()
-        {
-            return await _context.Universities
-                .Select(u => u.Abbreviation)
-                .Where(a => a != null && a != string.Empty)
-                .OrderBy(a => a)
-                .AsNoTracking()
-                .ToListAsync();
-        }
     }
 }

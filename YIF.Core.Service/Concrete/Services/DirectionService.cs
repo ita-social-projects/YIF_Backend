@@ -15,29 +15,65 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class DirectionService : IDirectionService
     {
-        private readonly IDirectionRepository<Direction, DirectionDTO> _repositoryDirection;
+        private readonly IRepository<Direction, DirectionDTO> _repositoryDirection;
+        private readonly IRepository<Speciality, SpecialityDTO> _specialtyRepository;
+        private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionToUniversityRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
 
-        public DirectionService(IDirectionRepository<Direction, DirectionDTO> repositoryDirection, IMapper mapper,
+        
+        public DirectionService(
+            IRepository<Direction, DirectionDTO> repositoryDirection,
+            IRepository<Speciality, SpecialityDTO> specialtyRepository,
+            IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionToUniversityRepository,
+            IMapper mapper,
             IPaginationService paginationService)
         {
             _repositoryDirection = repositoryDirection;
             _mapper = mapper;
             _paginationService = paginationService;
+            _specialtyRepository = specialtyRepository;
+            _directionToUniversityRepository = directionToUniversityRepository;
         }
-        public async Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(int page = 1, int pageSize = 10, string url = null)
+
+        public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(FilterApiModel filterModel)
+        {
+            var directions = await _repositoryDirection.GetAll();
+
+            if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
+            {
+                directions = directions.Where(d => d.Name == filterModel.DirectionName);
+            }
+
+            if (filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)
+            {
+                var specialties = await _specialtyRepository.Find(s => s.Name == filterModel.SpecialityName);
+                var filteredDirections = specialties.Select(s => s.DirectionId);
+                directions = directions.Where(d => filteredDirections.Contains(d.Id));
+            }
+
+            if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
+            {
+                var directionToUniversity = await _directionToUniversityRepository.Find(du => du.University.Name == filterModel.UniversityName);
+                var filteredDirections = directionToUniversity.Select(du => du.DirectionId);
+                directions = directions.Where(d => filteredDirections.Contains(d.Id));
+            }
+
+            if (filterModel.UniversityAbbreviation != string.Empty && filterModel.UniversityAbbreviation != null)
+            {
+                var directionToUniversity = await _directionToUniversityRepository.Find(du => du.University.Abbreviation == filterModel.UniversityAbbreviation);
+                var filteredDirections = directionToUniversity.Select(du => du.DirectionId);
+                directions = directions.Where(d => filteredDirections.Contains(d.Id));
+            }
+
+            return _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions.Distinct().ToList());
+        }
+
+        public async Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(PageApiModel pageModel)
         {
             var directions = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(await _repositoryDirection.GetAll());
             if (directions == null || directions.Count() == 0)
                 throw new NotFoundException("Напрями не знайдено.");
-
-            var pageModel = new PageApiModel
-            {
-                Page = page,
-                PageSize = pageSize,
-                Url = url
-            };
 
             try
             {
@@ -49,14 +85,17 @@ namespace YIF.Core.Service.Concrete.Services
             }
         }
 
-        public async Task<IEnumerable<string>> GetDirectionNames()
+        public async Task<IEnumerable<string>> GetDirectionsNamesByFilter(FilterApiModel filterModel)
         {
-             var names = await _repositoryDirection.GetNames();
+            var directions = await GetAllDirectionsByFilter(filterModel);
 
-            if (names == null || names.Count() == 0)
+            if (directions == null || directions.Count() == 0)
                 throw new NotFoundException("Напрями не було знайдено");
 
-            return names;
+            return directions
+                .Select(s => s.Name)
+                .Where(n => n != null)
+                .OrderBy(n => n);
         }
     }
 }

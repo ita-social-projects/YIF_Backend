@@ -15,35 +15,48 @@ namespace YIF.Core.Service.Concrete.Services
     public class UniversityService : IUniversityService<University>
     {
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
-        private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialityRepository;
+        private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
-            IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialityRepository,
+            IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IMapper mapper,
             IPaginationService paginationService)
         {
             _universityRepository = universityRepository;
-            _specialityRepository = specialityRepository;
+            _specialtyRepository = specialtyRepository;
             _directionRepository = directionRepository;
             _mapper = mapper;
             _paginationService = paginationService;
         }
 
-        public async Task<IEnumerable<UniversityResponseApiModel>> GetUniversityByFilter(FilterApiModel filterModel)
+        public void Dispose() => _universityRepository.Dispose();
+
+        public async Task<IEnumerable<UniversityResponseApiModel>> GetUniversitiesByFilter(FilterApiModel filterModel)
         {
             // Filtered list of universities 
-            IEnumerable<UniversityDTO> filteredUniversities = await _universityRepository.GetAll();
+            var filteredUniversities = await _universityRepository.GetAll();
+
+            if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
+            {
+                filteredUniversities = filteredUniversities.Where(x => x.Name == filterModel.UniversityName);
+            }
+
+            if (filterModel.UniversityAbbreviation != string.Empty && filterModel.UniversityAbbreviation != null)
+            {
+                filteredUniversities = filteredUniversities.Where(x => x.Abbreviation == filterModel.UniversityAbbreviation);
+            }
 
             // Check if we must filter universities by direction name
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
             {
                 // Get all directions by name
                 var directions = await _directionRepository.Find(x => x.Direction.Name == filterModel.DirectionName);
+
                 // Get universities by these directions
                 filteredUniversities = directions.Select(x => x.University).ToList();
             }
@@ -51,30 +64,9 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)
             {
                 // Get all specialities by name
-                var specialities = await _specialityRepository.Find(x => x.Speciality.Name == filterModel.SpecialityName);
+                var specialities = await _specialtyRepository.Find(x => x.Speciality.Name == filterModel.SpecialityName);
 
-                if (filteredUniversities != null && filteredUniversities.Count() > 1)
-                {
-                    // Inner join between directions and specialities 
-                    filteredUniversities = filteredUniversities.Where(x => specialities.Any(y => y.UniversityId == x.Id));
-                }
-                else
-                {
-                    filteredUniversities = specialities.Select(x => x.University).ToList();
-                }
-            }
-
-            if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
-            {
-                if (filteredUniversities != null && filteredUniversities.Count() > 1)
-                {
-                    filteredUniversities = filteredUniversities.Where(x => x.Name == filterModel.UniversityName);
-                }
-                else
-                {
-                    var universities = await _universityRepository.Find(x => x.Name == filterModel.UniversityName);
-                    filteredUniversities = universities.AsEnumerable();
-                }
+                filteredUniversities = filteredUniversities.Where(x => specialities.Any(y => y.UniversityId == x.Id));
             }
 
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());
@@ -98,7 +90,7 @@ namespace YIF.Core.Service.Concrete.Services
             PageApiModel pageModel,
             string userId = null)
         {
-            var universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await GetUniversityByFilter(filterModel));
+            var universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await GetUniversitiesByFilter(filterModel));
             var result = new PageResponseApiModel<UniversityResponseApiModel>();
 
             if (universities == null || universities.Count() == 0)
@@ -139,14 +131,17 @@ namespace YIF.Core.Service.Concrete.Services
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUnivesistes);
         }
 
-        public async Task<IEnumerable<string>> GetUniversityAbbreviations()
+        public async Task<IEnumerable<string>> GetUniversityAbbreviations(FilterApiModel filterModel)
         {
-            var abbreviations = await _universityRepository.GetAbbreviations();
+            var university = await GetUniversitiesByFilter(filterModel);
 
-            if (abbreviations == null || abbreviations.Count() == 0)
+            if (university == null || university.Count() == 0)
                 throw new NotFoundException("Університети не було знайдено");
 
-            return abbreviations;
+            return university
+                .Select(u => u.Abbreviation)
+                .Where(a => a != null)
+                .OrderBy(a => a);
         }
     }
 }

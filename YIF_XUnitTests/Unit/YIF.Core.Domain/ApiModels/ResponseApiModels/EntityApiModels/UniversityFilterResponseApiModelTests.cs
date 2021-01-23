@@ -15,7 +15,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.ApiModels.ResponseApiModels
         [InlineData("", "", "", "")]
         public void Ctor_ShouldImplementParameters(string Id, string Name, string Description, string ImagePath)
         {
-            var apiModel = new UniversityFilterResponseApiModel(Id, Name, Description, ImagePath);
+            var apiModel = new UniversityResponseApiModel
+            {
+                Id = Id,
+                Name = Name,
+                Description = Description,
+                ImagePath = ImagePath
+            };
 
             Assert.Equal(Id, apiModel.Id);
             Assert.Equal(Name, apiModel.Name);

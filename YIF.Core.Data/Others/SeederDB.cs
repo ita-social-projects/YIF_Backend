@@ -559,6 +559,46 @@ namespace YIF.Core.Data
                 });
                 #endregion
 
+                #region Математика та статистика
+                currentDirection = context.Directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id;
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Прикладна математика",
+                    DirectionId = currentDirection
+                });
+                #endregion
+
+                #region Соціальні та поведінкові науки
+                currentDirection = context.Directions.FirstOrDefault(x => x.Name == "Соціальні та поведінкові науки").Id;
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Економіка",
+                    DirectionId = currentDirection
+                });
+                #endregion
+
+                #region Автоматизація та приладобудування
+                currentDirection = context.Directions.FirstOrDefault(x => x.Name == "Автоматизація та приладобудування").Id;
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Автоматизація та комп’ютерно-інтегровані технології",
+                    DirectionId = currentDirection
+                });
+                #endregion
+
+                #region Електрична інженерія
+                currentDirection = context.Directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id;
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Електроенергетика, електротехніка та електромеханіка",
+                    DirectionId = currentDirection,
+                });
+                #endregion
+
                 context.Specialities.AddRange(specialities);
                 context.SaveChanges();
             }
@@ -658,19 +698,29 @@ namespace YIF.Core.Data
                 univerities.Add(new University
                 {
                     Name = "Київський політехнічний інститут імені Ігоря Сікорського",
+                    Abbreviation="КПІ",
+                    Site = "https://kpi.ua/",
+                    Address = "проспект Перемоги, 37, Київ, 03056",
+                    Phone = "380442049100",
                     Description = "Заклад вищої освіти інженерного профілю," +
                     " заснований в Києві у 1898 р., на сьогодні це один із найбільших університетів" +
                     " України за кількістю студентів з широким спектром спеціальностей і освітніх програм " +
-                    "для підготовки фахівців з технічних і гуманітарних наук"
+                    "для підготовки фахівців з технічних і гуманітарних наук",
                 });
                 #endregion
 
-                #region АВВУ
+                #region НАВС
                 univerities.Add(new University
                 {
                     Name = "Академія внутрішніх військ МВС України",
+                    Abbreviation = "НАВС",
+                    Site = "https://www.naiau.kiev.ua/",
+                    Address = "Солом'янська площа, 1, Київ, 02000",
+                    Phone = "380442469491",
                     Description = "Державний вищий навчальний заклад IV рівня акредитації," +
-                    " підпорядкований Міністерству внутрішніх справ України та розташований у Харкові"
+                    " підпорядкований Міністерству внутрішніх справ України та розташований у Києві",
+                    Lat = 50.43278409191516f,
+                    Lon = 30.471873937648123f,
                 });
                 #endregion
 

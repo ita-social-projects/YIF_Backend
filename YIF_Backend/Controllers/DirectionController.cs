@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 
@@ -8,6 +9,7 @@ namespace YIF_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class DirectionController : ControllerBase
     {
         private readonly IDirectionService _directionService;
@@ -27,8 +29,14 @@ namespace YIF_Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllDirections(int page = 1, int pageSize = 10)
         {
-            var url = $"{Request.Scheme}://{Request.Host}{Request.Path}";
-            var directions = await _directionService.GetAllDirections(page, pageSize, url);
+            var pageModel = new PageApiModel
+            {
+                Page = page,
+                PageSize = pageSize,
+                Url = $"{Request.Scheme}://{Request.Host}{Request.Path}"
+            };
+
+            var directions = await _directionService.GetAllDirections(pageModel);
             return Ok(directions);
         }
 
@@ -42,9 +50,21 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("Names")]
-        public async Task<IActionResult> GetDirectionNames()
+        public async Task<IActionResult> GetDirectionNames(
+            string DirectionName,
+            string SpecialityName,
+            string UniversityName,
+            string UniversityAbbreviation)
         {
-            var result = await _directionService.GetDirectionNames();
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialityName = SpecialityName,
+                UniversityName = UniversityName,
+                UniversityAbbreviation = UniversityAbbreviation
+            };
+
+            var result = await _directionService.GetDirectionsNamesByFilter(filterModel);
             return Ok(result);
         }
     }
