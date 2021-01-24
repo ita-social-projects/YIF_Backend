@@ -52,7 +52,8 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetUniversitiesPage(
             string DirectionName, 
             string SpecialityName, 
-            string UniversityName, 
+            string UniversityName,
+            string UniversityAbbreviation,
             int page = 1, 
             int pageSize = 10)
         {
@@ -62,7 +63,8 @@ namespace YIF_Backend.Controllers
             {
                 DirectionName = DirectionName,
                 SpecialityName = SpecialityName,
-                UniversityName = UniversityName
+                UniversityName = UniversityName,
+                UniversityAbbreviation = UniversityAbbreviation                
             };
 
             var pageModel = new PageApiModel
@@ -91,6 +93,34 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             var result = await _universityService.GetFavoriteUniversities(userId);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all univesity abbreviations.
+        /// </summary>
+        /// <returns>List of univesity abbreviations</returns>
+        /// <response code="200">Returns a list of univesity abbreviations</response>
+        /// <response code="404">If there are not univesities</response>
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("Abbreviations")]
+        public async Task<IActionResult> GetUniversityAbbreviations(
+            string DirectionName,
+            string SpecialityName,
+            string UniversityName,
+            string UniversityAbbreviation)
+        {
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialityName = SpecialityName,
+                UniversityName = UniversityName,
+                UniversityAbbreviation = UniversityAbbreviation
+            };
+
+            var result = await _universityService.GetUniversityAbbreviations(filterModel);
             return Ok(result);
         }
     }

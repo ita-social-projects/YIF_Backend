@@ -40,14 +40,26 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<SpecialityDTO>> GetAll()
         {
-            var list = await _context.Specialities.ToListAsync();
+            var list = await _context.Specialities
+                .Join(_context.Directions,
+                s => s.DirectionId,
+                d => d.Id,
+                (s, d) => new Speciality
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Description = s.Description,
+                    DirectionId = s.DirectionId,
+                    Direction = d
+                })
+                .ToListAsync();
             return _mapper.Map<IEnumerable<SpecialityDTO>>(list);
         }
 
         [ExcludeFromCodeCoverage]
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
 
         public async Task<IEnumerable<SpecialityDTO>> Find(Expression<Func<Speciality, bool>> predicate)

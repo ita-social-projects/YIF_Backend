@@ -64,9 +64,33 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<SpecialityToUniversityDTO>> GetAll()
+        public async Task<IEnumerable<SpecialityToUniversityDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var list = await _context.SpecialityToUniversities
+                .Join(_context.Universities,
+                      su => su.UniversityId,
+                      u => u.Id,
+                      (su, u) => new SpecialityToUniversity
+                      {
+                          Id = su.Id,
+                          SpecialityId = su.SpecialityId,
+                          UniversityId = su.UniversityId,
+                          University = u
+                      })
+                .Join(_context.Specialities,
+                      su => su.SpecialityId,
+                      s => s.Id,
+                      (su, s) => new SpecialityToUniversity
+                      {
+                          Id = su.Id,
+                          SpecialityId = su.SpecialityId,
+                          UniversityId = su.UniversityId,
+                          University = su.University,
+                          Speciality = s
+                      })
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<SpecialityToUniversityDTO>>(list);
         }
 
         public Task<SpecialityToUniversityDTO> GetByEmail(string email)

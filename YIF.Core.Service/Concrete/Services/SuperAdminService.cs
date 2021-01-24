@@ -27,26 +27,24 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
         private readonly IUniversityAdminRepository<UniversityAdminDTO> _universityAdminRepository;
-        private readonly IRepository<University, UniversityDTO> _universityRepository;
+        private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
         private readonly IUniversityModeratorRepository<UniversityModeratorDTO> _universityModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository _tokenRepository;
-        private readonly IUniversityRepository<University, UniversityDTO> _universityRepositoryAdditional;
         public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper,
-            IRepository<University, UniversityDTO> universityRepository,
+            IUniversityRepository<University, UniversityDTO> universityRepository,
             IUniversityAdminRepository<UniversityAdminDTO> universityAdminRepository,
             IUniversityModeratorRepository<UniversityModeratorDTO> universityModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
-            ITokenRepository tokenRepository,
-            IUniversityRepository<University, UniversityDTO> universityRepositoryAdditional)
+            ITokenRepository tokenRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -60,7 +58,6 @@ namespace YIF.Core.Service.Concrete.Services
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
-            _universityRepositoryAdditional = universityRepositoryAdditional;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -209,12 +206,12 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
-            var ch = await _universityRepositoryAdditional.GetByName(uniPostApiModel.Name);
+            var ch = await _universityRepository.GetByName(uniPostApiModel.Name);
             if (ch != null)
             {
                 throw new InvalidOperationException("Університет із таким іменем вже існує");
             }
-            await _universityRepositoryAdditional.AddUniversity(_mapper.Map<University>(uniPostApiModel));
+            await _universityRepository.AddUniversity(_mapper.Map<University>(uniPostApiModel));
             return result.Set(new DescriptionResponseApiModel("Університет додано"), true);
 
         }
