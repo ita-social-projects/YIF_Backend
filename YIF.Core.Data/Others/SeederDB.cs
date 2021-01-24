@@ -37,6 +37,9 @@ namespace YIF.Core.Data
 
                 var graduateRole = new IdentityRole(ProjectRoles.Graduate);
                 await roleManager.CreateAsync(graduateRole);
+
+                var baseUserRole = new IdentityRole(ProjectRoles.BaseUser);
+                await roleManager.CreateAsync(baseUserRole);
             }
         }
 
