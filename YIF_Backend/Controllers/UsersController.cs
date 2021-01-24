@@ -21,13 +21,11 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ILogger<UsersController> _logger;
-        private readonly IMapper _mapper;
 
-        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger, IMapper mapper)
+        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _logger = logger;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -83,7 +81,7 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetCurrentUserFullInfo()
         {
             var userId = User.FindFirst("id")?.Value;
-            var result = await _userService.GetUserProfileInfoById(userId);
+            var result = await _userService.GetUserProfileInfoById(userId, Request);
             return Ok(result.Object);
         }
 
@@ -99,12 +97,12 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet("Photo")]
+        [HttpGet("Current/Photo")]
         [Authorize]
         public async Task<IActionResult> GetCurrentUserPhoto()
         {
             var userId = User.FindFirst("id")?.Value;
-            var result = await _userService.GetUserPhoto(userId);
+            var result = await _userService.GetUserPhoto(userId, Request);
             return Ok(result.Object);
         }
 
@@ -148,11 +146,9 @@ namespace YIF_Backend.Controllers
 
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
 
-            var id = User.FindFirst("id")?.Value;
-
-            var result = await _userService.ChangeUserPhoto(model, id);
-
-            return Ok(result);
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _userService.ChangeUserPhoto(model, userId, Request);
+            return Ok(result.Object);
         }
 
         /// <summary>
