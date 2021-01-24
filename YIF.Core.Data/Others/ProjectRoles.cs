@@ -9,5 +9,6 @@
         public static string SchoolModerator = "SchoolModerator";
         public static string Graduate = "Graduate";
         public static string Lecture = "Lecture";
+        public static string BaseUser = "BaseUser";
     }
 }
