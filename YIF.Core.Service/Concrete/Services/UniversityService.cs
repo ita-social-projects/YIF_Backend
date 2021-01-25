@@ -4,32 +4,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
 {
     public class UniversityService : IUniversityService<University>
     {
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
         private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
+        private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
 
         public UniversityService(
+            IUserRepository<DbUser, UserDTO> userRepository,
             IUniversityRepository<University, UniversityDTO> universityRepository,
             IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
+            IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService)
         {
+            _userRepository = userRepository;
             _universityRepository = universityRepository;
             _specialtyRepository = specialtyRepository;
             _directionRepository = directionRepository;
+            _graduateRepository = graduateRepository;
             _mapper = mapper;
             _paginationService = paginationService;
         }
@@ -142,6 +150,50 @@ namespace YIF.Core.Service.Concrete.Services
                 .Select(u => u.Abbreviation)
                 .Where(a => a != null)
                 .OrderBy(a => a);
+        }
+
+        public async Task AddUniversityToFavorite(string universityId, string userId)
+        {
+            var favorites = await  _universityRepository.GetFavoritesByUserId(userId);
+            var university = await _universityRepository.Get(universityId);
+            var graduate = await _graduateRepository.GetByUserId(userId);
+
+            if (favorites.Where(f => f.Id == universityId).Count() > 0)
+                throw new BadRequestException("Даний університет вже додано до улюблених"); 
+
+            if (university == null)
+                throw new BadRequestException("Університет не було знайдено");
+
+            if (graduate == null)
+                throw new BadRequestException("Випускника не було знайдено");
+
+            await _universityRepository.AddFavorite(new UniversityToGraduate
+            {
+                UniversityId = university.Id,
+                GraduateId = graduate.Id
+            });
+        }
+
+        public async Task DeleteUniversityFromFavorite(string universityId, string userId)
+        {
+            var favorites = await _universityRepository.GetFavoritesByUserId(userId);
+            var university = await _universityRepository.Get(universityId);
+            var graduate = await _graduateRepository.GetByUserId(userId);
+
+            if (favorites.Where(f => f.Id == universityId).Count() == 0)
+                throw new BadRequestException("Даний університет не було додано до улюблених");
+
+            if (university == null)
+                throw new BadRequestException("Університет не було знайдено");
+
+            if (graduate == null)
+                throw new BadRequestException("Випускника не було знайдено");
+
+            await _universityRepository.RemoveFavorite(new UniversityToGraduate
+            {
+                UniversityId = university.Id,
+                GraduateId = graduate.Id
+            });
         }
     }
 }
