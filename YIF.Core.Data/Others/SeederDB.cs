@@ -505,17 +505,17 @@ namespace YIF.Core.Data
             if (context.Directions.Count() == 0)
             {
                 await context.Directions.AddRangeAsync(new List<Direction> { 
-                    new Direction { Name = "Соціальні та поведінкові науки" },
-                    new Direction { Name = "Математика та статистика" },
-                    new Direction { Name = "Інформаційні технології" },
-                    new Direction { Name = "Автоматизація та приладобудування" },
-                    new Direction { Name = "Електрична інженерія" },
+                    new Direction { Name = "Соціальні та поведінкові науки", Code = "05" },
+                    new Direction { Name = "Математика та статистика", Code = "11" },
+                    new Direction { Name = "Інформаційні технології", Code = "12" },
+                    new Direction { Name = "Електрична інженерія", Code = "14" },
+                    new Direction { Name = "Автоматизація та приладобудування", Code = "15" }
                 });
                 await context.SaveChangesAsync();
             }
         }
 
-        public static void SeedSpecialities(EFDbContext context)
+        public async static Task SeedSpecialities(EFDbContext context)
         {
             if (context.Specialities.Count() == 0)
             {
@@ -527,37 +527,43 @@ namespace YIF.Core.Data
 
                 specialities.Add(new Speciality
                 {
-                    Name = "Комп'ютерні науки",
+                    Name = "Інженерія програмного забезпечення",
+                    Code = "121",
                     DirectionId = currentDirection
                 });
 
                 specialities.Add(new Speciality
                 {
-                    Name = "Інженерія програмного забезпечення",
+                    Name = "Комп'ютерні науки",
+                    Code = "122",
                     DirectionId = currentDirection
                 });
 
                 specialities.Add(new Speciality
                 {
                     Name = "Комп’ютерна інженерія",
-                    DirectionId = currentDirection
-                });
-
-                specialities.Add(new Speciality
-                {
-                    Name = "Кібербезпека",
-                    DirectionId = currentDirection
-                });
-
-                specialities.Add(new Speciality
-                {
-                    Name = "Інформаційні системи та технології",
+                    Code = "123",
                     DirectionId = currentDirection
                 });
 
                 specialities.Add(new Speciality
                 {
                     Name = "Системний аналіз",
+                    Code = "124",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Кібербезпека",
+                    Code = "125",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Інформаційні системи та технології",
+                    Code = "126",
                     DirectionId = currentDirection
                 });
                 #endregion
@@ -567,7 +573,22 @@ namespace YIF.Core.Data
 
                 specialities.Add(new Speciality
                 {
+                    Name = "Математика",
+                    Code = "111",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Статистика",
+                    Code = "112",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
                     Name = "Прикладна математика",
+                    Code = "113",
                     DirectionId = currentDirection
                 });
                 #endregion
@@ -578,6 +599,28 @@ namespace YIF.Core.Data
                 specialities.Add(new Speciality
                 {
                     Name = "Економіка",
+                    Code = "051",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Політологія",
+                    Code = "052",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Психологія",
+                    Code = "053",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Соціологія",
+                    Code = "054",
                     DirectionId = currentDirection
                 });
                 #endregion
@@ -588,6 +631,21 @@ namespace YIF.Core.Data
                 specialities.Add(new Speciality
                 {
                     Name = "Автоматизація та комп’ютерно-інтегровані технології",
+                    Code = "151",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Метрологія та інформаційно-вимірювальна техніка",
+                    Code = "152",
+                    DirectionId = currentDirection
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Мікро- та наносистемна техніка",
+                    Code = "153",
                     DirectionId = currentDirection
                 });
                 #endregion
@@ -598,12 +656,41 @@ namespace YIF.Core.Data
                 specialities.Add(new Speciality
                 {
                     Name = "Електроенергетика, електротехніка та електромеханіка",
+                    Code = "141",
+                    DirectionId = currentDirection,
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Енергетичне машинобудування",
+                    Code = "142",
+                    DirectionId = currentDirection,
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Атомна енергетика",
+                    Code = "143",
+                    DirectionId = currentDirection,
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Теплоенергетика",
+                    Code = "144",
+                    DirectionId = currentDirection,
+                });
+
+                specialities.Add(new Speciality
+                {
+                    Name = "Гідроенергетика",
+                    Code = "145",
                     DirectionId = currentDirection,
                 });
                 #endregion
 
-                context.Specialities.AddRange(specialities);
-                context.SaveChanges();
+                await context.Specialities.AddRangeAsync(specialities);
+                await context.SaveChangesAsync();
             }
         }
 
@@ -1169,7 +1256,7 @@ namespace YIF.Core.Data
 
                     #region University
                     await SeederDB.SeedDirections(context);
-                    SeederDB.SeedSpecialities(context);
+                    await SeederDB.SeedSpecialities(context);
                     SeederDB.SeedUniversities(context);
                     SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
                     SeederDB.SeedUniversityAdmins(context);

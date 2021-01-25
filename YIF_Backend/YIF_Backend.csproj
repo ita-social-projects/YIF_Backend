@@ -52,4 +52,8 @@
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DefaultImages\" />
+  </ItemGroup>
+
 </Project>

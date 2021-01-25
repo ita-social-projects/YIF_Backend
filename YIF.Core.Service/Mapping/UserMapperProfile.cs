@@ -59,6 +59,7 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
 
             CreateMap<UserProfileDTO, UserProfileApiModel>();
+
             CreateMap<SchoolDTO, UserProfileApiModel>()
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
                 .ForMember(dest => dest.SchoolName, opt => opt.MapFrom(src => src.Name));

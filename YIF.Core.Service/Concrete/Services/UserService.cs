@@ -231,7 +231,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new AuthenticateResponseApiModel(newAccessToken, newRefreshToken), true);
         }
 
-        public async Task<UserProfileApiModel> GetUserProfileInfoById(string userId)
+        public async Task<ResponseApiModel<UserProfileApiModel>> GetUserProfileInfoById(string userId, HttpRequest request)
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
             var userDto = _mapper.Map<UserProfileDTO>(user);
@@ -246,7 +246,10 @@ namespace YIF.Core.Service.Concrete.Services
             if (userProfile == null)
                 throw new NotFoundException("Зазначеного користувача не існує.");
 
-            return userProfile;
+            string pathPhoto =  $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            userProfile.Photo = userProfile.Photo != null ? pathPhoto + userProfile.Photo : null;
+
+            return new ResponseApiModel<UserProfileApiModel>(userProfile, true);
         }
 
         public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
@@ -263,7 +266,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ImageApiModel> ChangeUserPhoto(ImageApiModel model, string userId)
+        public async Task<ResponseApiModel<ImageApiModel>> GetUserPhoto(string userId, HttpRequest request)
+        {
+            var user = await _userRepository.GetUserWithUserProfile(userId);
+            string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            string imagePath = user.UserProfile != null && user.UserProfile.Photo != null ?
+                pathPhoto + user.UserProfile.Photo : null;
+
+            return new ResponseApiModel<ImageApiModel>( new ImageApiModel { Photo = imagePath }, true);
+        }
+
+        public async Task<ResponseApiModel<ImageApiModel>> ChangeUserPhoto(ImageApiModel model, string userId, HttpRequest request)
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
 
@@ -303,7 +316,9 @@ namespace YIF.Core.Service.Concrete.Services
                 File.Delete(filePathDelete);
             }
 
-            return new ImageApiModel { Photo = fileName };
+            string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            fileName = fileName != null ? pathPhoto + fileName : null;
+            return new ResponseApiModel<ImageApiModel>( new ImageApiModel { Photo = fileName }, true);
         }
 
         public Task<bool> UpdateUser(UserDTO user)

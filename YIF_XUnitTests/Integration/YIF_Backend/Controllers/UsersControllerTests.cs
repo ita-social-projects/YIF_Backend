@@ -25,7 +25,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("")]
-        [InlineData("6f08c1b6-468d-4c44-afeb-488ded1ccb98")]
+        [InlineData("1d2e6e25-423a-4e82-b979-de01fcb7577a")]
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Act            
@@ -99,9 +99,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3","QWerty-1","QWerty-12","QWerty-12",
+        [InlineData("8d2893eb-90f8-49aa-895e-3bf8e9545f63", "QWerty-1","QWerty-12","QWerty-12",
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3", "QWerty-12", "QWerty-1", "QWerty-1",
+        [InlineData("8d2893eb-90f8-49aa-895e-3bf8e9545f63", "QWerty-12", "QWerty-1", "QWerty-1",
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
         public async Task ChangePassword_With_CurrentParameters(string id,
             string oldPassword,

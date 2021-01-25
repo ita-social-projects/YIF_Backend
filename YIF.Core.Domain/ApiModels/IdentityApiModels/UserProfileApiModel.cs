@@ -46,5 +46,10 @@ namespace YIF.Core.Domain.ApiModels.IdentityApiModels
         /// </summary>
         /// <example>SomeName</example>
         public string SchoolName { get; set; }
+
+        /// <summary>
+        /// Get or set user photo
+        /// </summary>
+        public string Photo { get; set; }
     }
 }
