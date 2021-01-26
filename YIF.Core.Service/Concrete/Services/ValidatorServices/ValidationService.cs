@@ -89,7 +89,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Паролі не співпадають!");
 
-            RuleFor(x => x.Email).Must(IsEmailNotExist).WithMessage("Електронна пошта вже існує!");
+            //RuleFor(x => x.Email).Must(IsEmailNotExist).WithMessage("Електронна пошта вже існує!");
             RuleFor(x => x.Username).Must(IsUsernameNotExist).WithMessage("Ім'я користувача вже існує!");
         }
 

@@ -123,7 +123,8 @@ namespace YIF.Core.Service.Concrete.Services
             var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                throw new InvalidOperationException("Користувач вже існує");
+                return result.Set(false, "Користувач вже існує");
+                //throw new InvalidOperationException("Користувач вже існує");
             }
 
             if (!registerModel.Password.Equals(registerModel.ConfirmPassword))

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -52,7 +53,12 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.RegisterUser(model);
-            return Created("", result.Object);
+
+
+            if (result.Success)
+                return Created("", result.Object);
+            else
+                return RedirectPreserveMethod("~/api/Users/ResetPassword");
         }
 
         /// <summary>
@@ -71,5 +77,7 @@ namespace YIF_Backend.Controllers
             var result = await _userService.RefreshToken(tokenApiModel);
             return Ok(result.Object);
         }
+
+
     }
 }
