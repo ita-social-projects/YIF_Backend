@@ -21,13 +21,11 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ILogger<UsersController> _logger;
-        private readonly IMapper _mapper;
 
-        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger, IMapper mapper)
+        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger)
         {
             _userService = userService;
             _logger = logger;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -83,8 +81,29 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetCurrentUserFullInfo()
         {
             var userId = User.FindFirst("id")?.Value;
-            var profile = await _userService.GetUserProfileInfoById(userId);
-            return Ok(profile);
+            var result = await _userService.GetUserProfileInfoById(userId, Request);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get authorized user's photo
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="200">if request is correct</response>
+        /// <response code="400">if request is incorrect.</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired</response>
+        /// <response code="404">If user not found</response>
+        [ProducesResponseType(typeof(ImageApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("Current/Photo")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUserPhoto()
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _userService.GetUserPhoto(userId, Request);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -108,7 +127,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Change authorized user photo. Size limit 20 MB
+        /// Change authorized user photo. Size limit 100 MB
         /// </summary>
         /// <returns>Status code</returns>
         /// <response code="200">If change user photo request is correct</response>
@@ -127,11 +146,9 @@ namespace YIF_Backend.Controllers
 
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
 
-            var id = User.FindFirst("id")?.Value;
-
-            var result = await _userService.ChangeUserPhoto(model, id);
-
-            return Ok(result);
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _userService.ChangeUserPhoto(model, userId, Request);
+            return Ok(result.Object);
         }
 
         /// <summary>

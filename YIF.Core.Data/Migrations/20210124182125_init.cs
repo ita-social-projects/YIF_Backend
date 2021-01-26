@@ -52,7 +52,8 @@ namespace YIF.Core.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Code = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -203,6 +204,24 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BaseUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BaseUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BaseUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SuperAdmins",
                 columns: table => new
                 {
@@ -269,7 +288,8 @@ namespace YIF.Core.Data.Migrations
                     Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     DirectionId = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
+                    Description = table.Column<string>(nullable: true),
+                    Code = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -545,6 +565,11 @@ namespace YIF.Core.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BaseUsers_UserId",
+                table: "BaseUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DirectionsToUniversities_DirectionId",
                 table: "DirectionsToUniversities",
                 column: "DirectionId");
@@ -655,6 +680,9 @@ namespace YIF.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BaseUsers");
 
             migrationBuilder.DropTable(
                 name: "DirectionsToUniversities");
