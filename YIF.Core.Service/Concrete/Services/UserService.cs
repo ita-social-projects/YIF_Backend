@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -120,11 +122,14 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(validResults.ToString());
             }
 
-            var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
-            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
+            var searchUser = await _userManager.FindByEmailAsync(registerModel.Email);
+            if (searchUser != null)
             {
-                return result.Set(false, "Користувач вже існує");
-                //throw new InvalidOperationException("Користувач вже існує");
+                if (searchUser.IsDeleted == false)
+                {
+                    throw new InvalidOperationException("Електронна пошта вже існує. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу.");
+                }
+                return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, скористайтесь відновленням доступу.");
             }
 
             if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
@@ -247,15 +252,15 @@ namespace YIF.Core.Service.Concrete.Services
             if (userProfile == null)
                 throw new NotFoundException("Зазначеного користувача не існує.");
 
-            string pathPhoto =  $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
             userProfile.Photo = userProfile.Photo != null ? pathPhoto + userProfile.Photo : null;
 
             return new ResponseApiModel<UserProfileApiModel>(userProfile, true);
         }
 
-        public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
+        public async Task<ResponseApiModel<UserProfileWithoutPhotoApiModel>> SetUserProfileInfoById(UserProfileWithoutPhotoApiModel model, string userId)
         {
-            var result = new ResponseApiModel<UserProfileApiModel>();
+            var result = new ResponseApiModel<UserProfileWithoutPhotoApiModel>();
 
             var newEmail = model.Email;
             model.Email = (await _userManager.FindByIdAsync(userId)).Email;
@@ -263,7 +268,8 @@ namespace YIF.Core.Service.Concrete.Services
             profile.User.Email = newEmail;
 
             var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
-            result.Object = _mapper.Map<UserProfileApiModel>(user);
+            var apiModel = _mapper.Map<UserProfileApiModel>(user);
+            result.Object = _mapper.Map<UserProfileWithoutPhotoApiModel>(apiModel);
             return result.Set(true);
         }
 
@@ -274,7 +280,7 @@ namespace YIF.Core.Service.Concrete.Services
             string imagePath = user.UserProfile != null && user.UserProfile.Photo != null ?
                 pathPhoto + user.UserProfile.Photo : null;
 
-            return new ResponseApiModel<ImageApiModel>( new ImageApiModel { Photo = imagePath }, true);
+            return new ResponseApiModel<ImageApiModel>(new ImageApiModel { Photo = imagePath }, true);
         }
 
         public async Task<ResponseApiModel<ImageApiModel>> ChangeUserPhoto(ImageApiModel model, string userId, HttpRequest request)
@@ -319,7 +325,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
             fileName = fileName != null ? pathPhoto + fileName : null;
-            return new ResponseApiModel<ImageApiModel>( new ImageApiModel { Photo = fileName }, true);
+            return new ResponseApiModel<ImageApiModel>(new ImageApiModel { Photo = fileName }, true);
         }
 
         public Task<bool> UpdateUser(UserDTO user)
@@ -332,29 +338,25 @@ namespace YIF.Core.Service.Concrete.Services
             throw new NotImplementedException();
         }
 
-        public void Dispose()
+        public void Dispose() => _userRepository.Dispose();
+
+
+        public async Task<ResponseApiModel<bool>> ResetPasswordByEmail(string userEmail, HttpRequest request)
         {
-            _userRepository.Dispose();
-        }
+            var result = new ResponseApiModel<bool>();
 
-        public async Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request)
-        {
-            var result = new ResponseApiModel<ResetPasswordByEmailApiModel>();
-            var user = await _userManager.FindByEmailAsync(model.UserEmail);
+            var validResults = new EmailModelValidator().Validate(userEmail);
+            if (!validResults.IsValid) return result.Set(false, validResults.ToString());
 
-            if (model.UserEmail == string.Empty || model.UserEmail == null)
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user != null)
             {
-                throw new BadRequestException("Введіть коректну електронну скриньку.");
-            }
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            if (user == null || user.IsDeleted)
-            {
-                throw new NotFoundException("Така електронна скринька не зареєестрована.");
-            }
-
-            var serverUrl = $"{request.Scheme}://{request.Host}/";
-            var url = serverUrl + $"password/reset/{user.Id}";
-            var html = $@"<p>&nbsp;</p>
+                var serverUrl = $"{request.Scheme}://{request.Host}/";
+                //var url = serverUrl + $"password/reset/{user.Id}";
+                var url = serverUrl + $"RestorePassword/{user.Id}?code={code}";
+                var html = $@"<p>&nbsp;</p>
 <!-- HIDDEN PREHEADER TEXT -->
 <table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
 <tbody>
@@ -418,13 +420,31 @@ namespace YIF.Core.Service.Concrete.Services
 </tbody>
 </table>";
 
-            await _emailService.SendAsync(model.UserEmail, "Відновлення паролю", html);
-
-            result.Object = model;
-
-            return result.Set(true);
+                await _emailService.SendAsync(userEmail, "Відновлення паролю", html);
+            }
+            return result.Set(true, "Перейдіть за посиланням, відправленим на вказану електронну пошту для відновлення паролю");
         }
 
+        public async Task<ResponseApiModel<bool>> RestorePasswordById(string id, string code)
+        {
+            var result = new ResponseApiModel<bool>();
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return result.Set(false, "Користувача не знайдено");
+            }
+
+            var restoreResult = await _userManager.ResetPasswordAsync(user, code, "QWerty-1");
+            if (!restoreResult.Succeeded)
+            {
+                throw new ArgumentException(restoreResult.Errors.First().Description);
+            }
+
+            if (user.IsDeleted) user.IsDeleted = false;
+            await _userManager.UpdateAsync(user);
+
+            return result.Set(true, "Пароль успішно відновлено. Тепер він 'QWerty-1'. Хочете міняйте;)");
+        }
         public async Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
         {
             var result = new ResponseApiModel<ChangePasswordApiModel>();
@@ -533,9 +553,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             _ = _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
 
-            result.Object = model;
-
-            return result.Set(true);
+            return result.Set(model, true);
         }
         public async Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model)
         {

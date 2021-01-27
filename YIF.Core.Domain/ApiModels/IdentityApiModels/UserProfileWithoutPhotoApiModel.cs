@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace YIF.Core.Domain.ApiModels.RequestApiModels
+namespace YIF.Core.Domain.ApiModels.IdentityApiModels
 {
     /// <summary>
     /// A class for sending user profile information.

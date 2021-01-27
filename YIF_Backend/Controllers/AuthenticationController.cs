@@ -48,17 +48,17 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(typeof(RedirectApiModel), 409)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterApiModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.RegisterUser(model);
-
-
-            if (result.Success)
-                return Created("", result.Object);
-            else
-                return RedirectPreserveMethod("~/api/Users/ResetPassword");
+            var actionUrl = Url.Action("ResetPassword", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
+            return result.Success
+                ? Created("", result.Object)
+                : (IActionResult)Conflict(new RedirectApiModel(actionUrl, result.Message));
+                //: (IActionResult)Conflict(new RedirectApiModel($"{Request.Scheme}://{Request.Host}/api/Users/ResetPassword?userEmail={model.Email}", result.Message));
         }
 
         /// <summary>

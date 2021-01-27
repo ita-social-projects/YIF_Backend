@@ -8,6 +8,7 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
@@ -64,8 +65,10 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
                 .ForMember(dest => dest.SchoolName, opt => opt.MapFrom(src => src.Name));
 
-            CreateMap<UserProfileApiModel, UserProfile>()
+            CreateMap<UserProfileWithoutPhotoApiModel, UserProfile>()
                 .ConvertUsing<GetExistingUserProfileResolver>();
+
+            CreateMap<UserProfileApiModel, UserProfileWithoutPhotoApiModel>();
 
             CreateMap<DbUser, UserProfileApiModel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
@@ -133,7 +136,7 @@ namespace YIF.Core.Service.Mapping
         }
     }
 
-    public class GetExistingUserProfileResolver : ITypeConverter<UserProfileApiModel, UserProfile>
+    public class GetExistingUserProfileResolver : ITypeConverter<UserProfileWithoutPhotoApiModel, UserProfile>
     {
         private static UserManager<DbUser> _userManager;
         public GetExistingUserProfileResolver(UserManager<DbUser> userManager)
@@ -141,7 +144,7 @@ namespace YIF.Core.Service.Mapping
             _userManager = userManager;
         }
 
-        public UserProfile Convert(UserProfileApiModel profileApi, UserProfile profile, ResolutionContext context)
+        public UserProfile Convert(UserProfileWithoutPhotoApiModel profileApi, UserProfile profile, ResolutionContext context)
         {
             var user = _userManager.Users.Include(u => u.UserProfile).FirstOrDefault(x => x.Email == profileApi.Email);
             user.PhoneNumber = profileApi.PhoneNumber;

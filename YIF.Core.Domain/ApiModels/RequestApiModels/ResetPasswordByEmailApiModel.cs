@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
@@ -12,6 +9,7 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         /// </summary>
         /// <example>example@gmail.com</example>
         [Required, StringLength(255)]
+        [EmailAddress]
         public string UserEmail { get; set; }
     }
 }

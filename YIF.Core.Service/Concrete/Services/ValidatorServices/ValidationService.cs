@@ -89,14 +89,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Паролі не співпадають!");
 
-            //RuleFor(x => x.Email).Must(IsEmailNotExist).WithMessage("Електронна пошта вже існує!");
             RuleFor(x => x.Username).Must(IsUsernameNotExist).WithMessage("Ім'я користувача вже існує!");
-        }
-
-        private bool IsEmailNotExist(string email)
-        {
-            var user = _userManager.FindByEmailAsync(email).Result;
-            return user == null;
         }
 
         private bool IsUsernameNotExist(string username)
@@ -127,6 +120,16 @@ namespace YIF.Core.Service.Concrete.Services
             }
             Span<byte> buffer = new Span<byte>(new byte[base64.Length]);
             return Convert.TryFromBase64String(base64, buffer, out int bytesParsed);
+        }
+    }
+    public class EmailModelValidator : AbstractValidator<string>
+    {
+        public EmailModelValidator()
+        {
+            CascadeMode = CascadeMode.Stop;
+            RuleFor(x => x)
+                .NotNull().NotEmpty().WithMessage("Електронна пошта є обов'язковою!")
+                .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
         }
     }
 }

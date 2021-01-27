@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
@@ -118,7 +118,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("SetCurrentProfile")]
         [Authorize]
-        public async Task<IActionResult> SetUserProfile([FromBody] UserProfileApiModel model)
+        public async Task<IActionResult> SetUserProfile([FromBody] UserProfileWithoutPhotoApiModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var id = User.FindFirst("id")?.Value;
@@ -154,20 +154,35 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Send reset password mail
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Message about success</returns>
         /// <response code="200">When user exist and email have been sended</response>
         /// <response code="400">If current email is not correct</response>
-        /// <response code="404">If user doesn`t exist</response>
-        [ProducesResponseType(typeof(ResetPasswordByEmailApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordByEmailApiModel model)
+        public async Task<IActionResult> ResetPassword([FromQuery][Required] string userEmail)
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
-            var result = await _userService.ResetPasswordByEmail(model, Request);
-            return Ok(result.Object);
+            var result = await _userService.ResetPasswordByEmail(userEmail, Request);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
+        }
+
+        /// <summary>
+        /// Restore the user password
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Password have been restored</response>
+        /// <response code="400">Password have not been restored</response>
+        [ProducesResponseType(typeof(ChangePasswordApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPut("RestorePassword/{id}")]
+        public async Task<IActionResult> RestorePassword(string id, [FromQuery][Required] string code)
+        {
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            var result = await _userService.RestorePasswordById(id, code);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
 
         /// <summary>

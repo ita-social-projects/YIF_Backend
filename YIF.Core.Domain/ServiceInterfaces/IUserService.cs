@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -22,8 +23,9 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<ImageApiModel>> ChangeUserPhoto(ImageApiModel model, string userId, HttpRequest request);
         Task<ResponseApiModel<ImageApiModel>> GetUserPhoto(string userId, HttpRequest request);
         Task<ResponseApiModel<UserProfileApiModel>> GetUserProfileInfoById(string userId, HttpRequest request);
-        Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId);
-        Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request);
+        Task<ResponseApiModel<UserProfileWithoutPhotoApiModel>> SetUserProfileInfoById(UserProfileWithoutPhotoApiModel model, string userId);
+        Task<ResponseApiModel<bool>> ResetPasswordByEmail(string userEmail, HttpRequest request);
+        Task<ResponseApiModel<bool>> RestorePasswordById(string id, string code);
         Task<ResponseApiModel<SendEmailConfirmApiModel>> SendEmailConfirmMail(SendEmailConfirmApiModel model,HttpRequest request);
         Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model);
         Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model);
