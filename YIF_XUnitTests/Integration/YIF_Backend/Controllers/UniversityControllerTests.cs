@@ -30,7 +30,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         #region CorrectTests
 
         [Theory]
-        [InlineData("%D0%9C%D0%B0%D1%82%D0%B5%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B0%20%D1%82%D0%B0%20%D1%81%D1%82%D0%B0%D1%82%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0")]
+        [InlineData("Автоматизація та приладобудування")]
         public async Task GET_EndpointsReturnUniversities_IfDirectionNameCorrect(string DirectionName)
         {
             // Act
@@ -49,7 +49,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("%D0%9A%D0%BE%D0%BC%D0%BF%27%D1%8E%D1%82%D0%B5%D1%80%D0%BD%D1%96%20%D0%BD%D0%B0%D1%83%D0%BA%D0%B8")]
+        [InlineData("Статистика")]
         public async Task GET_EndpointsReturnUniversities_IfSpecialityNameCorrect(string SpecialityName)
         {
             // Act
@@ -68,7 +68,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("%D0%9A%D0%B8%D1%97%D0%B2%D1%81%D1%8C%D0%BA%D0%B8%D0%B9%20%D0%BF%D0%BE%D0%BB%D1%96%D1%82%D0%B5%D1%85%D0%BD%D1%96%D1%87%D0%BD%D0%B8%D0%B9%20%D1%96%D0%BD%D1%81%D1%82%D0%B8%D1%82%D1%83%D1%82%20%D1%96%D0%BC%D0%B5%D0%BD%D1%96%20%D0%86%D0%B3%D0%BE%D1%80%D1%8F%20%D0%A1%D1%96%D0%BA%D0%BE%D1%80%D1%81%D1%8C%D0%BA%D0%BE%D0%B3%D0%BE")]
+        [InlineData("Академія внутрішніх військ МВС України")]
         public async Task GET_EndpointsReturnUniversities_IfUniversityNameCorrect(string UniversityName)
         {
             // Act
@@ -87,7 +87,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
         
         [Theory]
-        [InlineData("%D0%86%D0%BD%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%86%D1%96%D0%B9%D0%BD%D1%96%20%D1%82%D0%B5%D1%85%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D1%96%D1%97", "%D0%A1%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%BD%D0%B8%D0%B9%20%D0%B0%D0%BD%D0%B0%D0%BB%D1%96%D0%B7")]
+        [InlineData("Інформаційні технології", "Системний аналіз")]
         public async Task GET_EndpointsReturnUniversities_IfDirectionName_And_SpecialityNameCorrect(string DirectionName, string SpecialityName)
         {
             // Act
