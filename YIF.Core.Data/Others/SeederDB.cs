@@ -990,39 +990,42 @@ namespace YIF.Core.Data
 
         public static void SeedUniversityAdmins(EFDbContext context)
         {
-            var admins = new List<UniversityAdmin>();
-            string currentUniversity = string.Empty;
-            var universities = context.Universities.ToList();
-
-            #region НУВГП
-            currentUniversity = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
-
-            admins.Add(new UniversityAdmin
+            if(context.UniversityAdmins.Count() == 0)
             {
-                UniversityId = currentUniversity
-            });
-            #endregion
+                var admins = new List<UniversityAdmin>();
+                string currentUniversity = string.Empty;
+                var universities = context.Universities.ToList();
 
-            #region КПІ
-            currentUniversity = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                #region НУВГП
+                currentUniversity = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
 
-            admins.Add(new UniversityAdmin
-            {
-                UniversityId = currentUniversity
-            });
-            #endregion
+                admins.Add(new UniversityAdmin
+                {
+                    UniversityId = currentUniversity
+                });
+                #endregion
 
-            #region АВВУ
-            currentUniversity = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
+                #region КПІ
+                currentUniversity = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
 
-            admins.Add(new UniversityAdmin
-            {
-                UniversityId = currentUniversity
-            });
-            #endregion
+                admins.Add(new UniversityAdmin
+                {
+                    UniversityId = currentUniversity
+                });
+                #endregion
 
-            context.UniversityAdmins.AddRange(admins);
-            context.SaveChanges();
+                #region АВВУ
+                currentUniversity = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
+
+                admins.Add(new UniversityAdmin
+                {
+                    UniversityId = currentUniversity
+                });
+                #endregion
+
+                context.UniversityAdmins.AddRange(admins);
+                context.SaveChanges();
+            }         
         }
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)
