@@ -7,10 +7,12 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
@@ -22,14 +24,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         
         private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityReposotiry = new Mock<IUniversityRepository<University, UniversityDTO>>();
+        private static readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private static readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
+        private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
 
         private static readonly UniversityService universityService = new UniversityService(
+            _userRepository.Object,
             _universityReposotiry.Object,
             _specialityRepository.Object,
             _directionRepository.Object,
+            _graduateRepository.Object,
             _mapperMock.Object,
             _paginationService.Object);
 
