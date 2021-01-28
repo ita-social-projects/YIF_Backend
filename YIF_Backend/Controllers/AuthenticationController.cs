@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -58,7 +57,6 @@ namespace YIF_Backend.Controllers
             return result.Success
                 ? Created("", result.Object)
                 : (IActionResult)Conflict(new RedirectApiModel(actionUrl, result.Message));
-                //: (IActionResult)Conflict(new RedirectApiModel($"{Request.Scheme}://{Request.Host}/api/Users/ResetPassword?userEmail={model.Email}", result.Message));
         }
 
         /// <summary>

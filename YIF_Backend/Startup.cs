@@ -141,7 +141,11 @@ namespace YIF_Backend
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
+            services.AddIdentity<DbUser, IdentityRole>(options =>
+            {
+                options.Stores.MaxLengthForKeys = 128;
+                //options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
+            })
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
             #endregion

@@ -370,7 +370,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async void Send_ConfirmEmail_Mail(string email)
         {
             // Arrange
-            var apiModel = new SendEmailConfirmApiModel
+            var apiModel = new EmailApiModel
             {
                 UserEmail = email
             };

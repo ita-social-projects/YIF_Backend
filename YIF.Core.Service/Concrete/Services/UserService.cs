@@ -2,7 +2,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +30,7 @@ namespace YIF.Core.Service.Concrete.Services
     {
         private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IServiceProvider _serviceProvider;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
@@ -42,6 +42,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduate;
 
         public UserService(IUserRepository<DbUser, UserDTO> userRepository,
+            IServiceProvider serviceProvider,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
@@ -54,6 +55,7 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolGraduateRepository<SchoolDTO> schoolGraduate)
         {
             _userRepository = userRepository;
+            _serviceProvider = serviceProvider;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = _IJwtService;
@@ -348,14 +350,17 @@ namespace YIF.Core.Service.Concrete.Services
             var validResults = new EmailModelValidator().Validate(userEmail);
             if (!validResults.IsValid) return result.Set(false, validResults.ToString());
 
-            var user = await _userManager.FindByEmailAsync(userEmail);
+            var manager = (UserManager<DbUser>)_serviceProvider.GetService(typeof(UserManager<DbUser>));
+            var user = await manager.FindByEmailAsync(userEmail);
             if (user != null)
             {
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var token = await manager.GeneratePasswordResetTokenAsync(user);
+                token = System.Web.HttpUtility.UrlEncode(token);
 
                 var serverUrl = $"{request.Scheme}://{request.Host}/";
-                //var url = serverUrl + $"password/reset/{user.Id}";
-                var url = serverUrl + $"RestorePassword/{user.Id}?code={code}";
+                var url = serverUrl + $"restore?id={user.Id}&token={token}";
+                var topic = user.IsDeleted ? "Відновлення облікового запису" : "Відновлення паролю";
+                var type = user.IsDeleted ? "Відновити обліковий запис" : "Відновити пароль";
                 var html = $@"<p>&nbsp;</p>
 <!-- HIDDEN PREHEADER TEXT -->
 <table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
@@ -397,7 +402,9 @@ namespace YIF.Core.Service.Concrete.Services
 <table border=""0"" cellspacing=""0"" cellpadding=""0"">
 <tbody>
 <tr>
-<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B""><a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Змінити пароль</a></td>
+<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B"">
+<a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">{type}</a>
+</td>
 </tr>
 </tbody>
 </table>
@@ -420,30 +427,43 @@ namespace YIF.Core.Service.Concrete.Services
 </tbody>
 </table>";
 
-                await _emailService.SendAsync(userEmail, "Відновлення паролю", html);
+                await _emailService.SendAsync(userEmail, topic, html);
             }
-            return result.Set(true, "Перейдіть за посиланням, відправленим на вказану електронну пошту для відновлення паролю");
+            return result.Set(true, "Перейдіть за посиланням, відправленим на вказану електронну пошту для відновлення");
         }
 
-        public async Task<ResponseApiModel<bool>> RestorePasswordById(string id, string code)
+        public async Task<ResponseApiModel<bool>> RestorePasswordById(RestoreApiModel model)
         {
             var result = new ResponseApiModel<bool>();
-            var user = await _userManager.FindByIdAsync(id);
+
+            var validator = new ResetValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(model);
+
+            if (!validResults.IsValid)
+            {
+                throw new ArgumentException(validResults.ToString());
+            }
+
+            var manager = (UserManager<DbUser>)_serviceProvider.GetService(typeof(UserManager<DbUser>));
+            var user = await manager.FindByIdAsync(model.UserId);
             if (user == null)
             {
                 return result.Set(false, "Користувача не знайдено");
             }
 
-            var restoreResult = await _userManager.ResetPasswordAsync(user, code, "QWerty-1");
+            var token = System.Web.HttpUtility.UrlDecode(model.Token);
+            var restoreResult = await manager.ResetPasswordAsync(user, token, model.NewPassword);
             if (!restoreResult.Succeeded)
             {
                 throw new ArgumentException(restoreResult.Errors.First().Description);
             }
 
-            if (user.IsDeleted) user.IsDeleted = false;
-            await _userManager.UpdateAsync(user);
+            result.Message = user.IsDeleted ? "Обліковий запис успішно відновлено" : "Пароль успішно відновлено";
 
-            return result.Set(true, "Пароль успішно відновлено. Тепер він 'QWerty-1'. Хочете міняйте;)");
+            if (user.IsDeleted) user.IsDeleted = false;
+            await manager.UpdateAsync(user);
+
+            return result.Set(true);
         }
         public async Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
         {
@@ -469,19 +489,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseApiModel<SendEmailConfirmApiModel>> SendEmailConfirmMail(SendEmailConfirmApiModel model, HttpRequest request)
+        public async Task<ResponseApiModel<bool>> SendEmailConfirmMail(EmailApiModel model, HttpRequest request)
         {
-            var result = new ResponseApiModel<SendEmailConfirmApiModel>();
+            var result = new ResponseApiModel<bool>();
+
+            var validResults = new EmailModelValidator().Validate(model.UserEmail);
+            if (!validResults.IsValid) return result.Set(false, validResults.ToString());
+
             var user = await _userManager.FindByEmailAsync(model.UserEmail);
-
-            if (model.UserEmail == string.Empty || model.UserEmail == null)
-            {
-                throw new ArgumentException("Введіть коректний емейл");
-            }
-
             if (user == null || user.IsDeleted)
             {
-                throw new NotFoundException("Такий емейл не є зареєстрованим");
+                throw new NotFoundException("Така електронна пошта не є зареєстрованою");
             }
 
             var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -528,7 +546,9 @@ namespace YIF.Core.Service.Concrete.Services
 <table border=""0"" cellspacing=""0"" cellpadding=""0"">
 <tbody>
 <tr>
-<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B""><a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Підтвердити</a></td>
+<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B"">
+<a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Підтвердити</a>
+</td>
 </tr>
 </tbody>
 </table>
@@ -551,9 +571,9 @@ namespace YIF.Core.Service.Concrete.Services
 </tbody>
 </table>";
 
-            _ = _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
+            await _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
 
-            return result.Set(model, true);
+            return result.Set(true, "Перейдіть за посиланням, відправленим на вказану електронну пошту для її підтвердження");
         }
         public async Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model)
         {
@@ -614,6 +634,5 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return result.Object.Count() > 0 ? result.Set(true) : result.Set(false, "Адміністраторів немає");
         }
-
     }
 }

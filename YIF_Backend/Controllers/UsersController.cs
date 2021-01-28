@@ -151,17 +151,18 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
+
         /// <summary>
-        /// Send reset password mail
+        /// Send mail for reset password or user
         /// </summary>
         /// <returns>Message about success</returns>
-        /// <response code="200">When user exist and email have been sended</response>
+        /// <response code="200">When email has been sent</response>
         /// <response code="400">If current email is not correct</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromQuery][Required] string userEmail)
+        [HttpPost("Reset")]
+        public async Task<IActionResult> Reset([FromQuery][Required] string userEmail)
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.ResetPasswordByEmail(userEmail, Request);
@@ -169,19 +170,19 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Restore the user password
+        /// Restore the user or user password
         /// </summary>
         /// <returns></returns>
-        /// <response code="200">Password have been restored</response>
-        /// <response code="400">Password have not been restored</response>
+        /// <response code="200">Password/User have been restored</response>
+        /// <response code="400">Password/User have not been restored</response>
         [ProducesResponseType(typeof(ChangePasswordApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPut("RestorePassword/{id}")]
-        public async Task<IActionResult> RestorePassword(string id, [FromQuery][Required] string code)
+        [HttpPut("Restore")]
+        public async Task<IActionResult> Restore([FromBody] RestoreApiModel model)
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
-            var result = await _userService.RestorePasswordById(id, code);
+            var result = await _userService.RestorePasswordById(model);
             return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
 
@@ -208,19 +209,16 @@ namespace YIF_Backend.Controllers
         /// <returns></returns>
         /// <response code="200">When mail have been sended</response>
         /// <response code="400">When mail not have been sended</response>
-        [ProducesResponseType(typeof(SendEmailConfirmApiModel), 200)]
+        /// <response code="404">If email not founded</response>
+        [ProducesResponseType(typeof(EmailApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [HttpPost("SendConfirmEmailMail")]
-        public async Task<IActionResult> SendConfirmEmailMail([FromBody] SendEmailConfirmApiModel model)
+        public async Task<IActionResult> SendConfirmEmailMail([FromBody] EmailApiModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.SendEmailConfirmMail(model, Request);
-
-            return Ok(result.Object);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
 
         /// <summary>
