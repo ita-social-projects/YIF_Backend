@@ -237,5 +237,24 @@ namespace YIF_Backend.Controllers
             var result = await _userService.ConfirmUserEmail(model);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Delete current user.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if current has been successfully deleted.</response>
+        /// <response code="404">If user with current id not found.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired.</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteMe")]
+        [Authorize]
+        public async Task<IActionResult> DeleteMySelf()
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _userService.DeleteUserById(userId);
+            return result ? NoContent() : (IActionResult)NotFound("Користувача не знайдено");
+        }
     }
 }

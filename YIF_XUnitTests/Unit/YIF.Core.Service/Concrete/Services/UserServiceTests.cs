@@ -28,7 +28,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class UserServiceTests
     {
         private readonly UserService _testService;
-        private readonly Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>> _userRepository;
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
+        private readonly Mock<IUserProfileRepository<UserProfile, UserProfileDTO>> _userProfileRepository;
         private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<IServiceProvider> _serviceProvider;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
@@ -49,7 +50,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public UserServiceTests()
         {
-            _userRepository = new Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>>();
+            _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
+            _userProfileRepository = new Mock<IUserProfileRepository<UserProfile, UserProfileDTO>>();
             _tokenRepository = new Mock<ITokenRepository>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
@@ -64,6 +66,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _request = new Mock<HttpRequest>();
             _testService = new UserService(
                 _userRepository.Object,
+                _userProfileRepository.Object,
                 _serviceProvider.Object,
                 _userManager.Object,
                 _signInManager,
@@ -178,7 +181,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(string.Empty));
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(x => x.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
-            _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
+            _signInManager.SignIsSucces = SignInResult.Success;
 
             // Act
             var result = await _testService.RegisterUser(userData);
@@ -251,7 +254,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(null));
-            _userRepository.Setup(x => x.SetDefaultUserProfileIfEmpty(It.IsAny<string>())).Verifiable();
+            _userProfileRepository.Setup(x => x.SetDefaultUserProfileIfEmpty(It.IsAny<string>())).Verifiable();
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(message));
 
             // Assert
@@ -466,17 +469,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public void Dispose_ShouldDisposeDatabase()
+        public void Dispose_ShouldDisposeRepositories()
         {
             // Arrange
-            var repo = new Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>>();
-            var result = false;
-            repo.Setup(x => x.Dispose()).Callback(() => result = true);
+            var userRepo = new Mock<IUserRepository<DbUser, UserDTO>>();
+            var profileRepo = new Mock<IUserProfileRepository<UserProfile, UserProfileDTO>>();
+            var userResult = false;
+            var profileResult = false;
+            userRepo.Setup(x => x.Dispose()).Callback(() => userResult = true);
+            profileRepo.Setup(x => x.Dispose()).Callback(() => profileResult = true);
             // Act
-            var service = new UserService(repo.Object, null, null, null, null, null, null, null, null, null, null, null);
+            var service = new UserService(userRepo.Object, profileRepo.Object, null, null, null, null, null, null, null, null, null, null, null);
             service.Dispose();
             // Assert
-            Assert.True(result);
+            Assert.True(userResult);
+            Assert.True(profileResult);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SuperAdminService : ISuperAdminService
     {
-        private readonly IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
@@ -33,7 +33,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository _tokenRepository;
-        public SuperAdminService(IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> userRepository,
+        public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
@@ -101,10 +101,12 @@ namespace YIF.Core.Service.Concrete.Services
             await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
             var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
 
-            UniversityModerator toAdd = new UniversityModerator();
-            toAdd.UniversityId = university.Id;
-            toAdd.UserId = dbUser.Id;
-            toAdd.AdminId = admin.Id;
+            UniversityModerator toAdd = new UniversityModerator
+            {
+                UniversityId = university.Id,
+                UserId = dbUser.Id,
+                AdminId = admin.Id
+            };
             await _universityModeratorRepository.AddUniModerator(toAdd);
 
 
@@ -160,10 +162,12 @@ namespace YIF.Core.Service.Concrete.Services
             await _schoolAdminRepository.AddSchoolAdmin(new SchoolAdmin { SchoolId = school.Id });
             var admin = await _schoolAdminRepository.GetBySchoolIdWithoutIsDeletedCheck(school.Id);
 
-            SchoolModerator toAdd = new SchoolModerator();
-            toAdd.SchoolId = school.Id;
-            toAdd.UserId = dbUser.Id;
-            toAdd.AdminId = admin.Id;
+            SchoolModerator toAdd = new SchoolModerator
+            {
+                SchoolId = school.Id,
+                UserId = dbUser.Id,
+                AdminId = admin.Id
+            };
             await _schoolModeratorRepository.AddSchoolModerator(toAdd);
 
 

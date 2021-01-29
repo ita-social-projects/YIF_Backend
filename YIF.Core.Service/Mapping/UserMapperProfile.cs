@@ -54,6 +54,7 @@ namespace YIF.Core.Service.Mapping
                 .AfterMap<SetSchoolInUserProfileApiModelResolver>();
             CreateMap<UserProfileWithoutPhotoApiModel, UserProfileDTO>();
 
+            CreateMap<UserProfileApiModel, UserProfileWithoutPhotoApiModel>();
 
 
             CreateMap<SchoolDTO, UserProfileApiModel>()
@@ -63,7 +64,6 @@ namespace YIF.Core.Service.Mapping
             CreateMap<UserProfileWithoutPhotoApiModel, UserProfile>()
                 .ConvertUsing<GetExistingUserProfileResolver>();
 
-            CreateMap<UserProfileApiModel, UserProfileWithoutPhotoApiModel>();
 
             CreateMap<DbUser, UserProfileApiModel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
@@ -72,7 +72,6 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .AfterMap<SetSchoolInUserProfileApiModelResolver>();
-
         }
     }
 

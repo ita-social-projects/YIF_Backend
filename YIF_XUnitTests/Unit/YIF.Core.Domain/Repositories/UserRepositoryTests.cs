@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data;
+using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Others;
@@ -127,11 +128,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         {
             // Arrange
             _dbContextMock.Setup(s => s.Users.Find(_userStub2.Id)).Returns(_userStub2);
+            _dbContextMock.Setup(s => s.Tokens.Find(_userStub2.Id)).Returns((Token)null);
             // Act
             var result = await _testRepo.Delete(_userStub2.Id);
             // Assert
             Assert.True(result);
-            Assert.DoesNotContain(_userStub2, _dataStub);
         }
 
         [Fact]

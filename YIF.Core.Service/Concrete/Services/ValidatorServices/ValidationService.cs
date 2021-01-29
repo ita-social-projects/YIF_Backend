@@ -119,7 +119,7 @@ namespace YIF.Core.Service.Concrete.Services
                 base64 = base64.Split(',')[1];
             }
             Span<byte> buffer = new Span<byte>(new byte[base64.Length]);
-            return Convert.TryFromBase64String(base64, buffer, out int bytesParsed);
+            return Convert.TryFromBase64String(base64, buffer, out _);
         }
     }
     public class EmailModelValidator : AbstractValidator<string>

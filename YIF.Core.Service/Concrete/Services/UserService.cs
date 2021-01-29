@@ -28,7 +28,8 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class UserService : IUserService<DbUser>
     {
-        private readonly IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserProfileRepository<UserProfile, UserProfileDTO> _userProfileRepository;
         private readonly ITokenRepository _tokenRepository;
         private readonly IServiceProvider _serviceProvider;
         private readonly UserManager<DbUser> _userManager;
@@ -41,7 +42,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IConfiguration _configuration;
         private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduateRepository;
 
-        public UserService(IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> userRepository,
+        public UserService(IUserRepository<DbUser, UserDTO> userRepository,
+            IUserProfileRepository<UserProfile, UserProfileDTO> userProfileRepository,
             IServiceProvider serviceProvider,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -55,6 +57,7 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolGraduateRepository<SchoolDTO> schoolGraduate)
         {
             _userRepository = userRepository;
+            _userProfileRepository = userProfileRepository;
             _serviceProvider = serviceProvider;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -147,7 +150,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
 
-            await _userRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
+            await _userProfileRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
@@ -235,8 +238,6 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<UserProfileApiModel>> GetUserProfileInfoById(string userId, HttpRequest request)
         {
-            //var user = await _userRepository.GetUserWithUserProfile(userId);
-            //var userDto = _mapper.Map<UserProfileDTO>(user);
             var userDto = await _userRepository.GetUserWithUserProfile(userId);
             if (userDto == null)
             {
@@ -251,17 +252,6 @@ namespace YIF.Core.Service.Concrete.Services
             var schoolDto = await _schoolGraduateRepository.GetSchoolByUserId(userId);
             userProfile.SchoolName = schoolDto?.Name;
 
-
-
-            //if (schoolDto != null)
-            //    userProfile = _mapper.Map(schoolDto, userProfile);
-
-            //if (userProfile == null)
-            //    throw new NotFoundException("Зазначеного профілю користувача не існує");
-
-            //string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
-            //userProfile.Photo = userProfile.Photo != null ? pathPhoto + userProfile.Photo : null;
-
             return new ResponseApiModel<UserProfileApiModel>(userProfile, true);
         }
 
@@ -269,17 +259,10 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<UserProfileWithoutPhotoApiModel>();
 
-            //// For change email
-            //var newEmail = model.Email;
-            //model.Email = (await _userManager.FindByIdAsync(userId)).Email;
-            //var profile = _mapper.Map<UserProfileDTO>(model);
-            //profile.Email = newEmail;
-
             var profile = _mapper.Map<UserProfileDTO>(model);
             profile.Id = userId;
 
-            var profileDTO = await _userRepository.SetUserProfile(profile, model.SchoolName);
-            //var apiModel = _mapper.Map<UserProfileApiModel>(user);
+            var profileDTO = await _userProfileRepository.SetUserProfile(profile, model.SchoolName);
             result.Object = _mapper.Map<UserProfileWithoutPhotoApiModel>(profileDTO);
             return result.Set(true);
         }
@@ -342,12 +325,16 @@ namespace YIF.Core.Service.Concrete.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteUserById(string id)
+        public async Task<bool> DeleteUserById(string id)
         {
-            throw new NotImplementedException();
+            return await _userRepository.Delete(id);
         }
 
-        public void Dispose() => _userRepository.Dispose();
+        public void Dispose()
+        {
+            _userRepository.Dispose();
+            _userProfileRepository.Dispose();
+        }
 
 
         public async Task<ResponseApiModel<bool>> ResetPasswordByEmail(string userEmail, HttpRequest request)
@@ -608,8 +595,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
-            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
-            result.Object = new RolesByTokenResponseApiModel("Not Valid");
+            var result = new ResponseApiModel<RolesByTokenResponseApiModel>(new RolesByTokenResponseApiModel("Not Valid"), false);
 
             var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
 

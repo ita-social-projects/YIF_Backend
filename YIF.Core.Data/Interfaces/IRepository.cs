@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Interfaces
 {
