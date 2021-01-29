@@ -55,7 +55,7 @@ namespace YIF_Backend.Controllers
             var result = await _userService.RegisterUser(model);
             if (!result.Success)
             {
-                var actionUrl = Url.Action("ResetPassword", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
+                var actionUrl = Url.Action("Reset", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
                 return Conflict(new RedirectApiModel(actionUrl, result.Message));
             }
             return Created("", result.Object);
