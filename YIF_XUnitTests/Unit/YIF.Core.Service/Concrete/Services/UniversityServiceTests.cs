@@ -24,7 +24,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         
         private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityReposotiry = new Mock<IUniversityRepository<University, UniversityDTO>>();
-        private static readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
+        private static readonly Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>>();
         private static readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();

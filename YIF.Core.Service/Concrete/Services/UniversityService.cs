@@ -16,7 +16,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class UniversityService : IUniversityService<University>
     {
-        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> _userRepository;
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
         private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
@@ -25,7 +25,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IPaginationService _paginationService;
 
         public UniversityService(
-            IUserRepository<DbUser, UserDTO> userRepository,
+            IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> userRepository,
             IUniversityRepository<University, UniversityDTO> universityRepository,
             IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
