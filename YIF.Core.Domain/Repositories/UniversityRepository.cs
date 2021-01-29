@@ -94,5 +94,17 @@ namespace YIF.Core.Domain.Repositories
             }
             return null;
         }
+
+        public async Task AddFavorite(UniversityToGraduate universityToGraduate)
+        {
+            await _context.UniversitiesToGraduates.AddAsync(universityToGraduate);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveFavorite(UniversityToGraduate universityToGraduate)
+        {
+            _context.UniversitiesToGraduates.Remove(universityToGraduate);
+            await _context.SaveChangesAsync();
+        }
     }
 }
