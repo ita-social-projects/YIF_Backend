@@ -67,20 +67,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<UserDTO> GetUserWithUserProfile(string userId)
         {
-            //if (string.IsNullOrWhiteSpace(userId)) return false;
-
-            //var userProfile = _context.UserProfiles.Find(userId);
-            //if (userProfile == null)
-            //{
-            //    await SetDefaultUserProfileIfEmpty(userId);
-            //}
-            //var user = _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
-
-
-
             var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
-
-            //var userProfile = _context.UserProfiles.Find(userId);
             if (user?.UserProfile == null)
             {
                 user.UserProfile = await GetDefaultUserProfile(userId);

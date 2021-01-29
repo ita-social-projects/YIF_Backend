@@ -87,7 +87,7 @@ namespace YIF.Core.Service.Concrete.Services
                 .Matches(@"[0-9]+").WithMessage("Пароль має містити щонайменше одну цифру!")
                 .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
-            RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Паролі не співпадають!");
+            RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Пароль та підтвердження паролю не співпадають!");
 
             RuleFor(x => x.Username).Must(IsUsernameNotExist).WithMessage("Ім'я користувача вже існує!");
         }

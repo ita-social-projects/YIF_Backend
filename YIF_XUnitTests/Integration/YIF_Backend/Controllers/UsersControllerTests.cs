@@ -68,11 +68,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task Send_ResetPassword_IfEmail_Correct(string email)
         {
             // Act
-            var content = new StringContent(JsonConvert.SerializeObject(new ResetPasswordByEmailApiModel
-            {
-                UserEmail = email
-            }), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("ResetPassword", content);
+            var response = await _client.PostAsync($"Reset?userEmail={email}", null);
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
@@ -85,15 +81,15 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task Send_ResetPassword_IfEmail_InCorrect(string email)
         {
             // Act
-            var content = new StringContent(JsonConvert.SerializeObject(new ResetPasswordByEmailApiModel
+            var content = new StringContent(JsonConvert.SerializeObject(new EmailApiModel
             {
                 UserEmail = email
             }), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("ResetPassword", content);
+            var response = await _client.PostAsync("Reset", content);
 
 
             // Assert
-            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
         }

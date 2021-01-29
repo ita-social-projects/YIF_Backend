@@ -22,7 +22,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class SuperAdminServiceTests
     {
-        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
+        private readonly Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>> _userRepository;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
@@ -56,7 +56,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         };
         public SuperAdminServiceTests()
         {
-            _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
+            _userRepository = new Mock<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _jwtService = new Mock<IJwtService>();

@@ -53,10 +53,12 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _userService.RegisterUser(model);
-            var actionUrl = Url.Action("ResetPassword", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
-            return result.Success
-                ? Created("", result.Object)
-                : (IActionResult)Conflict(new RedirectApiModel(actionUrl, result.Message));
+            if (!result.Success)
+            {
+                var actionUrl = Url.Action("ResetPassword", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
+                return Conflict(new RedirectApiModel(actionUrl, result.Message));
+            }
+            return Created("", result.Object);
         }
 
         /// <summary>

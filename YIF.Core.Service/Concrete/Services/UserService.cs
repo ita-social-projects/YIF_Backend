@@ -134,11 +134,6 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
             }
 
-            if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
-            {
-                throw new BadRequestException("Пароль та підтвердження пароля не співпадають");
-            }
-
             var dbUser = new DbUser
             {
                 Email = registerModel.Email,
@@ -147,13 +142,12 @@ namespace YIF.Core.Service.Concrete.Services
 
             var graduate = new Graduate { UserId = dbUser.Id };
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
-
-            await _userRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
-
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
+
+            await _userRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
@@ -248,7 +242,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new NotFoundException("Користувача не знайдено");
             }
-            
+
             var userProfile = _mapper.Map<UserProfileApiModel>(userDto.UserProfile);
 
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
