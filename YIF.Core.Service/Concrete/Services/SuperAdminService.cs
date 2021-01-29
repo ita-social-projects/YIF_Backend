@@ -21,7 +21,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SuperAdminService : ISuperAdminService
     {
-        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> _userRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
@@ -33,7 +33,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository _tokenRepository;
-        public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
+        public SuperAdminService(IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
@@ -202,7 +202,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async  Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 

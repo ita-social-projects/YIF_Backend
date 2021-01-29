@@ -29,6 +29,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly UserService _testService;
         private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
         private readonly Mock<ITokenRepository> _tokenRepository;
+        private readonly Mock<IServiceProvider> _serviceProvider;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
@@ -51,6 +52,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _tokenRepository = new Mock<ITokenRepository>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
+            _serviceProvider = new Mock<IServiceProvider>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _recaptcha = new Mock<IRecaptchaService>();
@@ -61,6 +63,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _request = new Mock<HttpRequest>();
             _testService = new UserService(
                 _userRepository.Object,
+                _serviceProvider.Object,
                 _userManager.Object,
                 _signInManager,
                 _jwtService.Object,

@@ -69,5 +69,9 @@ namespace YIF.Core.Domain.DtoModels.IdentityDTO
         /// Navigation property for the roles this user belongs to.
         /// </summary>
         public virtual IEnumerable<string> Roles { get; set; }
+        /// <summary>
+        /// Navigation property for the user profile.
+        /// </summary>
+        public virtual UserProfileDTO UserProfile { get; set; }
     }
 }

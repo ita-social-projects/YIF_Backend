@@ -15,7 +15,7 @@ using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class UserRepository : IUserRepository<DbUser, UserDTO>
+    public class UserRepository : IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -65,15 +65,41 @@ namespace YIF.Core.Domain.Repositories
             return await _userManager.Users.Include(u => u.Token).FirstOrDefaultAsync(x => x.Id == userId);
         }
 
-        public async Task<DbUser> GetUserWithUserProfile(string userId)
+        public async Task<UserDTO> GetUserWithUserProfile(string userId)
         {
             //if (string.IsNullOrWhiteSpace(userId)) return false;
-            var userProfile = _context.UserProfiles.Find(userId);
-            if (userProfile == null)
+
+            //var userProfile = _context.UserProfiles.Find(userId);
+            //if (userProfile == null)
+            //{
+            //    await SetDefaultUserProfileIfEmpty(userId);
+            //}
+            //var user = _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+
+
+
+            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+
+            //var userProfile = _context.UserProfiles.Find(userId);
+            if (user?.UserProfile == null)
             {
-                await SetDefaultUserProfileIfEmpty(userId);
+                user.UserProfile = await GetDefaultUserProfile(userId);
             }
-            return await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(x => x.Id == userId);
+            return _mapper.Map<UserDTO>(user);
+        }
+
+        public async Task<UserProfile> GetDefaultUserProfile(string userId)
+        {
+            return await Task.FromResult(new UserProfile
+            {
+                Id = userId,
+                Name = "unknown",
+                MiddleName = "unknown",
+                Surname = "unknown",
+                Photo = null,
+                DateOfBirth = null,
+                RegistrationDate = DateTime.Now
+            });
         }
 
         public async Task<UserProfile> SetDefaultUserProfileIfEmpty(string userId)
@@ -93,19 +119,23 @@ namespace YIF.Core.Domain.Repositories
             return profile;
         }
 
-        public async Task<DbUser> SetUserProfile(UserProfile profile, string userId, string schoolName = null)
+        public async Task<UserProfileDTO> SetUserProfile(UserProfileDTO profileDto, string schoolName = null)
         {
-            var anotherUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == profile.User.Email);
-            if (anotherUser != null && anotherUser?.Id != userId)
+            // Check email (Is newEmail exist in another user or not)
+            var anotherUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == profileDto.Email);
+            if (anotherUser != null && anotherUser?.Id != profileDto.Id)
             {
-                throw new ArgumentException("Вже існує інший користувач із такою електронною адресою:  " + profile.User.Email);
+                throw new ArgumentException("Електронна пошта вже використовується:  " + profileDto.Email);
             }
-            var curUser = _userManager.Users.Include(u => u.UserProfile).FirstOrDefault(x => x.Id == userId);
-            if (curUser == null) throw new ArgumentException("Користувача не знайдено:  " + userId);
 
+            // Get current user
+            var user = _userManager.Users.Include(u => u.UserProfile).FirstOrDefault(x => x.Id == profileDto.Id);
+            if (user == null) throw new KeyNotFoundException("Користувача не знайдено із таким id:  " + profileDto.Id);
+
+            // Set school
             if (!string.IsNullOrWhiteSpace(schoolName))
             {
-                var graduate = await _context.Graduates.FirstOrDefaultAsync(x => x.UserId == userId);
+                var graduate = await _context.Graduates.FirstOrDefaultAsync(x => x.UserId == profileDto.Id);
                 if (graduate == null) throw new ArgumentException("Користувач не належить до ролі: " + ProjectRoles.Graduate +
                     ". Поле 'schoolname' не потрібно заповняти для цього коритувача.");
 
@@ -118,15 +148,24 @@ namespace YIF.Core.Domain.Repositories
                 }
             }
 
-            await _userManager.UpdateAsync(curUser);
-            _context.UserProfiles.Update(profile);
+            // Set new user profile and add changes
+            var profile = _mapper.Map<UserProfile>(profileDto);
+            profile.User = user;
+            profile.DateOfBirth = user.UserProfile?.DateOfBirth;
+            profile.RegistrationDate = user.UserProfile == null ? DateTime.MinValue : user.UserProfile.RegistrationDate;
+            user.PhoneNumber = profileDto.PhoneNumber;
+            user.Email = profileDto.Email;
+
+            // Save changes
+            user.UserProfile = profile;
+            await _userManager.UpdateAsync(user);
+            await _userManager.UpdateNormalizedEmailAsync(user);
             await _context.SaveChangesAsync();
 
-            var dbUser = await GetUserWithUserProfile(userId);
-            return dbUser;
+            return _mapper.Map<UserProfileDTO>(profile);
         }
 
-        public async Task<bool> UpdateUserPhoto(DbUser user, string photo)
+        public async Task<bool> UpdateUserPhoto(UserDTO user, string photo)
         {
             if (user == null || string.IsNullOrWhiteSpace(photo)) return false;
 

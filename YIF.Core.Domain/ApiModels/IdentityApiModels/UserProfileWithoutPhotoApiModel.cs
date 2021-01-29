@@ -7,12 +7,6 @@ namespace YIF.Core.Domain.ApiModels.IdentityApiModels
     /// </summary>
     public class UserProfileWithoutPhotoApiModel
     {
-        /// <summary>
-        /// Get or set the user surname
-        /// </summary>
-        /// <example>Іванов</example>
-        [Required, StringLength(255)]
-        public string Surname { get; set; }
 
         /// <summary>
         /// Get or set the user name
@@ -20,6 +14,13 @@ namespace YIF.Core.Domain.ApiModels.IdentityApiModels
         /// <example>Іван</example>
         [Required, StringLength(255)]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Get or set the user surname
+        /// </summary>
+        /// <example>Іванов</example>
+        [Required, StringLength(255)]
+        public string Surname { get; set; }
 
         /// <summary>
         /// Get or set the user middle name

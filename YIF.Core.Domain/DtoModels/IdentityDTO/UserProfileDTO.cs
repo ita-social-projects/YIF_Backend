@@ -10,6 +10,21 @@ namespace YIF.Core.Domain.DtoModels.IdentityDTO
         public string Id { get; set; }
 
         /// <summary>
+        /// Get or set the user name
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Get or set the user surname
+        /// </summary>
+        public string Surname { get; set; }
+
+        /// <summary>
+        /// Get or set the user middle name
+        /// </summary>
+        public string MiddleName { get; set; }
+
+        /// <summary>
         /// Get or set the username.
         /// </summary>
         public string UserName { get; set; }
@@ -23,21 +38,6 @@ namespace YIF.Core.Domain.DtoModels.IdentityDTO
         /// Get or set the phone number.
         /// </summary>
         public string PhoneNumber { get; set; }
-
-        /// <summary>
-        /// Get or set the user name
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Get or set the user middle name
-        /// </summary>
-        public string MiddleName { get; set; }
-
-        /// <summary>
-        /// Get or set the user surname
-        /// </summary>
-        public string Surname { get; set; }
 
         /// <summary>
         /// Get or set user photo

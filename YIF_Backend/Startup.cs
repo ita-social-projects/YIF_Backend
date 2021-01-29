@@ -59,7 +59,7 @@ namespace YIF_Backend
 
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
-            services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO>, UserRepository>();
             services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
             services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
             services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
@@ -74,7 +74,6 @@ namespace YIF_Backend
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
-
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
@@ -141,11 +140,7 @@ namespace YIF_Backend
             services.AddDbContext<EFDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<DbUser, IdentityRole>(options =>
-            {
-                options.Stores.MaxLengthForKeys = 128;
-                //options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
-            })
+            services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
             #endregion

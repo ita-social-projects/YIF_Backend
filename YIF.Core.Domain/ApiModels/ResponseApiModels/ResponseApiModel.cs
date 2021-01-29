@@ -9,7 +9,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
     public class ResponseApiModel<T>
     {
         /// <summary>
-        /// Gets the value of whether the result is successful (whether the <see cref="HttpStatusCode"/> is 2XX).
+        /// Gets the value of whether the result is successful.
         /// </summary>
         public bool Success { get; set; }
         /// <summary>

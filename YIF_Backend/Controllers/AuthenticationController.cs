@@ -22,9 +22,9 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Login user into system.
         /// </summary>
-        /// <returns>Object with user token and refresh token</returns>
-        /// <response code="200">Returns object with tokens</response>
-        /// <response code="400">If email or password incorrect</response>
+        /// <returns>Object with user token and refresh token.</returns>
+        /// <response code="200">Returns object with tokens.</response>
+        /// <response code="400">If email or password incorrect.</response>
         [HttpPost("LoginUser")]
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
@@ -39,10 +39,10 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Registers a new user and logs in.
         /// </summary>
-        /// <returns>Object with user token and refresh token</returns>
-        /// <response code="201">Returns object with tokens</response>
-        /// <response code="400">If model state is not valid</response>
-        /// <response code="409">If email or password incorrect</response>
+        /// <returns>Object with user token and refresh token.</returns>
+        /// <response code="201">Returns object with tokens.</response>
+        /// <response code="400">If model state is not valid.</response>
+        /// <response code="409">If email or password incorrect.</response>
         [HttpPost("RegisterUser")]
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
@@ -62,8 +62,8 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Refresh tokens.
         /// </summary>
-        /// <returns>Object with user token and refresh token</returns>
-        /// <response code="200">Returns object with tokens</response>
+        /// <returns>Object with user token and refresh token.</returns>
+        /// <response code="200">Returns object with tokens.</response>
         /// <response code="400">If refresh token request incorrect.</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]

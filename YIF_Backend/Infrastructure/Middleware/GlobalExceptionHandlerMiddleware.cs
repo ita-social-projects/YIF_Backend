@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -27,14 +26,6 @@ namespace YIF_Backend.Infrastructure.Middleware
             try
             {
                 await _next(context);
-
-                var bodyStr = "";
-                context.Request.EnableBuffering();
-                context.Request.Body.Position = 0;
-                using (StreamReader reader = new StreamReader(context?.Request?.Body, Encoding.UTF8, true, 1024, true))
-                {
-                    bodyStr = await reader?.ReadToEndAsync();
-                };
             }
             catch (HttpResponseException)
             {

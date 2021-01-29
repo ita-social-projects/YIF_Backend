@@ -28,7 +28,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class UserService : IUserService<DbUser>
     {
-        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> _userRepository;
         private readonly ITokenRepository _tokenRepository;
         private readonly IServiceProvider _serviceProvider;
         private readonly UserManager<DbUser> _userManager;
@@ -39,9 +39,9 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
-        private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduate;
+        private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduateRepository;
 
-        public UserService(IUserRepository<DbUser, UserDTO> userRepository,
+        public UserService(IUserRepository<DbUser, UserDTO, UserProfile, UserProfileDTO> userRepository,
             IServiceProvider serviceProvider,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -65,7 +65,7 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
             _tokenRepository = tokenRepository;
-            _schoolGraduate = schoolGraduate;
+            _schoolGraduateRepository = schoolGraduate;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -129,9 +129,9 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 if (searchUser.IsDeleted == false)
                 {
-                    throw new InvalidOperationException("Електронна пошта вже існує. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу.");
+                    throw new InvalidOperationException("Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
                 }
-                return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, скористайтесь відновленням доступу.");
+                return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
             }
 
             if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
@@ -209,7 +209,7 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                throw new BadRequestException("Помилка запиту. Помилковий токен.");
+                throw new BadRequestException("Помилка запиту. Помилковий токен");
             }
 
             var userId = claims.First(claim => claim.Type == "id").Value;
@@ -218,17 +218,17 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (user == null)
             {
-                throw new BadRequestException("Помилка запиту. Користувача не існує.");
+                throw new BadRequestException("Помилка запиту. Користувача не існує");
             }
 
             if (user.Token == null || user.Token.RefreshToken != refreshToken)
             {
-                throw new BadRequestException("Помилка запиту. Спочатку потрібно авторизуватись.");
+                throw new BadRequestException("Помилка запиту. Спочатку потрібно авторизуватись");
             }
 
             if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new BadRequestException("Помилка запиту. Термін дії рефреш-токена закінчився.");
+                throw new BadRequestException("Помилка запиту. Термін дії рефреш-токена закінчився");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
@@ -241,21 +241,32 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<UserProfileApiModel>> GetUserProfileInfoById(string userId, HttpRequest request)
         {
-            var user = await _userRepository.GetUserWithUserProfile(userId);
-            var userDto = _mapper.Map<UserProfileDTO>(user);
-
-            var school = await _schoolGraduate.GetSchoolByUserId(userId);
-
-            var userProfile = _mapper.Map<UserProfileApiModel>(userDto);
-
-            if (school != null)
-                userProfile = _mapper.Map(school, userProfile);
-
-            if (userProfile == null)
-                throw new NotFoundException("Зазначеного користувача не існує.");
+            //var user = await _userRepository.GetUserWithUserProfile(userId);
+            //var userDto = _mapper.Map<UserProfileDTO>(user);
+            var userDto = await _userRepository.GetUserWithUserProfile(userId);
+            if (userDto == null)
+            {
+                throw new NotFoundException("Користувача не знайдено");
+            }
+            
+            var userProfile = _mapper.Map<UserProfileApiModel>(userDto.UserProfile);
 
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
             userProfile.Photo = userProfile.Photo != null ? pathPhoto + userProfile.Photo : null;
+
+            var schoolDto = await _schoolGraduateRepository.GetSchoolByUserId(userId);
+            userProfile.SchoolName = schoolDto?.Name;
+
+
+
+            //if (schoolDto != null)
+            //    userProfile = _mapper.Map(schoolDto, userProfile);
+
+            //if (userProfile == null)
+            //    throw new NotFoundException("Зазначеного профілю користувача не існує");
+
+            //string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            //userProfile.Photo = userProfile.Photo != null ? pathPhoto + userProfile.Photo : null;
 
             return new ResponseApiModel<UserProfileApiModel>(userProfile, true);
         }
@@ -264,14 +275,18 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<UserProfileWithoutPhotoApiModel>();
 
-            var newEmail = model.Email;
-            model.Email = (await _userManager.FindByIdAsync(userId)).Email;
-            var profile = _mapper.Map<UserProfile>(model);
-            profile.User.Email = newEmail;
+            //// For change email
+            //var newEmail = model.Email;
+            //model.Email = (await _userManager.FindByIdAsync(userId)).Email;
+            //var profile = _mapper.Map<UserProfileDTO>(model);
+            //profile.Email = newEmail;
 
-            var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
-            var apiModel = _mapper.Map<UserProfileApiModel>(user);
-            result.Object = _mapper.Map<UserProfileWithoutPhotoApiModel>(apiModel);
+            var profile = _mapper.Map<UserProfileDTO>(model);
+            profile.Id = userId;
+
+            var profileDTO = await _userRepository.SetUserProfile(profile, model.SchoolName);
+            //var apiModel = _mapper.Map<UserProfileApiModel>(user);
+            result.Object = _mapper.Map<UserProfileWithoutPhotoApiModel>(profileDTO);
             return result.Set(true);
         }
 
@@ -279,9 +294,7 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
-            string imagePath = user.UserProfile != null && user.UserProfile.Photo != null ?
-                pathPhoto + user.UserProfile.Photo : null;
-
+            string imagePath = user?.UserProfile?.Photo != null ? pathPhoto + user.UserProfile.Photo : null;
             return new ResponseApiModel<ImageApiModel>(new ImageApiModel { Photo = imagePath }, true);
         }
 
@@ -317,7 +330,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!result)
             {
-                throw new BadRequestException("Фото не змінено.");
+                throw new BadRequestException("Фото не змінено");
             }
 
             if (File.Exists(filePathDelete))
@@ -499,7 +512,7 @@ namespace YIF.Core.Service.Concrete.Services
             var user = await _userManager.FindByEmailAsync(model.UserEmail);
             if (user == null || user.IsDeleted)
             {
-                throw new NotFoundException("Така електронна пошта не є зареєстрованою");
+                throw new NotFoundException("Така електронна пошта не є активною");
             }
 
             var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -582,12 +595,12 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (user == null || user.IsDeleted)
             {
-                throw new NotFoundException("Такий емейл не є зареєстрованим");
+                throw new NotFoundException("Така електронн апошта не є активною");
             }
 
             if (user.EmailConfirmed)
             {
-                throw new ArgumentException("Емейл вже підтвердженний");
+                throw new ArgumentException("Електронна пошта вже підтверджена");
             }
 
             await _userManager.ConfirmEmailAsync(user, model.Token);

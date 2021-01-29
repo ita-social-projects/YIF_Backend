@@ -8,9 +8,6 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
-using YIF.Core.Domain.ApiModels.RequestApiModels;
-using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.School;
 
@@ -23,43 +20,41 @@ namespace YIF.Core.Service.Mapping
             AllowNullCollections = true;
             CreateMap<DbUser, UserDTO>()
                 .ForMember(dto => dto.Roles, opt => opt.MapFrom<GetRolesResolver>());
-            CreateMap<UserDTO, DbUser>()
-                .AfterMap<SetRolesResolver>();
-            CreateMap<UserDTO, UserApiModel>()
-                .ReverseMap();
-
-            CreateMap<SpecialityToUniversity, SpecialityToUniversityDTO>()
-                .ReverseMap();
-            CreateMap<Speciality, SpecialityDTO>()
-                .ReverseMap();
-            CreateMap<University, UniversityDTO>()
-                .ReverseMap();
-            CreateMap<Direction, DirectionDTO>()
-                .ReverseMap();
-            CreateMap<DirectionToUniversity, DirectionToUniversityDTO>()
-                .ReverseMap();
-            CreateMap<UniversityAdmin, UniversityAdminDTO>()
-                .ReverseMap();
-            CreateMap<UniversityModerator, UniversityModeratorDTO>()
-                .ReverseMap();
-            CreateMap<Lecture, LectureDTO>()
-                .ReverseMap();
-
-            CreateMap<UniversityDTO, UniversityResponseApiModel>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath));
+            CreateMap<UserDTO, DbUser>().AfterMap<SetRolesResolver>();
+            CreateMap<UserDTO, UserApiModel>().ReverseMap();
 
             CreateMap<DbUser, UserProfileDTO>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile.Name))
-                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile.MiddleName))
-                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile.Surname))
-                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo))
-                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth))
-                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile.RegistrationDate));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.Name))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.MiddleName))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.Surname))
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo ?? null))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth ?? null))
+                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile == null ? DateTime.MinValue : src.UserProfile.RegistrationDate));
 
-            CreateMap<UserProfileDTO, UserProfileApiModel>();
+            CreateMap<UserDTO, UserProfileDTO>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.Name))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.MiddleName))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.Surname))
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.UserProfile.Photo ?? null))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.UserProfile.DateOfBirth ?? null))
+                .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.UserProfile == null ? DateTime.MinValue : src.UserProfile.RegistrationDate));
+
+            CreateMap<UserProfile, UserProfileDTO>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.UserName))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.Email))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.PhoneNumber));
+
+            CreateMap<UserProfileDTO, UserProfile>();
+
+            CreateMap<UserProfileDTO, UserProfileApiModel>()
+                .AfterMap<SetSchoolInUserProfileApiModelResolver>();
+            CreateMap<UserProfileApiModel, UserProfileDTO>();
+
+            CreateMap<UserProfileDTO, UserProfileWithoutPhotoApiModel>()
+                .AfterMap<SetSchoolInUserProfileApiModelResolver>();
+            CreateMap<UserProfileWithoutPhotoApiModel, UserProfileDTO>();
+
+
 
             CreateMap<SchoolDTO, UserProfileApiModel>()
                 .ForMember(dest => dest.Name, opt => opt.Ignore())
@@ -78,20 +73,13 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .AfterMap<SetSchoolInUserProfileApiModelResolver>();
 
-            CreateMap<UserProfile, UserProfileDTO>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.UserName))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.Email))
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User == null ? "unknown" : src.User.PhoneNumber));
         }
     }
 
     public class GetRolesResolver : IValueResolver<DbUser, UserDTO, IEnumerable<string>>
     {
         private static UserManager<DbUser> _manager;
-        public GetRolesResolver(UserManager<DbUser> manager)
-        {
-            _manager = manager;
-        }
+        public GetRolesResolver(UserManager<DbUser> manager) => _manager = manager;
         public IEnumerable<string> Resolve(DbUser user, UserDTO userDTO, IEnumerable<string> roles, ResolutionContext context)
         {
             return _manager.GetRolesAsync(user).Result;
@@ -101,10 +89,7 @@ namespace YIF.Core.Service.Mapping
     public class SetRolesResolver : IMappingAction<UserDTO, DbUser>
     {
         private static UserManager<DbUser> _manager;
-        public SetRolesResolver(UserManager<DbUser> manager)
-        {
-            _manager = manager;
-        }
+        public SetRolesResolver(UserManager<DbUser> manager) => _manager = manager;
         public void Process(UserDTO userDTO, DbUser user, ResolutionContext context)
         {
             var roles = _manager.GetRolesAsync(user).Result;
@@ -122,27 +107,34 @@ namespace YIF.Core.Service.Mapping
         }
     }
 
-    public class SetSchoolInUserProfileApiModelResolver : IMappingAction<DbUser, UserProfileApiModel>
+    public class SetSchoolInUserProfileApiModelResolver :
+        IMappingAction<DbUser, UserProfileApiModel>,
+        IMappingAction<UserProfileDTO, UserProfileApiModel>,
+        IMappingAction<UserProfileDTO, UserProfileWithoutPhotoApiModel>
     {
         private static IApplicationDbContext _context;
-        public SetSchoolInUserProfileApiModelResolver(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public SetSchoolInUserProfileApiModelResolver(IApplicationDbContext context) => _context = context;
 
         public void Process(DbUser user, UserProfileApiModel profile, ResolutionContext context)
         {
             profile.SchoolName = _context.Graduates.Include(s => s.School).FirstOrDefault(x => x.UserId == user.Id)?.School?.Name;
+        }
+
+        public void Process(UserProfileDTO profileDTO, UserProfileApiModel profileApi, ResolutionContext context)
+        {
+            profileApi.SchoolName = _context.Graduates.Include(s => s.School).FirstOrDefault(x => x.UserId == profileDTO.Id)?.School?.Name;
+        }
+
+        public void Process(UserProfileDTO profileDTO, UserProfileWithoutPhotoApiModel profileApi, ResolutionContext context)
+        {
+            profileApi.SchoolName = _context.Graduates.Include(s => s.School).FirstOrDefault(x => x.UserId == profileDTO.Id)?.School?.Name;
         }
     }
 
     public class GetExistingUserProfileResolver : ITypeConverter<UserProfileWithoutPhotoApiModel, UserProfile>
     {
         private static UserManager<DbUser> _userManager;
-        public GetExistingUserProfileResolver(UserManager<DbUser> userManager)
-        {
-            _userManager = userManager;
-        }
+        public GetExistingUserProfileResolver(UserManager<DbUser> userManager) => _userManager = userManager;
 
         public UserProfile Convert(UserProfileWithoutPhotoApiModel profileApi, UserProfile profile, ResolutionContext context)
         {
