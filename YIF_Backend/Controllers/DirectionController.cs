@@ -33,7 +33,7 @@ namespace YIF_Backend.Controllers
             {
                 Page = page,
                 PageSize = pageSize,
-                Url = $"{Request.Scheme}://{Request.Host}{Request.Path}"
+                Url = $"{Request?.Scheme}://{Request?.Host}{Request?.Path}"
             };
 
             var directions = await _directionService.GetAllDirections(pageModel);
