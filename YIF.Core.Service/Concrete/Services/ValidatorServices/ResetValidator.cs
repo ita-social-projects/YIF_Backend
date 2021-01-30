@@ -7,14 +7,12 @@ using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services.ValidatorServices
 {
-    public class ChangePasswordValidator : AbstractValidator<ChangePasswordApiModel>
+    public class ResetValidator : AbstractValidator<RestoreApiModel>
     {
         private readonly UserManager<DbUser> _userManager;
         private readonly IRecaptchaService _recaptcha;
 
-        private DbUser User = new DbUser();
-
-        public ChangePasswordValidator(UserManager<DbUser> userManager, IRecaptchaService recaptcha)
+        public ResetValidator(UserManager<DbUser> userManager, IRecaptchaService recaptcha)
         {
             _userManager = userManager;
             _recaptcha = recaptcha;
@@ -28,9 +26,6 @@ namespace YIF.Core.Service.Concrete.Services.ValidatorServices
             RuleFor(x => x.UserId)
                 .Must(x => IsUserExist(x)).WithMessage("Такого користувача не існує");
 
-            RuleFor(x => x.OldPassword)
-                .Must(x => IsOldPasswordCorrect(GetUserById(User.Id), x)).WithMessage("Старий пароль неправильний");
-
             RuleFor(x => x.NewPassword)
                  .NotEmpty().WithMessage("Пароль є обов'язковим!")
                  .Length(8, 20).WithMessage("Пароль має містити мінімум 8 символів і максимум 20 (включно)!")
@@ -40,27 +35,13 @@ namespace YIF.Core.Service.Concrete.Services.ValidatorServices
                  .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
             RuleFor(x => x.NewPassword)
-                .Equal(x => x.ConfirmNewPassword).WithMessage("Пароль і новий пароль не співпадають");
+                .Equal(x => x.ConfirmNewPassword).WithMessage("Паролі не співпадають");
         }
 
         private bool IsUserExist(string id)
         {
-            User.Id = id;
             var user = Task.FromResult(_userManager.FindByIdAsync(id)).Result.Result;
-
-            return user == null ? false : true;
-        }
-    
-        private bool IsOldPasswordCorrect(DbUser user,string passwordHash)
-        {
-            var result = _userManager.CheckPasswordAsync(user, passwordHash).Result;
-
-            return result;
-        }
-
-        private DbUser GetUserById(string id)
-        {
-            return Task.FromResult(_userManager.FindByIdAsync(id)).Result.Result;
+            return user != null;
         }
     }
 }

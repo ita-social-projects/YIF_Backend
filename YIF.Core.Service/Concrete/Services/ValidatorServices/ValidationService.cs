@@ -87,16 +87,9 @@ namespace YIF.Core.Service.Concrete.Services
                 .Matches(@"[0-9]+").WithMessage("Пароль має містити щонайменше одну цифру!")
                 .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
-            RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Паролі не співпадають!");
+            RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Пароль та підтвердження паролю не співпадають!");
 
-            RuleFor(x => x.Email).Must(IsEmailNotExist).WithMessage("Електронна пошта вже існує!");
             RuleFor(x => x.Username).Must(IsUsernameNotExist).WithMessage("Ім'я користувача вже існує!");
-        }
-
-        private bool IsEmailNotExist(string email)
-        {
-            var user = _userManager.FindByEmailAsync(email).Result;
-            return user == null;
         }
 
         private bool IsUsernameNotExist(string username)
@@ -126,7 +119,17 @@ namespace YIF.Core.Service.Concrete.Services
                 base64 = base64.Split(',')[1];
             }
             Span<byte> buffer = new Span<byte>(new byte[base64.Length]);
-            return Convert.TryFromBase64String(base64, buffer, out int bytesParsed);
+            return Convert.TryFromBase64String(base64, buffer, out _);
+        }
+    }
+    public class EmailModelValidator : AbstractValidator<string>
+    {
+        public EmailModelValidator()
+        {
+            CascadeMode = CascadeMode.Stop;
+            RuleFor(x => x)
+                .NotNull().NotEmpty().WithMessage("Електронна пошта є обов'язковою!")
+                .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
         }
     }
 }

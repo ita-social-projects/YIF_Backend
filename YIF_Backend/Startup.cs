@@ -14,7 +14,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using YIF.Core.Data;
@@ -29,6 +28,7 @@ using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF_Backend.Infrastructure;
 using YIF_Backend.Infrastructure.Middleware;
 
 namespace YIF_Backend
@@ -60,6 +60,7 @@ namespace YIF_Backend
             #region Interfaces
             services.AddTransient<IApplicationDbContext, EFDbContext>();
             services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
+            services.AddTransient<IUserProfileRepository<UserProfile, UserProfileDTO>, UserProfileRepository>();
             services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
             services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
             services.AddTransient<IRepository<Speciality, SpecialityDTO>, SpecialityRepository>();
@@ -74,7 +75,6 @@ namespace YIF_Backend
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
             services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
-
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
@@ -105,27 +105,15 @@ namespace YIF_Backend
                     }
                 });
 
+                c.OperationFilter<AddAuthorizationHeaderOperationHeader>();
                 c.AddSecurityDefinition("Bearer",
                      new OpenApiSecurityScheme
                      {
-                         Description = "JWT Authorization header using the Bearer scheme.",
+                         Description = "JWT Authorization header. Use bearer token to authorize.",
                          Type = SecuritySchemeType.Http,
-                         Scheme = "bearer"
+                         Scheme = "bearer",
+                         BearerFormat = "JWT"
                      });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
-                        new List<string>()
-                    }
-                });
 
                 foreach (string xmlFile in Directory.EnumerateFiles(AppContext.BaseDirectory, "*.xml"))
                 {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +29,9 @@ namespace YIF.Core.Service.Concrete.Services
     public class UserService : IUserService<DbUser>
     {
         private readonly IUserRepository<DbUser, UserDTO> _userRepository;
+        private readonly IUserProfileRepository<UserProfile, UserProfileDTO> _userProfileRepository;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IServiceProvider _serviceProvider;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
@@ -37,9 +40,11 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
-        private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduate;
+        private readonly ISchoolGraduateRepository<SchoolDTO> _schoolGraduateRepository;
 
         public UserService(IUserRepository<DbUser, UserDTO> userRepository,
+            IUserProfileRepository<UserProfile, UserProfileDTO> userProfileRepository,
+            IServiceProvider serviceProvider,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
@@ -52,6 +57,8 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolGraduateRepository<SchoolDTO> schoolGraduate)
         {
             _userRepository = userRepository;
+            _userProfileRepository = userProfileRepository;
+            _serviceProvider = serviceProvider;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = _IJwtService;
@@ -61,7 +68,7 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
             _tokenRepository = tokenRepository;
-            _schoolGraduate = schoolGraduate;
+            _schoolGraduateRepository = schoolGraduate;
         }
 
         public async Task<ResponseApiModel<IEnumerable<UserApiModel>>> GetAllUsers()
@@ -120,15 +127,14 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(validResults.ToString());
             }
 
-            var searchUser = _userManager.FindByEmailAsync(registerModel.Email);
-            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
+            var searchUser = await _userManager.FindByEmailAsync(registerModel.Email);
+            if (searchUser != null)
             {
-                throw new InvalidOperationException("Користувач вже існує");
-            }
-
-            if (!registerModel.Password.Equals(registerModel.ConfirmPassword))
-            {
-                throw new BadRequestException("Пароль та підтвердження пароля не співпадають");
+                if (searchUser.IsDeleted == false)
+                {
+                    throw new InvalidOperationException("Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
+                }
+                return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
             }
 
             var dbUser = new DbUser
@@ -139,13 +145,12 @@ namespace YIF.Core.Service.Concrete.Services
 
             var graduate = new Graduate { UserId = dbUser.Id };
             var registerResult = await _userRepository.Create(dbUser, graduate, registerModel.Password, ProjectRoles.Graduate);
-
-            await _userRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
-
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
             }
+
+            await _userProfileRepository.SetDefaultUserProfileIfEmpty(dbUser.Id);
 
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
@@ -201,7 +206,7 @@ namespace YIF.Core.Service.Concrete.Services
             var claims = _jwtService.GetClaimsFromExpiredToken(accessToken);
             if (claims == null)
             {
-                throw new BadRequestException("Помилка запиту. Помилковий токен.");
+                throw new BadRequestException("Помилка запиту. Помилковий токен");
             }
 
             var userId = claims.First(claim => claim.Type == "id").Value;
@@ -210,17 +215,17 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (user == null)
             {
-                throw new BadRequestException("Помилка запиту. Користувача не існує.");
+                throw new BadRequestException("Помилка запиту. Користувача не існує");
             }
 
             if (user.Token == null || user.Token.RefreshToken != refreshToken)
             {
-                throw new BadRequestException("Помилка запиту. Спочатку потрібно авторизуватись.");
+                throw new BadRequestException("Помилка запиту. Спочатку потрібно авторизуватись");
             }
 
             if (user.Token.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new BadRequestException("Помилка запиту. Термін дії рефреш-токена закінчився.");
+                throw new BadRequestException("Помилка запиту. Термін дії рефреш-токена закінчився");
             }
 
             var newAccessToken = _jwtService.CreateToken(claims);
@@ -233,36 +238,32 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<UserProfileApiModel>> GetUserProfileInfoById(string userId, HttpRequest request)
         {
-            var user = await _userRepository.GetUserWithUserProfile(userId);
-            var userDto = _mapper.Map<UserProfileDTO>(user);
+            var userDto = await _userRepository.GetUserWithUserProfile(userId);
+            if (userDto == null)
+            {
+                throw new NotFoundException("Користувача не знайдено");
+            }
 
-            var school = await _schoolGraduate.GetSchoolByUserId(userId);
+            var userProfile = _mapper.Map<UserProfileApiModel>(userDto.UserProfile);
 
-            var userProfile = _mapper.Map<UserProfileApiModel>(userDto);
-
-            if (school != null)
-                userProfile = _mapper.Map(school, userProfile);
-
-            if (userProfile == null)
-                throw new NotFoundException("Зазначеного користувача не існує.");
-
-            string pathPhoto =  $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
             userProfile.Photo = userProfile.Photo != null ? pathPhoto + userProfile.Photo : null;
+
+            var schoolDto = await _schoolGraduateRepository.GetSchoolByUserId(userId);
+            userProfile.SchoolName = schoolDto?.Name;
 
             return new ResponseApiModel<UserProfileApiModel>(userProfile, true);
         }
 
-        public async Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId)
+        public async Task<ResponseApiModel<UserProfileWithoutPhotoApiModel>> SetUserProfileInfoById(UserProfileWithoutPhotoApiModel model, string userId)
         {
-            var result = new ResponseApiModel<UserProfileApiModel>();
+            var result = new ResponseApiModel<UserProfileWithoutPhotoApiModel>();
 
-            var newEmail = model.Email;
-            model.Email = (await _userManager.FindByIdAsync(userId)).Email;
-            var profile = _mapper.Map<UserProfile>(model);
-            profile.User.Email = newEmail;
+            var profile = _mapper.Map<UserProfileDTO>(model);
+            profile.Id = userId;
 
-            var user = await _userRepository.SetUserProfile(profile, userId, model.SchoolName);
-            result.Object = _mapper.Map<UserProfileApiModel>(user);
+            var profileDTO = await _userProfileRepository.SetUserProfile(profile, model.SchoolName);
+            result.Object = _mapper.Map<UserProfileWithoutPhotoApiModel>(profileDTO);
             return result.Set(true);
         }
 
@@ -270,10 +271,8 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var user = await _userRepository.GetUserWithUserProfile(userId);
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
-            string imagePath = user.UserProfile != null && user.UserProfile.Photo != null ?
-                pathPhoto + user.UserProfile.Photo : null;
-
-            return new ResponseApiModel<ImageApiModel>( new ImageApiModel { Photo = imagePath }, true);
+            string imagePath = user?.UserProfile?.Photo != null ? pathPhoto + user.UserProfile.Photo : null;
+            return new ResponseApiModel<ImageApiModel>(new ImageApiModel { Photo = imagePath }, true);
         }
 
         public async Task<ResponseApiModel<ImageApiModel>> ChangeUserPhoto(ImageApiModel model, string userId, HttpRequest request)
@@ -308,7 +307,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (!result)
             {
-                throw new BadRequestException("Фото не змінено.");
+                throw new BadRequestException("Фото не змінено");
             }
 
             if (File.Exists(filePathDelete))
@@ -318,7 +317,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
             fileName = fileName != null ? pathPhoto + fileName : null;
-            return new ResponseApiModel<ImageApiModel>( new ImageApiModel { Photo = fileName }, true);
+            return new ResponseApiModel<ImageApiModel>(new ImageApiModel { Photo = fileName }, true);
         }
 
         public Task<bool> UpdateUser(UserDTO user)
@@ -326,34 +325,37 @@ namespace YIF.Core.Service.Concrete.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteUserById(string id)
+        public async Task<bool> DeleteUserById(string id)
         {
-            throw new NotImplementedException();
+            return await _userRepository.Delete(id);
         }
 
         public void Dispose()
         {
             _userRepository.Dispose();
+            _userProfileRepository.Dispose();
         }
 
-        public async Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request)
+
+        public async Task<ResponseApiModel<bool>> ResetPasswordByEmail(string userEmail, HttpRequest request)
         {
-            var result = new ResponseApiModel<ResetPasswordByEmailApiModel>();
-            var user = await _userManager.FindByEmailAsync(model.UserEmail);
+            var result = new ResponseApiModel<bool>();
 
-            if (model.UserEmail == string.Empty || model.UserEmail == null)
+            var validResults = new EmailModelValidator().Validate(userEmail);
+            if (!validResults.IsValid) return result.Set(false, validResults.ToString());
+
+            var manager = (UserManager<DbUser>)_serviceProvider.GetService(typeof(UserManager<DbUser>));
+            var user = await manager.FindByEmailAsync(userEmail);
+            if (user != null)
             {
-                throw new BadRequestException("Введіть коректну електронну скриньку.");
-            }
+                var token = await manager.GeneratePasswordResetTokenAsync(user);
+                token = System.Web.HttpUtility.UrlEncode(token);
 
-            if (user == null || user.IsDeleted)
-            {
-                throw new NotFoundException("Така електронна скринька не зареєестрована.");
-            }
-
-            var serverUrl = $"{request.Scheme}://{request.Host}/";
-            var url = serverUrl + $"password/reset/{user.Id}";
-            var html = $@"<p>&nbsp;</p>
+                var serverUrl = $"{request.Scheme}://{request.Host}/";
+                var url = serverUrl + $"restore?id={user.Id}&token={token}";
+                var topic = user.IsDeleted ? "Відновлення облікового запису" : "Відновлення паролю";
+                var type = user.IsDeleted ? "Відновити обліковий запис" : "Відновити пароль";
+                var html = $@"<p>&nbsp;</p>
 <!-- HIDDEN PREHEADER TEXT -->
 <table border=""0"" width=""100%"" cellspacing=""0"" cellpadding=""0""><!-- LOGO -->
 <tbody>
@@ -394,7 +396,9 @@ namespace YIF.Core.Service.Concrete.Services
 <table border=""0"" cellspacing=""0"" cellpadding=""0"">
 <tbody>
 <tr>
-<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B""><a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Змінити пароль</a></td>
+<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B"">
+<a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">{type}</a>
+</td>
 </tr>
 </tbody>
 </table>
@@ -417,13 +421,44 @@ namespace YIF.Core.Service.Concrete.Services
 </tbody>
 </table>";
 
-            await _emailService.SendAsync(model.UserEmail, "Відновлення паролю", html);
+                await _emailService.SendAsync(userEmail, topic, html);
+            }
+            return result.Set(true, "Перейдіть за посиланням, відправленим на вказану електронну пошту для відновлення");
+        }
 
-            result.Object = model;
+        public async Task<ResponseApiModel<bool>> RestorePasswordById(RestoreApiModel model)
+        {
+            var result = new ResponseApiModel<bool>();
+
+            var validator = new ResetValidator(_userManager, _recaptcha);
+            var validResults = validator.Validate(model);
+
+            if (!validResults.IsValid)
+            {
+                throw new ArgumentException(validResults.ToString());
+            }
+
+            var manager = (UserManager<DbUser>)_serviceProvider.GetService(typeof(UserManager<DbUser>));
+            var user = await manager.FindByIdAsync(model.UserId);
+            if (user == null)
+            {
+                return result.Set(false, "Користувача не знайдено");
+            }
+
+            var token = System.Web.HttpUtility.UrlDecode(model.Token);
+            var restoreResult = await manager.ResetPasswordAsync(user, token, model.NewPassword);
+            if (!restoreResult.Succeeded)
+            {
+                throw new ArgumentException(restoreResult.Errors.First().Description);
+            }
+
+            result.Message = user.IsDeleted ? "Обліковий запис успішно відновлено" : "Пароль успішно відновлено";
+
+            if (user.IsDeleted) user.IsDeleted = false;
+            await manager.UpdateAsync(user);
 
             return result.Set(true);
         }
-
         public async Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
         {
             var result = new ResponseApiModel<ChangePasswordApiModel>();
@@ -448,19 +483,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        public async Task<ResponseApiModel<SendEmailConfirmApiModel>> SendEmailConfirmMail(SendEmailConfirmApiModel model, HttpRequest request)
+        public async Task<ResponseApiModel<bool>> SendEmailConfirmMail(EmailApiModel model, HttpRequest request)
         {
-            var result = new ResponseApiModel<SendEmailConfirmApiModel>();
+            var result = new ResponseApiModel<bool>();
+
+            var validResults = new EmailModelValidator().Validate(model.UserEmail);
+            if (!validResults.IsValid) return result.Set(false, validResults.ToString());
+
             var user = await _userManager.FindByEmailAsync(model.UserEmail);
-
-            if (model.UserEmail == string.Empty || model.UserEmail == null)
-            {
-                throw new ArgumentException("Введіть коректний емейл");
-            }
-
             if (user == null || user.IsDeleted)
             {
-                throw new NotFoundException("Такий емейл не є зареєстрованим");
+                throw new NotFoundException("Така електронна пошта не є активною");
             }
 
             var confirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -507,7 +540,9 @@ namespace YIF.Core.Service.Concrete.Services
 <table border=""0"" cellspacing=""0"" cellpadding=""0"">
 <tbody>
 <tr>
-<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B""><a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Підтвердити</a></td>
+<td style=""border-radius: 3px;"" align=""center"" bgcolor=""#FFA73B"">
+<a style=""font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;"" href=""{url}"" target=""_blank"" rel=""noopener"">Підтвердити</a>
+</td>
 </tr>
 </tbody>
 </table>
@@ -530,11 +565,9 @@ namespace YIF.Core.Service.Concrete.Services
 </tbody>
 </table>";
 
-            _ = _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
+            await _emailService.SendAsync(model.UserEmail, "Підтвердження пошти", html);
 
-            result.Object = model;
-
-            return result.Set(true);
+            return result.Set(true, "Перейдіть за посиланням, відправленим на вказану електронну пошту для її підтвердження");
         }
         public async Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model)
         {
@@ -543,12 +576,12 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (user == null || user.IsDeleted)
             {
-                throw new NotFoundException("Такий емейл не є зареєстрованим");
+                throw new NotFoundException("Така електронн апошта не є активною");
             }
 
             if (user.EmailConfirmed)
             {
-                throw new ArgumentException("Емейл вже підтвердженний");
+                throw new ArgumentException("Електронна пошта вже підтверджена");
             }
 
             await _userManager.ConfirmEmailAsync(user, model.Token);
@@ -562,8 +595,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<RolesByTokenResponseApiModel>> GetCurrentUserRolesUsingAuthorize(string id)
         {
-            var result = new ResponseApiModel<RolesByTokenResponseApiModel>();
-            result.Object = new RolesByTokenResponseApiModel("Not Valid");
+            var result = new ResponseApiModel<RolesByTokenResponseApiModel>(new RolesByTokenResponseApiModel("Not Valid"), false);
 
             var user = await _userManager.Users.Include(u => u.Token).SingleAsync(x => x.Id == id);
 
@@ -595,6 +627,5 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return result.Object.Count() > 0 ? result.Set(true) : result.Set(false, "Адміністраторів немає");
         }
-
     }
 }

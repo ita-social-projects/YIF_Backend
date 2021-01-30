@@ -9,7 +9,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
     public class ResponseApiModel<T>
     {
         /// <summary>
-        /// Gets the value of whether the result is successful (whether the <see cref="HttpStatusCode"/> is 2XX).
+        /// Gets the value of whether the result is successful.
         /// </summary>
         public bool Success { get; set; }
         /// <summary>
@@ -43,7 +43,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <param name="obj">The object used in case of a response with returning an object.</param>
         /// <param name="isSuccess">The result of work.</param>
         /// <param name="message">The message for the description of the response.</param>
-        public ResponseApiModel(T obj, bool isSuccess = false, string message = null)
+        public ResponseApiModel(T obj, bool isSuccess, string message = null)
         {
             Object = obj;
             Success = isSuccess;
@@ -61,7 +61,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         public ResponseApiModel<T> Set(bool isSuccess, string message = null)
         {
             Success = isSuccess;
-            Message = message;
+            if (message != null) Message = message;
             return this;
         }
         /// <summary>

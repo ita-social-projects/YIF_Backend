@@ -35,8 +35,8 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SchoolDTO> GetSchoolByUserId(string userId)
         {
-            var gradute = await _context.Graduates.Include(s => s.School).FirstOrDefaultAsync(x => x.UserId == userId);
-            var school = gradute?.School;
+            var graduate = await _context.Graduates.Include(s => s.School).FirstOrDefaultAsync(x => x.UserId == userId);
+            var school = graduate?.School;
             return _mapper.Map<SchoolDTO>(school);
         }
     }

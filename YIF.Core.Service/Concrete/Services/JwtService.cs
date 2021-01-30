@@ -26,11 +26,9 @@ namespace YIF.Core.Service.Concrete.Services
         public string CreateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
 
         public string CreateToken(IEnumerable<Claim> claims)
@@ -58,12 +56,11 @@ namespace YIF.Core.Service.Concrete.Services
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken;
             JwtSecurityToken jwtSecurityToken;
 
             try
             {
-                tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+                tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
                 jwtSecurityToken = securityToken as JwtSecurityToken;
 
                 if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))

@@ -101,10 +101,12 @@ namespace YIF.Core.Service.Concrete.Services
             await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
             var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
 
-            UniversityModerator toAdd = new UniversityModerator();
-            toAdd.UniversityId = university.Id;
-            toAdd.UserId = dbUser.Id;
-            toAdd.AdminId = admin.Id;
+            UniversityModerator toAdd = new UniversityModerator
+            {
+                UniversityId = university.Id,
+                UserId = dbUser.Id,
+                AdminId = admin.Id
+            };
             await _universityModeratorRepository.AddUniModerator(toAdd);
 
 
@@ -160,10 +162,12 @@ namespace YIF.Core.Service.Concrete.Services
             await _schoolAdminRepository.AddSchoolAdmin(new SchoolAdmin { SchoolId = school.Id });
             var admin = await _schoolAdminRepository.GetBySchoolIdWithoutIsDeletedCheck(school.Id);
 
-            SchoolModerator toAdd = new SchoolModerator();
-            toAdd.SchoolId = school.Id;
-            toAdd.UserId = dbUser.Id;
-            toAdd.AdminId = admin.Id;
+            SchoolModerator toAdd = new SchoolModerator
+            {
+                SchoolId = school.Id,
+                UserId = dbUser.Id,
+                AdminId = admin.Id
+            };
             await _schoolModeratorRepository.AddSchoolModerator(toAdd);
 
 
@@ -202,7 +206,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async  Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 

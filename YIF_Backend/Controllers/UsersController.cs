@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
@@ -65,13 +65,13 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get information about authorized user
+        /// Get information about authorized user.
         /// </summary>
         /// <returns>Status code</returns>
-        /// <response code="200">if get information about current user is correct</response>
+        /// <response code="200">if get information about current user is correct.</response>
         /// <response code="400">if get information about current user is incorrect.</response>
-        /// <response code="401">If user is unauthorized or token is bad/expired</response>
-        /// <response code="404">If user not found</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
+        /// <response code="404">If user not found.</response>
         [ProducesResponseType(typeof(UserProfileApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -86,13 +86,33 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get authorized user's photo
+        /// Create/update user profile (information about authorized user).
         /// </summary>
         /// <returns>Status code</returns>
-        /// <response code="200">if request is correct</response>
+        /// <response code="200">If the user profile successfully created/updated.</response>
+        /// <response code="400">If the request to set the user profile is incorrect.</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
+        [ProducesResponseType(typeof(UserProfileApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("Current/SetProfile")]
+        [Authorize]
+        public async Task<IActionResult> SetUserProfile([FromBody] UserProfileWithoutPhotoApiModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            var id = User.FindFirst("id")?.Value;
+            var result = await _userService.SetUserProfileInfoById(model, id);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get authorized user's photo.
+        /// </summary>
+        /// <returns>Status code</returns>
+        /// <response code="200">if request is correct.</response>
         /// <response code="400">if request is incorrect.</response>
-        /// <response code="401">If user is unauthorized or token is bad/expired</response>
-        /// <response code="404">If user not found</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
+        /// <response code="404">If user not found.</response>
         [ProducesResponseType(typeof(ImageApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -107,36 +127,16 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Creates user profile
+        /// Change authorized user photo. Size limit 100 MB.
         /// </summary>
         /// <returns>Status code</returns>
-        /// <response code="200">If the user profile successfully created/updated.</response>
-        /// <response code="400">If the request to set the user profile is incorrect.</response>
-        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
-        [ProducesResponseType(typeof(UserProfileApiModel), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("SetCurrentProfile")]
-        [Authorize]
-        public async Task<IActionResult> SetUserProfile([FromBody] UserProfileApiModel model)
-        {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
-            var id = User.FindFirst("id")?.Value;
-            var result = await _userService.SetUserProfileInfoById(model, id);
-            return Ok(result.Object);
-        }
-
-        /// <summary>
-        /// Change authorized user photo. Size limit 100 MB
-        /// </summary>
-        /// <returns>Status code</returns>
-        /// <response code="200">If change user photo request is correct</response>
+        /// <response code="200">If change user photo request is correct.</response>
         /// <response code="400">If change user photo request is incorrect.</response>
-        /// <response code="401">If user is unauthorized or token is bad/expired</response>
+        /// <response code="401">If user is unauthorized or token is bad/expired.</response>
         [ProducesResponseType(typeof(ImageApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("ChangePhoto")]
+        [HttpPost("Current/ChangePhoto")]
         [RequestSizeLimit(100 * 1024 * 1024)]     // set the maximum file size limit to 100 MB
         [Authorize]
         public async Task<IActionResult> ChangeUserPhoto([FromBody] ImageApiModel model)
@@ -151,82 +151,110 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
+
         /// <summary>
-        /// Send reset password mail
+        /// Send mail for reset user or user password.
         /// </summary>
-        /// <returns></returns>
-        /// <response code="200">When user exist and email have been sended</response>
-        /// <response code="400">If current email is not correct</response>
-        /// <response code="404">If user doesn`t exist</response>
-        [ProducesResponseType(typeof(ResetPasswordByEmailApiModel), 200)]
+        /// <returns>Message about success</returns>
+        /// <response code="200">When email has been sent.</response>
+        /// <response code="400">If current email is not correct.</response>
+        /// <param name="userEmail" example="example@gmail.com">User email.</param>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordByEmailApiModel model)
+        [HttpPost("Reset")]
+        public async Task<IActionResult> Reset([FromQuery][Required] string userEmail)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
-            var result = await _userService.ResetPasswordByEmail(model, Request);
-            return Ok(result.Object);
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            var result = await _userService.ResetPasswordByEmail(userEmail, Request);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
 
         /// <summary>
-        /// Change the user password
+        /// Restore the user or user password.
         /// </summary>
         /// <returns></returns>
-        /// <response code="200">Password have been updated</response>
-        /// <response code="400">Password have not been updated</response>
+        /// <response code="200">Password/User have been restored.</response>
+        /// <response code="400">Password/User have not been restored.</response>
+        [ProducesResponseType(typeof(ChangePasswordApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPut("Restore")]
+        public async Task<IActionResult> Restore([FromBody] RestoreApiModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            var result = await _userService.RestorePasswordById(model);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
+        }
+
+        /// <summary>
+        /// Change the user password.
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Password have been updated.</response>
+        /// <response code="400">Password have not been updated.</response>
         [ProducesResponseType(typeof(ChangePasswordApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
             var result = await _userService.ChangeUserPassword(model);
             return Ok(result.Object);
         }
 
         /// <summary>
-        /// Send confirm email mail
+        /// Send confirm email mail.
         /// </summary>
         /// <returns></returns>
-        /// <response code="200">When mail have been sended</response>
-        /// <response code="400">When mail not have been sended</response>
-        [ProducesResponseType(typeof(SendEmailConfirmApiModel), 200)]
+        /// <response code="200">When mail has been sent.</response>
+        /// <response code="400">When mail has not been sent.</response>
+        /// <response code="404">If email not founded.</response>
+        [ProducesResponseType(typeof(EmailApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [HttpPost("SendConfirmEmailMail")]
-        public async Task<IActionResult> SendConfirmEmailMail([FromBody] SendEmailConfirmApiModel model)
+        public async Task<IActionResult> SendConfirmEmailMail([FromBody] EmailApiModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
             var result = await _userService.SendEmailConfirmMail(model, Request);
-
-            return Ok(result.Object);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
 
         /// <summary>
-        /// Confirm user email
+        /// Confirm user email.
         /// </summary>
         /// <returns></returns>
-        /// <response code="200">When email have been cofirm</response>
-        /// <response code="404">When email not have been confirm</response>
+        /// <response code="200">When email have been cofirm.</response>
+        /// <response code="404">When email not have been confirm.</response>
         [ProducesResponseType(typeof(ConfirmEmailApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [HttpPut("ConfirmUserEmail")]
         public async Task<IActionResult> ConfirmUserEmail([FromBody] ConfirmEmailApiModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
             var result = await _userService.ConfirmUserEmail(model);
-
             return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Delete current user.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if current has been successfully deleted.</response>
+        /// <response code="404">If user with current id not found.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired.</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteMe")]
+        [Authorize]
+        public async Task<IActionResult> DeleteMySelf()
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _userService.DeleteUserById(userId);
+            return result ? NoContent() : (IActionResult)NotFound("Користувача не знайдено");
         }
     }
 }

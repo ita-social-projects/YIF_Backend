@@ -14,20 +14,20 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// User name
         /// </summary>
-        [Required, StringLength(255)]
+        [StringLength(255)]
         public string Name { get; set; }
-
-        /// <summary>
-        /// User middle name
-        /// </summary>
-        [Required, StringLength(255)]
-        public string MiddleName { get; set; }
 
         /// <summary>
         /// User surname
         /// </summary>
-        [Required, StringLength(255)]
+        [StringLength(255)]
         public string Surname { get; set; }
+
+        /// <summary>
+        /// User middle name
+        /// </summary>
+        [StringLength(255)]
+        public string MiddleName { get; set; }
 
         /// <summary>
         /// User photo

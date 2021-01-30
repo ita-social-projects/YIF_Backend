@@ -22,9 +22,10 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<ImageApiModel>> ChangeUserPhoto(ImageApiModel model, string userId, HttpRequest request);
         Task<ResponseApiModel<ImageApiModel>> GetUserPhoto(string userId, HttpRequest request);
         Task<ResponseApiModel<UserProfileApiModel>> GetUserProfileInfoById(string userId, HttpRequest request);
-        Task<ResponseApiModel<UserProfileApiModel>> SetUserProfileInfoById(UserProfileApiModel model, string userId);
-        Task<ResponseApiModel<ResetPasswordByEmailApiModel>> ResetPasswordByEmail(ResetPasswordByEmailApiModel model, HttpRequest request);
-        Task<ResponseApiModel<SendEmailConfirmApiModel>> SendEmailConfirmMail(SendEmailConfirmApiModel model,HttpRequest request);
+        Task<ResponseApiModel<UserProfileWithoutPhotoApiModel>> SetUserProfileInfoById(UserProfileWithoutPhotoApiModel model, string userId);
+        Task<ResponseApiModel<bool>> ResetPasswordByEmail(string userEmail, HttpRequest request);
+        Task<ResponseApiModel<bool>> RestorePasswordById(RestoreApiModel model);
+        Task<ResponseApiModel<bool>> SendEmailConfirmMail(EmailApiModel model,HttpRequest request);
         Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model);
         Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model);
 

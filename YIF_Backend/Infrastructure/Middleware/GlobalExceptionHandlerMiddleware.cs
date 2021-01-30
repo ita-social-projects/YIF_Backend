@@ -7,9 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web.Http;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -47,7 +44,7 @@ namespace YIF_Backend.Infrastructure.Middleware
                 {
                     ErrorId = Guid.NewGuid().ToString(),
                     RequestPath = context.Request.Path.Value,
-                    EndpointPath = context.GetEndpoint().ToString(),
+                    EndpointPath = context.GetEndpoint()?.ToString(),
                     TimeStamp = DateTime.Now,
                     Message = desctiption.Message
                 };
