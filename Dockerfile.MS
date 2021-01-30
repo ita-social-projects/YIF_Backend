@@ -7,7 +7,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build-env
 
 ARG SONAR_PROJECT_KEY=yifbackendtkndocker
-ARG SONAR_HOST_URL=http://20.67.117.174:9090
+ARG SONAR_HOST_URL=http://20.67.117.174:9000
 ARG SONAR_TOKEN=f05f3118d3403778fd233b5009f3902fadf4460f
 
 WORKDIR /app
