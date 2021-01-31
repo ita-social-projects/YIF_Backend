@@ -12,12 +12,9 @@ namespace YIF_Backend.Controllers
     public class SuperAdminController : ControllerBase
     {
         private readonly ISuperAdminService _superAdminService;
-        private readonly ILogger<SuperAdminController> _logger;
-        public SuperAdminController(ISuperAdminService superAdminService,
-                                    ILogger<SuperAdminController> logger)
+        public SuperAdminController(ISuperAdminService superAdminService)
         {
             _superAdminService = superAdminService;
-            _logger = logger;
         }
 
         /// <summary>
@@ -74,7 +71,7 @@ namespace YIF_Backend.Controllers
         [HttpPut("DeleteUniversityAdmin")]
         public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest("Модель не валідна");
+            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _superAdminService.DeleteUniversityAdmin(model);
             return Ok(result.Object);
         }

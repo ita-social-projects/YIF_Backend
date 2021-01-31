@@ -29,7 +29,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public void Dispose() => _specialtyToUniversityRepository.Dispose();
 
-        public async Task<IEnumerable<SpecialtyApiModel>> GetAllSpecialtiesByFilter(FilterApiModel filterModel)
+        public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilter(FilterApiModel filterModel)
         {
             var specilaties = await _specialtyRepository.GetAll();
 
@@ -57,18 +57,24 @@ namespace YIF.Core.Service.Concrete.Services
                 specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
             }
 
-            return _mapper.Map<IEnumerable<SpecialtyApiModel>>(specilaties.Distinct().ToList());
+            var a = specilaties.Distinct().ToList();
+            var dto = a[0];
+            var api = _mapper.Map<SpecialtyResponseApiModel>(dto);
+            api = _mapper.Map(dto, api);
+            var b = _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(a);
+
+            return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
         }
 
-        public async Task<ResponseApiModel<IEnumerable<SpecialtyApiModel>>> GetAllSpecialties()
+        public async Task<ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>> GetAllSpecialties()
         {
-            var result = new ResponseApiModel<IEnumerable<SpecialtyApiModel>>();
+            var result = new ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>();
             var specialties = await _specialtyRepository.GetAll();
             if (specialties.Count() < 1)
             {
                 throw new NotFoundException("Спеціальностей немає.");
             }
-            result.Object = _mapper.Map<IEnumerable<SpecialtyApiModel>>(specialties);
+            result.Object = _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specialties);
             return result.Set(true);
         }
 
@@ -87,15 +93,15 @@ namespace YIF.Core.Service.Concrete.Services
                 .OrderBy(n => n);
         }
 
-        public async Task<ResponseApiModel<SpecialtyApiModel>> GetSpecialtyById(string id)
+        public async Task<ResponseApiModel<SpecialtyResponseApiModel>> GetSpecialtyById(string id)
         {
-            var result = new ResponseApiModel<SpecialtyApiModel>();
-            var specialty = await _specialtyToUniversityRepository.Get(id);
+            var result = new ResponseApiModel<SpecialtyResponseApiModel>();
+            var specialty = await _specialtyRepository.Get(id);
             if (specialty == null)
             {
                 throw new NotFoundException($"Спеціальність не знайдена із таким id:  {id}.");
             }
-            result.Object = _mapper.Map<SpecialtyApiModel>(specialty);
+            result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
     }

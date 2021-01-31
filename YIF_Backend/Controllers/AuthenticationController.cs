@@ -47,7 +47,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
-        [ProducesResponseType(typeof(RedirectApiModel), 409)]
+        [ProducesResponseType(typeof(RedirectResponseApiModel), 409)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterApiModel model)
         {
@@ -56,7 +56,7 @@ namespace YIF_Backend.Controllers
             if (!result.Success)
             {
                 var actionUrl = Url.Action("Reset", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
-                return Conflict(new RedirectApiModel(actionUrl, result.Message));
+                return Conflict(new RedirectResponseApiModel(actionUrl, result.Message));
             }
             return Created("", result.Object);
         }

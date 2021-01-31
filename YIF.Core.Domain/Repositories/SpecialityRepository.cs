@@ -34,7 +34,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SpecialityDTO> Get(string id)
         {
-            var specialty = await _context.Specialities.FirstOrDefaultAsync(x => x.Id == id);
+            var specialty = await _context.Specialities.Include(s => s.Direction).FirstOrDefaultAsync(x => x.Id == id);
             return _mapper.Map<SpecialityDTO>(specialty);
         }
 

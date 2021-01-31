@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -133,29 +134,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task RegisterUser_EndpointsReturnBadRequest_IfEmailAlreadyExists()
         {
             // Arrange
-            var context = new Mock<HttpContext>();
-            var session = new Mock<ISession>();
-            context.Setup(x => x.Session).Returns(session.Object);
-            var httpRequest = new Mock<HttpRequest>();
-            context.Setup(x => x.Request).Returns(httpRequest.Object);
-            httpRequest.Setup(x => x.Scheme).Returns("scheme");
+            var httpContext = new DefaultHttpContext();
+            //httpContext.Request.Scheme = "scheme";
+            var controllerContext = new ControllerContext() { HttpContext = httpContext };
+            var testControl = new AuthenticationController(_userService.Object) { ControllerContext = controllerContext };
 
-
-
-            //context.Setup(x => x.Request.Scheme).Returns("scheme");
-            //var actionContext = new ActionContext(context.Object, new RouteData(), new ActionDescriptor());
-            var cc = new ControllerContext() { HttpContext = context.Object };
-            cc.HttpContext = context.Object;
-
-            //var controllerContext = new ControllerContext(actionContext);
-            //var controllerContext = cc;
-            var controller = new AuthenticationController(_userService.Object) { ControllerContext = cc };
-            //controller.ControllerContext = controllerContext;
-
-
-
-
-
+            var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
+            mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns("url").Verifiable();
+            testControl.Url = mockUrlHelper.Object;
 
             var request = new RegisterApiModel
             {
@@ -164,31 +150,16 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Password = "test",
                 ConfirmPassword = "test"
             };
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = false };
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel>(false, "message");
             _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
-            _testControl.Request.Scheme = "scheme";
-            _testControl.Request.Scheme = "scheme";
-
-            //Url.Action("Reset", "Users", new { userEmail = model.Email }, protocol: Request.Scheme);
-
-
 
             // Act
-            var result = await _testControl.RegisterUser(request);
+            var result = await testControl.RegisterUser(request);
 
             // Assert
             var responseResult = Assert.IsType<ConflictObjectResult>(result);
-            Assert.IsType<RedirectApiModel>(responseResult.Value);
-
-
-
-            //var model = (RedirectApiModel)responseResult.Value;
-            //Assert.Equal(responseModel.Object.Token, model.Token);
-
-            //var exeption = await Assert.ThrowsAsync<InvalidOperationException>(() => _testControl.RegisterUser(request));
-            //Assert.Equal(error.Message, exeption.Message);
+            Assert.IsType<RedirectResponseApiModel>(responseResult.Value);
         }
-
 
         [Fact]
         public async Task Refresh_EndpointsReturnBadRequest_IfModelStateIsNotValid()

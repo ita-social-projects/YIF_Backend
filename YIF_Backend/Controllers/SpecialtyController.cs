@@ -29,7 +29,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Returns a list of specialties</response>
         /// <response code="404">If there are not specialties</response>
         [HttpGet("All")]
-        [ProducesResponseType(typeof(IEnumerable<SpecialtyApiModel>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<SpecialtyResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllSpecialtiesAsync()
@@ -76,7 +76,7 @@ namespace YIF_Backend.Controllers
         /// <response code="404">If specialty not found</response>
         /// <param name="id" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Specialty ID</param>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(IEnumerable<SpecialtyApiModel>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<SpecialtyResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpecialtyAsync(string id)
