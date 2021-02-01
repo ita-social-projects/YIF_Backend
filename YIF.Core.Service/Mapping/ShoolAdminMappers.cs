@@ -15,6 +15,7 @@ namespace YIF.Core.Service.Mapping
             CreateMap<School, SchoolDTO>().ReverseMap();
             CreateMap<SchoolModerator, SchoolModeratorDTO>().ReverseMap();
             CreateMap<SchoolDTO, SchoolOnlyNameResponseApiModel>().ReverseMap();
+            CreateMap<SchoolAdminDTO, SchoolAdminResponseApiModel>().ReverseMap();
         }
     }
 }

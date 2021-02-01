@@ -13,5 +13,6 @@ namespace YIF.Core.Data.Interfaces
         Task<K> GetBySchoolId(string schoolId);
         Task<string> Delete(string adminId);
         Task<K> GetBySchoolIdWithoutIsDeletedCheck(string schoolId);
+        Task<IEnumerable<K>> GetAllSchoolAdmins();
     }
 }
