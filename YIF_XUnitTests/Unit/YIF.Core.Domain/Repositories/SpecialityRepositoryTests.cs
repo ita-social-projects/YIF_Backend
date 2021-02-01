@@ -41,5 +41,41 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         {
             await Assert.ThrowsAsync<NotImplementedException>(() => _testRepo.Delete("id"));
         }
+
+        [Fact]
+        public async Task Update_ShouldReturnTrue_IfSpecialtyFound()
+        {
+            // Arrange
+            _context.Setup(s => s.Specialities.Find(_specialty1)).Returns(_specialty1);
+            // Act
+            var result = await _testRepo.Update(_specialty1);
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnFalse_IfSpecialtyNotFound()
+        {
+            // Arrange
+            _context.Setup(s => s.Specialities.Find(_specialty1)).Returns<Speciality>(null);
+            // Act
+            var result = await _testRepo.Update(_specialty1);
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void Dispose_ShouldDisposeContext()
+        {
+            // Arrange
+            var context = new Mock<IApplicationDbContext>();
+            var result = false;
+            context.Setup(x => x.Dispose()).Callback(() => result = true);
+            // Act
+            var repo = new SpecialityRepository(context.Object, _mapper.Object);
+            repo.Dispose();
+            // Assert
+            Assert.True(result);
+        }
     }
 }

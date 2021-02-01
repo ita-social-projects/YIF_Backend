@@ -22,12 +22,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         private readonly Mock<IApplicationDbContext> _dbContextMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly FakeUserManager<DbUser> _userManagerMock;
-        private readonly Mock<EFDbContext> _dbEFContextMock;
         private readonly UserRepository _testRepo;
 
         // User for check Create method
         private readonly DbUser _newUserStub;
-        private readonly UserDTO _newUserDTOStub;
         private readonly string _newUserPassword;
 
         // Users for check Update and Delete methods
@@ -47,7 +45,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _dbContextMock = new Mock<IApplicationDbContext>();
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
-            _dbEFContextMock = new Mock<EFDbContext>();
             _testRepo = new UserRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
             _newUserPassword = "QWerty-1";
@@ -59,7 +56,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _userStub3 = new DbUser { Id = Guid.NewGuid().ToString("D") };
 
             _userDTOStub = new UserDTO { Id = Guid.NewGuid().ToString("D"), UserName = "Safwan Wickens", Email = "cfarid.nadji2r@devist.com" };
-            _newUserDTOStub = new UserDTO { Id = Guid.NewGuid().ToString("D"), UserName = "Gia Vang", Email = "dill.pazee@azel.xyz" };
 
             _listDTO.Add(new UserDTO { Id = Guid.NewGuid().ToString("D"), UserName = "Safwan Wickens", Email = "cfarid.nadji2r@devist.com" });
             _dataStub = new List<DbUser> { _userStub, _userStub2 };

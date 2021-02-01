@@ -33,7 +33,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
-        private readonly Mock<ITokenRepository> _tokenRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
         private readonly Mock<ITokenRepository> _tokenRepostory;
         private readonly SuperAdminService superAdminService;
@@ -67,7 +66,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
-            _tokenRepository = new Mock<ITokenRepository>();
             _dbContextMock = new Mock<IApplicationDbContext>();
             _tokenRepostory = new Mock<ITokenRepository>();
             superAdminService = new SuperAdminService(
@@ -99,12 +97,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [Fact]
         public async Task AddUniAdmin_NoUniFound_returnsResult()
         {
-            List<UniversityDTO> listNull = new List<UniversityDTO>
-            {
-                null
-            }; 
-            _universityRepository.Setup(p => p.Find(It.IsAny<Expression<Func<University, bool>>>()))
-                                                                                                .ReturnsAsync(listNull);
+            List<UniversityDTO> listNull = new List<UniversityDTO>();
+            _universityRepository.Setup(p => p.Find(It.IsAny<Expression<Func<University, bool>>>())).ReturnsAsync(listNull);
 
             // Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddUniversityAdmin(model));

@@ -16,8 +16,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         private readonly HttpClient _client;
         public UsersControllerTests()
         {
-            var clientOptions = new WebApplicationFactoryClientOptions();
-            clientOptions.BaseAddress = new Uri("https://localhost:44324/api/Users/");
+            var clientOptions = new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("https://localhost:44324/api/Users/")
+            };
 
             var appFactory = new WebApplicationFactory<Startup>();
             _client = appFactory.CreateClient(clientOptions);

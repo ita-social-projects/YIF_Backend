@@ -75,7 +75,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public async Task DeleteAdmin_ReturnsSuccessDeleteString()
         {
             //Arrange
-            _userManagerMock.Obj = _user;
+            _userManagerMock.ResponseObject = _user;
             //Act
             string a = await _universtityAdminRepository.Delete("3b16d794-7aaa-4ca5-943a-36d328f86ed3");
             //Assert
