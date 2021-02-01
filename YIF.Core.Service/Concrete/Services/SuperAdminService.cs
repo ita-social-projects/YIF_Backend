@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using SendGrid.Helpers.Errors.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -65,13 +66,11 @@ namespace YIF.Core.Service.Concrete.Services
 
             //take uni
             var universities = await _universityRepository.Find(x => x.Name == universityAdminModel.UniversityName);
-            var university = universities.First();
-
-            if (university == null)
+            if (universities.Count() == 0)
             {
                 throw new NotFoundException("В базі даних немає університету із назвою: " + universityAdminModel.UniversityName);
             }
-
+            var university = universities.First();
             var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
             if (adminCheck != null)
             {
@@ -91,7 +90,7 @@ namespace YIF.Core.Service.Concrete.Services
             };
 
             var registerResult = await _userRepository.Create(dbUser, null, universityAdminModel.Password, ProjectRoles.UniversityAdmin);
-
+            await _userManager.AddToRoleAsync(dbUser, ProjectRoles.BaseUser);
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
@@ -134,18 +133,17 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException("В базі даних немає школи із назвою: " + schoolAdminModel.SchoolName);
             }
 
-            var adminCheck = await _schoolAdminRepository.GetBySchoolId(school.Id);
+            var adminCheck = await _schoolAdminRepository.GetBySchoolId(school.Id);// check if exists schoolAdmin with AspNetUser isdeleted = false
             if (adminCheck != null)
             {
                 throw new InvalidOperationException("Адміністратор цієї школи вже існує (1 школа може мати лише 1 адміністратора)");
             }
 
             var searchUser = _userManager.FindByEmailAsync(schoolAdminModel.Email);
-            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
+            if (searchUser.Result != null && searchUser.Result.IsDeleted == true)
             {
                 throw new InvalidOperationException("Користувач вже існує");
             }
-
             var dbUser = new DbUser
             {
                 Email = schoolAdminModel.Email,
@@ -153,6 +151,7 @@ namespace YIF.Core.Service.Concrete.Services
             };
 
             var registerResult = await _userRepository.Create(dbUser, null, schoolAdminModel.Password, ProjectRoles.SchoolAdmin);
+            await _userManager.AddToRoleAsync(dbUser, ProjectRoles.BaseUser);
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
@@ -218,6 +217,29 @@ namespace YIF.Core.Service.Concrete.Services
             await _universityRepository.AddUniversity(_mapper.Map<University>(uniPostApiModel));
             return result.Set(new DescriptionResponseApiModel("Університет додано"), true);
 
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>> GetAllUniversityAdmins()
+        {
+            var result = new ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>();
+            var admins = await _universityAdminRepository.GetAllUniAdmins();
+            if (admins.Count() < 1)
+            {
+                throw new NotFoundException("Адмінів немає");
+            }
+            result.Object = _mapper.Map<IEnumerable<UniversityAdminResponseApiModel>>(admins);
+            return result.Set(true);
+        }
+        public async Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins()
+        {
+            var result = new ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>();
+            var admins = await _schoolAdminRepository.GetAllSchoolAdmins();
+            if (admins.Count() < 1)
+            {
+                throw new NotFoundException("Адмінів немає");
+            }
+            result.Object = _mapper.Map<IEnumerable<SchoolAdminResponseApiModel>>(admins);
+            return result.Set(true);
         }
     }
 }

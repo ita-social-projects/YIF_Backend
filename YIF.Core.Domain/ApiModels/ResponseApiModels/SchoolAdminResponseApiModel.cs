@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YIF.Core.Domain.DtoModels.SchoolAdmin
+namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class SchoolAdminDTO
+    public class SchoolAdminResponseApiModel
     {
         public string Id { get; set; }
         public string SchoolId { get; set; }

@@ -61,9 +61,10 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 // Get all directions by name
                 var directions = await _directionRepository.Find(x => x.Direction.Name == filterModel.DirectionName);
+                var universityId = directions.Select(d => d.UniversityId);
 
                 // Get universities by these directions
-                filteredUniversities = directions.Select(x => x.University).ToList();
+                filteredUniversities = filteredUniversities.Where(fu => universityId.Contains(fu.Id));
             }
 
             if (filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -110,6 +111,38 @@ namespace YIF_Backend.Controllers
             if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
             var result = await _superAdminService.AddUniversity(model);
             return Created("", result.Object);
+        }
+
+        /// <summary>
+        /// Get all UniAdmins.
+        /// </summary>
+        /// <returns>List of users</returns>
+        /// <response code="200">Returns a list of users</response>
+        /// <response code="404">If there are no users</response>
+        [HttpGet("GetAllUniversities")]
+        [ProducesResponseType(typeof(IEnumerable<UniversityAdminResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllUniUsersAsync()
+        {
+            var result = await _superAdminService.GetAllUniversityAdmins();
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get all SchoolAdmins.
+        /// </summary>
+        /// <returns>List of users</returns>
+        /// <response code="200">Returns a list of users</response>
+        /// <response code="404">If there are no users</response>
+        [HttpGet("GetAllSchools")]
+        [ProducesResponseType(typeof(IEnumerable<UniversityAdminResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllSchoolUsersAsync()
+        {
+            var result = await _superAdminService.GetAllSchoolAdmins();
+            return Ok(result.Object);
         }
     }
 }
