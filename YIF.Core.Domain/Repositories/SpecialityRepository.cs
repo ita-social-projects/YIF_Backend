@@ -22,12 +22,21 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public Task<bool> Update(Speciality item)
+        public async Task<bool> Update(Speciality speciality)
         {
-            throw new NotImplementedException();
+            if (speciality != null)
+            {
+                if (_context.Specialities.Find(speciality) != null)
+                {
+                    _context.Specialities.Update(speciality);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
         }
@@ -40,19 +49,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<SpecialityDTO>> GetAll()
         {
-            var list = await _context.Specialities
-                .Join(_context.Directions,
-                s => s.DirectionId,
-                d => d.Id,
-                (s, d) => new Speciality
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Description = s.Description,
-                    DirectionId = s.DirectionId,
-                    Direction = d
-                })
-                .ToListAsync();
+            var list = await _context.Specialities.Include(s => s.Direction).ToListAsync();
             return _mapper.Map<IEnumerable<SpecialityDTO>>(list);
         }
 

@@ -136,7 +136,12 @@ namespace YIF_XUnitTests
     [ExcludeFromCodeCoverage]
     public static class DbContextMock
     {
-        public static DbSet<T> GetQueryableMockDbSet<T>(List<T> sourceList) where T : class
+        public static DbSet<T> GetQueryableMockDbSet<T>(List<T> sourceList, Func<T, object> primaryKey = null) where T : class
+        {
+            return GetQueryableMock<T>(sourceList).Object;
+        }
+
+        public static Mock<DbSet<T>> GetQueryableMock<T>(List<T> sourceList, Func<T, object> primaryKey = null) where T : class
         {
             var queryable = sourceList.AsQueryable();
             var dbSet = new Mock<DbSet<T>>();
@@ -152,7 +157,7 @@ namespace YIF_XUnitTests
             dbSet.Setup(d => d.Add(It.IsAny<T>())).Callback<T>((s) => sourceList.Add(s));
             dbSet.Setup(d => d.Update(It.IsAny<T>())).Callback<T>((s) => sourceList[0] = s);
             dbSet.Setup(d => d.Remove(It.IsAny<T>())).Callback<T>((s) => sourceList.Remove(s));
-            return dbSet.Object;
+            return dbSet;
         }
     }
 
@@ -228,5 +233,5 @@ namespace YIF_XUnitTests
         }
     }
 
- 
+
 }
