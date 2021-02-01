@@ -27,7 +27,11 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
         }
 
-        public void Dispose() => _specialtyToUniversityRepository.Dispose();
+        public void Dispose()
+        {
+            _specialtyRepository.Dispose();
+            _specialtyToUniversityRepository.Dispose();
+        }
 
         public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilter(FilterApiModel filterModel)
         {
@@ -56,12 +60,6 @@ namespace YIF.Core.Service.Concrete.Services
                 var specialtyIds = specialtyToUniversity.Select(su => su.SpecialityId);
                 specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
             }
-
-            var a = specilaties.Distinct().ToList();
-            var dto = a[0];
-            var api = _mapper.Map<SpecialtyResponseApiModel>(dto);
-            api = _mapper.Map(dto, api);
-            var b = _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(a);
 
             return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
         }

@@ -29,8 +29,10 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task GetAllSpecialtiesAsync_EndpointReturnsOk()
         {
             // Arrange
-            var response = new ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>();
-            response.Object = new List<SpecialtyResponseApiModel>().AsEnumerable();
+            var response = new ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>
+            {
+                Object = new List<SpecialtyResponseApiModel>().AsEnumerable()
+            };
             _specialtyService.Setup(x => x.GetAllSpecialties()).ReturnsAsync(response);
             // Act
             var result = await _testControl.GetAllSpecialtiesAsync();
