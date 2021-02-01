@@ -4,6 +4,7 @@ using System.Text;
 using YIF.Core.Data.Entities;
 using AutoMapper;
 using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF.Core.Service.Mapping
 {
@@ -12,6 +13,7 @@ namespace YIF.Core.Service.Mapping
         public UniversityAdminMappers()
         {
             CreateMap<UniversityAdmin, UniversityAdminDTO>().ReverseMap();
+            CreateMap<UniversityAdminDTO, UniversityAdminResponseApiModel>().ReverseMap();
         }
     }
 }

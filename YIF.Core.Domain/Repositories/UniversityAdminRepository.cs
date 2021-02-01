@@ -41,11 +41,11 @@ namespace YIF.Core.Domain.Repositories
                               from users in _dbContext.Users
                               join moderators in _dbContext.UniversityModerators on users.Id equals moderators.UserId
                               join admins in _dbContext.UniversityAdmins on moderators.AdminId equals admins.Id
-                              where (users.IsDeleted == false && admins.Id == adminId) || (users.IsDeleted == true && admins.Id == adminId)// costil
+                              where (users.IsDeleted == false && admins.Id == adminId)
                               select new UniversityAdmin()
                               {
                                   Id = users.Id,
-                                  UniversityId = admins.Id,
+                                  UniversityId = admins.UniversityId,
 
                               };
             if (universityAdmin.Count() == 0)
@@ -64,11 +64,11 @@ namespace YIF.Core.Domain.Repositories
                                 from users in _dbContext.Users
                                 join moderators in _dbContext.UniversityModerators on users.Id equals moderators.UserId
                                 join admins in _dbContext.UniversityAdmins on moderators.AdminId equals admins.Id
-                                where (users.IsDeleted == false && admins.UniversityId == universityId) || (users.IsDeleted == true && admins.UniversityId == universityId)// costil
+                                where (users.IsDeleted == false && admins.UniversityId == universityId)
                                 select new UniversityAdminDTO()
                                 {
                                     Id = admins.Id,
-                                    UniversityId = admins.Id,
+                                    UniversityId = admins.UniversityId,
 
                                 };
             if (universityAdmin.Count() != 0)
@@ -89,9 +89,26 @@ namespace YIF.Core.Domain.Repositories
             return null;
         }
 
-        public Task<IEnumerable<UniversityAdminDTO>> GetAllUniAdmins()
+        public async Task<IEnumerable<UniversityAdminDTO>> GetAllUniAdmins()
         {
-            throw new NotImplementedException();
+            var universityAdmin =
+                               from users in _dbContext.Users
+                               join moderators in _dbContext.UniversityModerators on users.Id equals moderators.UserId
+                               join admins in _dbContext.UniversityAdmins on moderators.AdminId equals admins.Id
+                               join unis in _dbContext.Universities on admins.UniversityId equals unis.Id
+                               where (users.IsDeleted == false)
+                               select new UniversityAdminDTO()
+                               {
+                                   Id = admins.Id,
+                                   UniversityId = admins.UniversityId,
+                                   UniversityName = unis.Name
+
+                               };
+            if (universityAdmin.Count() != 0)
+            {
+                return await universityAdmin.ToListAsync();
+            }
+            return null;
         }
 
         public Task<UniversityAdminDTO> GetById(string id)

@@ -42,7 +42,7 @@ namespace YIF.Core.Domain.Repositories
                                 from users in _dbContext.Users
                                 join moderators in _dbContext.SchoolModerators on users.Id equals moderators.UserId
                                 join admins in _dbContext.SchoolAdmins on moderators.AdminId equals admins.Id
-                                where (users.IsDeleted == false && admins.SchoolId == schoolId)|| (users.IsDeleted == true && admins.SchoolId == schoolId)//costil
+                                where (users.IsDeleted == false && admins.SchoolId == schoolId)
                                 select new SchoolAdminDTO()
                                 {
                                     Id = admins.Id,
@@ -62,11 +62,11 @@ namespace YIF.Core.Domain.Repositories
                               from users in _dbContext.Users
                               join moderators in _dbContext.SchoolModerators on users.Id equals moderators.UserId
                               join admins in _dbContext.SchoolAdmins on moderators.AdminId equals admins.Id
-                              where (users.IsDeleted == false && admins.Id == adminId) || (users.IsDeleted == true && admins.Id == adminId)// costil
-                              select new UniversityAdmin()
+                              where (users.IsDeleted == false && admins.Id == adminId)
+                              select new SchoolAdmin()
                               {
                                   Id = users.Id,
-                                  UniversityId = admins.Id,
+                                  SchoolId = admins.SchoolId,
 
                               };
             if (schoolAdmin.Count() == 0)
@@ -95,6 +95,28 @@ namespace YIF.Core.Domain.Repositories
         public void Dispose()
         {
             _dbContext.Dispose();
+        }
+
+        public async Task<IEnumerable<SchoolAdminDTO>> GetAllSchoolAdmins()
+        {
+            var schoolAdmin =
+                               from users in _dbContext.Users
+                               join moderators in _dbContext.SchoolModerators on users.Id equals moderators.UserId
+                               join admins in _dbContext.SchoolAdmins on moderators.AdminId equals admins.Id
+                               join schools in _dbContext.Schools on admins.SchoolId equals schools.Id
+                               where (users.IsDeleted == false)
+                               select new SchoolAdminDTO()
+                               {
+                                   Id = admins.Id,
+                                   SchoolId = admins.SchoolId,
+                                   SchoolName = schools.Name
+
+                               };
+            if (schoolAdmin.Count() != 0)
+            {
+                return await schoolAdmin.ToListAsync();
+            }
+            return null;
         }
     }
 }
