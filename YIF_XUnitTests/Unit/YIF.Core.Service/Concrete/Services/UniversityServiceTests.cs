@@ -41,6 +41,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var university = new UniversityDTO
             {
+                Id = "universityId",
                 Name = "Name"
             };
 
@@ -62,7 +63,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 {
                     Direction = direction,
                     DirectionId = "Direction",
-                    UniversityId = "university",
+                    UniversityId = "universityId",
                     University = university
                 }
             };

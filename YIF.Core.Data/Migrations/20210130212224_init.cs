@@ -263,9 +263,9 @@ namespace YIF.Core.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(maxLength: 255, nullable: false),
-                    MiddleName = table.Column<string>(maxLength: 255, nullable: false),
-                    Surname = table.Column<string>(maxLength: 255, nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: true),
+                    Surname = table.Column<string>(maxLength: 255, nullable: true),
+                    MiddleName = table.Column<string>(maxLength: 255, nullable: true),
                     Photo = table.Column<string>(maxLength: 255, nullable: true),
                     DateOfBirth = table.Column<DateTime>(nullable: true),
                     RegistrationDate = table.Column<DateTime>(nullable: false)
