@@ -250,7 +250,65 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
         }
+        [Fact]
+        public async Task GetAllUniAdminUsersAsync_EndpointReturnAllUsers()
+        {
+            // Arrange
+            var responseModel = new ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>> { Success = true, 
+                Object = (IEnumerable<UniversityAdminResponseApiModel>)new List<UniversityAdminResponseApiModel>
+            {
+                new UniversityAdminResponseApiModel {Id="Id",UniversityId="Id",UniversityName="UniversityName"}
+            }
+        };
+            _superAdminService.Setup(x => x.GetAllUniversityAdmins()).Returns(Task.FromResult(responseModel));
+            // Act
+            var result = await superAdminController.GetAllUniUsersAsync();
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            var model = (IEnumerable<UniversityAdminResponseApiModel>)responseResult.Value;
+            Assert.Equal(responseModel.Object, model);
+        }
 
+        [Theory]
+        [InlineData("Адмінів немає")]
+        public async Task GetAllUniAdminUsers_ReturnsNotFoundExeption(string message)
+        {
+            var error = new NotFoundException(message);
+            _superAdminService.Setup(x => x.GetAllUniversityAdmins()).Throws(error);
+            var result = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.GetAllUniUsersAsync());
+            Assert.Equal(error.Message, result.Message);
+        }
+
+        [Fact]
+        public async Task GetAllSchoolAdminUsersAsync_EndpointReturnAllUsers()
+        {
+            // Arrange
+            var responseModel = new ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>
+            {
+                Success = true,
+                Object = new List<SchoolAdminResponseApiModel>
+            {
+                new SchoolAdminResponseApiModel {Id="Id",SchoolId="Id",SchoolName="UniversityName"}
+            }
+            };
+            _superAdminService.Setup(x => x.GetAllSchoolAdmins()).Returns(Task.FromResult(responseModel));
+            // Act
+            var result = await superAdminController.GetAllSchoolUsersAsync();
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            var model = (IEnumerable<SchoolAdminResponseApiModel>)responseResult.Value;
+            Assert.Equal(responseModel.Object, model);
+        }
+
+        [Theory]
+        [InlineData("Адмінів немає")]
+        public async Task GetAllSchoolAdminUsers_ReturnsNotFoundExeption(string message)
+        {
+            var error = new NotFoundException(message);
+            _superAdminService.Setup(x => x.GetAllSchoolAdmins()).Throws(error);
+            var result = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.GetAllSchoolUsersAsync());
+            Assert.Equal(error.Message, result.Message);
+        }
 
         private List<AuthenticateResponseApiModel> GetTestJwt()
         {
