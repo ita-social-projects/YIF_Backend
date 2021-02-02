@@ -38,8 +38,8 @@ namespace YIF_Backend.Infrastructure.Middleware
 
                 var desctiption = new DescriptionResponseApiModel(error.Message);
                 if (error is BadImageFormatException) desctiption.Message = "Неправильний формат зображення";
-                if (error is FormatException) desctiption.Message = "Неправильний формат даних";
-                if (error is ArgumentNullException) desctiption.Message = "Поле (одне із полів) не може бути пустим";
+                else if (error is FormatException) desctiption.Message = "Неправильний формат даних";
+                else if (error is ArgumentNullException) desctiption.Message = "Поле (одне із полів) не може бути пустим";
                 var details = new ErrorDetails
                 {
                     ErrorId = Guid.NewGuid().ToString(),
@@ -51,22 +51,22 @@ namespace YIF_Backend.Infrastructure.Middleware
 
                 switch (error)
                 {
-                    case DirectoryNotFoundException a:
-                    case FileNotFoundException b:
-                    case InvalidOperationException c:
+                    case DirectoryNotFoundException _:
+                    case FileNotFoundException _:
+                    case InvalidOperationException _:
                         response.StatusCode = (int)HttpStatusCode.Conflict;
                         break;
-                    case KeyNotFoundException a:
-                    case NotFoundException b:
+                    case KeyNotFoundException _:
+                    case NotFoundException _:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
-                    case ArgumentNullException a:
-                    case ArgumentOutOfRangeException b:
-                    case BadImageFormatException c:
-                    case ArgumentException d:
-                    case FormatException e:
-                    case BadRequestException f:
-                    case SecurityTokenException g:
+                    case ArgumentNullException _:
+                    case ArgumentOutOfRangeException _:
+                    case BadImageFormatException _:
+                    case ArgumentException _:
+                    case FormatException _:
+                    case BadRequestException _:
+                    case SecurityTokenException _:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     default:

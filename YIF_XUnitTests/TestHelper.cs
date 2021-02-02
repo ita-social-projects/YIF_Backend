@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -18,7 +17,6 @@ using System.Threading.Tasks;
 namespace YIF_XUnitTests
 {
     // For mocking Async behavior for IQueriable elements
-    [ExcludeFromCodeCoverage]
     internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
@@ -64,7 +62,6 @@ namespace YIF_XUnitTests
         }
     }
 
-    [ExcludeFromCodeCoverage]
     internal class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
         public TestAsyncEnumerable(IEnumerable<T> enumerable)
@@ -91,7 +88,6 @@ namespace YIF_XUnitTests
         }
     }
 
-    [ExcludeFromCodeCoverage]
     internal class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> _inner;
@@ -133,10 +129,14 @@ namespace YIF_XUnitTests
 
 
     // For mocking DbSet behavior
-    [ExcludeFromCodeCoverage]
     public static class DbContextMock
     {
         public static DbSet<T> GetQueryableMockDbSet<T>(List<T> sourceList) where T : class
+        {
+            return GetQueryableMock<T>(sourceList).Object;
+        }
+
+        public static Mock<DbSet<T>> GetQueryableMock<T>(List<T> sourceList) where T : class
         {
             var queryable = sourceList.AsQueryable();
             var dbSet = new Mock<DbSet<T>>();
@@ -152,15 +152,14 @@ namespace YIF_XUnitTests
             dbSet.Setup(d => d.Add(It.IsAny<T>())).Callback<T>((s) => sourceList.Add(s));
             dbSet.Setup(d => d.Update(It.IsAny<T>())).Callback<T>((s) => sourceList[0] = s);
             dbSet.Setup(d => d.Remove(It.IsAny<T>())).Callback<T>((s) => sourceList.Remove(s));
-            return dbSet.Object;
+            return dbSet;
         }
     }
-
 
     // For mocking IdentityUser managers
     public class FakeUserManager<T> : UserManager<T> where T : class
     {
-        public T Obj { get; set; }
+        public T ResponseObject { get; set; }
         public IdentityResult ResIsSucces { get; set; } = IdentityResult.Success;
         public FakeUserManager()
             : base(new Mock<IUserStore<T>>().Object,
@@ -175,7 +174,7 @@ namespace YIF_XUnitTests
         { }
         public override Task<T> FindByIdAsync(string userId)
         {
-            return Task.FromResult(Obj);
+            return Task.FromResult(ResponseObject);
         }
         public override Task<IdentityResult> CreateAsync(T user, string password)
         {
@@ -228,5 +227,5 @@ namespace YIF_XUnitTests
         }
     }
 
- 
+
 }

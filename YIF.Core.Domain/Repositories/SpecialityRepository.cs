@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -22,9 +21,18 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public Task<bool> Update(Speciality item)
+        public async Task<bool> Update(Speciality speciality)
         {
-            throw new NotImplementedException();
+            if (speciality != null)
+            {
+                if (_context.Specialities.Find(speciality) != null)
+                {
+                    _context.Specialities.Update(speciality);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
         }
 
         public Task<bool> Delete(string id)
@@ -34,29 +42,16 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SpecialityDTO> Get(string id)
         {
-            var specialty = await _context.Specialities.FirstOrDefaultAsync(x => x.Id == id);
+            var specialty = await _context.Specialities.Include(s => s.Direction).FirstOrDefaultAsync(x => x.Id == id);
             return _mapper.Map<SpecialityDTO>(specialty);
         }
 
         public async Task<IEnumerable<SpecialityDTO>> GetAll()
         {
-            var list = await _context.Specialities
-                .Join(_context.Directions,
-                s => s.DirectionId,
-                d => d.Id,
-                (s, d) => new Speciality
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    Description = s.Description,
-                    DirectionId = s.DirectionId,
-                    Direction = d
-                })
-                .ToListAsync();
+            var list = await _context.Specialities.Include(s => s.Direction).ToListAsync();
             return _mapper.Map<IEnumerable<SpecialityDTO>>(list);
         }
 
-        [ExcludeFromCodeCoverage]
         public void Dispose()
         {
             _context.Dispose();

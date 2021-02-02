@@ -3,7 +3,7 @@
     /// <summary>
     /// A сlass for create a response with returning a redirect link.
     /// </summary>
-    public class RedirectApiModel
+    public class RedirectResponseApiModel
     {
         /// <summary>
         /// Gets or sets the link for redirect.
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="link">The link for redirect.</param>
         /// <param name="message">The message for the description of the reason to redirect.</param>
-        public RedirectApiModel(string link, string message = null)
+        public RedirectResponseApiModel(string link, string message = null)
         {
             RedirectLink = link;
             Message = message;

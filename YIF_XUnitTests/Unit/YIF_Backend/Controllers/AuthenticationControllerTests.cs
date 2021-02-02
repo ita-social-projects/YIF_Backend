@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -22,6 +24,18 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             _userService = new Mock<IUserService<DbUser>>();
             _testControl = new AuthenticationController(_userService.Object);
+        }
+
+        [Fact]
+        public async Task LoginUser_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            _testControl.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await _testControl.LoginUser(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
         }
 
         [Theory]
@@ -66,6 +80,18 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(error, exeption.Message);
         }
 
+        [Fact]
+        public async Task RegisterUser_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            _testControl.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await _testControl.RegisterUser(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
+        }
+
         [Theory]
         [InlineData("test@gmail.com", "test", "PAssword123_", "PAssword123_")]
         public async Task RegisterUser_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string email, string username, string password, string confirmPassword)
@@ -91,25 +117,60 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(responseModel.Object.Token, model.Token);
         }
 
-        [Theory]
-        [InlineData("d@gmail.com", "d", "test", "test")]
-        public async Task RegisterUser_EndpointsReturnBadRequest_IfDataIncorrect(string email, string username, string password, string confirmPassword)
+        [Fact]
+        public async Task RegisterUser_EndpointsReturnBadRequest_IfDataIncorrect()
         {
             // Arrange
-            var request = new RegisterApiModel
-            {
-                Email = email,
-                Username = username,
-                Password = password,
-                ConfirmPassword = confirmPassword
-            };
-
+            var request = new RegisterApiModel();
             var error = new InvalidOperationException("error message");
             _userService.Setup(x => x.RegisterUser(request)).Throws(error);
 
             // Assert
             var exeption = await Assert.ThrowsAsync<InvalidOperationException>(() => _testControl.RegisterUser(request));
             Assert.Equal(error.Message, exeption.Message);
+        }
+
+        [Fact]
+        public async Task RegisterUser_EndpointsReturnBadRequest_IfEmailAlreadyExists()
+        {
+            // Arrange
+            var httpContext = new DefaultHttpContext();
+            //httpContext.Request.Scheme = "scheme";
+            var controllerContext = new ControllerContext() { HttpContext = httpContext };
+            var testControl = new AuthenticationController(_userService.Object) { ControllerContext = controllerContext };
+
+            var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
+            mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns("url").Verifiable();
+            testControl.Url = mockUrlHelper.Object;
+
+            var request = new RegisterApiModel
+            {
+                Email = "d@gmail.com",
+                Username = "d",
+                Password = "test",
+                ConfirmPassword = "test"
+            };
+            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel>(false, "message");
+            _userService.Setup(x => x.RegisterUser(request)).Returns(Task.FromResult(responseModel));
+
+            // Act
+            var result = await testControl.RegisterUser(request);
+
+            // Assert
+            var responseResult = Assert.IsType<ConflictObjectResult>(result);
+            Assert.IsType<RedirectResponseApiModel>(responseResult.Value);
+        }
+
+        [Fact]
+        public async Task Refresh_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            _testControl.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await _testControl.Refresh(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
         }
 
         [Fact]

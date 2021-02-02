@@ -16,15 +16,12 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     {
         private readonly Mock<ISuperAdminService> _superAdminService;
         private readonly SuperAdminController superAdminController;
-        private readonly Mock<ILogger<SuperAdminController>> _logger;
         public SuperAdminControllerTests()
         {
             _superAdminService = new Mock<ISuperAdminService>();
-            _logger = new Mock<ILogger<SuperAdminController>>();
-            superAdminController = new SuperAdminController(_superAdminService.Object,
-                                                            _logger.Object);
-
+            superAdminController = new SuperAdminController(_superAdminService.Object);
         }
+
         [Theory]
         [InlineData("UniName", "email@gmailcom", "Password1+")]
         [InlineData("", "email@gmailcom", "Password1+")]
@@ -69,8 +66,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(error.Message, exeption.Message);
         }
 
-
-
+        [Fact]
+        public async Task AddUniversityAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            superAdminController.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await superAdminController.AddUniversityAdmin(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
+        }
 
         [Theory]
         [InlineData("SchoolName", "email@gmailcom", "Password1+")]
@@ -115,6 +121,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(error.Message, exeption.Message);
         }
 
+        [Fact]
+        public async Task AddSchoolAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            superAdminController.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await superAdminController.AddSchoolAdmin(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
+        }
 
         [Theory]
         [InlineData(true, "succes")]
@@ -144,6 +161,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Assert.Equal(error.Message, exeption.Message);
             }
         }
+
+        [Fact]
+        public async Task DeleteUniversityAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            superAdminController.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await superAdminController.DeleteUniversityAdmin(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
+        }
+
         [Theory]
         [InlineData(true, "succes")]
         [InlineData(false, "wrong")]
@@ -171,6 +201,54 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DeleteSchoolAdmin(requestModel));
                 Assert.Equal(error.Message, exeption.Message);
             }
+        }
+
+        [Fact]
+        public async Task DeleteSchoolAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            superAdminController.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await superAdminController.DeleteSchoolAdmin(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
+        }
+
+        [Theory]
+        [InlineData("UniName", "email@gmailcom", "good uni")]
+        [InlineData("", "email@gmailcom", "best uni")]
+        [InlineData("UniName", "", "")]
+        public async Task AddUniversity_EndpointsReturnSuccessMessage_IfDataСorrect(string name, string email, string description)
+        {
+            // Arrange
+            var requestModel = new UniversityPostApiModel
+            {
+                Name = name,
+                Email = email,
+                Description = description
+            };
+
+            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(true, "success");
+            _superAdminService.Setup(x => x.AddUniversity(requestModel)).Returns(Task.FromResult(responseModel));
+
+            // Act
+            var result = await superAdminController.AddUniversity(requestModel);
+            // Assert
+            var responseResult = Assert.IsType<CreatedResult>(result);
+            var model = (DescriptionResponseApiModel)responseResult.Value;
+        }
+
+        [Fact]
+        public async Task AddUniversity_EndpointsReturnBadRequest_IfModelStateIsNotValid()
+        {
+            // Arrange
+            superAdminController.ModelState.AddModelError("model", "error");
+            // Act
+            var result = await superAdminController.AddUniversity(null);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
         }
 
 

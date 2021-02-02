@@ -2,7 +2,7 @@
 
 namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class SpecialtyApiModel
+    public class SpecialtyResponseApiModel
     {
         /// <summary>
         /// Gets or sets the primary key for this specialty.
