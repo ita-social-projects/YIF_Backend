@@ -68,7 +68,12 @@ The instructions below will allow you to run application locally in the containe
 
 ## Team
 
-![@team](https://i.ibb.co/cgZmTBf/sticker.webp)
+![@team](https://i.ibb.co/4VwYn0H/lead.png)
+![@team](https://i.ibb.co/qmh3jmM/trainee.png)
+![@team](https://i.ibb.co/qmh3jmM/trainee.png)
+![@team](https://i.ibb.co/qmh3jmM/trainee.png)
+![@team](https://i.ibb.co/qmh3jmM/trainee.png)
+![@team](https://i.ibb.co/qmh3jmM/trainee.png)
 
 - https://github.com/shelkon
 - https://github.com/Yura-Androshchuk
@@ -81,7 +86,7 @@ The instructions below will allow you to run application locally in the containe
 
 ### FAQ
 
-- [API](https://bit.ly/3acfxs7)
+- [API](https://drive.google.com/file/d/1f2wuhrevAdIz-Cs4wZ8GyCOvNELu0gXr/view?usp=sharing)
 
 ---
 
