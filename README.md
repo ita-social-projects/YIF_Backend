@@ -68,7 +68,7 @@ The instructions below will allow you to run application locally in the containe
 
 ## Team
 
-[@team](https://i.ibb.co/cgZmTBf/sticker.webp)
+![@team](https://i.ibb.co/cgZmTBf/sticker.webp)
 
 - https://github.com/shelkon
 - https://github.com/Yura-Androshchuk
