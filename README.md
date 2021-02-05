@@ -22,7 +22,7 @@ Code quality - SonarCloud.
 
 Testing - XUnit
 
-SDLC - Scrum/Kanban, ClickUp
+SDLC - Scrum/Kanban
 
 ---
 
@@ -61,8 +61,6 @@ The instructions below will allow you to run application locally in the containe
 
 * Clone repository from GitHub with:
  git clone https://github.com/ita-social-projects/YIF_Backend
- 
-* Docker installation comming soon
 
 ---
 
