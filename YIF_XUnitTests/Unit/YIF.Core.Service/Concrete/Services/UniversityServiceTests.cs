@@ -322,6 +322,54 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
+        public async Task GetUniversityAbbreviations_ShouldReturnListOfAbbreviations_IfEverythingOk()
+        {
+            // Arrange  
+            var filterModel = new FilterApiModel();
+
+            var universityList = GetUniversities();
+            var universityResponseList = GetResponseUnivesities();
+
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<UniversityResponseApiModel>>(universityList))
+                .Returns(universityResponseList);
+
+            _universityReposotiry
+                .Setup(ur => ur.GetAll())
+                .ReturnsAsync(universityList);
+
+            // Act
+            var result = await universityService.GetUniversityAbbreviations(filterModel);
+
+            // Assert
+            Assert.True(result is IEnumerable<string>);
+        }
+
+        [Fact]
+        public void GetUniversityAbbreviations_ShouldReturnNotFoundException_IfUniveristyNotFound()
+        {
+            // Arrange  
+            var filterModel = new FilterApiModel();
+
+            var universityList = GetUniversities();
+            var universityResponseList = new List<UniversityResponseApiModel>();
+
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<UniversityResponseApiModel>>(universityList))
+                .Returns(universityResponseList);
+
+            _universityReposotiry
+                .Setup(ur => ur.GetAll())
+                .ReturnsAsync(universityList);
+
+            // Act
+            Func<Task<IEnumerable<string>>> act = () => universityService.GetUniversityAbbreviations(filterModel);
+
+            // Assert
+            Assert.ThrowsAsync<NotFoundException>(act);
+        }
+
+        [Fact]
         public async Task AddUniversityToFavorite_ShouldAddUniversityToFavorite_IfEverythngOk()
         {
             // Arrange  
