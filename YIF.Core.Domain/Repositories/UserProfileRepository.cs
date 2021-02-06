@@ -65,11 +65,8 @@ namespace YIF.Core.Domain.Repositories
             var graduate = await _context.Graduates.Include(g => g.School).FirstOrDefaultAsync(x => x.UserId == profileDto.Id);
             if (graduate == null)
             {
-                //if (!string.IsNullOrWhiteSpace(schoolName)) throw new ArgumentException("Користувач не належить до ролі: " + ProjectRoles.Graduate +
-                //    ". Поле 'schoolname' не потрібно заповняти для цього коритувача.");
-                graduate = new Graduate { UserId = profileDto.Id };
-                await _context.AddAsync(graduate);
-                await _context.SaveChangesAsync();
+                if (!string.IsNullOrWhiteSpace(schoolName)) throw new ArgumentException("Користувач не належить до ролі: " + ProjectRoles.Graduate +
+                    ". Поле 'schoolname' не потрібно заповняти для цього коритувача.");
             }
             else
             {
@@ -81,8 +78,7 @@ namespace YIF.Core.Domain.Repositories
                 {
                     var school = await _context.Schools.FirstOrDefaultAsync(x => x.Name == schoolName);
                     if (school == null) throw new ArgumentException("Не знайдено зазначеної школи:  " + schoolName);
-                    //graduate.SchoolId = school.Id;
-                    graduate.School = school;
+                    graduate.SchoolId = school.Id;
                 }
                 _context.Graduates.Update(graduate);
                 await _context.SaveChangesAsync();

@@ -88,14 +88,6 @@ namespace YIF.Core.Service.Concrete.Services
                 .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
             RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Пароль та підтвердження паролю не співпадають!");
-
-            RuleFor(x => x.Username).Must(IsUsernameNotExist).WithMessage("Ім'я користувача вже існує!");
-        }
-
-        private bool IsUsernameNotExist(string username)
-        {
-            var user = _userManager.FindByNameAsync(username).Result;
-            return user == null;
         }
     }
 
