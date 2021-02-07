@@ -137,6 +137,9 @@ namespace YIF.Core.Service.Concrete.Services
                 return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
             }
 
+            searchUser = await _userManager.FindByNameAsync(registerModel.Username);
+            if (searchUser != null) throw new BadRequestException("Ім'я користувача вже існує!");
+
             var dbUser = new DbUser
             {
                 Email = registerModel.Email,

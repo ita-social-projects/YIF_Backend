@@ -10,7 +10,6 @@
         /// <summary>
         /// Secure token for reset password
         /// </summary>
-        /// <example>QWerty-1</example>
         public string Token { get; set; }
         /// <summary>
         /// User new password

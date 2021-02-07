@@ -62,7 +62,7 @@ namespace YIF.Core.Domain.Repositories
             }
 
             // Set school
-            var graduate = await _context.Graduates.FirstOrDefaultAsync(x => x.UserId == profileDto.Id);
+            var graduate = await _context.Graduates.Include(g => g.School).FirstOrDefaultAsync(x => x.UserId == profileDto.Id);
             if (graduate == null)
             {
                 if (!string.IsNullOrWhiteSpace(schoolName)) throw new ArgumentException("Користувач не належить до ролі: " + ProjectRoles.Graduate +
@@ -79,7 +79,6 @@ namespace YIF.Core.Domain.Repositories
                     var school = await _context.Schools.FirstOrDefaultAsync(x => x.Name == schoolName);
                     if (school == null) throw new ArgumentException("Не знайдено зазначеної школи:  " + schoolName);
                     graduate.SchoolId = school.Id;
-                    graduate.School = null;
                 }
                 _context.Graduates.Update(graduate);
                 await _context.SaveChangesAsync();
@@ -94,10 +93,10 @@ namespace YIF.Core.Domain.Repositories
             profile.DateOfBirth = user.UserProfile?.DateOfBirth;
             profile.RegistrationDate = user.UserProfile == null ? DateTime.MinValue : user.UserProfile.RegistrationDate;
             profile.Photo = user.UserProfile?.Photo;
-            user.PhoneNumber = profileDto.PhoneNumber;
-            user.Email = profileDto.Email;
 
             // Save changes
+            user.PhoneNumber = profileDto.PhoneNumber;
+            user.Email = profileDto.Email;
             user.UserProfile = profile;
             await _userManager.UpdateAsync(user);
 
