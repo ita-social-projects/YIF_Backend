@@ -96,7 +96,7 @@ namespace YIF.Core.Service.Concrete.Services
             PageApiModel pageModel,
             string userId = null)
         {
-            var universities = _mapper.Map<IEnumerable<UniversityResponseApiModel>>(await GetUniversitiesByFilter(filterModel));
+            var universities = await GetUniversitiesByFilter(filterModel);
             var result = new PageResponseApiModel<UniversityResponseApiModel>();
 
             if (universities == null || universities.Count() == 0)
