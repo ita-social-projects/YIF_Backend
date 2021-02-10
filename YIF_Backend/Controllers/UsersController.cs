@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
@@ -21,11 +22,16 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ILogger<UsersController> _logger;
+        private readonly ResourceManager _resourceManager;
 
-        public UsersController(IUserService<DbUser> userService, ILogger<UsersController> logger)
+        public UsersController(
+            IUserService<DbUser> userService, 
+            ILogger<UsersController> logger,
+            ResourceManager resourceManager)
         {
             _userService = userService;
             _logger = logger;
+            _resourceManager = resourceManager;
         }
 
         /// <summary>
@@ -99,7 +105,8 @@ namespace YIF_Backend.Controllers
         [Authorize]
         public async Task<IActionResult> SetUserProfile([FromBody] UserProfileWithoutPhotoApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var id = User.FindFirst("id")?.Value;
             var result = await _userService.SetUserProfileInfoById(model, id);
             return Ok(result.Object);
@@ -165,7 +172,8 @@ namespace YIF_Backend.Controllers
         [HttpPost("Reset")]
         public async Task<IActionResult> Reset([FromQuery][Required] string userEmail)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.ResetPasswordByEmail(userEmail, Request);
             return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
@@ -182,7 +190,8 @@ namespace YIF_Backend.Controllers
         [HttpPut("Restore")]
         public async Task<IActionResult> Restore([FromBody] RestoreApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.RestorePasswordById(model);
             return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
@@ -199,7 +208,8 @@ namespace YIF_Backend.Controllers
         [HttpPut("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.ChangeUserPassword(model);
             return Ok(result.Object);
         }
@@ -217,7 +227,8 @@ namespace YIF_Backend.Controllers
         [HttpPost("SendConfirmEmailMail")]
         public async Task<IActionResult> SendConfirmEmailMail([FromBody] EmailApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.SendEmailConfirmMail(model, Request);
             return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
@@ -233,7 +244,8 @@ namespace YIF_Backend.Controllers
         [HttpPut("ConfirmUserEmail")]
         public async Task<IActionResult> ConfirmUserEmail([FromBody] ConfirmEmailApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна"));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.ConfirmUserEmail(model);
             return Ok(result.Object);
         }
@@ -254,7 +266,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             var result = await _userService.DeleteUserById(userId);
-            return result ? NoContent() : (IActionResult)NotFound("Користувача не знайдено");
+            return result ? NoContent() : (IActionResult)NotFound(_resourceManager.GetString("UserNotFound"));
         }
     }
 }
