@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -23,6 +24,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialtyToUniversityRepository;
         private readonly Mock<IRepository<Speciality, SpecialityDTO>> _specialtyRepository;
         private readonly Mock<IMapper> _mapper;
+        private readonly Mock<ResourceManager> _resourceManager;
 
         private readonly SpecialityDTO _specialtyDTO = new SpecialityDTO { Id = "id", Direction = new DirectionDTO() };
         private readonly SpecialityToUniversityDTO _specialtyToUniversityDTO = new SpecialityToUniversityDTO { SpecialityId = "id", University = new UniversityDTO() };
@@ -35,10 +37,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToUniversityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
             _specialtyRepository = new Mock<IRepository<Speciality, SpecialityDTO>>();
             _mapper = new Mock<IMapper>();
+            _resourceManager = new Mock<ResourceManager>();
+
             _testService = new SpecialtyService(
                 _specialtyToUniversityRepository.Object,
                 _specialtyRepository.Object,
-                _mapper.Object
+                _mapper.Object,
+                _resourceManager.Object
                 );
 
             _listSpiciality = new List<SpecialityDTO>() { _specialtyDTO }.AsEnumerable();
@@ -81,8 +86,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var list = new List<SpecialityDTO>() { new SpecialityDTO() }.AsEnumerable();
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(list);
+
             // Act
             var result = await _testService.GetAllSpecialties();
+
             // Assert
             Assert.True(result.Success);
             Assert.IsAssignableFrom<IEnumerable<SpecialtyResponseApiModel>>(result.Object);
@@ -93,6 +100,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(new List<SpecialityDTO>().AsEnumerable());
+
             // Assert
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _testService.GetAllSpecialties());
         }
@@ -148,8 +156,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             _specialtyRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync(new SpecialityDTO());
             _mapper.Setup(s => s.Map<SpecialtyResponseApiModel>(It.IsAny<SpecialityDTO>())).Returns(new SpecialtyResponseApiModel());
+            
             // Act
             var result = await _testService.GetSpecialtyById("id");
+            
             // Assert
             Assert.True(result.Success);
             Assert.IsType<SpecialtyResponseApiModel>(result.Object);
@@ -160,6 +170,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             _specialtyRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync((SpecialityDTO)null);
+            
             // Assert
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _testService.GetSpecialtyById(null));
         }
@@ -174,9 +185,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var specResult = false;
             specialtyToUniRepo.Setup(x => x.Dispose()).Callback(() => specToUniResult = true);
             specialtyRepo.Setup(x => x.Dispose()).Callback(() => specResult = true);
+            
             // Act
-            var service = new SpecialtyService(specialtyToUniRepo.Object, specialtyRepo.Object, _mapper.Object);
+            var service = new SpecialtyService(specialtyToUniRepo.Object, specialtyRepo.Object, _mapper.Object, _resourceManager.Object);
             service.Dispose();
+            
             // Assert
             Assert.True(specToUniResult);
             Assert.True(specResult);

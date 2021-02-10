@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
@@ -42,6 +43,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ISchoolGraduateRepository<SchoolDTO>> _schoolGraduate;
         private readonly Mock<HttpRequest> _request;
+        private readonly Mock<ResourceManager> _resourceManager;
 
         private readonly List<UserApiModel> _listViewModel;
         private readonly List<UserDTO> _listDTO;
@@ -64,6 +66,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _configuration = new Mock<IConfiguration>();
             _schoolGraduate = new Mock<ISchoolGraduateRepository<SchoolDTO>>();
             _request = new Mock<HttpRequest>();
+            _resourceManager = new Mock<ResourceManager>();
+
             _testService = new UserService(
                 _userRepository.Object,
                 _userProfileRepository.Object,
@@ -76,7 +80,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _emailService.Object,
                 _env.Object, _configuration.Object,
                 _tokenRepository.Object,
-                _schoolGraduate.Object);
+                _schoolGraduate.Object,
+                _resourceManager.Object);
 
             _userDTOStub = new UserDTO();
             _userVMStub = new UserApiModel();
@@ -105,9 +110,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             _userRepository.Setup(s => s.GetAll()).Returns(Task.FromResult(_listDTO.AsEnumerable()));
             _mapperMock.Setup(s => s.Map<IEnumerable<UserApiModel>>(_listDTO)).Returns(_listViewModel);
+
             // Act
             var result = await _testService.GetAllUsers();
             var users = result.Object.ToList();
+
             //Assert
             Assert.True(result.Success);
             Assert.Equal(users[0].Id, _listViewModel[0].Id);
@@ -118,7 +125,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [Fact]
         public async Task GetAll_ShouldReturnFalse_IfThereAreNoUsers()
         {
+            // Arrange
             _userRepository.Setup(s => s.GetAll()).Returns(Task.FromResult(new List<UserDTO>().AsEnumerable()));
+
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => _testService.GetAllUsers());
         }
@@ -129,8 +138,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             _userRepository.Setup(s => s.Get(_userDTOStub.Id)).Returns(Task.FromResult(_userDTOStub));
             _mapperMock.Setup(s => s.Map<UserApiModel>(_userDTOStub)).Returns(_userVMStub);
+
             // Act
             var result = await _testService.GetUserById(_userDTOStub.Id);
+
             // Assert
             Assert.True(result.Success);
             Assert.Equal(_userVMStub.Id, result.Object.Id);
@@ -142,6 +153,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             _userRepository.Setup(s => s.Get(It.IsAny<string>()))
                 .Throws(new NotFoundException("User not found:  {someId}"));
+
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => _testService.GetUserById(_userDTOStub.Id));
         }
@@ -154,8 +166,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Callback<Expression<Func<DbUser, bool>>>(expression => { var func = expression.Compile(); })
                 .Returns(() => Task.FromResult(_listDTO.AsEnumerable()));
             _mapperMock.Setup(s => s.Map<IEnumerable<UserApiModel>>(_listDTO)).Returns(_listViewModel);
+
             // Act
             var result = await _testService.FindUser(u => u.Id == _userDTOStub.Id);
+
             // Assert
             Assert.True(result.Success);
             Assert.Equal(2, result.Object.Count());
@@ -220,6 +234,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 // Act
                 var result = await _testService.RegisterUser(userData);
+
                 // Assert
                 Assert.False(result.Success);
             }
@@ -317,8 +332,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _jwtService.Setup(s => s.CreateRefreshToken()).Returns(token);
             _tokenRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
+
             // Act
             var result = await _testService.LoginUser(loginAM);
+
             // Assert
             Assert.True(result.Success);
             Assert.Equal(token, result.Object.Token);
@@ -425,6 +442,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _userManager.Setup(s => s.FindByIdAsync(userModel.Id)).ReturnsAsync(userModel);
             _userManager.Setup(s => s.ConfirmEmailAsync(userModel, token)).Returns(Task.FromResult(new IdentityResult()));
+
             // Act
             var result = await _testService.ConfirmUserEmail(apiModel);
 
@@ -478,9 +496,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var profileResult = false;
             userRepo.Setup(x => x.Dispose()).Callback(() => userResult = true);
             profileRepo.Setup(x => x.Dispose()).Callback(() => profileResult = true);
+
             // Act
-            var service = new UserService(userRepo.Object, profileRepo.Object, null, null, null, null, null, null, null, null, null, null, null);
+            var service = new UserService(userRepo.Object, profileRepo.Object, null, null, null, null, null, null, null, null, null, null, null, null);
             service.Dispose();
+
             // Assert
             Assert.True(userResult);
             Assert.True(profileResult);

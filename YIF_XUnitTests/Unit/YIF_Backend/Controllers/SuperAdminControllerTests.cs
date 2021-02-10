@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -15,11 +16,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class SuperAdminControllerTests
     {
         private readonly Mock<ISuperAdminService> _superAdminService;
+        private readonly Mock<ResourceManager> _resourceManager;
+
         private readonly SuperAdminController superAdminController;
         public SuperAdminControllerTests()
         {
             _superAdminService = new Mock<ISuperAdminService>();
-            superAdminController = new SuperAdminController(_superAdminService.Object);
+            _resourceManager = new Mock<ResourceManager>();
+
+            superAdminController = new SuperAdminController(
+                _superAdminService.Object,
+                _resourceManager.Object);
         }
 
         [Theory]
