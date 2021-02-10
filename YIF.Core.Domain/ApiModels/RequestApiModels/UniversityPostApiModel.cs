@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using YIF.Core.Domain.DtoModels.EntityDTO;
-
-namespace YIF.Core.Domain.ApiModels.RequestApiModels
+﻿namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
     public class UniversityPostApiModel
     {

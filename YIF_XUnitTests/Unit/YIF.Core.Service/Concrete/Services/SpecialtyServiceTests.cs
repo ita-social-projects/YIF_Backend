@@ -20,20 +20,20 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class SpecialtyServiceTests
     {
         private readonly SpecialtyService _testService;
-        private readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialtyToUniversityRepository;
-        private readonly Mock<IRepository<Speciality, SpecialityDTO>> _specialtyRepository;
+        private readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository;
+        private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<IMapper> _mapper;
 
-        private readonly SpecialityDTO _specialtyDTO = new SpecialityDTO { Id = "id", Direction = new DirectionDTO() };
-        private readonly SpecialityToUniversityDTO _specialtyToUniversityDTO = new SpecialityToUniversityDTO { SpecialityId = "id", University = new UniversityDTO() };
-        private readonly IEnumerable<SpecialityDTO> _listSpiciality;
-        private readonly IEnumerable<SpecialityDTO> _blankListSpiciality = new List<SpecialityDTO>().AsEnumerable();
+        private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
+        private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO() };
+        private readonly IEnumerable<SpecialtyDTO> _listSpiciality;
+        private readonly IEnumerable<SpecialtyDTO> _blankListSpiciality = new List<SpecialtyDTO>().AsEnumerable();
         private readonly IEnumerable<SpecialtyResponseApiModel> _blankResponse = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel() }.AsEnumerable();
 
         public SpecialtyServiceTests()
         {
-            _specialtyToUniversityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
-            _specialtyRepository = new Mock<IRepository<Speciality, SpecialityDTO>>();
+            _specialtyToUniversityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+            _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
             _mapper = new Mock<IMapper>();
             _testService = new SpecialtyService(
                 _specialtyToUniversityRepository.Object,
@@ -41,9 +41,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _mapper.Object
                 );
 
-            _listSpiciality = new List<SpecialityDTO>() { _specialtyDTO }.AsEnumerable();
-            var listSpicialityToUniversity = new List<SpecialityToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
-            _specialtyToUniversityRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialityToUniversity, bool>>>()))
+            _listSpiciality = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
+            var listSpicialityToUniversity = new List<SpecialtyToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
+            _specialtyToUniversityRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToUniversity, bool>>>()))
                     .ReturnsAsync(listSpicialityToUniversity);
         }
 
@@ -57,7 +57,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var request = new FilterApiModel
             {
-                SpecialityName = _specialtyDTO.Name = specialty,
+                SpecialtyName = _specialtyDTO.Name = specialty,
                 DirectionName = _specialtyDTO.Direction.Name = direction,
                 UniversityName = _specialtyToUniversityDTO.University.Name = uniName,
                 UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = uniAbbr
@@ -72,14 +72,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.NotEmpty(result);
-            Assert.Equal(request.SpecialityName, result[0].Name);
+            Assert.Equal(request.SpecialtyName, result[0].Name);
         }
 
         [Fact]
         public async Task GetAllSpecialties_ShouldReturnAllUsers_IfDatabaseNotEmpty()
         {
             // Arrange
-            var list = new List<SpecialityDTO>() { new SpecialityDTO() }.AsEnumerable();
+            var list = new List<SpecialtyDTO>() { new SpecialtyDTO() }.AsEnumerable();
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(list);
             // Act
             var result = await _testService.GetAllSpecialties();
@@ -92,7 +92,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetAllSpecialties_ShouldReturnException_IfDatabaseIsEmpty()
         {
             // Arrange
-            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(new List<SpecialityDTO>().AsEnumerable());
+            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(new List<SpecialtyDTO>().AsEnumerable());
             // Assert
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _testService.GetAllSpecialties());
         }
@@ -106,7 +106,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var request = new FilterApiModel
             {
-                SpecialityName = _specialtyDTO.Name = specialty,
+                SpecialtyName = _specialtyDTO.Name = specialty,
                 DirectionName = _specialtyDTO.Direction.Name = direction,
                 UniversityName = _specialtyToUniversityDTO.University.Name = uniName,
                 UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = uniAbbr
@@ -129,7 +129,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var request = new FilterApiModel
             {
-                SpecialityName = _specialtyDTO.Name = null,
+                SpecialtyName = _specialtyDTO.Name = null,
                 DirectionName = _specialtyDTO.Direction.Name = null,
                 UniversityName = _specialtyToUniversityDTO.University.Name = null,
                 UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = null
@@ -146,8 +146,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetSpecialtyById_ShouldReturnSpecialty_ById()
         {
             // Arrange
-            _specialtyRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync(new SpecialityDTO());
-            _mapper.Setup(s => s.Map<SpecialtyResponseApiModel>(It.IsAny<SpecialityDTO>())).Returns(new SpecialtyResponseApiModel());
+            _specialtyRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync(new SpecialtyDTO());
+            _mapper.Setup(s => s.Map<SpecialtyResponseApiModel>(It.IsAny<SpecialtyDTO>())).Returns(new SpecialtyResponseApiModel());
             // Act
             var result = await _testService.GetSpecialtyById("id");
             // Assert
@@ -159,7 +159,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetSpecialtyById_ShouldReturnException_IfNotFoundSpecialty()
         {
             // Arrange
-            _specialtyRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync((SpecialityDTO)null);
+            _specialtyRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync((SpecialtyDTO)null);
             // Assert
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _testService.GetSpecialtyById(null));
         }
@@ -168,8 +168,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public void Dispose_ShouldDisposeRepositories()
         {
             // Arrange
-            var specialtyToUniRepo = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
-            var specialtyRepo = new Mock<IRepository<Speciality, SpecialityDTO>>();
+            var specialtyToUniRepo = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+            var specialtyRepo = new Mock<IRepository<Specialty, SpecialtyDTO>>();
             var specToUniResult = false;
             var specResult = false;
             specialtyToUniRepo.Setup(x => x.Dispose()).Callback(() => specToUniResult = true);

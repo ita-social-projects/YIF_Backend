@@ -21,7 +21,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityReposotiry = new Mock<IUniversityRepository<University, UniversityDTO>>();
-        private static readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
+        private static readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
@@ -53,7 +53,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var apiModel = new FilterApiModel()
             {
                 DirectionName = "Direction",
-                SpecialityName = "",
+                SpecialtyName = "",
                 UniversityName = "Name"
             };
 
@@ -108,7 +108,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Id = ""
             };
 
-            var speciality = new SpecialityDTO
+            var speciality = new SpecialtyDTO
             {
                 Name = "Speciality"
             };
@@ -121,16 +121,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var apiModel = new FilterApiModel()
             {
                 DirectionName = "",
-                SpecialityName = "Speciality",
+                SpecialtyName = "Speciality",
                 UniversityName = ""
             };
 
-            var specialityList = new List<SpecialityToUniversityDTO>
+            var specialityList = new List<SpecialtyToUniversityDTO>
             {
-                new SpecialityToUniversityDTO
+                new SpecialtyToUniversityDTO
                 {
-                    Speciality = speciality,
-                    SpecialityId = "",
+                    Specialty = speciality,
+                    SpecialtyId = "",
                     UniversityId = "",
                     University = university
                 }
@@ -155,7 +155,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _universityReposotiry.Setup(x => x.GetAll())
                 .ReturnsAsync(universitiesList);
 
-            _specialityRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialityToUniversity, bool>>>()))
+            _specialityRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialtyToUniversity, bool>>>()))
                 .ReturnsAsync(specialityList);
 
             _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))

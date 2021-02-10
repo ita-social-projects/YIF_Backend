@@ -12,14 +12,14 @@ using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
 {
-    public class SpecialtyService : ISpecialityService
+    public class SpecialtyService : ISpecialtyService
     {
-        private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialtyToUniversityRepository;
-        private readonly IRepository<Speciality, SpecialityDTO> _specialtyRepository;
+        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
+        private readonly IRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IMapper _mapper;
         public SpecialtyService(
-            IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialtyToUniversityRepository,
-            IRepository<Speciality, SpecialityDTO> specialtyRepository,
+            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
+            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IMapper mapper)
         {
             _specialtyToUniversityRepository = specialtyToUniversityRepository;
@@ -37,9 +37,9 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var specilaties = await _specialtyRepository.GetAll();
 
-            if (filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)
+            if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
-                specilaties = specilaties.Where(s => s.Name == filterModel.SpecialityName);
+                specilaties = specilaties.Where(s => s.Name == filterModel.SpecialtyName);
             }
 
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
@@ -50,14 +50,14 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
             {
                 var specialtyToUniversity = await _specialtyToUniversityRepository.Find(su => su.University.Name == filterModel.UniversityName);
-                var specialtyId = specialtyToUniversity.Select(su => su.SpecialityId);
+                var specialtyId = specialtyToUniversity.Select(su => su.SpecialtyId);
                 specilaties = specilaties.Where(s => specialtyId.Contains(s.Id));
             }
 
             if (filterModel.UniversityAbbreviation != string.Empty && filterModel.UniversityAbbreviation != null)
             {
                 var specialtyToUniversity = await _specialtyToUniversityRepository.Find(su => su.University.Abbreviation == filterModel.UniversityAbbreviation);
-                var specialtyIds = specialtyToUniversity.Select(su => su.SpecialityId);
+                var specialtyIds = specialtyToUniversity.Select(su => su.SpecialtyId);
                 specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
             }
 

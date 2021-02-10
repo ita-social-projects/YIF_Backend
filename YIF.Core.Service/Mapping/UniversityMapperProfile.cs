@@ -24,9 +24,9 @@ namespace YIF.Core.Service.Mapping
             CreateMap<DirectionToUniversity, DirectionToUniversityDTO>()
                 .ReverseMap();
 
-            CreateMap<Speciality, SpecialityDTO>()
+            CreateMap<Specialty, SpecialtyDTO>()
                 .ReverseMap();
-            CreateMap<SpecialityToUniversity, SpecialityToUniversityDTO>()
+            CreateMap<SpecialtyToUniversity, SpecialtyToUniversityDTO>()
                 .ReverseMap();
 
             CreateMap<UniversityAdmin, UniversityAdminDTO>()

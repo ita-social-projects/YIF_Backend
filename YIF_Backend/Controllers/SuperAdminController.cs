@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -64,7 +63,7 @@ namespace YIF_Backend.Controllers
         /// Delete University admin(sets its asp.net user IsDeleted to true.
         /// </summary>
         /// <returns>Success message</returns>
-        /// <response code="200">Sucesss message</response>
+        /// <response code="200">Success message</response>
         /// <response code="404">Not found message</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -81,7 +80,7 @@ namespace YIF_Backend.Controllers
         /// Delete School admin(sets its asp.net user IsDeleted to true.
         /// </summary>
         /// <returns>Success message</returns>
-        /// <response code="200">Sucesss message</response>
+        /// <response code="200">Success message</response>
         /// <response code="404">Not found message</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -95,12 +94,12 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds Universty Beta.
+        /// Adds University Beta.
         /// </summary>
         /// <returns></returns>
         /// <response code="201"></response>
         /// <response code="400">If model state is not valid</response>
-        /// <response code="409">Uni Already exists</response>
+        /// <response code="409">University Already exists</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]

@@ -33,11 +33,11 @@ namespace YIF.Core.Service.Concrete.Services
 
         public string CreateToken(IEnumerable<Claim> claims)
         {
-            var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("SecretPhrase")));
-            var signinCredentials = new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256);
+            var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("SecretPhrase")));
+            var signInCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256);
 
             var jwt = new JwtSecurityToken(
-                signingCredentials: signinCredentials,
+                signingCredentials: signInCredentials,
                 expires: DateTime.Now.AddMinutes(10),
                 claims: claims);
 

@@ -27,14 +27,6 @@ namespace YIF.Core.Service.Concrete.Services
             var to = new EmailAddress(email);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
 
-            // disable tracking settings
-            // ref.: https://sendgrid.com/docs/User_Guide/Settings/tracking.html
-
-            //msg.SetClickTracking(false, false);
-            //msg.SetOpenTracking(false);
-            //msg.SetGoogleAnalytics(false);
-            //msg.SetSubscriptionTracking(false);
-
             var response = await client.SendEmailAsync(msg);
             return response.IsSuccessStatusCode;
         }

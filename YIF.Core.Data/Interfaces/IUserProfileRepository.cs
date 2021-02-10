@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace YIF.Core.Data.Interfaces
 {
     /// <summary>
-    /// The interface of epository for the work with database user.
+    /// The interface of repository for the work with database user.
     /// </summary>
     /// <typeparam name="L">User profile entity.</typeparam>
     /// <typeparam name="M">User profile data transfer object.</typeparam>

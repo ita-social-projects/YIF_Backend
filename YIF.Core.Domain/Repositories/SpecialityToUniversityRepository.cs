@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -14,7 +13,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class SpecialityToUniversityRepository : IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>
+    public class SpecialityToUniversityRepository : IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -25,12 +24,12 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<string> Create(SpecialityToUniversity dbUser, object entityUser, string userPassword)
+        public Task<string> Create(SpecialtyToUniversity dbUser, object entityUser, string userPassword)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> Create(SpecialityToUniversity dbUser, object entityUser, string userPassword, string role)
+        public Task<string> Create(SpecialtyToUniversity dbUser, object entityUser, string userPassword, string role)
         {
             throw new NotImplementedException();
         }
@@ -45,55 +44,55 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<SpecialityToUniversityDTO>> Find(Expression<Func<SpecialityToUniversity, bool>> predicate)
+        public Task<IEnumerable<SpecialtyToUniversityDTO>> Find(Expression<Func<SpecialtyToUniversity, bool>> predicate)
         {
-            var list = _context.SpecialityToUniversities.Where(predicate)
+            var list = _context.SpecialtyToUniversities.Where(predicate)
                 .Include(x => x.University)
                 .ToList();
 
             if (list != null || list.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<SpecialityToUniversityDTO>>(list));
+                return Task.FromResult(_mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(list));
             }
 
             return null;
         }
 
-        public Task<SpecialityToUniversityDTO> Get(string id)
+        public Task<SpecialtyToUniversityDTO> Get(string id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<SpecialityToUniversityDTO>> GetAll()
+        public async Task<IEnumerable<SpecialtyToUniversityDTO>> GetAll()
         {
-            var list = await _context.SpecialityToUniversities
+            var list = await _context.SpecialtyToUniversities
                 .Join(_context.Universities,
                       su => su.UniversityId,
                       u => u.Id,
-                      (su, u) => new SpecialityToUniversity
+                      (su, u) => new SpecialtyToUniversity
                       {
                           Id = su.Id,
-                          SpecialityId = su.SpecialityId,
+                          SpecialtyId = su.SpecialtyId,
                           UniversityId = su.UniversityId,
                           University = u
                       })
-                .Join(_context.Specialities,
-                      su => su.SpecialityId,
+                .Join(_context.Specialties,
+                      su => su.SpecialtyId,
                       s => s.Id,
-                      (su, s) => new SpecialityToUniversity
+                      (su, s) => new SpecialtyToUniversity
                       {
                           Id = su.Id,
-                          SpecialityId = su.SpecialityId,
+                          SpecialtyId = su.SpecialtyId,
                           UniversityId = su.UniversityId,
                           University = su.University,
-                          Speciality = s
+                          Specialty = s
                       })
                 .ToListAsync();
 
-            return _mapper.Map<IEnumerable<SpecialityToUniversityDTO>>(list);
+            return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(list);
         }
 
-        public Task<SpecialityToUniversityDTO> GetByEmail(string email)
+        public Task<SpecialtyToUniversityDTO> GetByEmail(string email)
         {
             throw new NotImplementedException();
         }
@@ -113,7 +112,7 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(SpecialityToUniversity item)
+        public Task<bool> Update(SpecialtyToUniversity item)
         {
             throw new NotImplementedException();
         }

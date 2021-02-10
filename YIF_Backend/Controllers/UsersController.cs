@@ -226,7 +226,7 @@ namespace YIF_Backend.Controllers
         /// Confirm user email.
         /// </summary>
         /// <returns></returns>
-        /// <response code="200">When email have been cofirm.</response>
+        /// <response code="200">When email have been confirm.</response>
         /// <response code="404">When email not have been confirm.</response>
         [ProducesResponseType(typeof(ConfirmEmailApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]

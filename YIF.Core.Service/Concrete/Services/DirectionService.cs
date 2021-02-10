@@ -15,21 +15,21 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class DirectionService : IDirectionService
     {
-        private readonly IRepository<Direction, DirectionDTO> _repositoryDirection;
-        private readonly IRepository<Speciality, SpecialityDTO> _specialtyRepository;
+        private readonly IRepository<Direction, DirectionDTO> _directionRepository;
+        private readonly IRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionToUniversityRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
 
         
         public DirectionService(
-            IRepository<Direction, DirectionDTO> repositoryDirection,
-            IRepository<Speciality, SpecialityDTO> specialtyRepository,
+            IRepository<Direction, DirectionDTO> directionRepository,
+            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionToUniversityRepository,
             IMapper mapper,
             IPaginationService paginationService)
         {
-            _repositoryDirection = repositoryDirection;
+            _directionRepository = directionRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _specialtyRepository = specialtyRepository;
@@ -38,16 +38,16 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(FilterApiModel filterModel)
         {
-            var directions = await _repositoryDirection.GetAll();
+            var directions = await _directionRepository.GetAll();
 
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
             {
                 directions = directions.Where(d => d.Name == filterModel.DirectionName);
             }
 
-            if (filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)
+            if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
-                var specialties = await _specialtyRepository.Find(s => s.Name == filterModel.SpecialityName);
+                var specialties = await _specialtyRepository.Find(s => s.Name == filterModel.SpecialtyName);
                 var filteredDirections = specialties.Select(s => s.DirectionId);
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
@@ -71,7 +71,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(PageApiModel pageModel)
         {
-            var directions = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(await _repositoryDirection.GetAll());
+            var directions = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(await _directionRepository.GetAll());
             if (directions == null || directions.Count() == 0)
                 throw new NotFoundException("Напрями не знайдено.");
 

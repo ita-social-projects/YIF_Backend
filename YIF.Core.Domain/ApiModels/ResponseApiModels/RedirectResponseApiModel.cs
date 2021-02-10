@@ -1,7 +1,7 @@
 ﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     /// <summary>
-    /// A сlass for create a response with returning a redirect link.
+    /// A class for create a response with returning a redirect link.
     /// </summary>
     public class RedirectResponseApiModel
     {

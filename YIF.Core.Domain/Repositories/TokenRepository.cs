@@ -21,9 +21,9 @@ namespace YIF.Core.Domain.Repositories
         {
             if (user == null) return false;
 
-            var tokendb = _context.Tokens.Find(user.Id);
+            var tokenDb = _context.Tokens.Find(user.Id);
 
-            if (tokendb == null)
+            if (tokenDb == null)
             {
                 _context.Tokens.Add(new Token
                 {
@@ -34,9 +34,9 @@ namespace YIF.Core.Domain.Repositories
             }
             else
             {
-                tokendb.RefreshToken = refreshToken;
-                tokendb.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
-                _context.Tokens.Update(tokendb);
+                tokenDb.RefreshToken = refreshToken;
+                tokenDb.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+                _context.Tokens.Update(tokenDb);
             }
 
             await _context.SaveChangesAsync();

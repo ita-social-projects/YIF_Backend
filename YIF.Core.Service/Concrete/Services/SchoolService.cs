@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;

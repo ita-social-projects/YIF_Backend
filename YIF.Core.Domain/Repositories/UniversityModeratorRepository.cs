@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;

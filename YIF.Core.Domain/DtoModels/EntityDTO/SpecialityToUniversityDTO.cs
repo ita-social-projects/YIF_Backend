@@ -10,7 +10,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string SpecialityId { get; set; }
         public string UniversityId { get; set; }
 
-        public SpecialityDTO Speciality { get; set; }
+        public SpecialtyDTO Speciality { get; set; }
         public UniversityDTO University { get; set; }
     }
 }

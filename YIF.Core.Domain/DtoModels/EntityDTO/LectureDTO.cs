@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
+﻿using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
@@ -9,8 +6,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
     {
         public string Id { get; set; }
         public string UniversityId { get; set; }
-
-        //.....
 
         public UniversityDTO University { get; set; }
         /// <summary>

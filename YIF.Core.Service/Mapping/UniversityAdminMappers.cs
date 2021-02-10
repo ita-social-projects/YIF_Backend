@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AutoMapper;
 using YIF.Core.Data.Entities;
-using AutoMapper;
-using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Service.Mapping
 {
