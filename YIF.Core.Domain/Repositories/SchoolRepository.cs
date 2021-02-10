@@ -16,8 +16,9 @@ namespace YIF.Core.Domain.Repositories
     {
         private readonly EFDbContext _context;
         private readonly IMapper _mapper;
-        public SchoolRepository(EFDbContext context,
-                                    IMapper mapper)
+        public SchoolRepository(
+            EFDbContext context,
+            IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

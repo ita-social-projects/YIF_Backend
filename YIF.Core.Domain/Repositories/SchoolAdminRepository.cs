@@ -21,9 +21,10 @@ namespace YIF.Core.Domain.Repositories
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
 
-        public SchoolAdminRepository(IApplicationDbContext context,
-                                         IMapper mapper,
-                                         UserManager<DbUser> userManager)
+        public SchoolAdminRepository(
+            IApplicationDbContext context,
+            IMapper mapper,
+            UserManager<DbUser> userManager)
         {
             _dbContext = context;
             _mapper = mapper;
