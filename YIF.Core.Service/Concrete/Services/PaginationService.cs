@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Web;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -11,16 +12,23 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class PaginationService : IPaginationService
     {
+        private readonly ResourceManager _resourceManager;
+
+        public PaginationService(ResourceManager resourceManager)
+        {
+            _resourceManager = resourceManager;
+        }
+
         public PageResponseApiModel<T> GetPageFromCollection<T>(IEnumerable<T> list, PageApiModel pageModel)
         {
             if (pageModel.PageSize <= 0)
-                throw new BadRequestException("Введено неправильний розмір сторінки");
+                throw new BadRequestException(_resourceManager.GetString("IncorrectPageSize"));
 
             var count = list.Count();
             var totalPages = (int)Math.Ceiling((double)count / pageModel.PageSize);
 
             if (pageModel.Page <= 0 || pageModel.Page > totalPages)
-                throw new BadRequestException("Введено неправильний номер сторінки");
+                throw new BadRequestException(_resourceManager.GetString("IncorrectPageSize"));
 
             var itemsOnPage = list
                 .OrderBy(x =>

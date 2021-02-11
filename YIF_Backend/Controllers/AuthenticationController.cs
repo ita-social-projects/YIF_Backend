@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -13,10 +14,14 @@ namespace YIF_Backend.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
+        private readonly ResourceManager _resourceManager;
 
-        public AuthenticationController(IUserService<DbUser> userService)
+        public AuthenticationController(
+            IUserService<DbUser> userService,
+            ResourceManager resourceManager)
         {
             _userService = userService;
+            _resourceManager = resourceManager;
         }
 
         /// <summary>
@@ -31,7 +36,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> LoginUser([FromBody] LoginApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.LoginUser(model);
             return Ok(result.Object);
         }
@@ -51,7 +57,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.RegisterUser(model);
             if (!result.Success)
             {
@@ -73,7 +80,8 @@ namespace YIF_Backend.Controllers
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> Refresh([FromBody] TokenRequestApiModel tokenApiModel)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid) 
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _userService.RefreshToken(tokenApiModel);
             return Ok(result.Object);
         }

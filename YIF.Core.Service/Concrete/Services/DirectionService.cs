@@ -3,6 +3,7 @@ using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -20,20 +21,22 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionToUniversityRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
+        private readonly ResourceManager _resourceManager;
 
-        
         public DirectionService(
             IRepository<Direction, DirectionDTO> repositoryDirection,
             IRepository<Speciality, SpecialityDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionToUniversityRepository,
             IMapper mapper,
-            IPaginationService paginationService)
+            IPaginationService paginationService,
+            ResourceManager resourceManager)
         {
             _repositoryDirection = repositoryDirection;
             _mapper = mapper;
             _paginationService = paginationService;
             _specialtyRepository = specialtyRepository;
             _directionToUniversityRepository = directionToUniversityRepository;
+            _resourceManager = resourceManager;
         }
 
         public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(FilterApiModel filterModel)
@@ -73,7 +76,7 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var directions = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(await _repositoryDirection.GetAll());
             if (directions == null || directions.Count() == 0)
-                throw new NotFoundException("Напрями не знайдено.");
+                throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
 
             try
             {
@@ -81,16 +84,16 @@ namespace YIF.Core.Service.Concrete.Services
             }
             catch
             {
-                throw new Exception("Проблема з пагінацією.");
+                throw;
             }
         }
 
         public async Task<IEnumerable<string>> GetDirectionsNamesByFilter(FilterApiModel filterModel)
         {
             var directions = await GetAllDirectionsByFilter(filterModel);
-
+            
             if (directions == null || directions.Count() == 0)
-                throw new NotFoundException("Напрями не було знайдено");
+                throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
 
             return directions
                 .Select(s => s.Name)

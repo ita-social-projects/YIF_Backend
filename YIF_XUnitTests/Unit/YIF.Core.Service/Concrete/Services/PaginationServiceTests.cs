@@ -1,7 +1,9 @@
-﻿using SendGrid.Helpers.Errors.Model;
+﻿using Moq;
+using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -12,7 +14,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class PaginationServiceTests
     {
-        private static readonly IPaginationService _paginationService = new PaginationService();
+        private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
+
+        private static readonly IPaginationService _paginationService = new PaginationService(_resourceManager.Object);
 
         [Fact]
         public void GetPageFromCollection_ShouldReturnPage_IfEverythingOk()

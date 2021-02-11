@@ -4,6 +4,7 @@ using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -35,6 +36,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
         private readonly Mock<ITokenRepository> _tokenRepostory;
+        private readonly Mock<ResourceManager> _resourceManager;
+
         private readonly SuperAdminService superAdminService;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
@@ -68,6 +71,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
             _dbContextMock = new Mock<IApplicationDbContext>();
             _tokenRepostory = new Mock<ITokenRepository>();
+            _resourceManager = new Mock<ResourceManager>();
+
             superAdminService = new SuperAdminService(
                                                     _userRepository.Object,
                                                     _userManager.Object,
@@ -80,7 +85,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _schoolRepository.Object,
                                                     _schoolAdminRepository.Object,
                                                     _schoolModeratorRepository.Object,
-                                                    _tokenRepostory.Object);
+                                                    _tokenRepostory.Object,
+                                                    _resourceManager.Object);
 
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));
@@ -160,12 +166,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [Fact]
         public async Task DeleteAdmin_ReturnsSuccessDeleteMessage()
         {
-            SchoolUniAdminDeleteApiModel model = new SchoolUniAdminDeleteApiModel { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3" };
             //Arrange
+            SchoolUniAdminDeleteApiModel model = new SchoolUniAdminDeleteApiModel { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3" };
             _userManager.Setup(p => p.FindByIdAsync(_user.Id)).Returns(Task.FromResult<DbUser>(_user));
             _universityAdminRepository.Setup(p => p.Delete(model.Id)).Returns(Task.FromResult<string>("User IsDeleted was updated"));
+            
             //Act
             var a = await superAdminService.DeleteUniversityAdmin(model);
+            
             //Assert
             Assert.Equal("User IsDeleted was updated", a.Object.Message);
         }

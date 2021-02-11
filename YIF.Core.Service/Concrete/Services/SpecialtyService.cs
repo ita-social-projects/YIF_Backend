@@ -2,6 +2,7 @@
 using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -17,14 +18,18 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialtyToUniversityRepository;
         private readonly IRepository<Speciality, SpecialityDTO> _specialtyRepository;
         private readonly IMapper _mapper;
+        private readonly ResourceManager _resourceManager;
+
         public SpecialtyService(
             IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialtyToUniversityRepository,
             IRepository<Speciality, SpecialityDTO> specialtyRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ResourceManager resourceManager)
         {
             _specialtyToUniversityRepository = specialtyToUniversityRepository;
             _specialtyRepository = specialtyRepository;
             _mapper = mapper;
+            _resourceManager = resourceManager;
         }
 
         public void Dispose()
@@ -70,7 +75,7 @@ namespace YIF.Core.Service.Concrete.Services
             var specialties = await _specialtyRepository.GetAll();
             if (specialties.Count() < 1)
             {
-                throw new NotFoundException("Спеціальностей немає.");
+                throw new NotFoundException(_resourceManager.GetString("SpecialtiesNotFound"));
             }
             result.Object = _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specialties);
             return result.Set(true);
@@ -82,7 +87,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (specialties == null || specialties.Count() == 0)
             {
-                throw new NotFoundException("Спеціальностей немає.");
+                throw new NotFoundException(_resourceManager.GetString("SpecialtiesNotFound"));
             }
 
             return specialties
@@ -96,8 +101,8 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<SpecialtyResponseApiModel>();
             var specialty = await _specialtyRepository.Get(id);
             if (specialty == null)
-            {
-                throw new NotFoundException($"Спеціальність не знайдена із таким id:  {id}.");
+            {                
+                throw new NotFoundException($"{_resourceManager.GetString("SpecialtyWithSuchIdNotFound")}: {id}");
             }
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);

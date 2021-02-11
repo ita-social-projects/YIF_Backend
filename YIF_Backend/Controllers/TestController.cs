@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
@@ -20,10 +22,14 @@ namespace YIF_Backend.Controllers
     public class TestController : ControllerBase
     {
         private readonly IUserService<DbUser> _userService;
+        private readonly ResourceManager _resourceManager;
 
-        public TestController(IUserService<DbUser> userService)
+        public TestController(
+            IUserService<DbUser> userService, 
+            ResourceManager resourceManager)
         {
             _userService = userService;
+            _resourceManager = resourceManager;
         }
 
         /// <summary>
@@ -95,7 +101,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public void CreateServerError()
         {
-            throw new System.Exception("Test server error has run successfully");
+            throw new Exception(_resourceManager.GetString("TestServerErrorMessage"));
         }
     }
 }

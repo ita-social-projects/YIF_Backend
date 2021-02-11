@@ -2,14 +2,13 @@
 using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -22,6 +21,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
+        private readonly ResourceManager _resourceManager;
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
@@ -29,7 +29,8 @@ namespace YIF.Core.Service.Concrete.Services
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
-            IPaginationService paginationService)
+            IPaginationService paginationService,
+            ResourceManager resourceManager)
         {
             _universityRepository = universityRepository;
             _specialtyRepository = specialtyRepository;
@@ -37,6 +38,7 @@ namespace YIF.Core.Service.Concrete.Services
             _graduateRepository = graduateRepository;
             _mapper = mapper;
             _paginationService = paginationService;
+            _resourceManager = resourceManager;
         }
 
         public void Dispose() => _universityRepository.Dispose();
@@ -83,7 +85,7 @@ namespace YIF.Core.Service.Concrete.Services
             var university = await _universityRepository.Get(universityId);
 
             if (university == null)
-                throw new NotFoundException("Університету з таким id не існує");
+                throw new NotFoundException(_resourceManager.GetString("UniversityWithSuchIdNotFound"));
 
             var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
             university.IsFavorite = favoriteUniversities.Where(fu => fu.Id == university.Id).Count() > 0;
@@ -100,7 +102,7 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new PageResponseApiModel<UniversityResponseApiModel>();
 
             if (universities == null || universities.Count() == 0)
-                throw new NotFoundException("Університети не було знайдено");
+                throw new NotFoundException(_resourceManager.GetString("UniversitiesNotFound"));
 
             try
             {
@@ -126,7 +128,7 @@ namespace YIF.Core.Service.Concrete.Services
             var favoriteUnivesistes = await _universityRepository.GetFavoritesByUserId(userId);
             if (favoriteUnivesistes == null || favoriteUnivesistes.Count() == 0)
             {
-                throw new NotFoundException("Немає вибраних університетів");
+                throw new NotFoundException(_resourceManager.GetString("FavoriteUniversitiesNotFound"));
             }
 
             foreach (var university in favoriteUnivesistes)
@@ -142,7 +144,7 @@ namespace YIF.Core.Service.Concrete.Services
             var university = await GetUniversitiesByFilter(filterModel);
 
             if (university == null || university.Count() == 0)
-                throw new NotFoundException("Університети не було знайдено");
+                throw new NotFoundException(_resourceManager.GetString("UniversitiesNotFound"));
 
             return university
                 .Select(u => u.Abbreviation)
@@ -152,18 +154,18 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task AddUniversityToFavorite(string universityId, string userId)
         {
-            var favorites = await  _universityRepository.GetFavoritesByUserId(userId);
+            var favorites = await _universityRepository.GetFavoritesByUserId(userId);
             var university = await _universityRepository.Get(universityId);
             var graduate = await _graduateRepository.GetByUserId(userId);
 
             if (favorites.Where(f => f.Id == universityId).Count() > 0)
-                throw new BadRequestException("Даний університет вже додано до улюблених"); 
+                throw new BadRequestException(_resourceManager.GetString("UniversityIsAlreadyFavorite"));
 
             if (university == null)
-                throw new BadRequestException("Університет не було знайдено");
+                throw new BadRequestException(_resourceManager.GetString("UniversityNotFound"));
 
             if (graduate == null)
-                throw new BadRequestException("Випускника не було знайдено");
+                throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
 
             await _universityRepository.AddFavorite(new UniversityToGraduate
             {
@@ -179,13 +181,13 @@ namespace YIF.Core.Service.Concrete.Services
             var graduate = await _graduateRepository.GetByUserId(userId);
 
             if (favorites.Where(f => f.Id == universityId).Count() == 0)
-                throw new BadRequestException("Даний університет не було додано до улюблених");
+                throw new BadRequestException(_resourceManager.GetString("UniversityIsNotFavorite"));
 
             if (university == null)
-                throw new BadRequestException("Університет не було знайдено");
+                throw new BadRequestException(_resourceManager.GetString("UniversityNotFound"));
 
             if (graduate == null)
-                throw new BadRequestException("Випускника не було знайдено");
+                throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
 
             await _universityRepository.RemoveFavorite(new UniversityToGraduate
             {

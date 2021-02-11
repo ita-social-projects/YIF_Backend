@@ -16,6 +16,7 @@ namespace YIF_Backend.Controllers
     {
         private readonly ISpecialityService _specialtyService;
         private readonly ILogger<SpecialtyController> _logger;
+
         public SpecialtyController(ISpecialityService specialtyService, ILogger<SpecialtyController> logger)
         {
             _specialtyService = specialtyService;
