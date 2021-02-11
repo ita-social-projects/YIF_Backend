@@ -11,9 +11,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Service", "YIF.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF_XUnitTests", "YIF_XUnitTests\YIF_XUnitTests.csproj", "{8881C5A5-453D-441B-BF17-AE78A7BBE8AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIF.Core.Data", "YIF.Core.Data\YIF.Core.Data.csproj", "{AA9383E3-E707-48A6-B740-F6D2BB04FC76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIF.Core.Data", "YIF.Core.Data\YIF.Core.Data.csproj", "{AA9383E3-E707-48A6-B740-F6D2BB04FC76}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "YIF.Shared", "YIF.Shared\YIF.Shared.shproj", "{4C6223A5-CC0E-4DDB-9593-4BA761359BD8}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		YIF.Shared\YIF.Shared.projitems*{4c6223a5-cc0e-4ddb-9593-4ba761359bd8}*SharedItemsImports = 13
+		YIF.Shared\YIF.Shared.projitems*{8881c5a5-453d-441b-bf17-ae78a7bbe8ad}*SharedItemsImports = 5
+		YIF.Shared\YIF.Shared.projitems*{903b04e6-828e-4225-99c9-8b8ea215472c}*SharedItemsImports = 5
+		YIF.Shared\YIF.Shared.projitems*{aa9383e3-e707-48a6-b740-f6d2bb04fc76}*SharedItemsImports = 5
+		YIF.Shared\YIF.Shared.projitems*{d1c0ceef-a8d9-443a-ba5c-d6aad21d8fef}*SharedItemsImports = 5
+		YIF.Shared\YIF.Shared.projitems*{e598136f-be80-4b72-a011-0fb461610a47}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

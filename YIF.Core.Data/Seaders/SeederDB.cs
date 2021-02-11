@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Data.Others;
+using YIF.Shared;
 
 namespace YIF.Core.Data.Seaders
 {

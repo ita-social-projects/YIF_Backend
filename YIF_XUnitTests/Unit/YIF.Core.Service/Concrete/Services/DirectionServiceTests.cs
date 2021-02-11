@@ -52,7 +52,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [InlineData(null, null, null, "University abbreviation 1")]
         public async Task GetAllDirectionsByFilter_ShouldReturnDirections_IfEverythingOk(
             string directionName, 
-            string specialityName,
+            string specialtyName,
             string universityName,
             string universityAbbreviation)
         {
@@ -60,14 +60,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var filterModel = new FilterApiModel
             {
                 DirectionName = directionName,
-                SpecialtyName = specialityName,
+                SpecialtyName = specialtyName,
                 UniversityName = universityName,
                 UniversityAbbreviation = universityAbbreviation
             };
 
             var responseList = GetResponseList();
             var directions = GetDirectionDTOs();
-            var specialties = GetSpecialityDTOs();
+            var specialties = GetSpecialtyDTOs();
             var directionsToUniversities = GetDirectionToUniversityDTOs()
                 .Where(du => filterModel.UniversityName == null ||
                              filterModel.UniversityName == string.Empty ||
@@ -82,7 +82,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _specialtyRepository
                 .Setup(sr => sr.Find(It.IsAny<Expression<Func<Specialty, bool>>>()))
-                .ReturnsAsync(GetSpecialityDTOs().Where(s => s.Name == filterModel.SpecialtyName));
+                .ReturnsAsync(GetSpecialtyDTOs().Where(s => s.Name == filterModel.SpecialtyName));
 
             _directionToUniversityRepository
                 .Setup(du => du.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))
@@ -167,7 +167,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             return directionDTOs;
         }
 
-        private IEnumerable<SpecialtyDTO> GetSpecialityDTOs()
+        private IEnumerable<SpecialtyDTO> GetSpecialtyDTOs()
         {
             return GetDirectionDTOs()
                 .SelectMany(x=>x.Specialties);

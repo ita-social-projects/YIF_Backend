@@ -1,4 +1,4 @@
-﻿namespace YIF.Core.Data.Others
+﻿namespace YIF.Shared
 {
     public class ProjectRoles
     {

@@ -34,7 +34,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _dbContextMock = new Mock<IApplicationDbContext>();
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
-            //_dbEFContextMock = new Mock<EFDbContext>();
 
             _schoolAdminRepository = new SchoolAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
@@ -80,7 +79,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         }
 
         [Fact]
-        public async Task GetByUniversityId_RetursNullForBadId()
+        public async Task GetByUniversityId_ReturnsNullForBadId()
         {
             //Arrange
             //Act

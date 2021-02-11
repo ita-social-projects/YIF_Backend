@@ -25,4 +25,6 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <Import Project="..\YIF.Shared\YIF.Shared.projitems" Label="Shared" />
+
 </Project>

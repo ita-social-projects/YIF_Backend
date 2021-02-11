@@ -41,4 +41,6 @@
     <Folder Include="Unit\YIF.Core.Service\Mapping\" />
   </ItemGroup>
 
+  <Import Project="..\YIF.Shared\YIF.Shared.projitems" Label="Shared" />
+
 </Project>

@@ -50,10 +50,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("Статистика")]
-        public async Task GET_EndpointsReturnUniversities_IfSpecialityNameCorrect(string SpecialityName)
+        public async Task GET_EndpointsReturnUniversities_IfSpecialtyNameCorrect(string specialtyName)
         {
             // Act
-            var response = await _client.GetAsync($"?SpecialityName={SpecialityName}");
+            var response = await _client.GetAsync($"?SpecialtyName={specialtyName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
@@ -69,10 +69,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("Академія внутрішніх військ МВС України")]
-        public async Task GET_EndpointsReturnUniversities_IfUniversityNameCorrect(string UniversityName)
+        public async Task GET_EndpointsReturnUniversities_IfUniversityNameCorrect(string universityName)
         {
             // Act
-            var response = await _client.GetAsync($"?UniversityName={UniversityName}");
+            var response = await _client.GetAsync($"?UniversityName={universityName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
@@ -88,10 +88,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         
         [Theory]
         [InlineData("Інформаційні технології", "Системний аналіз")]
-        public async Task GET_EndpointsReturnUniversities_IfDirectionName_And_SpecialityNameCorrect(string DirectionName, string SpecialityName)
+        public async Task GET_EndpointsReturnUniversities_IfDirectionName_And_SpecialityNameCorrect(string directionName, string specialtyName)
         {
             // Act
-            var response = await _client.GetAsync($"?DirectionName={DirectionName}&SpecialityName={SpecialityName}&page=1&pageSize=10");
+            var response = await _client.GetAsync($"?DirectionName={directionName}&SpecialtyName={specialtyName}&page=1&pageSize=10");
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
@@ -110,10 +110,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         #region InCorrectTests
         [Theory]
         [InlineData("PazhiloyDirection")]
-        public async Task GET_EndpointsReturnUniversities_IfDirectionNameInCorrect(string DirectionName)
+        public async Task GET_EndpointsReturnUniversities_IfDirectionNameInCorrect(string directionName)
         {
             // Act
-            var response = await _client.GetAsync($"?DirectionName={DirectionName}");
+            var response = await _client.GetAsync($"?DirectionName={directionName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JObject.Parse(content).GetValue("message").ToString();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
+//using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
@@ -17,6 +17,7 @@ using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.DtoModels.SchoolAdmin;
 using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Shared;
 
 namespace YIF.Core.Service.Concrete.Services
 {

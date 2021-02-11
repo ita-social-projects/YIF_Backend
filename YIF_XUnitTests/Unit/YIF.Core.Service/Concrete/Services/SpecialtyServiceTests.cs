@@ -26,8 +26,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
         private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO() };
-        private readonly IEnumerable<SpecialtyDTO> _listSpiciality;
-        private readonly IEnumerable<SpecialtyDTO> _blankListSpiciality = new List<SpecialtyDTO>().AsEnumerable();
+        private readonly IEnumerable<SpecialtyDTO> _listSpecialty;
+        private readonly IEnumerable<SpecialtyDTO> _blankListSpecialty = new List<SpecialtyDTO>().AsEnumerable();
         private readonly IEnumerable<SpecialtyResponseApiModel> _blankResponse = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel() }.AsEnumerable();
 
         public SpecialtyServiceTests()
@@ -41,10 +41,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _mapper.Object
                 );
 
-            _listSpiciality = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
-            var listSpicialityToUniversity = new List<SpecialtyToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
+            _listSpecialty = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
+            var listSpecialtyToUniversity = new List<SpecialtyToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
             _specialtyToUniversityRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToUniversity, bool>>>()))
-                    .ReturnsAsync(listSpicialityToUniversity);
+                    .ReturnsAsync(listSpecialtyToUniversity);
         }
 
         [Theory]
@@ -63,9 +63,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = uniAbbr
             };
 
-            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpiciality);
+            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpecialty);
             var response = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel { Name = specialty } }.AsEnumerable();
-            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(_listSpiciality)).Returns(response);
+            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(_listSpecialty)).Returns(response);
 
             // Act
             var result = (await _testService.GetAllSpecialtiesByFilter(request)).ToList();
@@ -112,9 +112,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = uniAbbr
             };
 
-            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpiciality);
+            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpecialty);
             var response = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel { Name = specialty } }.AsEnumerable();
-            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(_listSpiciality)).Returns(response);
+            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(_listSpecialty)).Returns(response);
 
             // Act
             var result = (await _testService.GetSpecialtiesNamesByFilter(request)).ToList();
@@ -135,7 +135,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = null
             };
 
-            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_blankListSpiciality);
+            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_blankListSpecialty);
             _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(It.IsAny<IEnumerable<SpecialtyResponseApiModel>>())).Returns(_blankResponse);
 
             // Assert

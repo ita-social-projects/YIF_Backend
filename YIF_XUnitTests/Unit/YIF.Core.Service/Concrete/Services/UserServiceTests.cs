@@ -15,13 +15,13 @@ using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF.Shared;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -181,7 +181,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), It.IsAny<object>(), userData.Password, ProjectRoles.Graduate)).Returns(Task.FromResult(string.Empty));
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(x => x.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
-            _signInManager.SignIsSucces = SignInResult.Success;
+            _signInManager.SignIsSuccess = SignInResult.Success;
 
             // Act
             var result = await _testService.RegisterUser(userData);
@@ -312,7 +312,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _recaptcha.Setup(x => x.IsValid(loginAM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(loginAM.Email)).ReturnsAsync(user);
             _userManager.Setup(s => s.CheckPasswordAsync(user, loginAM.Password)).ReturnsAsync(true);
-            _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Success;
+            _signInManager.SignIsSuccess = Microsoft.AspNetCore.Identity.SignInResult.Success;
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _jwtService.Setup(s => s.CreateRefreshToken()).Returns(token);
@@ -326,8 +326,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         [Theory]
         [InlineData("d@gmail.com", "QWerty-1", "recaptcha")]
-        //[InlineData("qtoni6@gmail.com", "d", "recaptcha")]
-        //[InlineData("", "", "")]
         public async Task LoginUser_ShouldReturnFalse_WhenEmailOrPasswordAreIncorrect(string email, string password, string recaptcha)
         {
             // Arrange
@@ -336,7 +334,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _recaptcha.Setup(x => x.IsValid(loginVM.RecaptchaToken)).Returns(true);
             _userManager.Setup(s => s.FindByEmailAsync(email)).ReturnsAsync(email == "" ? null : user);
-            _signInManager.SignIsSucces = Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            _signInManager.SignIsSuccess = Microsoft.AspNetCore.Identity.SignInResult.Failed;
 
             // Assert
             await Assert.ThrowsAsync<BadRequestException>(() => _testService.LoginUser(loginVM));

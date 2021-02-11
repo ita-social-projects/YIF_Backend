@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
@@ -20,7 +15,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         private readonly Mock<IApplicationDbContext> _dbContextMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly FakeUserManager<DbUser> _userManagerMock;
-        private readonly UniversityAdminRepository _universtityAdminRepository;
+        private readonly UniversityAdminRepository _universityAdminRepository;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
         private readonly UniversityAdmin uniAdmin = new UniversityAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9" };
@@ -37,9 +32,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _dbContextMock = new Mock<IApplicationDbContext>();
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
-            //_dbEFContextMock = new Mock<EFDbContext>();
 
-            _universtityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
+            _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));
@@ -55,18 +49,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         }
         [Fact]
         public async Task Create_UniAdmin_ReturnsEmptyString()
-        { 
-            string a = await _universtityAdminRepository.AddUniAdmin(uniAdmin);
+        {
+            //Act
+            string a = await _universityAdminRepository.AddUniAdmin(uniAdmin);
+            //Assert
             Assert.Equal(string.Empty, a);
         }
 
         [Fact]
         public async Task DeleteAdmin_WrongId_ReturnsNull()
         {
-            //Arrange
             //Act
-            string a = await _universtityAdminRepository.Delete("sdfsdf");
-            
+            string a = await _universityAdminRepository.Delete("sdfsdf");
             //Assert
             Assert.Null(a);
         }
@@ -77,40 +71,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Arrange
             _userManagerMock.ResponseObject = _user;
             //Act
-            string a = await _universtityAdminRepository.Delete("3b16d794-7aaa-4ca5-943a-36d328f86ed3");
+            string a = await _universityAdminRepository.Delete("3b16d794-7aaa-4ca5-943a-36d328f86ed3");
             //Assert
-            Assert.Equal("User IsDeleted was updated",a);
+            Assert.Equal("User IsDeleted was updated", a);
         }
-
-        //[Fact]
-        //public async Task GetByUniversityId_RetursNullForBadId()
-        //{
-        //    //Arrange
-        //    //Act
-        //    var a = await _universtityAdminRepository.GetByUniversityId("sdfs");
-        //    //Assert
-        //    Assert.Equal(a, null);
-        //}
-
-        //[Fact] // not finished no dea how to fx it
-        //public async Task GetByUniversityId_ReturnsValidDto()
-        //{
-        //    //Arrange
-
-        //    //Act
-        //    var a = await _universtityAdminRepository.GetByUniversityId("007a43f8-7553-4eec-9e91-898a9cba37c9");
-        //    //Assert
-        //    Assert.Equal(a.Id, uniAdmin.Id);
-        //}
-
-        //[Fact] // same as prevous one
-        //public async Task GetByUniversityIdWithoutIsDeletedCheck()
-        //{
-        //    //Arrange
-        //    //Act
-        //    var a = await _universtityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck("007a43f8-7553-4eec-9e91-898a9cba37c9");
-        //    //Assert
-        //    Assert.Equal(a.Id, uniAdmin.Id);
-        //}
     }
 }

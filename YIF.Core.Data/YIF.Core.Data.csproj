@@ -19,5 +19,7 @@
       <_Parameter1>YIF_XUnitTests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+
+  <Import Project="..\YIF.Shared\YIF.Shared.projitems" Label="Shared" />
   
 </Project>
