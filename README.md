@@ -35,8 +35,6 @@ Clone or download the project from https://github.com/ita-social-projects/YIF_Ba
 
 * Install Entity Framework
 
-* Install Node.js v10.19.0+
-
 * Create local database from https://github.com/ita-social-projects/YIF_Backend
 
 * Open project in Visual Studio or enter command "dotnet run 
@@ -48,30 +46,82 @@ Clone or download the project from https://github.com/ita-social-projects/YIF_Ba
     [-r|--runtime <RUNTIME_IDENTIFIER>] [-v|--verbosity <LEVEL>] 
     [[--] [application arguments]]"
 
-
-
 ---
 
 ## How to run the project with docker-compose locally
 
-
-The instructions below will allow you to run application locally in the containers for developing and testing purpose.
-
 ### Installation Prerequisites:
+Git
+Docker for Mac, Docker for Windows, or Docker Engine
 
+### Run application in containers:
+To run this application, first git clone the project.
 * Clone repository from GitHub with:
- git clone https://github.com/ita-social-projects/YIF_Backend
+command:
+ git clone https://github.com/ita-social-projects/YIF_Backend.git
 
+You should add appsettings.json to project (folder YIF_Backend/YIF_Backend). 
+Check: 
+1)the connection string in appsettings.json
+"ConnectionStrings": {
+    "DefaultConnection": "Server=yifsql,1433;Database=master;User Id=SA;Password=YIF_Backend_DB_MyKeyOnlyInMyHeart;"
+  }
+  
+2) Seeder in Startup.cs
+#region Seeder
+SeederDB.SeedData(app.ApplicationServices);
+#endregion
+
+Then run these commands to start the containers:
+ cd YIF_Backend
+ docker-compose up --build
+
+Then you can access the web api at http://localhost:5000/swagger/index.html
+
+### Stop containers:
+Run command to stop the containers:
+ docker-compose stop
+ 
+### Delete containers:
+Run command to delete the containers:
+ docker-compose down
+
+### Details
+### docker-compose.yml file
+Note that there are two images - one for the web api (yifbackend) and one for SQL Server (yifsql). The yifsql image uses mcr.microsoft.com/mssql/server:2017-latest as the base. It is the SQL Server image for running on Linux. Whenever you start a mcr.microsoft.com/mssql/server:2017-latest container, you need to pass in some environment variables:
+
+ACCEPT_EULA: "Y"
+SA_PASSWORD: "YIF_Backend_DB_MyKeyOnlyInMyHeart" 
+
+For this demo the password is set to 'YIF_Backend_DB_MyKeyOnlyInMyHeart' but you can change it if you want. Make sure you also change it in appsettings.json configuration if you do though!
+
+Note that the server name is 'yifsql'. This is the name that the SQL Server container is known by the web container as on the container network. 
+Note the name of the DB is 'master'. You can change this to whatever you want. Entity Framework will attempt to create the DB if it doesnt already exist.
 ---
+
+## How to run the project with docker-compose on Azure
+
+### Prerequisites:
+Azure account
+Virtual machine Ubuntu18.04
+Allow port: 5000 on Virtual machine
+Git (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+Docker Engine on Ubuntu (https://docs.docker.com/engine/install/ubuntu/)
+Docker-compose (https://docs.docker.com/compose/install/)
+
+### Run application in containers
+Look above ## How to run the project with docker-compose locally
+
+Then you can access the web api at http://ip:5000/swagger/index.html
 
 ## Team
 
-![@team](https://i.ibb.co/4VwYn0H/lead.png)
-![@team](https://i.ibb.co/qmh3jmM/trainee.png)
-![@team](https://i.ibb.co/qmh3jmM/trainee.png)
-![@team](https://i.ibb.co/qmh3jmM/trainee.png)
-![@team](https://i.ibb.co/qmh3jmM/trainee.png)
-![@team](https://i.ibb.co/qmh3jmM/trainee.png)
+![@team](https://avatars.githubusercontent.com/u/34924839?s=460&u=c698ded4b7aa4c34491d39b76fb0b7d2436d26e6&v=4)
+![@team](https://avatars.githubusercontent.com/u/42476974?s=460&u=b49aa4ca49046de0c87c82da6d48cc37ac08a170&v=4)
+![@team](https://avatars.githubusercontent.com/u/44744677?s=460&u=0b6a5ad0c6e7712a53c4ff2c42a24e2aeb0c34a3&v=4)
+![@team](https://avatars.githubusercontent.com/u/52170310?s=460&v=4)
+![@team](https://avatars.githubusercontent.com/u/55939463?s=460&v=4)
+![@team](https://avatars.githubusercontent.com/u/16308549?s=460&u=48b55feed8dad680a02c1633efff050ccfb1ebb2&v=4)
 
 - https://github.com/shelkon
 - https://github.com/Yura-Androshchuk
