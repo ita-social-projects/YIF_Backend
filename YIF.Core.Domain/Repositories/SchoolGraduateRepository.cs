@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.DtoModels.School;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {

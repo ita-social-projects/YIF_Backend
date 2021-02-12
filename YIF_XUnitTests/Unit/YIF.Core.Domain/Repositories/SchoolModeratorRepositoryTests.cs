@@ -24,10 +24,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public SchoolModeratorRepositoryTests()
         {
             _dbContextMock = new Mock<IApplicationDbContext>();
-            _mapperMock = new Mock<IMapper>();
-            _userManagerMock = new FakeUserManager<DbUser>();
 
-            _schoolModeratorRepository = new SchoolModeratorRepository(_mapperMock.Object, _userManagerMock, _dbContextMock.Object);
+            _schoolModeratorRepository = new SchoolModeratorRepository(_dbContextMock.Object);
             _dbContextMock.Setup(p => p.SchoolModerators).Returns(DbContextMock.GetQueryableMockDbSet<SchoolModerator>(_databaseSchoolModerators));
         }
 

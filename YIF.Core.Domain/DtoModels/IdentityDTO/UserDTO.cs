@@ -70,6 +70,10 @@ namespace YIF.Core.Domain.DtoModels.IdentityDTO
         /// </summary>
         public virtual IEnumerable<string> Roles { get; set; }
         /// <summary>
+        /// Navigation property for the user token.
+        /// </summary>
+        public virtual TokenDTO Token { get; set; }
+        /// <summary>
         /// Navigation property for the user profile.
         /// </summary>
         public virtual UserProfileDTO UserProfile { get; set; }

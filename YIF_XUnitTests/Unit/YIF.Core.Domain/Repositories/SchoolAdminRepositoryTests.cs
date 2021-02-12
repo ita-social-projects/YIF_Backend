@@ -59,7 +59,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         [Fact]
         public async Task DeleteAdmin_WrongId_ReturnsNull()
         {
-            //Arrange
             //Act
             string a = await _schoolAdminRepository.Delete("sdfsdf");
 
@@ -81,7 +80,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         [Fact]
         public async Task GetByUniversityId_ReturnsNullForBadId()
         {
-            //Arrange
             //Act
             var a = await _schoolAdminRepository.GetBySchoolId("sdfs");
             //Assert

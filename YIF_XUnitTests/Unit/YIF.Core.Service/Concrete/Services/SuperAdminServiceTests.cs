@@ -10,11 +10,9 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.DtoModels.School;
-using YIF.Core.Domain.DtoModels.SchoolAdmin;
-using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
@@ -34,7 +32,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
-        private readonly Mock<ITokenRepository> _tokenRepository;
+        private readonly Mock<ITokenRepository<TokenDTO>> _tokenRepository;
         private readonly SuperAdminService superAdminService;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
@@ -67,7 +65,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
             _dbContextMock = new Mock<IApplicationDbContext>();
-            _tokenRepository = new Mock<ITokenRepository>();
+            _tokenRepository = new Mock<ITokenRepository<TokenDTO>>();
             superAdminService = new SuperAdminService(
                                                     _userRepository.Object,
                                                     _userManager.Object,

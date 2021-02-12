@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
@@ -24,21 +22,19 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<string> Create(SpecialtyToUniversity dbUser, object entityUser, string userPassword)
+        public async Task<bool> Update(SpecialtyToUniversity item)
         {
-            throw new NotImplementedException();
+            _context.SpecialtyToUniversities.Update(item);
+            var res = await _context.SaveChangesAsync();
+            return res > 0;
         }
 
-        public Task<string> Create(SpecialtyToUniversity dbUser, object entityUser, string userPassword, string role)
-        {
-            throw new NotImplementedException();
-        }
-
+        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
         }
-        [ExcludeFromCodeCoverage]
+
         public void Dispose()
         {
             _context.Dispose();
@@ -46,8 +42,10 @@ namespace YIF.Core.Domain.Repositories
 
         public Task<IEnumerable<SpecialtyToUniversityDTO>> Find(Expression<Func<SpecialtyToUniversity, bool>> predicate)
         {
-            var list = _context.SpecialtyToUniversities.Where(predicate)
+            var list = _context.SpecialtyToUniversities
+                .Include(x => x.Specialty)
                 .Include(x => x.University)
+                .Where(predicate)
                 .ToList();
 
             if (list != null || list.Count > 0)
@@ -58,9 +56,10 @@ namespace YIF.Core.Domain.Repositories
             return null;
         }
 
-        public Task<SpecialtyToUniversityDTO> Get(string id)
+        public async Task<SpecialtyToUniversityDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var specialtyToUniversity = await _context.SpecialtyToUniversities.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<SpecialtyToUniversityDTO>(specialtyToUniversity);
         }
 
         public async Task<IEnumerable<SpecialtyToUniversityDTO>> GetAll()
@@ -90,41 +89,6 @@ namespace YIF.Core.Domain.Repositories
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(list);
-        }
-
-        public Task<SpecialtyToUniversityDTO> GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithToken(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithUserProfile(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Update(SpecialtyToUniversity item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserPhoto(DbUser user, string photo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

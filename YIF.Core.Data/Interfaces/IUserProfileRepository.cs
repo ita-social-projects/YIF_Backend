@@ -14,6 +14,9 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<L> GetDefaultUserProfile(string userId);
         Task<L> SetDefaultUserProfileIfEmpty(string userId);
-        Task<M> SetUserProfile(M profile, string schoolName = null);
+        Task<bool> EmailExistInAnotherUser(string email, string currentUserId);
+        Task<bool> IsCurrentUserTheGraduate(string currentUserId);
+        Task<bool> SetSchoolForGraduate(string schoolName, string currentUserId);
+        Task<M> SetUserProfile(M profile);
     }
 }

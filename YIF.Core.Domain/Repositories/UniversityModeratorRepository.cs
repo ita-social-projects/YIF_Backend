@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -40,9 +42,15 @@ namespace YIF.Core.Domain.Repositories
              _dbContext.Dispose();
         }
 
-        public Task<IEnumerable<UniversityModeratorDTO>> GetAllUniModerators()
+        public async Task<IEnumerable<UniversityModeratorDTO>> GetAllUniModerators()
         {
-            throw new NotImplementedException();
+            var moderators = await _dbContext.UniversityModerators
+                .Include(x => x.User)
+                .Include(x => x.Admin)
+                .Include(x => x.University)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<UniversityModeratorDTO>>(moderators.AsEnumerable());
         }
 
         public Task<UniversityModeratorDTO> GetById(string id)

@@ -1,4 +1,4 @@
-﻿namespace YIF.Core.Domain.DtoModels.School
+﻿namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class SchoolDTO
     {

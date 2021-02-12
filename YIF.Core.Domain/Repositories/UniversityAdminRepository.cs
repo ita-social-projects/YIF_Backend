@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -36,17 +34,24 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<string> Delete(string adminId)
         {
-            var universityAdmin =
-                              from users in _dbContext.Users
-                              join moderators in _dbContext.UniversityModerators on users.Id equals moderators.UserId
-                              join admins in _dbContext.UniversityAdmins on moderators.AdminId equals admins.Id
-                              where (users.IsDeleted == false && admins.Id == adminId)
-                              select new UniversityAdmin()
-                              {
-                                  Id = users.Id,
-                                  UniversityId = admins.UniversityId,
+            var universityAdmin = _dbContext.Users.Where(u => u.IsDeleted == false)
+                .Join(_dbContext.UniversityModerators,
+                      user => user.Id,
+                      moderator => moderator.UserId,
+                      (user, moderator) => new UniversityModerator
+                      {
+                          UserId = user.Id,
+                          AdminId = moderator.AdminId
+                      })
+                .Join(_dbContext.UniversityAdmins.Where(a => a.Id == adminId),
+                      moderator => moderator.AdminId,
+                      admin => admin.Id,
+                      (moderator, admin) => new UniversityAdmin
+                      {
+                          Id = moderator.UserId,
+                          UniversityId = admin.UniversityId
+                      });
 
-                              };
             if (universityAdmin.Count() == 0)
             {
                 return null;
@@ -59,17 +64,24 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<UniversityAdminDTO> GetByUniversityId(string universityId)
         {
-            var universityAdmin =
-                                from users in _dbContext.Users
-                                join moderators in _dbContext.UniversityModerators on users.Id equals moderators.UserId
-                                join admins in _dbContext.UniversityAdmins on moderators.AdminId equals admins.Id
-                                where (users.IsDeleted == false && admins.UniversityId == universityId)
-                                select new UniversityAdminDTO()
-                                {
-                                    Id = admins.Id,
-                                    UniversityId = admins.UniversityId,
+            var universityAdmin = _dbContext.Users.Where(u => u.IsDeleted == false)
+                   .Join(_dbContext.UniversityModerators,
+                         user => user.Id,
+                         moderator => moderator.UserId,
+                         (user, moderator) => new UniversityModerator
+                         {
+                             UserId = user.Id,
+                             AdminId = moderator.AdminId
+                         })
+                   .Join(_dbContext.UniversityAdmins.Where(a => a.UniversityId == universityId),
+                         moderator => moderator.AdminId,
+                         admin => admin.Id,
+                         (moderator, admin) => new UniversityAdminDTO
+                         {
+                             Id = moderator.UserId,
+                             UniversityId = admin.UniversityId
+                         });
 
-                                };
             if (universityAdmin.Count() != 0)
             {
                 return await universityAdmin.FirstOrDefaultAsync();
@@ -90,19 +102,33 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<UniversityAdminDTO>> GetAllUniAdmins()
         {
-            var universityAdmin =
-                               from users in _dbContext.Users
-                               join moderators in _dbContext.UniversityModerators on users.Id equals moderators.UserId
-                               join admins in _dbContext.UniversityAdmins on moderators.AdminId equals admins.Id
-                               join unis in _dbContext.Universities on admins.UniversityId equals unis.Id
-                               where (users.IsDeleted == false)
-                               select new UniversityAdminDTO()
-                               {
-                                   Id = admins.Id,
-                                   UniversityId = admins.UniversityId,
-                                   UniversityName = unis.Name
+            var universityAdmin = _dbContext.Users
+                .Join(_dbContext.UniversityModerators,
+                      user => user.Id,
+                      moderator => moderator.UserId,
+                      (user, moderator) => new UniversityModerator
+                      {
+                          UserId = user.Id,
+                          AdminId = moderator.AdminId
+                      })
+                .Join(_dbContext.UniversityAdmins,
+                      moderator => moderator.AdminId,
+                      admin => admin.Id,
+                      (moderator, admin) => new UniversityAdmin
+                      {
+                          Id = moderator.UserId,
+                          UniversityId = admin.UniversityId
+                      })
+                .Join(_dbContext.Universities,
+                      admin => admin.UniversityId,
+                      university => university.Id,
+                      (admin, university) => new UniversityAdminDTO
+                      {
+                          Id = admin.Id,
+                          UniversityId = admin.UniversityId,
+                          UniversityName = university.Name
+                      });
 
-                               };
             if (universityAdmin.Count() != 0)
             {
                 return await universityAdmin.ToListAsync();
@@ -110,16 +136,15 @@ namespace YIF.Core.Domain.Repositories
             return null;
         }
 
-        public Task<UniversityAdminDTO> GetById(string id)
+        public async Task<UniversityAdminDTO> GetById(string id)
         {
-            throw new NotImplementedException();
+            var admin = await _dbContext.UniversityAdmins.FirstOrDefaultAsync(a => a.Id == id);
+            return _mapper.Map<UniversityAdminDTO>(admin);
         }
-        [ExcludeFromCodeCoverage]
+
         public  void Dispose()
         {
             _dbContext.Dispose();
         }
-
-
     }
 }

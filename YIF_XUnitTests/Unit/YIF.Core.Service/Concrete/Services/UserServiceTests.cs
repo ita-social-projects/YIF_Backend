@@ -17,8 +17,9 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.DtoModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 using YIF.Shared;
@@ -30,7 +31,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly UserService _testService;
         private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
         private readonly Mock<IUserProfileRepository<UserProfile, UserProfileDTO>> _userProfileRepository;
-        private readonly Mock<ITokenRepository> _tokenRepository;
+        private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
+        private readonly Mock<ITokenRepository<TokenDTO>> _tokenRepository;
         private readonly Mock<IServiceProvider> _serviceProvider;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
@@ -52,7 +54,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
             _userProfileRepository = new Mock<IUserProfileRepository<UserProfile, UserProfileDTO>>();
-            _tokenRepository = new Mock<ITokenRepository>();
+            _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
+            _tokenRepository = new Mock<ITokenRepository<TokenDTO>>();
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
             _serviceProvider = new Mock<IServiceProvider>();
@@ -67,6 +70,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _testService = new UserService(
                 _userRepository.Object,
                 _userProfileRepository.Object,
+                _schoolRepository.Object,
                 _serviceProvider.Object,
                 _userManager.Object,
                 _signInManager,
@@ -316,7 +320,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _jwtService.Setup(s => s.SetClaims(It.IsAny<DbUser>())).Verifiable();
             _jwtService.Setup(s => s.CreateToken(It.IsAny<IEnumerable<Claim>>())).Returns(token);
             _jwtService.Setup(s => s.CreateRefreshToken()).Returns(token);
-            _tokenRepository.Setup(x => x.UpdateUserToken(user, token)).Verifiable();
+            _tokenRepository.Setup(x => x.UpdateUserToken(user.Id, token)).Verifiable();
             // Act
             var result = await _testService.LoginUser(loginAM);
             // Assert
@@ -477,7 +481,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             userRepo.Setup(x => x.Dispose()).Callback(() => userResult = true);
             profileRepo.Setup(x => x.Dispose()).Callback(() => profileResult = true);
             // Act
-            var service = new UserService(userRepo.Object, profileRepo.Object, null, null, null, null, null, null, null, null, null, null, null);
+            var service = new UserService(userRepo.Object, profileRepo.Object, null, null, null, null, null, null, null, null, null, null, null, null);
             service.Dispose();
             // Assert
             Assert.True(userResult);

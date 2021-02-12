@@ -4,21 +4,15 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.DtoModels.SchoolModerator;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
     public class SchoolModeratorRepository : ISchoolModeratorRepository<SchoolModeratorDTO>
     {
         private readonly IApplicationDbContext _dbContext;
-        private readonly IMapper _mapper;
-        private readonly UserManager<DbUser> _userManager;
-        public SchoolModeratorRepository(IMapper mapper,
-                              UserManager<DbUser> userManager,
-                              IApplicationDbContext dbContext)
+        public SchoolModeratorRepository(IApplicationDbContext dbContext)
         {
-            _mapper = mapper;
-            _userManager = userManager;
             _dbContext = dbContext;
         }
         public async Task<string> AddSchoolModerator(SchoolModerator schoolModerator)

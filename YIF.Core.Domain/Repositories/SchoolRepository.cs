@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.DtoModels.School;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
@@ -31,7 +30,6 @@ namespace YIF.Core.Domain.Repositories
             }
             return null;
         }
-        [ExcludeFromCodeCoverage]
         public async void Dispose()
         {
             await _context.DisposeAsync();
@@ -51,6 +49,12 @@ namespace YIF.Core.Domain.Repositories
                 .OrderBy(n => n)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<bool> Exist(string schoolName)
+        {
+            var school = await _context.Schools.FirstOrDefaultAsync(x => x.Name == schoolName);
+            return school != null;
         }
     }
 }

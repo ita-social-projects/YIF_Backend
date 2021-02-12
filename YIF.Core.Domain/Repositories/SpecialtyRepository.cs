@@ -35,6 +35,7 @@ namespace YIF.Core.Domain.Repositories
             return false;
         }
 
+        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
