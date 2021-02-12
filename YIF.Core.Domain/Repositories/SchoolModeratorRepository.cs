@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 

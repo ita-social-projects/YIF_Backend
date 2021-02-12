@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,14 +14,13 @@ namespace YIF_Backend.Controllers
     {
         private readonly ISchoolService _schoolService;
         private readonly ILogger<SchoolController> _logger;
-        private readonly IMapper _mapper;
-        public SchoolController(ISchoolService schoolService,
-                                ILogger<SchoolController> logger,
-                                IMapper mapper)
+
+        public SchoolController(
+            ISchoolService schoolService,
+            ILogger<SchoolController> logger)
         {
             _schoolService = schoolService;
             _logger = logger;
-            _mapper = mapper;
         }
         /// <summary>
         /// Get all SchoolNames.

@@ -4,6 +4,7 @@ using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -32,7 +33,10 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository<TokenDTO> _tokenRepository;
-        public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
+        private readonly ResourceManager _resourceManager;
+
+        public SuperAdminService(
+            IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
@@ -43,7 +47,8 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
-            ITokenRepository<TokenDTO> tokenRepository)
+            ITokenRepository<TokenDTO> tokenRepository,
+            ResourceManager resourceManager)
         {
             _userRepository = userRepository;
             _userManager = userManager;
@@ -57,6 +62,7 @@ namespace YIF.Core.Service.Concrete.Services
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
+            _resourceManager = resourceManager;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -66,19 +72,19 @@ namespace YIF.Core.Service.Concrete.Services
             var universities = await _universityRepository.Find(x => x.Name == universityAdminModel.UniversityName);
             if (universities.Count() == 0)
             {
-                throw new NotFoundException("В базі даних немає університету із назвою: " + universityAdminModel.UniversityName);
+                throw new NotFoundException($"{_resourceManager.GetString("UniversityWithSuchNameNotFound")}: {universityAdminModel.UniversityName}");
             }
             var university = universities.First();
             var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
             if (adminCheck != null)
             {
-                throw new InvalidOperationException("Адміністратор цього університету вже існує (1 університет може мати лише 1 адміністратора)");
+                throw new InvalidOperationException(_resourceManager.GetString("AdministratorOfThisSchoolAlreadyExists"));
             }
 
             var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
-                throw new InvalidOperationException("Користувач вже існує");
+                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
             }
 
             var dbUser = new DbUser
@@ -90,10 +96,9 @@ namespace YIF.Core.Service.Concrete.Services
             var registerResult = await _userRepository.Create(dbUser, null, universityAdminModel.Password, ProjectRoles.UniversityAdmin);
             await _userManager.AddToRoleAsync(dbUser, ProjectRoles.BaseUser);
             if (registerResult != string.Empty)
-            {
-                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
+            {                
+                throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
             }
-
 
             await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
             var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
@@ -139,19 +144,19 @@ namespace YIF.Core.Service.Concrete.Services
             var school = await _schoolRepository.GetByName(schoolAdminModel.SchoolName);
             if (school == null)
             {
-                throw new NotFoundException("В базі даних немає школи із назвою: " + schoolAdminModel.SchoolName);
+                throw new NotFoundException($"{_resourceManager.GetString("SchoolWithSuchNameNotFound")}: {schoolAdminModel.SchoolName}");
             }
 
             var adminCheck = await _schoolAdminRepository.GetBySchoolId(school.Id);// check if exists schoolAdmin with AspNetUser isdeleted = false
             if (adminCheck != null)
-            {
-                throw new InvalidOperationException("Адміністратор цієї школи вже існує (1 школа може мати лише 1 адміністратора)");
+            {                
+                throw new InvalidOperationException(_resourceManager.GetString("AdministratorOfThisSchoolAlreadyExists"));
             }
 
             var searchUser = _userManager.FindByEmailAsync(schoolAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == true)
             {
-                throw new InvalidOperationException("Користувач вже існує");
+                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
             }
             var dbUser = new DbUser
             {
@@ -163,7 +168,7 @@ namespace YIF.Core.Service.Concrete.Services
             await _userManager.AddToRoleAsync(dbUser, ProjectRoles.BaseUser);
             if (registerResult != string.Empty)
             {
-                throw new InvalidOperationException("Створення користувача пройшло неуспішно: " + registerResult);
+                throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
             }
 
 
@@ -209,18 +214,18 @@ namespace YIF.Core.Service.Concrete.Services
             string ch = await _universityAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
             {
-                throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
+                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {schoolUniAdminDeleteApi.Id}");
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
-        {
+        {            
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             string ch = await _schoolAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
             if (ch == null)
             {
-                throw new NotFoundException("Не знайдено користувача з таким ідентифікатором: " + schoolUniAdminDeleteApi.Id);
+                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {schoolUniAdminDeleteApi.Id}");
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
@@ -232,11 +237,12 @@ namespace YIF.Core.Service.Concrete.Services
             var ch = await _universityRepository.GetByName(uniPostApiModel.Name);
             if (ch != null)
             {
-                throw new InvalidOperationException("Університет із таким іменем вже існує");
+                throw new InvalidOperationException(_resourceManager.GetString("UniversityWithSuchNameAlreadyExists"));
             }
+            
             await _universityRepository.AddUniversity(_mapper.Map<University>(uniPostApiModel));
-            return result.Set(new DescriptionResponseApiModel("Університет додано"), true);
 
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("UniversityAdded")), true);
         }
 
         public async Task<ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>> GetAllUniversityAdmins()
@@ -245,7 +251,7 @@ namespace YIF.Core.Service.Concrete.Services
             var admins = await _universityAdminRepository.GetAllUniAdmins();
             if (admins.Count() < 1)
             {
-                throw new NotFoundException("Адмінів немає");
+                throw new NotFoundException(_resourceManager.GetString("AdminsNotFound"));
             }
             result.Object = _mapper.Map<IEnumerable<UniversityAdminResponseApiModel>>(admins);
             return result.Set(true);
@@ -256,7 +262,7 @@ namespace YIF.Core.Service.Concrete.Services
             var admins = await _schoolAdminRepository.GetAllSchoolAdmins();
             if (admins.Count() < 1)
             {
-                throw new NotFoundException("Адмінів немає");
+                throw new NotFoundException(_resourceManager.GetString("AdminsNotFound"));
             }
             result.Object = _mapper.Map<IEnumerable<SchoolAdminResponseApiModel>>(admins);
             return result.Set(true);

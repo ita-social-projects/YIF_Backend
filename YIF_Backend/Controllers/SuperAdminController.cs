@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -12,9 +13,14 @@ namespace YIF_Backend.Controllers
     public class SuperAdminController : ControllerBase
     {
         private readonly ISuperAdminService _superAdminService;
-        public SuperAdminController(ISuperAdminService superAdminService)
+        private readonly ResourceManager _resourceManager;
+
+        public SuperAdminController(
+            ISuperAdminService superAdminService,
+            ResourceManager resourceManager)
         {
             _superAdminService = superAdminService;
+            _resourceManager = resourceManager;
         }
 
         /// <summary>
@@ -33,9 +39,10 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddUniversityAdmin")]
         public async Task<IActionResult> AddUniversityAdmin([FromBody] UniversityAdminApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.AddUniversityAdmin(model);
-            return Created("", result.Object);
+            return Created(string.Empty, result.Object);
         }
 
         /// <summary>
@@ -54,9 +61,10 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddSchoolAdmin")]
         public async Task<IActionResult> AddSchoolAdmin([FromBody] SchoolAdminApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.AddSchoolAdmin(model);
-            return Created("", result.Object);
+            return Created(string.Empty, result.Object);
         }
 
         /// <summary>
@@ -71,7 +79,8 @@ namespace YIF_Backend.Controllers
         [HttpPut("DeleteUniversityAdmin")]
         public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.DeleteUniversityAdmin(model);
             return Ok(result.Object);
         }
@@ -88,7 +97,8 @@ namespace YIF_Backend.Controllers
         [HttpPut("DeleteSchoolAdmin")]
         public async Task<IActionResult> DeleteSchoolAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.DeleteSchoolAdmin(model);
             return Ok(result.Object);
         }
@@ -107,9 +117,10 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddUniversity")]
         public async Task<IActionResult> AddUniversity([FromBody] UniversityPostApiModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(new DescriptionResponseApiModel("Модель не валідна."));
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.AddUniversity(model);
-            return Created("", result.Object);
+            return Created(string.Empty, result.Object);
         }
 
         /// <summary>

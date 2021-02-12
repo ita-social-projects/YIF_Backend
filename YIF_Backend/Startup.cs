@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
@@ -169,6 +171,10 @@ namespace YIF_Backend
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #endregion
 
+            #region Strings
+            services.AddSingleton<ResourceManager>(new ResourceManager("YIF_Backend.Resources.Strings", Assembly.GetExecutingAssembly()));
+            #endregion
+
             services.AddControllers();
         }
 
@@ -207,7 +213,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-           //SeederDB.SeedData(app.ApplicationServices);
+            //SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger

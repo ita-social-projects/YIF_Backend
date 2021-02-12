@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -18,8 +19,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     {
         private static readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
         private static readonly Mock<ILogger<UsersController>> _logger = new Mock<ILogger<UsersController>>();
+        private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
-        private static readonly UsersController _testControl = new UsersController(_userService.Object, _logger.Object);
+        private static readonly UsersController _testControl = new UsersController(
+            _userService.Object, 
+            _logger.Object,
+            _resourceManager.Object);
+
         private static readonly string _guid = Guid.NewGuid().ToString("D");
 
         [Fact]

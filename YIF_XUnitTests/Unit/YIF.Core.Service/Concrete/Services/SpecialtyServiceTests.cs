@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -23,6 +24,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository;
         private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<IMapper> _mapper;
+        private readonly Mock<ResourceManager> _resourceManager;
 
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
         private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO() };
@@ -35,10 +37,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToUniversityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
             _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
             _mapper = new Mock<IMapper>();
+            _resourceManager = new Mock<ResourceManager>();
+
             _testService = new SpecialtyService(
                 _specialtyToUniversityRepository.Object,
                 _specialtyRepository.Object,
-                _mapper.Object
+                _mapper.Object,
+                _resourceManager.Object
                 );
 
             _listSpecialty = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
@@ -81,8 +86,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange
             var list = new List<SpecialtyDTO>() { new SpecialtyDTO() }.AsEnumerable();
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(list);
+
             // Act
             var result = await _testService.GetAllSpecialties();
+
             // Assert
             Assert.True(result.Success);
             Assert.IsAssignableFrom<IEnumerable<SpecialtyResponseApiModel>>(result.Object);
@@ -150,6 +157,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapper.Setup(s => s.Map<SpecialtyResponseApiModel>(It.IsAny<SpecialtyDTO>())).Returns(new SpecialtyResponseApiModel());
             // Act
             var result = await _testService.GetSpecialtyById("id");
+            
             // Assert
             Assert.True(result.Success);
             Assert.IsType<SpecialtyResponseApiModel>(result.Object);
@@ -174,9 +182,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var specResult = false;
             specialtyToUniRepo.Setup(x => x.Dispose()).Callback(() => specToUniResult = true);
             specialtyRepo.Setup(x => x.Dispose()).Callback(() => specResult = true);
+            
             // Act
-            var service = new SpecialtyService(specialtyToUniRepo.Object, specialtyRepo.Object, _mapper.Object);
+            var service = new SpecialtyService(specialtyToUniRepo.Object, specialtyRepo.Object, _mapper.Object, _resourceManager.Object);
             service.Dispose();
+            
             // Assert
             Assert.True(specToUniResult);
             Assert.True(specResult);

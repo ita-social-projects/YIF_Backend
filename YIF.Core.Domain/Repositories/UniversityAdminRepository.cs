@@ -16,9 +16,10 @@ namespace YIF.Core.Domain.Repositories
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
-        public UniversityAdminRepository(IApplicationDbContext context,
-                                         IMapper mapper,
-                                         UserManager<DbUser> userManager)
+        public UniversityAdminRepository(
+            IApplicationDbContext context,
+            IMapper mapper,
+            UserManager<DbUser> userManager)
         {
             _dbContext = context;
             _mapper = mapper;

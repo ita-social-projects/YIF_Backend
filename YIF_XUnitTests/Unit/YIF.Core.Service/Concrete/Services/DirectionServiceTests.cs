@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -25,6 +26,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionToUniversityRepository;
         private readonly Mock<IMapper> _mapper;
         private readonly Mock<IPaginationService> _paginationService;
+        private readonly Mock<ResourceManager> _resourceManager;
 
         public DirectionServiceTests()
         {
@@ -33,14 +35,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _directionToUniversityRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
             _mapper = new Mock<IMapper>();
             _paginationService = new Mock<IPaginationService>();
+            _resourceManager = new Mock<ResourceManager>();
 
             _directionService = new DirectionService(
                 _repositoryDirection.Object,
                 _specialtyRepository.Object,
                 _directionToUniversityRepository.Object,
                 _mapper.Object,
-                _paginationService.Object);
-                        
+                _paginationService.Object,
+                _resourceManager.Object);                        
         }
 
         [Theory]

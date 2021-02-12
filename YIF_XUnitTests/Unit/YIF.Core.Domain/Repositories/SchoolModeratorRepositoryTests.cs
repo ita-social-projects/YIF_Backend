@@ -15,8 +15,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
     public class SchoolModeratorRepositoryTests
     {
         private readonly Mock<IApplicationDbContext> _dbContextMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly FakeUserManager<DbUser> _userManagerMock;
         private readonly SchoolModeratorRepository _schoolModeratorRepository;
 
         private readonly List<SchoolModerator> _databaseSchoolModerators = new List<SchoolModerator>();

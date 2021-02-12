@@ -5,6 +5,7 @@ using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
+using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -18,12 +19,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class AuthenticationControllerTests
     {
         private readonly Mock<IUserService<DbUser>> _userService;
-        private readonly AuthenticationController _testControl;
+        private readonly Mock<ResourceManager> _resourceManager;
 
+        private readonly AuthenticationController _testControl;
         public AuthenticationControllerTests()
         {
             _userService = new Mock<IUserService<DbUser>>();
-            _testControl = new AuthenticationController(_userService.Object);
+            _resourceManager = new Mock<ResourceManager>();
+
+            _testControl = new AuthenticationController(
+                _userService.Object,
+                _resourceManager.Object);
         }
 
         [Fact]
@@ -137,7 +143,12 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var httpContext = new DefaultHttpContext();
             //httpContext.Request.Scheme = "scheme";
             var controllerContext = new ControllerContext() { HttpContext = httpContext };
-            var testControl = new AuthenticationController(_userService.Object) { ControllerContext = controllerContext };
+            var testControl = new AuthenticationController(
+                _userService.Object,
+                _resourceManager.Object)
+            { 
+                ControllerContext = controllerContext 
+            };
 
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns("url").Verifiable();
