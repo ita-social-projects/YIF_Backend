@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.DtoModels.School;
-using YIF.Core.Domain.DtoModels.SchoolAdmin;
-using YIF.Core.Domain.DtoModels.SchoolModerator;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Shared;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -34,10 +32,11 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
-        private readonly ITokenRepository _tokenRepository;
+        private readonly ITokenRepository<TokenDTO> _tokenRepository;
         private readonly ResourceManager _resourceManager;
 
-        public SuperAdminService(IUserRepository<DbUser, UserDTO> userRepository,
+        public SuperAdminService(
+            IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
@@ -48,7 +47,7 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
-            ITokenRepository tokenRepository,
+            ITokenRepository<TokenDTO> tokenRepository,
             ResourceManager resourceManager)
         {
             _userRepository = userRepository;
@@ -119,7 +118,18 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
+            var tokenDb = await _tokenRepository.FindUserToken(dbUser.Id);
+            if (tokenDb == null)
+            {
+                tokenDb = new TokenDTO
+                {
+                    Id = dbUser.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                };
+                await _tokenRepository.AddUserToken(tokenDb);
+            }
+            else await _tokenRepository.UpdateUserToken(dbUser.Id, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
@@ -180,7 +190,18 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
+            var tokenDb = await _tokenRepository.FindUserToken(dbUser.Id);
+            if (tokenDb == null)
+            {
+                tokenDb = new TokenDTO
+                {
+                    Id = dbUser.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                };
+                await _tokenRepository.AddUserToken(tokenDb);
+            }
+            else await _tokenRepository.UpdateUserToken(dbUser.Id, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 

@@ -36,17 +36,17 @@ namespace YIF_Backend.Infrastructure.Middleware
                 var response = context.Response;
                 response.ContentType = "application/json; charset=utf-8";
 
-                var desctiption = new DescriptionResponseApiModel(error.Message);
-                if (error is BadImageFormatException) desctiption.Message = "Неправильний формат зображення";
-                else if (error is FormatException) desctiption.Message = "Неправильний формат даних";
-                else if (error is ArgumentNullException) desctiption.Message = "Поле (одне із полів) не може бути пустим";
+                var description = new DescriptionResponseApiModel(error.Message);
+                if (error is BadImageFormatException) description.Message = "Неправильний формат зображення";
+                else if (error is FormatException) description.Message = "Неправильний формат даних";
+                else if (error is ArgumentNullException) description.Message = "Поле (одне із полів) не може бути пустим";
                 var details = new ErrorDetails
                 {
                     ErrorId = Guid.NewGuid().ToString(),
                     RequestPath = context.Request.Path.Value,
                     EndpointPath = context.GetEndpoint()?.ToString(),
                     TimeStamp = DateTime.Now,
-                    Message = desctiption.Message
+                    Message = description.Message
                 };
 
                 switch (error)
@@ -81,7 +81,7 @@ namespace YIF_Backend.Infrastructure.Middleware
                 };
                 var result = response.StatusCode == 500
                     ? JsonConvert.SerializeObject(details, jsonOptions)
-                    : JsonConvert.SerializeObject(desctiption, jsonOptions);
+                    : JsonConvert.SerializeObject(description, jsonOptions);
                 await response.WriteAsync(result);
             }
         }

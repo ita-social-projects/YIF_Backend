@@ -133,5 +133,11 @@ namespace YIF.Core.Domain.Repositories
         {
             _context.Dispose();
         }
+
+        public async Task<bool> Exist(string userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            return user != null;
+        }
     }
 }

@@ -24,6 +24,14 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
+        public async Task<bool> Update(Graduate item)
+        {
+            _context.Graduates.Update(item);
+            var res = await _context.SaveChangesAsync();
+            return res > 0;
+        }
+
+        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
@@ -34,19 +42,22 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<GraduateDTO>> Find(Expression<Func<Graduate, bool>> predicate)
+        public async Task<IEnumerable<GraduateDTO>> Find(Expression<Func<Graduate, bool>> predicate)
         {
-            throw new NotImplementedException();
+            var graduates = await _context.Graduates.Where(predicate).AsNoTracking().ToListAsync();
+            return _mapper.Map<IEnumerable<GraduateDTO>>(graduates);
         }
 
-        public Task<GraduateDTO> Get(string id)
+        public async Task<GraduateDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var graduate = await _context.Graduates.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<GraduateDTO>(graduate);
         }
 
-        public Task<IEnumerable<GraduateDTO>> GetAll()
+        public async Task<IEnumerable<GraduateDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var graduates = await _context.Graduates.ToListAsync();
+            return _mapper.Map<IEnumerable<GraduateDTO>>(graduates);
         }
 
         public async Task<GraduateDTO> GetByUserId(string userId)
@@ -55,11 +66,6 @@ namespace YIF.Core.Domain.Repositories
                 .Where(g => g.UserId.Equals(userId))
                 .FirstOrDefaultAsync();
             return _mapper.Map<GraduateDTO>(graduate);
-        }
-
-        public Task<bool> Update(Graduate item)
-        {
-            throw new NotImplementedException();
         }
     }
 }

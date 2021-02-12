@@ -6,7 +6,7 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF.Core.Domain.ServiceInterfaces
 {
-    public interface ISpecialityService : IDisposable
+    public interface ISpecialtyService : IDisposable
     {
         Task<ResponseApiModel<SpecialtyResponseApiModel>> GetSpecialtyById(string id);
         Task<ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>> GetAllSpecialties();

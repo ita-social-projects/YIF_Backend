@@ -1,9 +1,7 @@
-﻿using System.Net;
-
-namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     /// <summary>
-    /// A сlass for easily create response.
+    /// A class for easily create response.
     /// </summary>
     /// <typeparam name="T">A class used in case of a response with returning an object.</typeparam>
     public class ResponseApiModel<T>

@@ -21,16 +21,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class UniversityServiceTests
     {
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
-        private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityReposotiry = new Mock<IUniversityRepository<University, UniversityDTO>>();
-        private static readonly Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>> _specialityRepository = new Mock<IRepository<SpecialityToUniversity, SpecialityToUniversityDTO>>();
+        private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityRepository = new Mock<IUniversityRepository<University, UniversityDTO>>();
+        private static readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
         private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
         private static readonly UniversityService universityService = new UniversityService(
-            _universityReposotiry.Object,
-            _specialityRepository.Object,
+            _universityRepository.Object,
+            _specialtyRepository.Object,
             _directionRepository.Object,
             _graduateRepository.Object,
             _mapperMock.Object,
@@ -56,7 +56,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var apiModel = new FilterApiModel()
             {
                 DirectionName = "Direction",
-                SpecialityName = "",
+                SpecialtyName = "",
                 UniversityName = "Name"
             };
 
@@ -76,13 +76,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 university
             };
 
-            _universityReposotiry.Setup(x => x.GetAll())
+            _universityRepository.Setup(x => x.GetAll())
                 .ReturnsAsync(universitiesList);
 
             _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))
                 .ReturnsAsync(directionsList);
 
-            _universityReposotiry.Setup(x => x.Find(x => x.Name == apiModel.UniversityName))
+            _universityRepository.Setup(x => x.Find(x => x.Name == apiModel.UniversityName))
                 .ReturnsAsync(universitiesList);
 
             _mapperMock.Setup(x => x.Map<IEnumerable<UniversityResponseApiModel>>(universitiesList))
@@ -111,9 +111,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 Id = ""
             };
 
-            var speciality = new SpecialityDTO
+            var specialty = new SpecialtyDTO
             {
-                Name = "Speciality"
+                Name = "Specialty"
             };
 
             var direction = new DirectionDTO
@@ -124,16 +124,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var apiModel = new FilterApiModel()
             {
                 DirectionName = "",
-                SpecialityName = "Speciality",
+                SpecialtyName = "Specialty",
                 UniversityName = ""
             };
 
-            var specialityList = new List<SpecialityToUniversityDTO>
+            var specialtyList = new List<SpecialtyToUniversityDTO>
             {
-                new SpecialityToUniversityDTO
+                new SpecialtyToUniversityDTO
                 {
-                    Speciality = speciality,
-                    SpecialityId = "",
+                    Specialty = specialty,
+                    SpecialtyId = "",
                     UniversityId = "",
                     University = university
                 }
@@ -155,11 +155,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 university
             };
 
-            _universityReposotiry.Setup(x => x.GetAll())
+            _universityRepository.Setup(x => x.GetAll())
                 .ReturnsAsync(universitiesList);
 
-            _specialityRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialityToUniversity, bool>>>()))
-                .ReturnsAsync(specialityList);
+            _specialtyRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialtyToUniversity, bool>>>()))
+                .ReturnsAsync(specialtyList);
 
             _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))
                 .ReturnsAsync(directionList);
@@ -195,11 +195,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 universityDTO
             };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(universityDTO);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favorites);
 
@@ -218,7 +218,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public void GetUniversityById_ShouldThrowNotFound_IfUniversityNotFound()
         {
             // Arrange
-            _universityReposotiry.Setup(ur => ur.Get(It.IsAny<string>())).ReturnsAsync((UniversityDTO)null);
+            _universityRepository.Setup(ur => ur.Get(It.IsAny<string>())).ReturnsAsync((UniversityDTO)null);
 
             // Act
             Func<Task<UniversityResponseApiModel>> act = () => universityService.GetUniversityById(It.IsAny<string>());
@@ -235,7 +235,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             var universityList = GetUniversities();
             var favoriteUniversityList = GetFavoriteUniversities();
-            var universityResponseList = GetResponseUnivesities();
+            var universityResponseList = GetResponseUniversities();
             var universityPage = GetUniversityPage();
 
             _mapperMock
@@ -246,11 +246,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(ps => ps.GetPageFromCollection(universityResponseList, It.IsAny<PageApiModel>()))
                 .Returns(universityPage);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetAll())
                 .ReturnsAsync(universityList);
 
@@ -270,7 +270,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var universityList = new List<UniversityDTO>();
             var universityResponseList = new List<UniversityResponseApiModel>();
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetAll())
                 .ReturnsAsync(universityList);
 
@@ -290,13 +290,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange  
             var favoriteUniversityDTOList = GetFavoriteUniversities();
-            var favoriteResponseList = GetResponseOfFavoriteUnivesities();
+            var favoriteResponseList = GetResponseOfFavoriteUniversities();
 
             _mapperMock
                 .Setup(m => m.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUniversityDTOList))
                 .Returns(favoriteResponseList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
@@ -313,7 +313,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange  
             var favoriteUniversityDTOList = new List<UniversityDTO>();
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
@@ -331,13 +331,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var filterModel = new FilterApiModel();
 
             var universityList = GetUniversities();
-            var universityResponseList = GetResponseUnivesities();
+            var universityResponseList = GetResponseUniversities();
 
             _mapperMock
                 .Setup(m => m.Map<IEnumerable<UniversityResponseApiModel>>(universityList))
                 .Returns(universityResponseList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetAll())
                 .ReturnsAsync(universityList);
 
@@ -349,7 +349,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public void GetUniversityAbbreviations_ShouldReturnNotFoundException_IfUniveristyNotFound()
+        public void GetUniversityAbbreviations_ShouldReturnNotFoundException_IfUniversityNotFound()
         {
             // Arrange  
             var filterModel = new FilterApiModel();
@@ -361,7 +361,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(m => m.Map<IEnumerable<UniversityResponseApiModel>>(universityList))
                 .Returns(universityResponseList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetAll())
                 .ReturnsAsync(universityList);
 
@@ -373,18 +373,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task AddUniversityToFavorite_ShouldAddUniversityToFavorite_IfEverythngOk()
+        public async Task AddUniversityToFavorite_ShouldAddUniversityToFavorite_IfEverythingOk()
         {
             // Arrange  
             var favoriteUniversityDTOList = GetFavoriteUniversities();
             var university = GetUniversities().ToList()[1];
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -392,7 +392,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.AddFavorite(It.IsAny<UniversityToGraduate>()));
 
             // Act
@@ -412,11 +412,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var university = GetUniversities().ToList()[0];
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -440,11 +440,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             UniversityDTO university = null;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -468,11 +468,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Graduate not found
             GraduateDTO graduate = null;
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -488,18 +488,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task DeleteUniversityFromFavorite_ShouldDeleteUniversityFromFavorite_IfEverythngOk()
+        public async Task DeleteUniversityFromFavorite_ShouldDeleteUniversityFromFavorite_IfEverythingOk()
         {
             // Arrange  
             var favoriteUniversityDTOList = GetFavoriteUniversities();
             var university = GetUniversities().ToList()[0];
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -507,7 +507,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.RemoveFavorite(It.IsAny<UniversityToGraduate>()));
 
             // Act
@@ -527,11 +527,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var university = GetUniversities().ToList()[1];
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -555,11 +555,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             UniversityDTO university = null;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -583,11 +583,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Graduate not found
             GraduateDTO graduate = null;
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favoriteUniversityDTOList);
 
-            _universityReposotiry
+            _universityRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
                 .ReturnsAsync(university);
 
@@ -641,7 +641,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
         }
 
-        private IEnumerable<UniversityResponseApiModel> GetResponseUnivesities()
+        private IEnumerable<UniversityResponseApiModel> GetResponseUniversities()
         {
             return new List<UniversityResponseApiModel>
             {
@@ -663,7 +663,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
         }
 
-        private IEnumerable<UniversityResponseApiModel> GetResponseOfFavoriteUnivesities()
+        private IEnumerable<UniversityResponseApiModel> GetResponseOfFavoriteUniversities()
         {
             return new List<UniversityResponseApiModel>
             {
@@ -687,7 +687,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 PageSize = 1,
                 CurrentPage = 1,
                 TotalPages = 1,
-                ResponseList = GetResponseUnivesities()
+                ResponseList = GetResponseUniversities()
             };
         }
     }

@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.School;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services

@@ -16,14 +16,15 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.DtoModels.School;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services.ValidatorServices;
+using YIF.Shared;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -31,7 +32,8 @@ namespace YIF.Core.Service.Concrete.Services
     {
         private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly IUserProfileRepository<UserProfile, UserProfileDTO> _userProfileRepository;
-        private readonly ITokenRepository _tokenRepository;
+        private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
+        private readonly ITokenRepository<TokenDTO> _tokenRepository;
         private readonly IServiceProvider _serviceProvider;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
@@ -47,6 +49,7 @@ namespace YIF.Core.Service.Concrete.Services
         public UserService(
             IUserRepository<DbUser, UserDTO> userRepository,
             IUserProfileRepository<UserProfile, UserProfileDTO> userProfileRepository,
+            ISchoolRepository<SchoolDTO> schoolRepository,
             IServiceProvider serviceProvider,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -56,12 +59,13 @@ namespace YIF.Core.Service.Concrete.Services
             IEmailService emailService,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ITokenRepository tokenRepository,
+            ITokenRepository<TokenDTO> tokenRepository,
             ISchoolGraduateRepository<SchoolDTO> schoolGraduate,
             ResourceManager resourceManager)
         {
             _userRepository = userRepository;
             _userProfileRepository = userProfileRepository;
+            _schoolRepository = schoolRepository;
             _serviceProvider = serviceProvider;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -168,7 +172,18 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(dbUser, refreshToken);
+            var tokenDb = await _tokenRepository.FindUserToken(dbUser.Id);
+            if (tokenDb == null)
+            {
+                tokenDb = new TokenDTO
+                {
+                    Id = dbUser.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                };
+                await _tokenRepository.AddUserToken(tokenDb);
+            }
+            else await _tokenRepository.UpdateUserToken(dbUser.Id, refreshToken);
 
             await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
@@ -202,7 +217,18 @@ namespace YIF.Core.Service.Concrete.Services
             var token = _jwtService.CreateToken(_jwtService.SetClaims(user));
             var refreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(user, refreshToken);
+            var tokenDb = await _tokenRepository.FindUserToken(user.Id);
+            if (tokenDb == null)
+            {
+                tokenDb = new TokenDTO
+                {
+                    Id = user.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                };
+                await _tokenRepository.AddUserToken(tokenDb);
+            }
+            else await _tokenRepository.UpdateUserToken(user.Id, refreshToken);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -243,7 +269,18 @@ namespace YIF.Core.Service.Concrete.Services
             var newAccessToken = _jwtService.CreateToken(claims);
             var newRefreshToken = _jwtService.CreateRefreshToken();
 
-            await _tokenRepository.UpdateUserToken(user, newRefreshToken);
+            var tokenDb = await _tokenRepository.FindUserToken(user.Id);
+            if (tokenDb == null)
+            {
+                tokenDb = new TokenDTO
+                {
+                    Id = user.Id,
+                    RefreshToken = refreshToken,
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+                };
+                await _tokenRepository.AddUserToken(tokenDb);
+            }
+            else await _tokenRepository.UpdateUserToken(user.Id, refreshToken);
 
             return result.Set(new AuthenticateResponseApiModel(newAccessToken, newRefreshToken), true);
         }
@@ -274,7 +311,33 @@ namespace YIF.Core.Service.Concrete.Services
             var profile = _mapper.Map<UserProfileDTO>(model);
             profile.Id = userId;
 
-            var profileDTO = await _userProfileRepository.SetUserProfile(profile, model.SchoolName);
+            if (!await _userRepository.Exist(profile.Id))
+            {
+                throw new KeyNotFoundException("Користувача не знайдено із таким id:  " + profile.Id);
+            }
+
+            // Check email (Is newEmail exist in another user or not)
+            if (await _userProfileRepository.EmailExistInAnotherUser(profile.Email, profile.Id))
+            {
+                throw new ArgumentException("Електронна пошта вже використовується:  " + profile.Email);
+            }
+
+            // Set school
+            if (!await _userProfileRepository.IsCurrentUserTheGraduate(profile.Id))
+            {
+                if (!string.IsNullOrWhiteSpace(model.SchoolName)) throw new ArgumentException("Користувач не належить до ролі: " + ProjectRoles.Graduate +
+                    ". Поле 'schoolname' не потрібно заповняти для цього коритувача.");
+            }
+            else
+            {
+                if (!await _schoolRepository.Exist(model.SchoolName))
+                {
+                    throw new ArgumentException("Не знайдено зазначеної школи:  " + model.SchoolName);
+                }
+                await _userProfileRepository.SetSchoolForGraduate(model.SchoolName, profile.Id);
+            }
+
+            var profileDTO = await _userProfileRepository.SetUserProfile(profile);
             result.Object = _mapper.Map<UserProfileWithoutPhotoApiModel>(profileDTO);
             
             return result.Set(true);

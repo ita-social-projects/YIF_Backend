@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace YIF_XUnitTests
 {
-    // For mocking Async behavior for IQueriable elements
+    // For mocking Async behavior for IQueryable elements
     internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
         private readonly IQueryProvider _inner;
@@ -160,7 +160,7 @@ namespace YIF_XUnitTests
     public class FakeUserManager<T> : UserManager<T> where T : class
     {
         public T ResponseObject { get; set; }
-        public IdentityResult ResIsSucces { get; set; } = IdentityResult.Success;
+        public IdentityResult ResIsSuccess { get; set; } = IdentityResult.Success;
         public FakeUserManager()
             : base(new Mock<IUserStore<T>>().Object,
                   new Mock<IOptions<IdentityOptions>>().Object,
@@ -184,21 +184,20 @@ namespace YIF_XUnitTests
                 error.Description = "False";
                 return Task.FromResult(IdentityResult.Failed(error));
             }
-            //ResIsSucces = IdentityResult.Failed(error);
-            return Task.FromResult(ResIsSucces);
+            return Task.FromResult(ResIsSuccess);
         }
         public override Task<IdentityResult> CreateAsync(T user)
         {
-            return Task.FromResult(ResIsSucces);
+            return Task.FromResult(ResIsSuccess);
         }
         public override Task<IdentityResult> AddToRoleAsync(T user, string role)
         {
-            return Task.FromResult(ResIsSucces);
+            return Task.FromResult(ResIsSuccess);
         }
     }
     public class FakeSignInManager<T> : SignInManager<T> where T : class
     {
-        public SignInResult SignIsSucces { get; set; } = SignInResult.Success;
+        public SignInResult SignIsSuccess { get; set; } = SignInResult.Success;
         public FakeSignInManager()
                 : base(new FakeUserManager<T>(),
                      new Mock<IHttpContextAccessor>().Object,
@@ -219,7 +218,7 @@ namespace YIF_XUnitTests
         { }
         public override Task<SignInResult> PasswordSignInAsync(T user, string password, bool isPersistent, bool lockoutOnFailure)
         {
-            return Task.FromResult(SignIsSucces);
+            return Task.FromResult(SignIsSuccess);
         }
         public override Task SignInAsync(T user, bool isPersistent, string authenticationMethod = null)
         {

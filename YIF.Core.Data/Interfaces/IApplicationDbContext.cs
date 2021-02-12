@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Threading.Tasks;
@@ -15,9 +15,9 @@ namespace YIF.Core.Data.Interfaces
         DbSet<Lecture> Lectures { get; set; }
         DbSet<University> Universities { get; set; }
         DbSet<Direction> Directions { get; set; }
-        DbSet<Speciality> Specialities { get; set; }
+        DbSet<Specialty> Specialties { get; set; }
         DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
-        DbSet<SpecialityToUniversity> SpecialityToUniversities { get; set; }
+        DbSet<SpecialtyToUniversity> SpecialtyToUniversities { get; set; }
         DbSet<SchoolModerator> SchoolModerators { get; set; }
         DbSet<SchoolAdmin> SchoolAdmins { get; set; }
         DbSet<Graduate> Graduates { get; set; }

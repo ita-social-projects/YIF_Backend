@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     public class DirectionResponseApiModel
     {

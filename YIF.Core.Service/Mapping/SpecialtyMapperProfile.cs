@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using System.Linq;
-using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
@@ -12,9 +10,9 @@ namespace YIF.Core.Service.Mapping
         public SpecialtyMapperProfile()
         {
             AllowNullCollections = true;
-            CreateMap<Speciality, SpecialityDTO>().ReverseMap();
-            CreateMap<SpecialityDTO, SpecialtyResponseApiModel>();
-            CreateMap<SpecialtyResponseApiModel, SpecialityDTO>()
+            CreateMap<Specialty, SpecialtyDTO>().ReverseMap();
+            CreateMap<SpecialtyDTO, SpecialtyResponseApiModel>();
+            CreateMap<SpecialtyResponseApiModel, SpecialtyDTO>()
                 .ForMember(dto => dto.Direction, opt => opt.Ignore());
         }
     }

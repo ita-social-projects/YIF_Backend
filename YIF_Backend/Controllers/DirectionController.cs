@@ -52,14 +52,14 @@ namespace YIF_Backend.Controllers
         [HttpGet("Names")]
         public async Task<IActionResult> GetDirectionNames(
             string DirectionName,
-            string SpecialityName,
+            string SpecialtyName,
             string UniversityName,
             string UniversityAbbreviation)
         {
             var filterModel = new FilterApiModel
             {
                 DirectionName = DirectionName,
-                SpecialityName = SpecialityName,
+                SpecialtyName = SpecialtyName,
                 UniversityName = UniversityName,
                 UniversityAbbreviation = UniversityAbbreviation
             };

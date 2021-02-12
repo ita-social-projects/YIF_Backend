@@ -1,6 +1,6 @@
 ﻿namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
-    public class SpecialityDTO
+    public class SpecialtyDTO
     {
         /// <summary>
         /// Gets or sets the primary key for this specialty.

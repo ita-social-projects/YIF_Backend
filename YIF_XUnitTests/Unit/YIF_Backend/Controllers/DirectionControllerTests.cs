@@ -57,7 +57,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var filter = new FilterApiModel
             {
                 DirectionName = "SomeDirection",
-                SpecialityName = "SomeSpeciality",
+                SpecialtyName = "SomeSpeciality",
                 UniversityName = "SomeUniversity",
                 UniversityAbbreviation = "SU"
             };
@@ -66,7 +66,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 .Returns(Task.FromResult(responseModel));
 
             // Act
-            var result = await _directionController.GetDirectionNames(filter.DirectionName, filter.SpecialityName, filter.UniversityName, filter.UniversityAbbreviation);
+            var result = await _directionController.GetDirectionNames(filter.DirectionName, filter.SpecialtyName, filter.UniversityName, filter.UniversityAbbreviation);
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);

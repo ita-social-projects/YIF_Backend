@@ -14,13 +14,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 {
     public class SpecialtyControllerTests
     {
-        private readonly Mock<ISpecialityService> _specialtyService;
+        private readonly Mock<ISpecialtyService> _specialtyService;
         private readonly Mock<ILogger<SpecialtyController>> _logger;
         private readonly SpecialtyController _testControl;
 
         public SpecialtyControllerTests()
         {
-            _specialtyService = new Mock<ISpecialityService>();
+            _specialtyService = new Mock<ISpecialtyService>();
             _logger = new Mock<ILogger<SpecialtyController>>();
             _testControl = new SpecialtyController(_specialtyService.Object, _logger.Object);
         }
@@ -56,7 +56,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var filterModel = new FilterApiModel
             {
                 DirectionName = directionName,
-                SpecialityName = specialityName,
+                SpecialtyName = specialityName,
                 UniversityName = universityName,
                 UniversityAbbreviation = universityAbbreviation
             };

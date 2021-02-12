@@ -23,11 +23,13 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<bool> Update(University item)
+        public async Task<bool> Update(University item)
         {
-            throw new NotImplementedException();
+            _context.Universities.Update(item);
+            return await _context.SaveChangesAsync() > 0;
         }
 
+        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();

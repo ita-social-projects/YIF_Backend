@@ -16,7 +16,7 @@ namespace YIF.Core.Service.Concrete.Services
     public class UniversityService : IUniversityService<University>
     {
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
-        private readonly IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> _specialtyRepository;
+        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
-            IRepository<SpecialityToUniversity, SpecialityToUniversityDTO> specialtyRepository,
+            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
@@ -69,12 +69,12 @@ namespace YIF.Core.Service.Concrete.Services
                 filteredUniversities = filteredUniversities.Where(fu => universityId.Contains(fu.Id));
             }
 
-            if (filterModel.SpecialityName != string.Empty && filterModel.SpecialityName != null)
+            if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
-                // Get all specialities by name
-                var specialities = await _specialtyRepository.Find(x => x.Speciality.Name == filterModel.SpecialityName);
+                // Get all specialties by name
+                var specialties = await _specialtyRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
 
-                filteredUniversities = filteredUniversities.Where(x => specialities.Any(y => y.UniversityId == x.Id));
+                filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
             }
 
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());
@@ -125,18 +125,18 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<IEnumerable<UniversityResponseApiModel>> GetFavoriteUniversities(string userId)
         {
-            var favoriteUnivesistes = await _universityRepository.GetFavoritesByUserId(userId);
-            if (favoriteUnivesistes == null || favoriteUnivesistes.Count() == 0)
+            var favoriteUniversities = await _universityRepository.GetFavoritesByUserId(userId);
+            if (favoriteUniversities == null || favoriteUniversities.Count() == 0)
             {
                 throw new NotFoundException(_resourceManager.GetString("FavoriteUniversitiesNotFound"));
             }
 
-            foreach (var university in favoriteUnivesistes)
+            foreach (var university in favoriteUniversities)
             {
                 university.IsFavorite = true;
             }
 
-            return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUnivesistes);
+            return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(favoriteUniversities);
         }
 
         public async Task<IEnumerable<string>> GetUniversityAbbreviations(FilterApiModel filterModel)

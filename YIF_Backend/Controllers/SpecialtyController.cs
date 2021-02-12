@@ -14,10 +14,9 @@ namespace YIF_Backend.Controllers
     [Produces("application/json")]
     public class SpecialtyController : ControllerBase
     {
-        private readonly ISpecialityService _specialtyService;
+        private readonly ISpecialtyService _specialtyService;
         private readonly ILogger<SpecialtyController> _logger;
-
-        public SpecialtyController(ISpecialityService specialtyService, ILogger<SpecialtyController> logger)
+        public SpecialtyController(ISpecialtyService specialtyService, ILogger<SpecialtyController> logger)
         {
             _specialtyService = specialtyService;
             _logger = logger;
@@ -36,7 +35,7 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetAllSpecialtiesAsync()
         {
             var result = await _specialtyService.GetAllSpecialties();
-            _logger.LogInformation("Getting all spetialties");
+            _logger.LogInformation("Getting all specialties");
             return Ok(result.Object);
         }
 
@@ -52,20 +51,20 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllSpecialtiesNamesAsync(
             string DirectionName,
-            string SpecialityName,
+            string SpecialtyName,
             string UniversityName,
             string UniversityAbbreviation)
         {
             var filterModel = new FilterApiModel
             {
                 DirectionName = DirectionName,
-                SpecialityName = SpecialityName,
+                SpecialtyName = SpecialtyName,
                 UniversityName = UniversityName,
                 UniversityAbbreviation = UniversityAbbreviation
             };
 
             var result = await _specialtyService.GetSpecialtiesNamesByFilter(filterModel); 
-            _logger.LogInformation("Getting all spetialties names");
+            _logger.LogInformation("Getting all specialties names");
             return Ok(result);
         }
 

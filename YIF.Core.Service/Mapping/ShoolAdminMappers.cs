@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.School;
-using YIF.Core.Domain.DtoModels.SchoolAdmin;
-using YIF.Core.Domain.DtoModels.SchoolModerator;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Service.Mapping
 {

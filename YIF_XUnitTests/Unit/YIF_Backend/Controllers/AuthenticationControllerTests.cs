@@ -132,8 +132,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _userService.Setup(x => x.RegisterUser(request)).Throws(error);
 
             // Assert
-            var exeption = await Assert.ThrowsAsync<InvalidOperationException>(() => _testControl.RegisterUser(request));
-            Assert.Equal(error.Message, exeption.Message);
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _testControl.RegisterUser(request));
+            Assert.Equal(error.Message, exception.Message);
         }
 
         [Fact]
@@ -219,8 +219,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _userService.Setup(x => x.RefreshToken(request)).Throws(error);
 
             // Assert
-            var exeption = await Assert.ThrowsAsync<BadRequestException>(() => _testControl.Refresh(request));
-            Assert.Equal(error.Message, exeption.Message);
+            var exception = await Assert.ThrowsAsync<BadRequestException>(() => _testControl.Refresh(request));
+            Assert.Equal(error.Message, exception.Message);
         }
 
         private List<AuthenticateResponseApiModel> GetTestJwt()

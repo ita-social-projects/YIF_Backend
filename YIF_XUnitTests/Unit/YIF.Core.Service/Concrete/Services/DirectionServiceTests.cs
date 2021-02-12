@@ -22,7 +22,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private readonly IDirectionService _directionService;
         private readonly Mock<IRepository<Direction, DirectionDTO>> _repositoryDirection;
-        private readonly Mock<IRepository<Speciality, SpecialityDTO>> _specialtyRepository;
+        private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionToUniversityRepository;
         private readonly Mock<IMapper> _mapper;
         private readonly Mock<IPaginationService> _paginationService;
@@ -31,7 +31,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public DirectionServiceTests()
         {
             _repositoryDirection = new Mock<IRepository<Direction, DirectionDTO>>();
-            _specialtyRepository = new Mock<IRepository<Speciality, SpecialityDTO>>();
+            _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
             _directionToUniversityRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
             _mapper = new Mock<IMapper>();
             _paginationService = new Mock<IPaginationService>();
@@ -55,7 +55,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [InlineData(null, null, null, "University abbreviation 1")]
         public async Task GetAllDirectionsByFilter_ShouldReturnDirections_IfEverythingOk(
             string directionName, 
-            string specialityName,
+            string specialtyName,
             string universityName,
             string universityAbbreviation)
         {
@@ -63,14 +63,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var filterModel = new FilterApiModel
             {
                 DirectionName = directionName,
-                SpecialityName = specialityName,
+                SpecialtyName = specialtyName,
                 UniversityName = universityName,
                 UniversityAbbreviation = universityAbbreviation
             };
 
             var responseList = GetResponseList();
             var directions = GetDirectionDTOs();
-            var specialties = GetSpecialityDTOs();
+            var specialties = GetSpecialtyDTOs();
             var directionsToUniversities = GetDirectionToUniversityDTOs()
                 .Where(du => filterModel.UniversityName == null ||
                              filterModel.UniversityName == string.Empty ||
@@ -84,8 +84,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(directions);
 
             _specialtyRepository
-                .Setup(sr => sr.Find(It.IsAny<Expression<Func<Speciality, bool>>>()))
-                .ReturnsAsync(GetSpecialityDTOs().Where(s => s.Name == filterModel.SpecialityName));
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<Specialty, bool>>>()))
+                .ReturnsAsync(GetSpecialtyDTOs().Where(s => s.Name == filterModel.SpecialtyName));
 
             _directionToUniversityRepository
                 .Setup(du => du.Find(It.IsAny<Expression<Func<DirectionToUniversity, bool>>>()))
@@ -152,10 +152,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                     Name = $"Direction {i + 1}"
                 });
 
-                var specialtyDTOs = new List<SpecialityDTO>();
+                var specialtyDTOs = new List<SpecialtyDTO>();
                 for (int j = 0; j < numOfSpecialties; j++)
                 {
-                    specialtyDTOs.Add(new SpecialityDTO
+                    specialtyDTOs.Add(new SpecialtyDTO
                     {
                         Id = (j + 1 + i * numOfSpecialties).ToString(),
                         Name = $"Specialty {j + 1 + i * numOfSpecialties}",
@@ -164,16 +164,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                     });                    
                 }
 
-                directionDTOs[i].Specialities = specialtyDTOs;
+                directionDTOs[i].Specialties = specialtyDTOs;
             }
 
             return directionDTOs;
         }
 
-        private IEnumerable<SpecialityDTO> GetSpecialityDTOs()
+        private IEnumerable<SpecialtyDTO> GetSpecialtyDTOs()
         {
             return GetDirectionDTOs()
-                .SelectMany(x=>x.Specialities);
+                .SelectMany(x=>x.Specialties);
         }
 
         private IEnumerable<DirectionToUniversityDTO> GetDirectionToUniversityDTOs()

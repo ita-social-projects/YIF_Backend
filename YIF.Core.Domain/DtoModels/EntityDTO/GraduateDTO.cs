@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.DtoModels.School;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {

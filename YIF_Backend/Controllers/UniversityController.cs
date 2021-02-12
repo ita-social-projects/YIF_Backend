@@ -51,7 +51,7 @@ namespace YIF_Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUniversitiesPage(
             string DirectionName, 
-            string SpecialityName, 
+            string SpecialtyName, 
             string UniversityName,
             string UniversityAbbreviation,
             int page = 1, 
@@ -62,7 +62,7 @@ namespace YIF_Backend.Controllers
             var filterModel = new FilterApiModel
             {
                 DirectionName = DirectionName,
-                SpecialityName = SpecialityName,
+                SpecialtyName = SpecialtyName,
                 UniversityName = UniversityName,
                 UniversityAbbreviation = UniversityAbbreviation                
             };
@@ -83,7 +83,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Returns all favorite universities</returns>
         /// <response code="200">Returns the page with universities</response>
-        /// <response code="404">If user doesn't have favorite universites</response>
+        /// <response code="404">If user doesn't have favorite universities</response>
         [ProducesResponseType(typeof(IEnumerable<UniversityResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -138,25 +138,25 @@ namespace YIF_Backend.Controllers
 
 
         /// <summary>
-        /// Get all univesity abbreviations.
+        /// Get all university abbreviations.
         /// </summary>
-        /// <returns>List of univesity abbreviations</returns>
-        /// <response code="200">Returns a list of univesity abbreviations</response>
-        /// <response code="404">If there are not univesities</response>
+        /// <returns>List of university abbreviations</returns>
+        /// <response code="200">Returns a list of university abbreviations</response>
+        /// <response code="404">If there are not universities</response>
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("Abbreviations")]
         public async Task<IActionResult> GetUniversityAbbreviations(
             string DirectionName,
-            string SpecialityName,
+            string SpecialtyName,
             string UniversityName,
             string UniversityAbbreviation)
         {
             var filterModel = new FilterApiModel
             {
                 DirectionName = DirectionName,
-                SpecialityName = SpecialityName,
+                SpecialtyName = SpecialtyName,
                 UniversityName = UniversityName,
                 UniversityAbbreviation = UniversityAbbreviation
             };

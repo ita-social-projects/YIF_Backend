@@ -15,6 +15,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// <summary>
         /// Navigation property for the specialties this direction belongs to.
         /// </summary>
-        public virtual IEnumerable<SpecialityDTO> Specialities { get; set; }
+        public virtual IEnumerable<SpecialtyDTO> Specialties { get; set; }
     }
 }

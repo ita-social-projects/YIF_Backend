@@ -15,8 +15,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
     public class SchoolModeratorRepositoryTests
     {
         private readonly Mock<IApplicationDbContext> _dbContextMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly FakeUserManager<DbUser> _userManagerMock;
         private readonly SchoolModeratorRepository _schoolModeratorRepository;
 
         private readonly List<SchoolModerator> _databaseSchoolModerators = new List<SchoolModerator>();
@@ -24,10 +22,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public SchoolModeratorRepositoryTests()
         {
             _dbContextMock = new Mock<IApplicationDbContext>();
-            _mapperMock = new Mock<IMapper>();
-            _userManagerMock = new FakeUserManager<DbUser>();
 
-            _schoolModeratorRepository = new SchoolModeratorRepository(_mapperMock.Object, _userManagerMock, _dbContextMock.Object);
+            _schoolModeratorRepository = new SchoolModeratorRepository(_dbContextMock.Object);
             _dbContextMock.Setup(p => p.SchoolModerators).Returns(DbContextMock.GetQueryableMockDbSet<SchoolModerator>(_databaseSchoolModerators));
         }
 

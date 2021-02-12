@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace YIF.Core.Data.Interfaces
 {
     /// <summary>
-    /// The interface of epository for the work with database user.
+    /// The interface of repository for the work with database user.
     /// </summary>
     /// <typeparam name="L">User profile entity.</typeparam>
     /// <typeparam name="M">User profile data transfer object.</typeparam>
@@ -14,6 +14,9 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<L> GetDefaultUserProfile(string userId);
         Task<L> SetDefaultUserProfileIfEmpty(string userId);
-        Task<M> SetUserProfile(M profile, string schoolName = null);
+        Task<bool> EmailExistInAnotherUser(string email, string currentUserId);
+        Task<bool> IsCurrentUserTheGraduate(string currentUserId);
+        Task<bool> SetSchoolForGraduate(string schoolName, string currentUserId);
+        Task<M> SetUserProfile(M profile);
     }
 }

@@ -2,13 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
@@ -25,22 +22,19 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<string> Create(DirectionToUniversity dbUser, object entityUser, string userPassword)
+        public async Task<bool> Update(DirectionToUniversity item)
         {
-            throw new NotImplementedException();
+            _context.DirectionsToUniversities.Update(item);
+            var res = await _context.SaveChangesAsync();
+            return res > 0;
         }
 
-        public Task<string> Create(DirectionToUniversity dbUser, object entityUser, string userPassword, string role)
-        {
-            throw new NotImplementedException();
-        }
-
+        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
         }
 
-        [ExcludeFromCodeCoverage]
         public void Dispose()
         {
             _context.Dispose();
@@ -61,49 +55,16 @@ namespace YIF.Core.Domain.Repositories
             return null;
         }
 
-        public Task<DirectionToUniversityDTO> Get(string id)
+        public async Task<DirectionToUniversityDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var directionToUniversity = await _context.DirectionsToUniversities.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<DirectionToUniversityDTO>(directionToUniversity);
         }
 
-        public Task<IEnumerable<DirectionToUniversityDTO>> GetAll()
+        public async Task<IEnumerable<DirectionToUniversityDTO>> GetAll()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<DirectionToUniversityDTO> GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithToken(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<DbUser> GetUserWithUserProfile(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SetDefaultUserProfileIfEmpty(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Update(DirectionToUniversity item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserPhoto(DbUser user, string photo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateUserToken(DbUser user, string refreshToken)
-        {
-            throw new NotImplementedException();
+            var directionsToUniversity = await _context.Directions.ToListAsync();
+            return _mapper.Map<IEnumerable<DirectionToUniversityDTO>>(directionsToUniversity);
         }
     }
 }

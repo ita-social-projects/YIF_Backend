@@ -11,9 +11,9 @@ using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
+using YIF.Shared;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 {
@@ -68,7 +68,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public async Task Create_ShouldAddUserToDatabase_WhenUserIsValid()
         {
             // Arrange
-            _userManagerMock.ResIsSucces = IdentityResult.Success;
+            _userManagerMock.ResIsSuccess = IdentityResult.Success;
             _dbContextMock.Setup(s => s.AddAsync(It.IsAny<IdentityUser>())).Verifiable();
             // Act
             var errors = await _testRepo.Create(_newUserStub, It.IsAny<IdentityUser>(), _newUserPassword, ProjectRoles.Graduate);
@@ -80,7 +80,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public async Task Create_ShouldReturnErrors_WhenCreatingUserIsFailed()
         {
             // Act
-            _userManagerMock.ResIsSucces = IdentityResult.Failed();
+            _userManagerMock.ResIsSuccess = IdentityResult.Failed();
             var errors = await _testRepo.Create(null, null, null, null);
             // Assert
             Assert.True(errors.Length > 0);

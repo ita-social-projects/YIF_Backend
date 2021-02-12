@@ -1,6 +1,4 @@
-﻿using YIF.Core.Domain.DtoModels;
-
-namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     public class SpecialtyResponseApiModel
     {

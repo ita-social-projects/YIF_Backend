@@ -11,8 +11,6 @@ namespace YIF.Core.Data.Entities
         public string Id { get; set; }
         public string UniversityId { get; set; }
 
-        //.....
-
         [ForeignKey("UniversityId")]
         public University University { get; set; }
         /// <summary>

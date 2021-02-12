@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Data.Others;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Shared;
 
 namespace YIF.Core.Domain.Repositories
 {
@@ -52,45 +52,38 @@ namespace YIF.Core.Domain.Repositories
             return profile;
         }
 
-
-        public async Task<UserProfileDTO> SetUserProfile(UserProfileDTO profileDto, string schoolName = null)
+        public async Task<bool> EmailExistInAnotherUser(string email, string currentUserId)
         {
-            // Check email (Is newEmail exist in another user or not)
-            var anotherUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == profileDto.Email);
-            if (anotherUser != null && anotherUser?.Id != profileDto.Id)
-            {
-                throw new ArgumentException("Електронна пошта вже використовується:  " + profileDto.Email);
-            }
+            var anotherUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
+            return anotherUser != null && anotherUser?.Id != currentUserId;
+        }
 
-            // Set school
-            var graduate = await _context.Graduates.Include(g => g.School).FirstOrDefaultAsync(x => x.UserId == profileDto.Id);
-            if (graduate == null)
+        public async Task<bool> IsCurrentUserTheGraduate(string currentUserId)
+        {
+            var graduate = await _context.Graduates.FirstOrDefaultAsync(x => x.UserId == currentUserId);
+            return graduate != null;
+        }
+
+        public async Task<bool> SetSchoolForGraduate(string schoolName, string currentUserId)
+        {
+            var graduate = await _context.Graduates.Include(g => g.School).FirstOrDefaultAsync(x => x.UserId == currentUserId);
+            if (graduate.School?.Name != schoolName)
             {
-                if (!string.IsNullOrWhiteSpace(schoolName)) throw new ArgumentException("Користувач не належить до ролі: " + ProjectRoles.Graduate +
-                    ". Поле 'schoolname' не потрібно заповняти для цього коритувача.");
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(schoolName))
-                {
-                    graduate.SchoolId = null;
-                }
-                else if (graduate.School?.Name != schoolName)
-                {
-                    var school = await _context.Schools.FirstOrDefaultAsync(x => x.Name == schoolName);
-                    if (school == null) throw new ArgumentException("Не знайдено зазначеної школи:  " + schoolName);
-                    graduate.SchoolId = school.Id;
-                }
+                var school = await _context.Schools.FirstOrDefaultAsync(x => x.Name == schoolName);
+                graduate.SchoolId = school?.Id;
                 _context.Graduates.Update(graduate);
-                await _context.SaveChangesAsync();
             }
+            return await _context.SaveChangesAsync() > 0;
+        }
 
+        public async Task<UserProfileDTO> SetUserProfile(UserProfileDTO profileDto)
+        {
             // Get current user
             var user = _userManager.Users.Include(u => u.UserProfile).FirstOrDefault(x => x.Id == profileDto.Id);
 
             // Set new user profile and add changes
             var profile = _mapper.Map<UserProfile>(profileDto);
-            profile.User = user ?? throw new KeyNotFoundException("Користувача не знайдено із таким id:  " + profileDto.Id);
+            profile.User = user;
             profile.DateOfBirth = user.UserProfile?.DateOfBirth;
             profile.RegistrationDate = user.UserProfile == null ? DateTime.MinValue : user.UserProfile.RegistrationDate;
             profile.Photo = user.UserProfile?.Photo;

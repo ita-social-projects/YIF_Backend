@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -23,19 +22,22 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public Task<bool> Update(Direction item)
+        public async Task<bool> Update(Direction item)
         {
-            throw new NotImplementedException();
+            _context.Directions.Update(item);
+            return await _context.SaveChangesAsync() > 0;
         }
 
+        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<DirectionDTO> Get(string id)
+        public async Task<DirectionDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var direction = await _context.Directions.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<DirectionDTO>(direction);
         }
 
         public async Task<IEnumerable<DirectionDTO>> GetAll()
@@ -44,7 +46,6 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<DirectionDTO>>(directions);
         }
 
-        [ExcludeFromCodeCoverage]
         public void Dispose()
         {
             _context.Dispose();
