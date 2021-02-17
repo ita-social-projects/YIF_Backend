@@ -1332,7 +1332,7 @@ namespace YIF.Core.Data.Seaders
             var result = await userManager.CreateAsync(dbUser, "QWerty-1");
             if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(dbUser, roleName);
+                await userManager.AddToRolesAsync(dbUser, new List<string>() { roleName, ProjectRoles.BaseUser });
 
                 await context.AddAsync(entityUser);
                 await context.SaveChangesAsync();

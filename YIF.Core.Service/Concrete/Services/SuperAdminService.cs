@@ -94,7 +94,6 @@ namespace YIF.Core.Service.Concrete.Services
             };
 
             var registerResult = await _userRepository.Create(dbUser, null, universityAdminModel.Password, ProjectRoles.UniversityAdmin);
-            await _userManager.AddToRoleAsync(dbUser, ProjectRoles.BaseUser);
             if (registerResult != string.Empty)
             {                
                 throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
@@ -165,7 +164,6 @@ namespace YIF.Core.Service.Concrete.Services
             };
 
             var registerResult = await _userRepository.Create(dbUser, null, schoolAdminModel.Password, ProjectRoles.SchoolAdmin);
-            await _userManager.AddToRoleAsync(dbUser, ProjectRoles.BaseUser);
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");

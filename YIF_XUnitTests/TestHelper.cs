@@ -194,6 +194,10 @@ namespace YIF_XUnitTests
         {
             return Task.FromResult(ResIsSuccess);
         }
+        public override Task<IdentityResult> AddToRolesAsync(T user, IEnumerable<string> roles)
+        {
+            return Task.FromResult(ResIsSuccess);
+        }
     }
     public class FakeSignInManager<T> : SignInManager<T> where T : class
     {
