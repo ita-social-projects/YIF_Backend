@@ -36,12 +36,23 @@ namespace YIF_Backend
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
+        private readonly IWebHostEnvironment _currentEnvironment;
         public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment currentEnvironment)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(currentEnvironment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                #if SOME_BUILD_FLAG_A
+                    .AddJsonFile($"appsettings.flag_a.json", optional: true)
+                #else
+                    .AddJsonFile($"appsettings.no_flag_a.json", optional: true)
+                #endif
+                    .AddEnvironmentVariables();
+            Configuration = builder.Build();
+            _currentEnvironment = currentEnvironment;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -128,8 +139,9 @@ namespace YIF_Backend
             #endregion
 
             #region EntityFramework
-            services.AddDbContext<EFDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            AddDb(ref services);
+            //services.AddDbContext<EFDbContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
@@ -213,7 +225,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             #endregion
 
             #region Swagger
@@ -230,6 +242,20 @@ namespace YIF_Backend
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void AddDb(ref IServiceCollection services)
+        {
+            if (_currentEnvironment.IsEnvironment("Testing"))
+            {
+                services.AddDbContextPool<EFDbContext>(options =>
+                    options.UseInMemoryDatabase("TestingDB"));
+            }
+            else
+            {
+                services.AddDbContext<EFDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
         }
     }
 }
