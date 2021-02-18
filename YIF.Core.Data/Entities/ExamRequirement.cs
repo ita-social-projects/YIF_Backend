@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YIF.Core.Data.Entities
 {
-    
+    [Table("ExamRequirements")]
     public class ExamRequirement: BaseEntity
     {
         public string ExamId { get; set; }
@@ -13,12 +13,10 @@ namespace YIF.Core.Data.Entities
         public string SpecialtyInUniversityDescriptionId { get; set; }
         
         public double MinimumScore { get; set; }
-
-        [ForeignKey("ExamId")]
-        public virtual Exam Exam { get; set; }
-
-        [ForeignKey("SpecialtyInUniversityDescriptionId")]
-        public virtual SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
+        
+        public Exam Exam { get; set; }
+        
+        public SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
         
     }
 }

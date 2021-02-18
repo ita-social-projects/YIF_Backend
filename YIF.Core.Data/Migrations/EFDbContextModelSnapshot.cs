@@ -245,19 +245,19 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("ExamId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("MinimumScore")
-                        .HasColumnType("float");
-
                     b.Property<string>("SpecialtyInUniversityDescriptionId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.Property<double>("MinimumScore")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id", "ExamId", "SpecialtyInUniversityDescriptionId");
 
                     b.HasIndex("ExamId");
 
                     b.HasIndex("SpecialtyInUniversityDescriptionId");
 
-                    b.ToTable("ExamToSpecialtyToUniversities");
+                    b.ToTable("ExamRequirements");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Graduate", b =>
@@ -678,17 +678,12 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("EducationalProgramLink")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ExamRequirementId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PaymentFormId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EducationFormId");
-
-                    b.HasIndex("ExamRequirementId");
 
                     b.HasIndex("PaymentFormId");
 
@@ -771,12 +766,16 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.ExamRequirement", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.Exam", "Exam")
-                        .WithMany()
-                        .HasForeignKey("ExamId");
+                        .WithMany("ExamRequirements")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("YIF.Core.Data.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany()
-                        .HasForeignKey("SpecialtyInUniversityDescriptionId");
+                        .WithMany("ExamRequirements")
+                        .HasForeignKey("SpecialtyInUniversityDescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Graduate", b =>
@@ -925,10 +924,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasOne("YIF.Core.Data.Entities.EducationForm", "EducationForm")
                         .WithMany()
                         .HasForeignKey("EducationFormId");
-
-                    b.HasOne("YIF.Core.Data.Entities.ExamRequirement", "ExamRequirement")
-                        .WithMany()
-                        .HasForeignKey("ExamRequirementId");
 
                     b.HasOne("YIF.Core.Data.Entities.PaymentForm", "PaymentForm")
                         .WithMany()

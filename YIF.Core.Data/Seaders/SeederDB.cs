@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -819,6 +820,26 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+        public static void SeedPaymentForms(EFDbContext context)
+        {
+            if (context.PaymentForms.Count() == 0)
+            {
+                var paymentForms = new List<PaymentForm>();
+
+                paymentForms.Add(new PaymentForm
+                {
+                    Name="Контракт"
+                });
+                paymentForms.Add(new PaymentForm
+                {
+                    Name = "Бюджет"
+                });
+                context.PaymentForms.AddRange(paymentForms);
+                context.SaveChanges();
+            }
+        }
+
+
         public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
             if (context.DirectionsToUniversities.Count() == 0 || context.SpecialtyToUniversities.Count() == 0)
@@ -988,6 +1009,8 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+
+
         public static void SeedUniversityAdmins(EFDbContext context)
         {
             if(context.UniversityAdmins.Count() == 0)
@@ -1026,6 +1049,67 @@ namespace YIF.Core.Data.Seaders
                 context.UniversityAdmins.AddRange(admins);
                 context.SaveChanges();
             }         
+        }
+
+        public static void SeedEducationForms(EFDbContext context)
+        {
+            if (context.EducationForms.Count() == 0)
+            {
+                var educationForms = new List<EducationForm>();
+
+                educationForms.Add(new EducationForm
+                {
+                    Name = "Контракт"
+                });
+                educationForms.Add(new EducationForm
+                {
+                    Name = "Бюджет"
+                });
+                context.EducationForms.AddRange(educationForms);
+                context.SaveChanges();
+            }
+        }
+
+        public static void SeedExams(EFDbContext context)
+        {
+            if (context.Exams.Count() == 0)
+            {
+                var exams = new List<Exam>();
+
+                exams.Add(new Exam
+                {
+                    Name = "Денна"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Заочна"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Вечірня"
+                });
+                context.Exams.AddRange(exams);
+                context.SaveChanges();
+            }
+        }
+
+        public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
+        {
+            if (context.EducationForms.Count() == 0)
+            {
+                var educationForms = new List<EducationForm>();
+
+                educationForms.Add(new EducationForm
+                {
+                    Name = "Контракт"
+                });
+                educationForms.Add(new EducationForm
+                {
+                    Name = "Бюджет"
+                });
+                context.EducationForms.AddRange(educationForms);
+                context.SaveChanges();
+            }
         }
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)

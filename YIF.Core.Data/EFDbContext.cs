@@ -135,13 +135,18 @@ namespace YIF.Core.Data
                 .HasOne(x => x.EducationForm);
 
             builder.Entity<ExamRequirement>()
-                .HasOne(x => x.Exam);
+                .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyInUniversityDescriptionId});
 
             builder.Entity<ExamRequirement>()
-                .HasOne(er => er.Exam);
+                .HasOne(x => x.Exam)
+                .WithMany(x => x.ExamRequirements)
+                .HasForeignKey(x => x.ExamId);
+
 
             builder.Entity<ExamRequirement>()
-                .HasOne(x => x.SpecialtyInUniversityDescription);
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.ExamRequirements)
+                .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
 
             //builder.Entity<SpecialtyToUniversity>()
             //    .HasOne(x=>x.EducationForm);
