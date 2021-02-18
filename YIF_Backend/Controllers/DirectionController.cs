@@ -26,7 +26,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Return a list of directions</response>
         [ProducesResponseType(typeof(PageResponseApiModel<DirectionResponseApiModel>), 200)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet]
+        [HttpGet("All")]
         public async Task<IActionResult> GetAllDirections(int page = 1, int pageSize = 10)
         {
             var pageModel = new PageApiModel

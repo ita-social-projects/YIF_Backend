@@ -42,7 +42,21 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<DirectionDTO>> GetAll()
         {
-            var directions = await _context.Directions.ToListAsync();
+            var directions = await _context.Directions.Select(x => new Direction
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Code = x.Code,
+                
+                Specialties = x.Specialties.Select(y => new Specialty
+                {
+                    Id = y.Id,
+                    Name = y.Name,
+                    Code = y.Code,
+                    Description = y.Description
+                }).ToList()
+            })
+                .ToListAsync();
             return _mapper.Map<IEnumerable<DirectionDTO>>(directions);
         }
 
