@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YIF.Core.Data.Entities
 {
@@ -6,6 +7,11 @@ namespace YIF.Core.Data.Entities
     {
         public string SpecialtyId { get; set; }
         public string UniversityId { get; set; }
+
+        public string SpecialtyInUniversityDescriptionId { get; set; }
+
+        [ForeignKey("SpecialtyInUniversityDescriptionId")]
+        public virtual SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
 
         [ForeignKey("SpecialtyId")]
         public virtual Specialty Specialty { get; set; }

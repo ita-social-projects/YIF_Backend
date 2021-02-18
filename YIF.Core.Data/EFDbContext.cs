@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -38,6 +39,11 @@ namespace YIF.Core.Data
         public DbSet<Token> Tokens { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<BaseUser> BaseUsers { get; set; }
+        public DbSet<Exam> Exams { get; set; }
+        public DbSet<ExamRequirement> ExamToSpecialtyToUniversities { get; set; }
+        public DbSet<EducationForm> EducationForms { get; set; }
+        public DbSet<PaymentForm> PaymentForms { get; set; }
+        public  DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
         #endregion
 
         public async Task<int> SaveChangesAsync()
@@ -52,7 +58,7 @@ namespace YIF.Core.Data
 
 
         protected override void OnModelCreating(ModelBuilder builder)
-        { 
+        {
             base.OnModelCreating(builder);
 
             builder.Entity<SuperAdmin>()
@@ -82,17 +88,17 @@ namespace YIF.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UniversityToGraduate>()
-                .HasKey(ug => new { ug.UniversityId, ug.GraduateId });
+                .HasKey(ug => new {ug.UniversityId, ug.GraduateId});
 
             builder.Entity<UniversityToGraduate>()
-                    .HasOne(ug => ug.University)
-                    .WithMany(u => u.UniversityGraduates)
-                    .HasForeignKey(ug => ug.UniversityId);
+                .HasOne(ug => ug.University)
+                .WithMany(u => u.UniversityGraduates)
+                .HasForeignKey(ug => ug.UniversityId);
 
             builder.Entity<UniversityToGraduate>()
-                    .HasOne(ug => ug.Graduate)
-                    .WithMany(g => g.UniversityGraduates)
-                    .HasForeignKey(ug => ug.GraduateId);
+                .HasOne(ug => ug.Graduate)
+                .WithMany(g => g.UniversityGraduates)
+                .HasForeignKey(ug => ug.GraduateId);
 
             //builder.Entity<University>()//потестить каскадку
             //    .HasMany(x => x.Admins)
@@ -113,10 +119,43 @@ namespace YIF.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<DirectionToUniversity>()
-                .HasKey(c => new { c.Id,c.UniversityId, c.DirectionId });
+                .HasKey(c => new {c.Id, c.UniversityId, c.DirectionId});
 
             builder.Entity<SpecialtyToUniversity>()
-                .HasKey(c => new { c.Id, c.UniversityId, c.SpecialtyId });
+                .HasKey(c => new {c.Id, c.UniversityId, c.SpecialtyId});
+
+            builder.Entity<SpecialtyToUniversity>()
+                .HasOne(x => x.SpecialtyInUniversityDescription);
+
+            builder.Entity<SpecialtyInUniversityDescription>()
+                .HasOne(x => x.PaymentForm);
+
+            builder.Entity<SpecialtyInUniversityDescription>()
+                .HasOne(x => x.EducationForm);
+
+            builder.Entity<ExamRequirement>()
+                .HasOne(x => x.Exam);
+
+
+            builder.Entity<ExamRequirement>()
+                .HasOne(er => er.Exam);
+
+            builder.Entity<ExamRequirement>()
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.ExamRequirements)
+                .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
+
+            //builder.Entity<SpecialtyToUniversity>()
+            //    .HasOne(x=>x.EducationForm);
+
+            //builder.Entity<SpecialtyToUniversity>()
+            //    .HasMany(x => x.ExamRequirements)
+            //    .WithOne(x => x.SpecialtyToUniversity)
+            //    .HasForeignKey(x => x.SpecialtyToUniversityId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+
+            //builder.Entity<ExamRequirement>()
+            //    .HasOne(x => x.Exam);
 
             #endregion
 
