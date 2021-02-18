@@ -690,9 +690,7 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasIndex("ExamRequirementId");
 
-                    b.HasIndex("PaymentFormId")
-                        .IsUnique()
-                        .HasFilter("[PaymentFormId] IS NOT NULL");
+                    b.HasIndex("PaymentFormId");
 
                     b.ToTable("SpecialtyInUniversityDescriptions");
                 });
@@ -777,7 +775,7 @@ namespace YIF.Core.Data.Migrations
                         .HasForeignKey("ExamId");
 
                     b.HasOne("YIF.Core.Data.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany("ExamRequirements")
+                        .WithMany()
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
                 });
 
@@ -933,8 +931,8 @@ namespace YIF.Core.Data.Migrations
                         .HasForeignKey("ExamRequirementId");
 
                     b.HasOne("YIF.Core.Data.Entities.PaymentForm", "PaymentForm")
-                        .WithOne("SpecialtyInUniversityDescription")
-                        .HasForeignKey("YIF.Core.Data.SpecialtyInUniversityDescription", "PaymentFormId");
+                        .WithMany()
+                        .HasForeignKey("PaymentFormId");
                 });
 #pragma warning restore 612, 618
         }

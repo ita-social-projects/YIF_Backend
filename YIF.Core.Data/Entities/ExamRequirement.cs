@@ -5,6 +5,7 @@ using System.Text;
 
 namespace YIF.Core.Data.Entities
 {
+    
     public class ExamRequirement: BaseEntity
     {
         public string ExamId { get; set; }
@@ -18,6 +19,6 @@ namespace YIF.Core.Data.Entities
 
         [ForeignKey("SpecialtyInUniversityDescriptionId")]
         public virtual SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
-
+        
     }
 }

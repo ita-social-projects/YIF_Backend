@@ -13,7 +13,7 @@ namespace YIF.Core.Data
 
         public string ExamRequirementId { get; set; }
 
-        public virtual ICollection<ExamRequirement> ExamRequirements { get; set; }
+        //public virtual ICollection<ExamRequirement> ExamRequirements { get; set; }
 
         [ForeignKey("ExamRequirementId")]
         public virtual ExamRequirement ExamRequirement { get; set; }
