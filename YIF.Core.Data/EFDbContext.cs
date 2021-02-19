@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -31,7 +30,6 @@ namespace YIF.Core.Data
         public DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
         public DbSet<SpecialtyToUniversity> SpecialtyToUniversities { get; set; }
         public DbSet<UniversityToGraduate> UniversitiesToGraduates { get; set; }
-
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
         public DbSet<Graduate> Graduates { get; set; }
@@ -44,6 +42,8 @@ namespace YIF.Core.Data
         public DbSet<EducationForm> EducationForms { get; set; }
         public DbSet<PaymentForm> PaymentForms { get; set; }
         public  DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
+        public DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
+        public DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
         #endregion
 
         public async Task<int> SaveChangesAsync()
@@ -126,13 +126,32 @@ namespace YIF.Core.Data
 
             builder.Entity<SpecialtyToUniversity>()
                 .HasOne(x => x.SpecialtyInUniversityDescription);
+            
+            builder.Entity<PaymentFormToDescription>()
+                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyInUniversityDescriptionId});
 
+            builder.Entity<PaymentFormToDescription>()
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.PaymentFormToDescriptions)
+                .HasForeignKey(k => k.SpecialtyInUniversityDescriptionId);
 
-            builder.Entity<SpecialtyInUniversityDescription>()
-                .HasOne(x => x.PaymentForm);
+            builder.Entity<PaymentFormToDescription>()
+                .HasOne(x => x.PaymentForm)
+                .WithMany(x => x.PaymentFormToDescriptions)
+                .HasForeignKey(k => k.PaymentFormId);
 
-            builder.Entity<SpecialtyInUniversityDescription>()
-                .HasOne(x => x.EducationForm);
+            builder.Entity<EducationFormToDescription>()
+                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyInUniversityDescriptionId});
+
+            builder.Entity<EducationFormToDescription>()
+                .HasOne(x => x.EducationForm)
+                .WithMany(x => x.EducationFormToDescriptions)
+                .HasForeignKey(k => k.EducationFormId);
+
+            builder.Entity<EducationFormToDescription>()
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.EducationFormToDescriptions)
+                .HasForeignKey(k => k.SpecialtyInUniversityDescriptionId);
 
             builder.Entity<ExamRequirement>()
                 .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyInUniversityDescriptionId});
@@ -142,23 +161,10 @@ namespace YIF.Core.Data
                 .WithMany(x => x.ExamRequirements)
                 .HasForeignKey(x => x.ExamId);
 
-
             builder.Entity<ExamRequirement>()
                 .HasOne(x => x.SpecialtyInUniversityDescription)
                 .WithMany(x => x.ExamRequirements)
                 .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
-
-            //builder.Entity<SpecialtyToUniversity>()
-            //    .HasOne(x=>x.EducationForm);
-
-            //builder.Entity<SpecialtyToUniversity>()
-            //    .HasMany(x => x.ExamRequirements)
-            //    .WithOne(x => x.SpecialtyToUniversity)
-            //    .HasForeignKey(x => x.SpecialtyToUniversityId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //builder.Entity<ExamRequirement>()
-            //    .HasOne(x => x.Exam);
 
             #endregion
 

@@ -1093,24 +1093,26 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
-        {
-            if (context.EducationForms.Count() == 0)
-            {
-                var educationForms = new List<EducationForm>();
+        //public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
+        //{
+        //    if (context.SpecialtyInUniversityDescriptions.Count() == 0)
+        //    {
+        //        var specialityDescriptions = new List<SpecialtyInUniversityDescription>();
 
-                educationForms.Add(new EducationForm
-                {
-                    Name = "Контракт"
-                });
-                educationForms.Add(new EducationForm
-                {
-                    Name = "Бюджет"
-                });
-                context.EducationForms.AddRange(educationForms);
-                context.SaveChanges();
-            }
-        }
+        //        specialityDescriptions.Add(new SpecialtyInUniversityDescription
+        //        {
+        //            EducationalProgramLink = ""
+
+        //        });
+        //        specialityDescriptions.Add(new SpecialtyInUniversityDescription
+        //        {
+        //            Name = "Бюджет"
+
+        //        });
+        //        context.EducationForms.AddRange(specialityDescriptions);
+        //        context.SaveChanges();
+        //    }
+        //}
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)
         {

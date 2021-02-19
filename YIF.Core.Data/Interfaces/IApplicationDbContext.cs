@@ -31,6 +31,8 @@ namespace YIF.Core.Data.Interfaces
         DbSet<EducationForm> EducationForms { get; set; }
         DbSet<PaymentForm> PaymentForms { get; set; }
         DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
+        DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
+        DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
 
         Task<int> SaveChangesAsync();
         int SaveChanges();

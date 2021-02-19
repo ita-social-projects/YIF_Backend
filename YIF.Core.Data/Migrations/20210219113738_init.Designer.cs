@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210218213814_initial")]
-    partial class initial
+    [Migration("20210219113738_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -224,6 +224,27 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("EducationForms");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.EducationFormToDescription", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EducationFormId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SpecialtyInUniversityDescriptionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id", "EducationFormId", "SpecialtyInUniversityDescriptionId");
+
+                    b.HasIndex("EducationFormId");
+
+                    b.HasIndex("SpecialtyInUniversityDescriptionId");
+
+                    b.ToTable("EducationFormToDescriptions");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.Exam", b =>
                 {
                     b.Property<string>("Id")
@@ -381,6 +402,27 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("PaymentForms");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.PaymentFormToDescription", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PaymentFormId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SpecialtyInUniversityDescriptionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id", "PaymentFormId", "SpecialtyInUniversityDescriptionId");
+
+                    b.HasIndex("PaymentFormId");
+
+                    b.HasIndex("SpecialtyInUniversityDescriptionId");
+
+                    b.ToTable("PaymentFormToDescriptions");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.School", b =>
                 {
                     b.Property<string>("Id")
@@ -468,6 +510,20 @@ namespace YIF.Core.Data.Migrations
                     b.HasIndex("DirectionId");
 
                     b.ToTable("Specialties");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EducationalProgramLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpecialtyInUniversityDescriptions");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversity", b =>
@@ -668,30 +724,6 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("tblUserProfiles");
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.SpecialtyInUniversityDescription", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EducationFormId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EducationalProgramLink")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PaymentFormId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EducationFormId");
-
-                    b.HasIndex("PaymentFormId");
-
-                    b.ToTable("SpecialtyInUniversityDescriptions");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -765,6 +797,21 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.EducationFormToDescription", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.EducationForm", "EducationForm")
+                        .WithMany("EducationFormToDescriptions")
+                        .HasForeignKey("EducationFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
+                        .WithMany("EducationFormToDescriptions")
+                        .HasForeignKey("SpecialtyInUniversityDescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.ExamRequirement", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.Exam", "Exam")
@@ -773,7 +820,7 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YIF.Core.Data.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
+                    b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
                         .WithMany("ExamRequirements")
                         .HasForeignKey("SpecialtyInUniversityDescriptionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -804,6 +851,21 @@ namespace YIF.Core.Data.Migrations
                         .WithMany("Lectures")
                         .HasForeignKey("UniversityId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.PaymentFormToDescription", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.PaymentForm", "PaymentForm")
+                        .WithMany("PaymentFormToDescriptions")
+                        .HasForeignKey("PaymentFormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
+                        .WithMany("PaymentFormToDescriptions")
+                        .HasForeignKey("SpecialtyInUniversityDescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SchoolAdmin", b =>
@@ -846,7 +908,7 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YIF.Core.Data.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
+                    b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
                         .WithMany()
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
 
@@ -919,17 +981,6 @@ namespace YIF.Core.Data.Migrations
                         .HasForeignKey("YIF.Core.Data.Entities.UserProfile", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.SpecialtyInUniversityDescription", b =>
-                {
-                    b.HasOne("YIF.Core.Data.Entities.EducationForm", "EducationForm")
-                        .WithMany()
-                        .HasForeignKey("EducationFormId");
-
-                    b.HasOne("YIF.Core.Data.Entities.PaymentForm", "PaymentForm")
-                        .WithMany()
-                        .HasForeignKey("PaymentFormId");
                 });
 #pragma warning restore 612, 618
         }
