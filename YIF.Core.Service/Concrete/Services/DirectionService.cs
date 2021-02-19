@@ -69,10 +69,11 @@ namespace YIF.Core.Service.Concrete.Services
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
             
-            if (directions == null || directions.Count() == 0)
-                throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
+            var result = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions.Distinct().ToList());
 
-            return _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions.Distinct().ToList());
+            if (result == null || result.Count() == 0) throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
+
+            return result;
         }
 
         public async Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(PageApiModel pageModel)
