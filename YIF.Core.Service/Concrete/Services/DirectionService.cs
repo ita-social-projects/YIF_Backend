@@ -39,7 +39,7 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
         }
 
-        public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(FilterApiModel filterModel)
+        public async Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(PageApiModel pageModel, FilterApiModel filterModel)
         {
             var directions = await _directionRepository.GetAll();
 
@@ -90,7 +90,12 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<IEnumerable<string>> GetDirectionsNamesByFilter(FilterApiModel filterModel)
         {
-            var directions = await GetAllDirectionsByFilter(filterModel);
+            var pageModel = new PageApiModel
+            {
+                Page = 1,
+                PageSize = 10
+            };
+            var directions = await GetAllDirectionsByFilter(pageModel, filterModel);
             
             if (directions == null || directions.Count() == 0)
                 throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
