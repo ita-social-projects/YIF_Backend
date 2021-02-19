@@ -69,19 +69,12 @@ namespace YIF.Core.Service.Concrete.Services
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
             
-            var result = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions.Distinct().ToList());
-
-            if (result == null || result.Count() == 0) throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
-
-            return result;
+            return _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions.Distinct().ToList());
         }
 
         public async Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(PageApiModel pageModel)
         {
             var directions = _mapper.Map<IEnumerable<DirectionResponseApiModel>>(await _directionRepository.GetAll());
-            if (directions == null || directions.Count() == 0)
-                throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
-
             try
             {
                 return _paginationService.GetPageFromCollection(directions, pageModel);
@@ -101,9 +94,6 @@ namespace YIF.Core.Service.Concrete.Services
             };
             var directions = await GetAllDirectionsByFilter(pageModel, filterModel);
             
-            if (directions == null || directions.Count() == 0)
-                throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
-
             return directions
                 .Select(s => s.Name)
                 .Where(n => n != null)
