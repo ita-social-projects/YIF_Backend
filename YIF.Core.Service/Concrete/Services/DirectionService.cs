@@ -68,6 +68,9 @@ namespace YIF.Core.Service.Concrete.Services
                 var filteredDirections = directionToUniversity.Select(du => du.DirectionId);
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
+            
+            if (directions == null || directions.Count() == 0)
+                throw new NotFoundException(_resourceManager.GetString("DirectionsNotFound"));
 
             return _mapper.Map<IEnumerable<DirectionResponseApiModel>>(directions.Distinct().ToList());
         }
