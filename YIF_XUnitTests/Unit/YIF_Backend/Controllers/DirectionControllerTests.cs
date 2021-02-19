@@ -37,12 +37,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 },
                 TotalPages = 1
             };
+            
+            var filter = new FilterApiModel
+            {
+                DirectionName = "SomeDirection",
+                SpecialtyName = "SomeSpeciality",
+                UniversityName = "SomeUniversity",
+                UniversityAbbreviation = "SU"
+            };
 
             _directionService.Setup(x => x.GetAllDirections(new PageApiModel { Page = 1, PageSize = 10, Url = "link" }))
                 .Returns(Task.FromResult(responseModel));
 
             // Act
-            var result = await _directionController.GetAllDirections();
+            var result = await _directionController.GetAllDirections(filter.DirectionName, filter.SpecialtyName, filter.UniversityName, filter.UniversityAbbreviation);
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
