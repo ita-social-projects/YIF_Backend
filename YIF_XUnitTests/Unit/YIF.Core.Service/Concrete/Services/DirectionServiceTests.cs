@@ -96,7 +96,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(responseList);
 
             // Act
-            var result = await _directionService.GetAllDirectionsByFilter(filterModel);
+            var result = await _directionService.GetAllDirectionsByFilter(new PageApiModel { Page = 1, PageSize = 10, Url = "link" }, filterModel);
 
             // Assert
             Assert.IsType<List<DirectionResponseApiModel>>(result);

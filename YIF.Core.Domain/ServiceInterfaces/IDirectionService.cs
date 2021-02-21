@@ -9,6 +9,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
     {
         Task<PageResponseApiModel<DirectionResponseApiModel>> GetAllDirections(PageApiModel pageModel);
         Task<IEnumerable<string>> GetDirectionsNamesByFilter(FilterApiModel filterModel);
-        Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(FilterApiModel filterModel);
+        Task<IEnumerable<DirectionResponseApiModel>> GetAllDirectionsByFilter(PageApiModel pageModel, FilterApiModel filterModel);
     }
 }

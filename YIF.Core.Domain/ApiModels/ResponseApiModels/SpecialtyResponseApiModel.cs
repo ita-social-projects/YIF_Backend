@@ -11,6 +11,10 @@
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Get or set the direction code for this direction.
+        /// </summary>
+        public string Code { get; set; }
+        /// <summary>
         /// Gets or sets the description for this specialty.
         /// </summary>
         public string Description { get; set; }

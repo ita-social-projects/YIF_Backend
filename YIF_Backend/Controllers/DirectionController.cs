@@ -26,8 +26,12 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Return a list of directions</response>
         [ProducesResponseType(typeof(PageResponseApiModel<DirectionResponseApiModel>), 200)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet]
-        public async Task<IActionResult> GetAllDirections(int page = 1, int pageSize = 10)
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAllDirections(string DirectionName,
+            string SpecialtyName,
+            string UniversityName,
+            string UniversityAbbreviation,
+            int page = 1, int pageSize = 10)
         {
             var pageModel = new PageApiModel
             {
@@ -35,8 +39,15 @@ namespace YIF_Backend.Controllers
                 PageSize = pageSize,
                 Url = $"{Request?.Scheme}://{Request?.Host}{Request?.Path}"
             };
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialtyName = SpecialtyName,
+                UniversityName = UniversityName,
+                UniversityAbbreviation = UniversityAbbreviation
+            };
 
-            var directions = await _directionService.GetAllDirections(pageModel);
+            var directions = await _directionService.GetAllDirectionsByFilter(pageModel, filterModel);
             return Ok(directions);
         }
 

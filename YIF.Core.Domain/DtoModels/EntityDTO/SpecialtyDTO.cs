@@ -11,6 +11,10 @@
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Gets or sets the specialty code for this specialty.
+        /// </summary>
+        public string Code { get; set; }
+        /// <summary>
         /// Gets or sets the direction id to which this specialty belongs
         /// </summary>
         public string DirectionId { get; set; }
