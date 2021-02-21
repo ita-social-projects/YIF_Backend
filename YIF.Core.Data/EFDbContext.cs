@@ -38,7 +38,7 @@ namespace YIF.Core.Data
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<BaseUser> BaseUsers { get; set; }
         public DbSet<Exam> Exams { get; set; }
-        public DbSet<ExamRequirement> ExamToSpecialtyToUniversities { get; set; }
+        public DbSet<ExamRequirement> ExamRequirements { get; set; }
         public DbSet<EducationForm> EducationForms { get; set; }
         public DbSet<PaymentForm> PaymentForms { get; set; }
         public  DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }

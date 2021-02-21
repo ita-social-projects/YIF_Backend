@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -828,11 +827,11 @@ namespace YIF.Core.Data.Seaders
 
                 paymentForms.Add(new PaymentForm
                 {
-                    Name="Контракт"
+                    Name = "контракт"
                 });
                 paymentForms.Add(new PaymentForm
                 {
-                    Name = "Бюджет"
+                    Name = "бюджет"
                 });
                 context.PaymentForms.AddRange(paymentForms);
                 context.SaveChanges();
@@ -1059,11 +1058,15 @@ namespace YIF.Core.Data.Seaders
 
                 educationForms.Add(new EducationForm
                 {
-                    Name = "Контракт"
+                    Name = "денна"
                 });
                 educationForms.Add(new EducationForm
                 {
-                    Name = "Бюджет"
+                    Name = "заочна"
+                });
+                educationForms.Add(new EducationForm
+                {
+                    Name = "вечірня"
                 });
                 context.EducationForms.AddRange(educationForms);
                 context.SaveChanges();
@@ -1078,15 +1081,43 @@ namespace YIF.Core.Data.Seaders
 
                 exams.Add(new Exam
                 {
-                    Name = "Денна"
+                    Name = "Українська мова та література"
                 });
                 exams.Add(new Exam
                 {
-                    Name = "Заочна"
+                    Name = "Математика"
                 });
                 exams.Add(new Exam
                 {
-                    Name = "Вечірня"
+                    Name = "Історія України"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Біологія"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Хімія"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Фізика"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Географія"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Англійська мова"
+                }); 
+                exams.Add(new Exam
+                {
+                    Name = "Французька мова"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Німецька мова"
                 });
                 context.Exams.AddRange(exams);
                 context.SaveChanges();
