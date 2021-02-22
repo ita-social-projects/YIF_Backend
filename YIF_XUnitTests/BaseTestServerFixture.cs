@@ -16,8 +16,13 @@ namespace YIF_XUnitTests
 
         public BaseTestServerFixture()
         {
+            var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.Testing.json")
+                    .Build();
+
             var builder = new WebHostBuilder()
                 .UseEnvironment("Testing")
+                .UseConfiguration(config)
                 .UseStartup<Startup>();
 
             TestServer = new TestServer(builder);

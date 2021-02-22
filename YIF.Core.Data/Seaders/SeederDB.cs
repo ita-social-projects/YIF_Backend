@@ -1348,7 +1348,7 @@ namespace YIF.Core.Data.Seaders
                 var context = scope.ServiceProvider.GetRequiredService<EFDbContext>();
 
                 Console.WriteLine("Database migrating ... ");
-                context.Database.Migrate();
+                //context.Database.Migrate();
                 Console.WriteLine("Database migrated");
 
 

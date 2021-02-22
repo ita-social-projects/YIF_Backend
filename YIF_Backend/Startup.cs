@@ -41,17 +41,8 @@ namespace YIF_Backend
 
         public Startup(IConfiguration configuration, IWebHostEnvironment currentEnvironment)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(currentEnvironment.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                #if SOME_BUILD_FLAG_A
-                    .AddJsonFile($"appsettings.flag_a.json", optional: true)
-                #else
-                    .AddJsonFile($"appsettings.no_flag_a.json", optional: true)
-                #endif
-                    .AddEnvironmentVariables();
-            Configuration = builder.Build();
             _currentEnvironment = currentEnvironment;
+            Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -140,9 +131,6 @@ namespace YIF_Backend
 
             #region EntityFramework
             AddDb(ref services);
-            //services.AddDbContext<EFDbContext>(options =>
-            //        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
