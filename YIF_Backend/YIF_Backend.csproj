@@ -14,10 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="appsettings.Development.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Controllers\UsersController.cs~RF95655c.TMP" />
     <None Remove="index.html" />
   </ItemGroup>
