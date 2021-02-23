@@ -213,7 +213,11 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            SeederDB.SeedData(app.ApplicationServices);
+            //SeederDB.SeedData(app.ApplicationServices);
+            if (_currentEnvironment.IsEnvironment("Testing"))
+            {
+                SeederDB.SeedData(app.ApplicationServices);
+            }
             #endregion
 
             #region Swagger
