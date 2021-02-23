@@ -819,6 +819,26 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+        public static void SeedPaymentForms(EFDbContext context)
+        {
+            if (context.PaymentForms.Count() == 0)
+            {
+                var paymentForms = new List<PaymentForm>();
+
+                paymentForms.Add(new PaymentForm
+                {
+                    Name = "контракт"
+                });
+                paymentForms.Add(new PaymentForm
+                {
+                    Name = "бюджет"
+                });
+                context.PaymentForms.AddRange(paymentForms);
+                context.SaveChanges();
+            }
+        }
+
+
         public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
             if (context.DirectionsToUniversities.Count() == 0 || context.SpecialtyToUniversities.Count() == 0)
@@ -988,6 +1008,8 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+
+
         public static void SeedUniversityAdmins(EFDbContext context)
         {
             if(context.UniversityAdmins.Count() == 0)
@@ -1027,6 +1049,101 @@ namespace YIF.Core.Data.Seaders
                 context.SaveChanges();
             }         
         }
+
+        public static void SeedEducationForms(EFDbContext context)
+        {
+            if (context.EducationForms.Count() == 0)
+            {
+                var educationForms = new List<EducationForm>();
+
+                educationForms.Add(new EducationForm
+                {
+                    Name = "денна"
+                });
+                educationForms.Add(new EducationForm
+                {
+                    Name = "заочна"
+                });
+                educationForms.Add(new EducationForm
+                {
+                    Name = "вечірня"
+                });
+                context.EducationForms.AddRange(educationForms);
+                context.SaveChanges();
+            }
+        }
+
+        public static void SeedExams(EFDbContext context)
+        {
+            if (context.Exams.Count() == 0)
+            {
+                var exams = new List<Exam>();
+
+                exams.Add(new Exam
+                {
+                    Name = "Українська мова та література"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Математика"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Історія України"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Біологія"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Хімія"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Фізика"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Географія"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Англійська мова"
+                }); 
+                exams.Add(new Exam
+                {
+                    Name = "Французька мова"
+                });
+                exams.Add(new Exam
+                {
+                    Name = "Німецька мова"
+                });
+                context.Exams.AddRange(exams);
+                context.SaveChanges();
+            }
+        }
+
+        //public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
+        //{
+        //    if (context.SpecialtyInUniversityDescriptions.Count() == 0)
+        //    {
+        //        var specialityDescriptions = new List<SpecialtyInUniversityDescription>();
+
+        //        specialityDescriptions.Add(new SpecialtyInUniversityDescription
+        //        {
+        //            EducationalProgramLink = ""
+
+        //        });
+        //        specialityDescriptions.Add(new SpecialtyInUniversityDescription
+        //        {
+        //            Name = "Бюджет"
+
+        //        });
+        //        context.EducationForms.AddRange(specialityDescriptions);
+        //        context.SaveChanges();
+        //    }
+        //}
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)
         {
