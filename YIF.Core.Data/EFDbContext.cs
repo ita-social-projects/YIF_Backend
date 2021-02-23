@@ -30,6 +30,7 @@ namespace YIF.Core.Data
         public DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
         public DbSet<SpecialtyToUniversity> SpecialtyToUniversities { get; set; }
         public DbSet<UniversityToGraduate> UniversitiesToGraduates { get; set; }
+        public DbSet<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
 
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
@@ -117,6 +118,9 @@ namespace YIF.Core.Data
 
             builder.Entity<SpecialtyToUniversity>()
                 .HasKey(c => new { c.Id, c.UniversityId, c.SpecialtyId });
+
+            builder.Entity<SpecialtyToGraduate>()
+                .HasKey(c => new { c.Id, c.GraduateId, c.SpecialtyId });
 
             #endregion
 
