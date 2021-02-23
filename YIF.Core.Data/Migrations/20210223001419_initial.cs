@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace YIF.Core.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -425,7 +425,8 @@ namespace YIF.Core.Data.Migrations
                     Id = table.Column<string>(nullable: false),
                     ExamId = table.Column<string>(nullable: false),
                     SpecialtyInUniversityDescriptionId = table.Column<string>(nullable: false),
-                    MinimumScore = table.Column<double>(nullable: false)
+                    MinimumScore = table.Column<double>(nullable: false),
+                    Coefficient = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
                 {

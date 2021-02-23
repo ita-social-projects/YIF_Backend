@@ -7,6 +7,7 @@
         public string SpecialtyInUniversityDescriptionId { get; set; }
 
         public double MinimumScore { get; set; }
+        public double Coefficient { get; set; }
 
         public Exam Exam { get; set; }
 

@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210221181647_init")]
-    partial class init
+    [Migration("20210223001419_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -270,6 +270,9 @@ namespace YIF.Core.Data.Migrations
 
                     b.Property<string>("SpecialtyInUniversityDescriptionId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Coefficient")
+                        .HasColumnType("float");
 
                     b.Property<double>("MinimumScore")
                         .HasColumnType("float");
