@@ -7,6 +7,11 @@ namespace YIF.Core.Data.Entities
         public string SpecialtyId { get; set; }
         public string UniversityId { get; set; }
 
+        public string SpecialtyInUniversityDescriptionId { get; set; }
+
+        [ForeignKey("SpecialtyInUniversityDescriptionId")]
+        public virtual SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
+
         [ForeignKey("SpecialtyId")]
         public virtual Specialty Specialty { get; set; }
         [ForeignKey("UniversityId")]

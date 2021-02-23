@@ -31,7 +31,6 @@ namespace YIF.Core.Data
         public DbSet<SpecialtyToUniversity> SpecialtyToUniversities { get; set; }
         public DbSet<UniversityToGraduate> UniversitiesToGraduates { get; set; }
         public DbSet<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
-
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
         public DbSet<Graduate> Graduates { get; set; }
@@ -39,6 +38,13 @@ namespace YIF.Core.Data
         public DbSet<Token> Tokens { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<BaseUser> BaseUsers { get; set; }
+        public DbSet<Exam> Exams { get; set; }
+        public DbSet<ExamRequirement> ExamRequirements { get; set; }
+        public DbSet<EducationForm> EducationForms { get; set; }
+        public DbSet<PaymentForm> PaymentForms { get; set; }
+        public  DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
+        public DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
+        public DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
         #endregion
 
         public async Task<int> SaveChangesAsync()
@@ -53,7 +59,7 @@ namespace YIF.Core.Data
 
 
         protected override void OnModelCreating(ModelBuilder builder)
-        { 
+        {
             base.OnModelCreating(builder);
 
             builder.Entity<SuperAdmin>()
@@ -83,17 +89,17 @@ namespace YIF.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UniversityToGraduate>()
-                .HasKey(ug => new { ug.UniversityId, ug.GraduateId });
+                .HasKey(ug => new {ug.UniversityId, ug.GraduateId});
 
             builder.Entity<UniversityToGraduate>()
-                    .HasOne(ug => ug.University)
-                    .WithMany(u => u.UniversityGraduates)
-                    .HasForeignKey(ug => ug.UniversityId);
+                .HasOne(ug => ug.University)
+                .WithMany(u => u.UniversityGraduates)
+                .HasForeignKey(ug => ug.UniversityId);
 
             builder.Entity<UniversityToGraduate>()
-                    .HasOne(ug => ug.Graduate)
-                    .WithMany(g => g.UniversityGraduates)
-                    .HasForeignKey(ug => ug.GraduateId);
+                .HasOne(ug => ug.Graduate)
+                .WithMany(g => g.UniversityGraduates)
+                .HasForeignKey(ug => ug.GraduateId);
 
             //builder.Entity<University>()//потестить каскадку
             //    .HasMany(x => x.Admins)
@@ -114,10 +120,52 @@ namespace YIF.Core.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<DirectionToUniversity>()
-                .HasKey(c => new { c.Id,c.UniversityId, c.DirectionId });
+                .HasKey(c => new {c.Id, c.UniversityId, c.DirectionId});
 
             builder.Entity<SpecialtyToUniversity>()
-                .HasKey(c => new { c.Id, c.UniversityId, c.SpecialtyId });
+                .HasKey(c => new {c.Id, c.UniversityId, c.SpecialtyId});
+
+            builder.Entity<SpecialtyToUniversity>()
+                .HasOne(x => x.SpecialtyInUniversityDescription);
+            
+            builder.Entity<PaymentFormToDescription>()
+                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyInUniversityDescriptionId});
+
+            builder.Entity<PaymentFormToDescription>()
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.PaymentFormToDescriptions)
+                .HasForeignKey(k => k.SpecialtyInUniversityDescriptionId);
+
+            builder.Entity<PaymentFormToDescription>()
+                .HasOne(x => x.PaymentForm)
+                .WithMany(x => x.PaymentFormToDescriptions)
+                .HasForeignKey(k => k.PaymentFormId);
+
+            builder.Entity<EducationFormToDescription>()
+                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyInUniversityDescriptionId});
+
+            builder.Entity<EducationFormToDescription>()
+                .HasOne(x => x.EducationForm)
+                .WithMany(x => x.EducationFormToDescriptions)
+                .HasForeignKey(k => k.EducationFormId);
+
+            builder.Entity<EducationFormToDescription>()
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.EducationFormToDescriptions)
+                .HasForeignKey(k => k.SpecialtyInUniversityDescriptionId);
+
+            builder.Entity<ExamRequirement>()
+                .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyInUniversityDescriptionId});
+
+            builder.Entity<ExamRequirement>()
+                .HasOne(x => x.Exam)
+                .WithMany(x => x.ExamRequirements)
+                .HasForeignKey(x => x.ExamId);
+
+            builder.Entity<ExamRequirement>()
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.ExamRequirements)
+                .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
 
             builder.Entity<SpecialtyToGraduate>()
                 .HasKey(c => new { c.Id, c.GraduateId, c.SpecialtyId });
