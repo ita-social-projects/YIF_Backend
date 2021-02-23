@@ -272,6 +272,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("SpecialtyInUniversityDescriptionId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<double>("Coefficient")
+                        .HasColumnType("float");
+
                     b.Property<double>("MinimumScore")
                         .HasColumnType("float");
 
