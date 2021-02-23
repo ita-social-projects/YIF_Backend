@@ -36,12 +36,14 @@ namespace YIF_Backend
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _currentEnvironment;
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment currentEnvironment)
         {
+            _currentEnvironment = currentEnvironment;
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -128,9 +130,7 @@ namespace YIF_Backend
             #endregion
 
             #region EntityFramework
-            services.AddDbContext<EFDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            AddDb(ref services);
             services.AddIdentity<DbUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddEntityFrameworkStores<EFDbContext>()
                 .AddDefaultTokenProviders();
@@ -214,6 +214,10 @@ namespace YIF_Backend
 
             #region Seeder
             //SeederDB.SeedData(app.ApplicationServices);
+            if (_currentEnvironment.IsEnvironment("Testing"))
+            {
+                SeederDB.SeedData(app.ApplicationServices);
+            }
             #endregion
 
             #region Swagger
@@ -230,6 +234,20 @@ namespace YIF_Backend
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void AddDb(ref IServiceCollection services)
+        {
+            if (_currentEnvironment.IsEnvironment("Testing"))
+            {
+                services.AddDbContextPool<EFDbContext>(options =>
+                    options.UseInMemoryDatabase("TestingDB"));
+            }
+            else
+            {
+                services.AddDbContext<EFDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
         }
     }
 }
