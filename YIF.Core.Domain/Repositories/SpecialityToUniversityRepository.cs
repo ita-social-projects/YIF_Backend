@@ -87,6 +87,7 @@ namespace YIF.Core.Domain.Repositories
                           University = su.University,
                           Specialty = s
                       })
+                .Include(x => x.SpecialtyInUniversityDescription)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(list);
