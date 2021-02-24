@@ -20,6 +20,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
         private readonly IRepository<EducationFormToDescription, EducationFormToDescription> _educationFormToDescriptionRepository;
         private readonly IRepository<PaymentFormToDescription, PaymentFormToDescription> _paymentFormToDescriptionRepository;
+        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -31,6 +32,7 @@ namespace YIF.Core.Service.Concrete.Services
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IRepository<EducationFormToDescription, EducationFormToDescription> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescription> paymentFormToDescriptionRepository,
+            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
@@ -42,6 +44,7 @@ namespace YIF.Core.Service.Concrete.Services
             _graduateRepository = graduateRepository;
             _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
             _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
+            _specialtyToUniversityRepository = specialtyToUniversityRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -87,14 +90,15 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
 
-                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
-                //var specialtyToUniversity = await _specialtyToUniversityRepository.GetAll().Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescription.Id == x.Id));
+                //var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
 
+                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
 
+                var specialtyToUniversity = specialtyToUniversityAll.Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.Id));
 
+                var specialtiesAll = await _specialtyRepository.GetAll();
 
-                // Get all specialties by educationForm
-                var specialties = await _specialtyRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
+                var specialties = specialtiesAll.Where(x => specialtyToUniversity.Any(y => y.SpecialtyId == x.Id));
 
                 filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
             }
