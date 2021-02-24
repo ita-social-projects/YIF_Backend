@@ -18,6 +18,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
         private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
+        private readonly IRepository<EducationFormToDescription, EducationFormToDescription> _educationFormToDescriptionRepository;
+        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescription> _paymentFormToDescriptionRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -27,6 +29,8 @@ namespace YIF.Core.Service.Concrete.Services
             IUniversityRepository<University, UniversityDTO> universityRepository,
             IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
+            IRepository<EducationFormToDescription, EducationFormToDescription> educationFormToDescriptionRepository,
+            IRepository<PaymentFormToDescription, PaymentFormToDescription> paymentFormToDescriptionRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
@@ -36,6 +40,8 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyRepository = specialtyRepository;
             _directionRepository = directionRepository;
             _graduateRepository = graduateRepository;
+            _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
+            _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -79,6 +85,14 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
             {
+                var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+
+                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+                //var specialtyToUniversity = await _specialtyToUniversityRepository.GetAll().Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescription.Id == x.Id));
+
+
+
+
                 // Get all specialties by educationForm
                 var specialties = await _specialtyRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
 

@@ -45,6 +45,7 @@ namespace YIF.Core.Domain.Repositories
             var list = _context.SpecialtyToUniversities
                 .Include(x => x.Specialty)
                 .Include(x => x.University)
+                .Include(x => x.SpecialtyInUniversityDescription)
                 .Where(predicate)
                 .ToList();
 
