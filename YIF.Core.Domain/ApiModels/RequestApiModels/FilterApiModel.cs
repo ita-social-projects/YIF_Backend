@@ -6,5 +6,7 @@
         public string UniversityName { get; set; }
         public string SpecialtyName { get; set; }
         public string UniversityAbbreviation { get; set; }
+        public string PaymentForm { get; set; }
+        public string EducationForm { get; set; }
     }
 }
