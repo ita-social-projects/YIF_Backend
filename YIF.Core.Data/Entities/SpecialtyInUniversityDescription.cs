@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YIF.Core.Data.Entities
 {
@@ -11,7 +10,6 @@ namespace YIF.Core.Data.Entities
 
         public ICollection<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
 
-        public  ICollection<EducationFormToDescription> EducationFormToDescriptions { get; set; }
-        
+        public ICollection<EducationFormToDescription> EducationFormToDescriptions { get; set; }
     }
 }

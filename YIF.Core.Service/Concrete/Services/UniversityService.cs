@@ -77,6 +77,14 @@ namespace YIF.Core.Service.Concrete.Services
                 filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
             }
 
+            if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
+            {
+                // Get all specialties by educationForm
+                var specialties = await _specialtyRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
+
+                filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
+            }
+
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());
         }
 
