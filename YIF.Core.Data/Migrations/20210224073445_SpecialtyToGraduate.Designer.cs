@@ -10,14 +10,14 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210223001419_initial")]
-    partial class initial
+    [Migration("20210224073445_SpecialtyToGraduate")]
+    partial class SpecialtyToGraduate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .HasAnnotation("ProductVersion", "3.1.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -179,6 +179,9 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -527,6 +530,27 @@ namespace YIF.Core.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SpecialtyInUniversityDescriptions");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToGraduate", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("GraduateId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SpecialtyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id", "GraduateId", "SpecialtyId");
+
+                    b.HasIndex("GraduateId");
+
+                    b.HasIndex("SpecialtyId");
+
+                    b.ToTable("SpecialtyToGraduates");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversity", b =>
@@ -901,6 +925,21 @@ namespace YIF.Core.Data.Migrations
                         .WithMany("Specialties")
                         .HasForeignKey("DirectionId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToGraduate", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
+                        .WithMany()
+                        .HasForeignKey("GraduateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
+                        .WithMany()
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversity", b =>
