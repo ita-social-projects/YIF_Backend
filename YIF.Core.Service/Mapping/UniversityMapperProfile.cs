@@ -35,6 +35,17 @@ namespace YIF.Core.Service.Mapping
                 .ReverseMap();
             CreateMap<Lecture, LectureDTO>()
                 .ReverseMap();
+
+            CreateMap<SpecialtyInUniversityDescription, SpecialtyInUniversityDescriptionDTO>()
+                .ReverseMap();
+            CreateMap<ExamRequirement, ExamRequirementDTO>()
+                .ReverseMap();
+            CreateMap<PaymentFormToDescription, PaymentFormToDescriptionDTO>()
+                .ReverseMap();
+            CreateMap<EducationFormToDescription, EducationFormToDescriptionDTO>()
+                .ReverseMap();  
+            CreateMap<Exam, ExamDTO>()
+                .ReverseMap();
         }
     }
 }

@@ -16,17 +16,23 @@ namespace YIF.Core.Service.Concrete.Services
     public class SpecialtyService : ISpecialtyService
     {
         private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
+        private readonly IRepository<EducationFormToDescription, EducationFormToDescription> _educationFormToDescriptionRepository;
+        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescription> _paymentFormToDescriptionRepository;
         private readonly IRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
         public SpecialtyService(
             IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
+            IRepository<EducationFormToDescription, EducationFormToDescription> educationFormToDescriptionRepository,
+            IRepository<PaymentFormToDescription, PaymentFormToDescription> paymentFormToDescriptionRepository,
             IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
             _specialtyToUniversityRepository = specialtyToUniversityRepository;
+            _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
+            _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
             _specialtyRepository = specialtyRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
@@ -66,6 +72,29 @@ namespace YIF.Core.Service.Concrete.Services
                 specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
             }
 
+            if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
+            {
+                //Filtering for educationFormToDescription that has such EducationForm
+                var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+
+                //From all specialtyToUniversity set which contains educationFormToDescription
+                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
+                var specialtyToUniversity = specialtyToUniversityAll.Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+
+                specilaties = specilaties.Where(x => specialtyToUniversity.Any(y => y.SpecialtyId == x.Id));
+            }
+
+            if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
+            {
+                //Filtering for paymentFormToDescription that has such PaymentForm
+                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+
+                //From all specialtyToUniversity set which contains paymentFormToDescription
+                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
+                var specialtyToUniversity = specialtyToUniversityAll.Where(x => paymentFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+
+                specilaties = specilaties.Where(x => specialtyToUniversity.Any(y => y.SpecialtyId == x.Id));
+            }
             return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
         }
 

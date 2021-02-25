@@ -16,7 +16,6 @@ namespace YIF.Core.Service.Concrete.Services
     public class UniversityService : IUniversityService<University>
     {
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
-        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
         private readonly IRepository<EducationFormToDescription, EducationFormToDescription> _educationFormToDescriptionRepository;
         private readonly IRepository<PaymentFormToDescription, PaymentFormToDescription> _paymentFormToDescriptionRepository;
@@ -28,7 +27,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
-            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyRepository,
+            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IRepository<EducationFormToDescription, EducationFormToDescription> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescription> paymentFormToDescriptionRepository,
@@ -39,7 +38,6 @@ namespace YIF.Core.Service.Concrete.Services
             ResourceManager resourceManager)
         {
             _universityRepository = universityRepository;
-            _specialtyRepository = specialtyRepository;
             _directionRepository = directionRepository;
             _graduateRepository = graduateRepository;
             _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
@@ -81,26 +79,33 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
                 // Get all specialties by name
-                var specialties = await _specialtyRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
+                var specialties = await _specialtyToUniversityRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
 
                 filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
             }
 
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
             {
+                //Filtering for educationFormToDescription that has such EducationForm
                 var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
 
-                //var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
-
+                //From all specialtyToUniversity set which contains educationFormToDescription
                 var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
+                var specialtyToUniversity = specialtyToUniversityAll.Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
 
-                var specialtyToUniversity = specialtyToUniversityAll.Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.Id));
+                filteredUniversities = filteredUniversities.Where(x => specialtyToUniversity.Any(y => y.UniversityId == x.Id));
+            }
 
-                var specialtiesAll = await _specialtyRepository.GetAll();
+            if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
+            {
+                //Filtering for paymentFormToDescription that has such PaymentForm
+                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
 
-                var specialties = specialtiesAll.Where(x => specialtyToUniversity.Any(y => y.SpecialtyId == x.Id));
+                //From all specialtyToUniversity set which contains paymentFormToDescription
+                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
+                var specialtyToUniversity = specialtyToUniversityAll.Where(x => paymentFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
 
-                filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
+                filteredUniversities = filteredUniversities.Where(x => specialtyToUniversity.Any(y => y.UniversityId == x.Id));
             }
 
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());
