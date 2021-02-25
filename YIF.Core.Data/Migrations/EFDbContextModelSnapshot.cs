@@ -522,6 +522,9 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Decription")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EducationalProgramLink")
                         .HasColumnType("nvarchar(max)");
 
