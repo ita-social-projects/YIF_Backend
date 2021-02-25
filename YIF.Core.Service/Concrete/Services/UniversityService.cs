@@ -17,8 +17,8 @@ namespace YIF.Core.Service.Concrete.Services
     {
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
-        private readonly IRepository<EducationFormToDescription, EducationFormToDescription> _educationFormToDescriptionRepository;
-        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescription> _paymentFormToDescriptionRepository;
+        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
+        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
         private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
@@ -29,8 +29,8 @@ namespace YIF.Core.Service.Concrete.Services
             IUniversityRepository<University, UniversityDTO> universityRepository,
             IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
-            IRepository<EducationFormToDescription, EducationFormToDescription> educationFormToDescriptionRepository,
-            IRepository<PaymentFormToDescription, PaymentFormToDescription> paymentFormToDescriptionRepository,
+            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
+            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
             IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
@@ -91,19 +91,19 @@ namespace YIF.Core.Service.Concrete.Services
 
                 //From all specialtyToUniversity set which contains educationFormToDescription
                 var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
-                var specialtyToUniversity = specialtyToUniversityAll.Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+                var specialtyToUniversity = specialtyToUniversityAll
+                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
 
                 filteredUniversities = filteredUniversities.Where(x => specialtyToUniversity.Any(y => y.UniversityId == x.Id));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
             {
-                //Filtering for paymentFormToDescription that has such PaymentForm
                 var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
 
-                //From all specialtyToUniversity set which contains paymentFormToDescription
                 var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
-                var specialtyToUniversity = specialtyToUniversityAll.Where(x => paymentFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+                var specialtyToUniversity = specialtyToUniversityAll
+                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
 
                 filteredUniversities = filteredUniversities.Where(x => specialtyToUniversity.Any(y => y.UniversityId == x.Id));
             }

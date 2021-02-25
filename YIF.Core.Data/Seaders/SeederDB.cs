@@ -60,7 +60,6 @@ namespace YIF.Core.Data.Seaders
 
                 await SeederDB.CreateUser(context, userManager, dbUser, ProjectRoles.SuperAdmin, superAdmin);
             }
-
         }
 
         #region School

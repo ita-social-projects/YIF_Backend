@@ -22,8 +22,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private readonly SpecialtyService _testService;
         private readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
-        private static readonly Mock<IRepository<EducationFormToDescription, EducationFormToDescription>> _educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescription>>();
-        private static readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescription>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescription>>();
+        private static readonly Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>> _educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
+        private static readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
 
         private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
@@ -177,8 +177,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var specialtyToUniRepo = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
-            var educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescription>>();
-            var paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescription>>();
+            var educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
+            var paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
             var specialtyRepo = new Mock<IRepository<Specialty, SpecialtyDTO>>();
             var specToUniResult = false;
             var specResult = false;

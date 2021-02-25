@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,16 +7,19 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class EducationFormToDescriptionRepository : IRepository<EducationFormToDescription, EducationFormToDescription>
+    public class EducationFormToDescriptionRepository : IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public EducationFormToDescriptionRepository(IApplicationDbContext context)
+        public EducationFormToDescriptionRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<bool> Update(EducationFormToDescription item)
@@ -36,7 +40,7 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<EducationFormToDescription>> Find(Expression<Func<EducationFormToDescription, bool>> predicate)
+        public Task<IEnumerable<EducationFormToDescriptionDTO>> Find(Expression<Func<EducationFormToDescription, bool>> predicate)
         {
             var list = _context.EducationFormToDescriptions
                 .Include(x => x.SpecialtyInUniversityDescription)
@@ -46,20 +50,20 @@ namespace YIF.Core.Domain.Repositories
 
             if (list != null || list.Count > 0)
             {
-                return Task.FromResult<IEnumerable<EducationFormToDescription>>(list);
+                return Task.FromResult(_mapper.Map<IEnumerable<EducationFormToDescriptionDTO>>(list));
             }
 
             return null;
         }
 
-        public async Task<EducationFormToDescription> Get(string id)
+        public async Task<EducationFormToDescriptionDTO> Get(string id)
         {
-            var specialtyToUniversity = await _context.EducationFormToDescriptions.FirstOrDefaultAsync(x => x.Id == id);
-            return specialtyToUniversity;
+            var educationFormToDescription = await _context.EducationFormToDescriptions.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<EducationFormToDescriptionDTO>(educationFormToDescription);
         }
 
         // Not implemented, as the logic will be determined in the future
-        public Task<IEnumerable<EducationFormToDescription>> GetAll()
+        public Task<IEnumerable<EducationFormToDescriptionDTO>> GetAll()
         {
             throw new NotImplementedException();
         }

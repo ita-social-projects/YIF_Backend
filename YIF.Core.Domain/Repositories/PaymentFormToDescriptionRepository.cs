@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,16 +7,19 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class PaymentFormToDescriptionRepository : IRepository<PaymentFormToDescription, PaymentFormToDescription>
+    public class PaymentFormToDescriptionRepository : IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PaymentFormToDescriptionRepository(IApplicationDbContext context)
+        public PaymentFormToDescriptionRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<bool> Update(PaymentFormToDescription item)
@@ -36,7 +40,7 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<PaymentFormToDescription>> Find(Expression<Func<PaymentFormToDescription, bool>> predicate)
+        public Task<IEnumerable<PaymentFormToDescriptionDTO>> Find(Expression<Func<PaymentFormToDescription, bool>> predicate)
         {
             var list = _context.PaymentFormToDescriptions
                 .Include(x => x.SpecialtyInUniversityDescription)
@@ -46,20 +50,20 @@ namespace YIF.Core.Domain.Repositories
 
             if (list != null || list.Count > 0)
             {
-                return Task.FromResult<IEnumerable<PaymentFormToDescription>>(list);
+                return Task.FromResult(_mapper.Map<IEnumerable<PaymentFormToDescriptionDTO>>(list));
             }
 
             return null;
         }
 
-        public async Task<PaymentFormToDescription> Get(string id)
+        public async Task<PaymentFormToDescriptionDTO> Get(string id)
         {
             var paymentFormToDescription = await _context.PaymentFormToDescriptions.FirstOrDefaultAsync(x => x.Id == id);
-            return paymentFormToDescription;
+            return _mapper.Map<PaymentFormToDescriptionDTO>(paymentFormToDescription);
         }
 
         // Not implemented, as the logic will be determined in the future
-        public Task<IEnumerable<PaymentFormToDescription>> GetAll()
+        public Task<IEnumerable<PaymentFormToDescriptionDTO>> GetAll()
         {
             throw new NotImplementedException();
         }
