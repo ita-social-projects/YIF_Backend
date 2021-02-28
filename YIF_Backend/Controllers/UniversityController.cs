@@ -53,7 +53,9 @@ namespace YIF_Backend.Controllers
             string DirectionName, 
             string SpecialtyName, 
             string UniversityName,
-            string UniversityAbbreviation,
+            string UniversityAbbreviation, 
+            string PaymentForm,
+            string EducationForm,
             int page = 1, 
             int pageSize = 10)
         {
@@ -64,7 +66,9 @@ namespace YIF_Backend.Controllers
                 DirectionName = DirectionName,
                 SpecialtyName = SpecialtyName,
                 UniversityName = UniversityName,
-                UniversityAbbreviation = UniversityAbbreviation                
+                UniversityAbbreviation = UniversityAbbreviation,
+                PaymentForm = PaymentForm,
+                EducationForm = EducationForm
             };
 
             var pageModel = new PageApiModel

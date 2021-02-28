@@ -60,7 +60,6 @@ namespace YIF.Core.Data.Seaders
 
                 await SeederDB.CreateUser(context, userManager, dbUser, ProjectRoles.SuperAdmin, superAdmin);
             }
-
         }
 
         #region School
@@ -1504,6 +1503,8 @@ namespace YIF.Core.Data.Seaders
                 SeederDB.SeedUniversityAdmins(context);
                 await SeederDB.SeedUniversityModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);
+                SeederDB.SeedEducationForms(context);
+                SeederDB.SeedPaymentForms(context);
                 #endregion
 
                 Console.WriteLine("Database seeded.");
