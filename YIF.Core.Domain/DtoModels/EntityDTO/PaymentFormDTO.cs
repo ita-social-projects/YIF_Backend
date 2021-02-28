@@ -6,6 +6,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public ICollection<PaymentFormToDescriptionDTO> PaymentFormToDescriptions { get; set; }
+
+        public virtual ICollection<PaymentFormToDescriptionDTO> PaymentFormToDescriptions { get; set; }
     }
 }

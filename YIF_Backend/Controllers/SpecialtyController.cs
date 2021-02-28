@@ -102,5 +102,22 @@ namespace YIF_Backend.Controllers
             _logger.LogInformation("Getting a specialty");
             return Ok(result.Object);
         }
+        /// <summary>
+        /// Get specialty descriptions by id.
+        /// </summary>
+        /// <returns>A specialty descriptions</returns>
+        /// <response code="200">Returns a specialty descriptions</response>
+        /// <response code="404">If specialty descriptions not found</response>
+        /// <param name="id" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Specialty Id</param>
+        [HttpGet("Descriptions/{id}")]
+        [ProducesResponseType(typeof(IEnumerable<SpecialtyToUniversityResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetSpecialtyDescrriptionsAsync(string id)
+        {
+            var result = await _specialtyService.GetAllSpecialtyDiscriptionsById(id);
+            _logger.LogInformation("Getting a specialty descriptions");
+            return Ok(result.Object);
+        }
     }
 }

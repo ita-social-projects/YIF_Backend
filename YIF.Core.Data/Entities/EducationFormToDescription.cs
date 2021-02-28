@@ -4,12 +4,13 @@ namespace YIF.Core.Data.Entities
 {
     public class EducationFormToDescription : BaseEntity
     {
+        public string Description { get; set; }
         public string EducationFormId { get; set; }
         public string SpecialtyInUniversityDescriptionId { get; set; }
 
         [ForeignKey("EducationFormId")]
-        public EducationForm EducationForm { get; set; }
+        public virtual EducationForm EducationForm { get; set; }
         [ForeignKey("SpecialtyInUniversityDescriptionId")]
-        public SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
+        public virtual SpecialtyInUniversityDescription SpecialtyInUniversityDescription { get; set; }
     }
 }

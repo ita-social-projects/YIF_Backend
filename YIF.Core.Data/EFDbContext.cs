@@ -126,7 +126,9 @@ namespace YIF.Core.Data
                 .HasKey(c => new {c.Id, c.UniversityId, c.SpecialtyId});
 
             builder.Entity<SpecialtyToUniversity>()
-                .HasOne(x => x.SpecialtyInUniversityDescription);
+                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .WithMany(x => x.SpecialtyToUniversities)
+                .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
             
             builder.Entity<PaymentFormToDescription>()
                 .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyInUniversityDescriptionId});

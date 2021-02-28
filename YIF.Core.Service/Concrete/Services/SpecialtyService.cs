@@ -15,7 +15,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SpecialtyService : ISpecialtyService
     {
-        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
+        private readonly ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
         private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
         private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
         private readonly IRepository<Specialty, SpecialtyDTO> _specialtyRepository;
@@ -23,7 +23,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ResourceManager _resourceManager;
 
         public SpecialtyService(
-            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
+            ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
             IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
             IRepository<Specialty, SpecialtyDTO> specialtyRepository,
@@ -134,6 +134,17 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException($"{_resourceManager.GetString("SpecialtyWithSuchIdNotFound")}: {id}");
             }
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
+            return result.Set(true);
+        }
+        public async Task<ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>> GetAllSpecialtyDiscriptionsById(string id)
+        {
+            var result = new ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>();
+            var specialtyDescriptions = await _specialtyToUniversityRepository.GetSpecialtyInUniversityDescriptionsById(id);
+            if (specialtyDescriptions.Count() < 1)
+            {
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyDescriptionsNotFound"));
+            }
+            result.Object = _mapper.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(specialtyDescriptions);
             return result.Set(true);
         }
     }

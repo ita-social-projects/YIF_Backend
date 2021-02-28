@@ -237,6 +237,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("SpecialtyInUniversityDescriptionId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id", "EducationFormId", "SpecialtyInUniversityDescriptionId");
 
                     b.HasIndex("EducationFormId");
@@ -949,7 +952,7 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany()
+                        .WithMany("SpecialtyToUniversities")
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
