@@ -21,10 +21,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class SpecialtyServiceTests
     {
         private readonly SpecialtyService _testService;
-        private readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository;
-        private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
-        private readonly Mock<IMapper> _mapper;
-        private readonly Mock<ResourceManager> _resourceManager;
+        private readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+        private static readonly Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>> _educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
+        private static readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
+
+        private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
+        private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
+        private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
         private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO() };
@@ -34,13 +37,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public SpecialtyServiceTests()
         {
-            _specialtyToUniversityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
-            _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
-            _mapper = new Mock<IMapper>();
-            _resourceManager = new Mock<ResourceManager>();
-
             _testService = new SpecialtyService(
                 _specialtyToUniversityRepository.Object,
+                _educationFormToDescriptionRepository.Object,
+                _paymentFormToDescriptionRepository.Object,
                 _specialtyRepository.Object,
                 _mapper.Object,
                 _resourceManager.Object
@@ -177,6 +177,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange
             var specialtyToUniRepo = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+            var educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
+            var paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
             var specialtyRepo = new Mock<IRepository<Specialty, SpecialtyDTO>>();
             var specToUniResult = false;
             var specResult = false;
@@ -184,7 +186,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             specialtyRepo.Setup(x => x.Dispose()).Callback(() => specResult = true);
             
             // Act
-            var service = new SpecialtyService(specialtyToUniRepo.Object, specialtyRepo.Object, _mapper.Object, _resourceManager.Object);
+            var service = new SpecialtyService(
+                specialtyToUniRepo.Object,
+                educationFormToDescriptionRepository.Object,
+                paymentFormToDescriptionRepository.Object,
+                specialtyRepo.Object,
+                _mapper.Object,
+                _resourceManager.Object);
             service.Dispose();
             
             // Assert

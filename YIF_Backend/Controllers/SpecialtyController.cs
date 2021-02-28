@@ -32,11 +32,27 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<SpecialtyResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllSpecialtiesAsync()
+        public async Task<IActionResult> GetAllSpecialtiesAsync(
+            string DirectionName,
+            string SpecialtyName,
+            string UniversityName,
+            string UniversityAbbreviation,
+            string PaymentForm,
+            string EducationForm)
         {
-            var result = await _specialtyService.GetAllSpecialties();
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialtyName = SpecialtyName,
+                UniversityName = UniversityName,
+                UniversityAbbreviation = UniversityAbbreviation,
+                PaymentForm = PaymentForm,
+                EducationForm = EducationForm
+            };
+
+            var result = await _specialtyService.GetAllSpecialtiesByFilter(filterModel);
             _logger.LogInformation("Getting all specialties");
-            return Ok(result.Object);
+            return Ok(result);
         }
 
         /// <summary>

@@ -105,30 +105,32 @@ namespace YIF.Core.Domain.Repositories
         {
             var universityAdmin = _dbContext.Users
                 .Join(_dbContext.UniversityModerators,
-                      user => user.Id,
-                      moderator => moderator.UserId,
-                      (user, moderator) => new UniversityModerator
-                      {
-                          UserId = user.Id,
-                          AdminId = moderator.AdminId
-                      })
+                    user => user.Id,
+                    moderator => moderator.UserId,
+                    (user, moderator) => new UniversityModerator
+                    {
+                        UserId = user.Id,
+                        AdminId = moderator.AdminId
+                    })
                 .Join(_dbContext.UniversityAdmins,
-                      moderator => moderator.AdminId,
-                      admin => admin.Id,
-                      (moderator, admin) => new UniversityAdmin
-                      {
-                          Id = moderator.UserId,
-                          UniversityId = admin.UniversityId
-                      })
+                    moderator => moderator.AdminId,
+                    admin => admin.Id,
+                    (moderator, admin) => new UniversityAdmin
+                    {
+                        Id = moderator.UserId,
+                        UniversityId = admin.UniversityId,
+                        University = admin.University
+                    })
                 .Join(_dbContext.Universities,
-                      admin => admin.UniversityId,
-                      university => university.Id,
-                      (admin, university) => new UniversityAdminDTO
-                      {
-                          Id = admin.Id,
-                          UniversityId = admin.UniversityId,
-                          UniversityName = university.Name
-                      });
+                    admin => admin.UniversityId,
+                    university => university.Id,
+                    (admin, university) => new UniversityAdminDTO
+                    {
+                        Id = admin.Id,
+                        UniversityId = admin.UniversityId,
+                        UniversityName = university.Name,
+                        University = _mapper.Map<UniversityDTO>(admin.University)
+                    });
 
             if (universityAdmin.Count() != 0)
             {

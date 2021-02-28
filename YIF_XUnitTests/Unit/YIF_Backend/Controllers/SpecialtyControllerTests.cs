@@ -34,8 +34,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Object = new List<SpecialtyResponseApiModel>().AsEnumerable()
             };
             _specialtyService.Setup(x => x.GetAllSpecialties()).ReturnsAsync(response);
+
+            var apiModel = new FilterApiModel()
+            {
+                DirectionName = "",
+                SpecialtyName = "",
+                UniversityName = "",
+                UniversityAbbreviation = "",
+                PaymentForm = "",
+                EducationForm = ""
+            };
             // Act
-            var result = await _testControl.GetAllSpecialtiesAsync();
+            var result = await _testControl.GetAllSpecialtiesAsync(apiModel.DirectionName, apiModel.SpecialtyName, apiModel.UniversityName,
+                apiModel.UniversityAbbreviation, apiModel.PaymentForm, apiModel.EducationForm);
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsAssignableFrom<IEnumerable<SpecialtyResponseApiModel>>(responseResult.Value);

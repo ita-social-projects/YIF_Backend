@@ -10,7 +10,8 @@ namespace YIF.Core.Service.Mapping
         public UniversityAdminMappers()
         {
             CreateMap<UniversityAdmin, UniversityAdminDTO>().ReverseMap();
-            CreateMap<UniversityAdminDTO, UniversityAdminResponseApiModel>().ReverseMap();
+            CreateMap<UniversityAdminDTO, UniversityAdminResponseApiModel>()
+                .ForMember(dest => dest.Abbreviation, opt => opt.MapFrom(src => src.University == null ? "" : src.University.Abbreviation));
         }
     }
 }
