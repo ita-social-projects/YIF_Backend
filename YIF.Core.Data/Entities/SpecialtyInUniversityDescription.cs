@@ -6,7 +6,7 @@ namespace YIF.Core.Data.Entities
     public class SpecialtyInUniversityDescription : BaseEntity
     {
         public string EducationalProgramLink { get; set; }
-        public string Decription { get; set; }
+        public string Description { get; set; }
 
         public ICollection<ExamRequirement> ExamRequirements { get; set; }
 
