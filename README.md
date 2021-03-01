@@ -123,12 +123,24 @@ Then you can access the web api at http://ip:5000/swagger/index.html
 ![@team](https://avatars.githubusercontent.com/u/55939463?s=460&v=4)
 ![@team](https://avatars.githubusercontent.com/u/16308549?s=460&u=48b55feed8dad680a02c1633efff050ccfb1ebb2&v=4)
 
+![@team](https://avatars.githubusercontent.com/u/78746301?s=400&u=30423308506a96a6943b287113bb8f6ec3c76ded&v=4)
+![@team](https://avatars.githubusercontent.com/u/56673817?s=400&u=f1324d56227074f2c38c314f5a316a2a827a7be4&v=4)
+![@team](https://avatars.githubusercontent.com/u/48133795?s=400&u=2a5419941d325d551f95331c953b2ed5add3bf1e&v=4)
+![@team](https://avatars.githubusercontent.com/u/62856840?s=400&u=3efd2de912e9adc9ed80036c0b2ded59628d0e90&v=4)
+![@team](https://avatars.githubusercontent.com/u/31737653?s=400&v=4)
+
 - https://github.com/shelkon
 - https://github.com/Yura-Androshchuk
 - https://github.com/Bandera1
 - https://github.com/smetanskyy
 - https://github.com/KoTuK3
 - https://github.com/lyutko
+
+- https://github.com/IvanBorovets
+- https://github.com/ProfesorProst
+- https://github.com/yuxima
+- https://github.com/ArturSodolskyi
+- https://github.com/Glebhawk
 
 ---
 
