@@ -11,12 +11,12 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class SpecialityToUniversityRepository : ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>
+    public class SpecialtyToUniversityRepository : ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public SpecialityToUniversityRepository(IApplicationDbContext context, IMapper mapper)
+        public SpecialtyToUniversityRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
