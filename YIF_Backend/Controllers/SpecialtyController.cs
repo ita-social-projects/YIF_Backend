@@ -113,7 +113,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<SpecialtyToUniversityResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetSpecialtyDescrriptionsAsync(string id)
+        public async Task<IActionResult> GetSpecialtyDescriptionsAsync(string id)
         {
             var result = await _specialtyService.GetAllSpecialtyDescriptionsById(id);
             _logger.LogInformation("Getting a specialty descriptions");
