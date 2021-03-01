@@ -4,7 +4,6 @@ namespace YIF.Core.Data.Entities
 {
     public class EducationFormToDescription : BaseEntity
     {
-        public string Description { get; set; }
         public string EducationFormId { get; set; }
         public string SpecialtyInUniversityDescriptionId { get; set; }
 

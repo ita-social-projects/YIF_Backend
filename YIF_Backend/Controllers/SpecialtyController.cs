@@ -117,7 +117,7 @@ namespace YIF_Backend.Controllers
         {
             var result = await _specialtyService.GetAllSpecialtyDescriptionsById(id);
             _logger.LogInformation("Getting a specialty descriptions");
-            return Ok(result.Object);
+            return Ok(result);
         }
     }
 }

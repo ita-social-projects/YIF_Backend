@@ -136,16 +136,15 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
-        public async Task<ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>> GetAllSpecialtyDescriptionsById(string id)
+        public async Task<IEnumerable<SpecialtyToUniversityResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
         {
-            var result = new ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>();
             var specialtyDescriptions = await _specialtyToUniversityRepository.GetSpecialtyInUniversityDescriptionsById(id);
             if (specialtyDescriptions.Count() < 1)
             {
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyDescriptionsNotFound"));
             }
-            result.Object = _mapper.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(specialtyDescriptions);
-            return result.Set(true);
+            var result = _mapper.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(specialtyDescriptions);
+            return result;
         }
     }
 }
