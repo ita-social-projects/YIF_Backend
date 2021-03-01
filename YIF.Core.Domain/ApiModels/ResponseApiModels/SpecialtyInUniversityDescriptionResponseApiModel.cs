@@ -9,6 +9,10 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string EducationalProgramLink { get; set; }
         /// <summary>
+        /// Gets or sets description for this description.
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
         /// Navigation property for the exam requirement this description belongs to.
         /// </summary>
         public virtual IEnumerable<ExamRequirementsResponseApiModel> ExamRequirements { get; set; }

@@ -91,6 +91,14 @@ namespace YIF.Core.Domain.Repositories
                       .ThenInclude(e => e.EducationForm)
               .ToListAsync();
 
+            foreach (var item in specialtyToUniversity)
+            {
+                if(item.SpecialtyInUniversityDescription.Description == null)
+                {
+                    item.SpecialtyInUniversityDescription.Description = item.Specialty.Description;
+                }
+            }
+
             return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(specialtyToUniversity);
         }
     }

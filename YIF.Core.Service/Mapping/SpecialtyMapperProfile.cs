@@ -38,12 +38,13 @@ namespace YIF.Core.Service.Mapping
             CreateMap<SpecialtyInUniversityDescriptionDTO, SpecialtyInUniversityDescriptionResponseApiModel>();
 
             CreateMap<SpecialtyToUniversity, SpecialtyToUniversityDTO>();
+
             CreateMap<SpecialtyToUniversityDTO, SpecialtyToUniversityResponseApiModel>()
                 .ForMember(dst => dst.UniversityName, opt => opt.MapFrom(src => src.University.Name))
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
                 .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyInUniversityDescription.EducationalProgramLink))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Specialty.Description))
+                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.SpecialtyInUniversityDescription.Description))
                 .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.SpecialtyInUniversityDescription.ExamRequirements))
                 .ForMember(dst => dst.EducationFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyInUniversityDescription.EducationFormToDescriptions))
                 .ForMember(dst => dst.PaymentFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyInUniversityDescription.PaymentFormToDescriptions));

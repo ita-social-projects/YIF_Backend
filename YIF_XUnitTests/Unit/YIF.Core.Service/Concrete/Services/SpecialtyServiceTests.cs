@@ -184,8 +184,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await _testService.GetAllSpecialtyDescriptionsById("id");
 
             // Assert
-            Assert.True(result.Success);
-            Assert.IsType<ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>>(result.Object);
+            Assert.IsType<SpecialtyToUniversityResponseApiModel>(result);
         }
 
         [Fact]

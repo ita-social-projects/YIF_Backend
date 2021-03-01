@@ -237,9 +237,6 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("SpecialtyInUniversityDescriptionId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id", "EducationFormId", "SpecialtyInUniversityDescriptionId");
 
                     b.HasIndex("EducationFormId");

@@ -6,6 +6,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
     {
         public string Id { get; set; }
         public string EducationalProgramLink { get; set; }
+        public string Description { get; set; }
 
         public virtual ICollection<SpecialtyToUniversityDTO> SpecialtyToUniversities { get; set; }
 

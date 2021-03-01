@@ -10,13 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-<<<<<<< HEAD:YIF.Core.Data/Migrations/20210228133307_init.Designer.cs
-    [Migration("20210228133307_init")]
+    [Migration("20210301181534_init")]
     partial class init
-=======
-    [Migration("20210225140951_AddNew")]
-    partial class AddNew
->>>>>>> dev:YIF.Core.Data/Migrations/20210225140951_AddNew.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -243,9 +238,6 @@ namespace YIF.Core.Data.Migrations
 
                     b.Property<string>("SpecialtyInUniversityDescriptionId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id", "EducationFormId", "SpecialtyInUniversityDescriptionId");
 
@@ -532,7 +524,7 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Decription")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationalProgramLink")

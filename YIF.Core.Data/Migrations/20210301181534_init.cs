@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace YIF.Core.Data.Migrations
 {
-    public partial class AddNew : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -116,12 +116,8 @@ namespace YIF.Core.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-<<<<<<< HEAD:YIF.Core.Data/Migrations/20210228133307_init.cs
-                    EducationalProgramLink = table.Column<string>(nullable: true)
-=======
                     EducationalProgramLink = table.Column<string>(nullable: true),
-                    Decription = table.Column<string>(nullable: true)
->>>>>>> dev:YIF.Core.Data/Migrations/20210225140951_AddNew.cs
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -405,12 +401,7 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     EducationFormId = table.Column<string>(nullable: false),
-<<<<<<< HEAD:YIF.Core.Data/Migrations/20210228133307_init.cs
-                    SpecialtyInUniversityDescriptionId = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true)
-=======
                     SpecialtyInUniversityDescriptionId = table.Column<string>(nullable: false)
->>>>>>> dev:YIF.Core.Data/Migrations/20210225140951_AddNew.cs
                 },
                 constraints: table =>
                 {
