@@ -818,25 +818,6 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public static void SeedPaymentForms(EFDbContext context)
-        {
-            if (context.PaymentForms.Count() == 0)
-            {
-                var paymentForms = new List<PaymentForm>();
-
-                paymentForms.Add(new PaymentForm
-                {
-                    Name = "контракт"
-                });
-                paymentForms.Add(new PaymentForm
-                {
-                    Name = "бюджет"
-                });
-                context.PaymentForms.AddRange(paymentForms);
-                context.SaveChanges();
-            }
-        }
-
 
         public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
         {
@@ -978,7 +959,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region Рівненський державний гуманітарний університет
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
                 directionsToUniversities.AddRange(new List<DirectionToUniversity>
                 {
                     new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,UniversityId = currentUniversityId },
@@ -1072,6 +1053,25 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+        public static void SeedPaymentForms(EFDbContext context)
+        {
+            if (context.PaymentForms.Count() == 0)
+            {
+                var paymentForms = new List<PaymentForm>();
+
+                paymentForms.Add(new PaymentForm
+                {
+                    Name = "контракт"
+                });
+                paymentForms.Add(new PaymentForm
+                {
+                    Name = "бюджет"
+                });
+                context.PaymentForms.AddRange(paymentForms);
+                context.SaveChanges();
+            }
+        }
+
         public static void SeedExams(EFDbContext context)
         {
             if (context.Exams.Count() == 0)
@@ -1123,26 +1123,917 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        //public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
-        //{
-        //    if (context.SpecialtyInUniversityDescriptions.Count() == 0)
-        //    {
-        //        var specialityDescriptions = new List<SpecialtyInUniversityDescription>();
+        public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
+        {
+            if (context.SpecialtyInUniversityDescriptions.Count() == 0)
+            {
+                var specialityDescriptions = new List<SpecialtyInUniversityDescription>();
 
-        //        specialityDescriptions.Add(new SpecialtyInUniversityDescription
-        //        {
-        //            EducationalProgramLink = ""
+                var specialtyToUniversities = context.SpecialtyToUniversities.ToList();
+                var exams = context.Exams.ToList();
+                var educationForms = context.EducationForms.ToList();
+                var paymentForms = context.PaymentForms.ToList();
+                var universities = context.Universities.ToList();
 
-        //        });
-        //        specialityDescriptions.Add(new SpecialtyInUniversityDescription
-        //        {
-        //            Name = "Бюджет"
+                var currentUniversityId = string.Empty;
 
-        //        });
-        //        context.EducationForms.AddRange(specialityDescriptions);
-        //        context.SaveChanges();
-        //    }
-        //}
+                #region Академія внутрішніх військ МВС України
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
+
+                #region Соціологія
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement> 
+                        { 
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Історія України").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Політологія
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Історія України").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Статистика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #endregion
+
+                #region Національний університет "Острозька академія"
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Національний університет \"Острозька академія\"").Id;
+
+                #region Системний аналіз
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Інженерія програмного забезпечення
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Кібербезпека
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Прикладна математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Гідроенергетика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Географія").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #endregion
+
+                #region Національний університет водного господарства та природокористування
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Національний університет водного господарства та природокористування").Id;
+
+                #region Системний аналіз
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.25}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Інженерія програмного забезпечення
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.30}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Метрологія та інформаційно-вимірювальна техніка
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.30},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.25}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Автоматизація та комп’ютерно-інтегровані технології
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Автоматизація та комп’ютерно-інтегровані технології" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.25}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Гідроенергетика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Фізика").Id, MinimumScore = 100, Coefficient = 0.3}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Енергетичне машинобудування
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Енергетичне машинобудування" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.40},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.25}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #endregion
+
+                #region Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука").Id;
+
+                #region Математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.4},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Статистика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #endregion
+
+                #region Київський політехнічний інститут імені Ігоря Сікорського
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
+
+                #region Атомна енергетика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.28},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Фізика").Id, MinimumScore = 100, Coefficient = 0.20}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Теплоенергетика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.28},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Фізика").Id, MinimumScore = 100, Coefficient = 0.20}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Електроенергетика, електротехніка та електромеханіка
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Електроенергетика, електротехніка та електромеханіка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.50},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.20}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Прикладна математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Статистика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Інженерія програмного забезпечення
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Інформаційні системи та технології
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інформаційні системи та технології" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Кібербезпека
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Комп’ютерна інженерія
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Комп’ютерна інженерія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Комп'ютерні науки
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Комп'ютерні науки" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Системний аналіз
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Метрологія та інформаційно-вимірювальна техніка
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Мікро- та наносистемна техніка
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Мікро- та наносистемна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #endregion
+
+                #region Рівненський державний гуманітарний університет
+                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
+
+                #region Атомна енергетика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Теплоенергетика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.25}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Прикладна математика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #region Статистика
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                    new SpecialtyInUniversityDescription
+                    {
+                        EducationalProgramLink = "",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Географія").Id, MinimumScore = 100, Coefficient = 0.3}
+                        },
+                        EducationFormToDescriptions = new List<EducationFormToDescription>
+                        {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                        },
+                        PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                        {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                        }
+                    };
+                #endregion
+                #endregion
+
+                context.SaveChanges();
+            }
+        }
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)
         {
@@ -1505,6 +2396,8 @@ namespace YIF.Core.Data.Seaders
                 await SeederDB.SeedLectures(context, manager);
                 SeederDB.SeedEducationForms(context);
                 SeederDB.SeedPaymentForms(context);
+                SeederDB.SeedExams(context);
+                SeederDB.SeedSpecialtyInUniversityDescription(context);
                 #endregion
 
                 Console.WriteLine("Database seeded.");
