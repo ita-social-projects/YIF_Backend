@@ -115,7 +115,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpecialtyDescrriptionsAsync(string id)
         {
-            var result = await _specialtyService.GetAllSpecialtyDiscriptionsById(id);
+            var result = await _specialtyService.GetAllSpecialtyDescriptionsById(id);
             _logger.LogInformation("Getting a specialty descriptions");
             return Ok(result.Object);
         }

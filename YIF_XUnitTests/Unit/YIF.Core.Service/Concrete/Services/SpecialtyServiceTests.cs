@@ -21,7 +21,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class SpecialtyServiceTests
     {
         private readonly SpecialtyService _testService;
-        private readonly Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+        private readonly Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository = new Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
         private static readonly Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>> _educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
         private static readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
 
@@ -30,7 +30,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
-        private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO() };
+        private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO(), SpecialtyInUniversityDescription = new SpecialtyInUniversityDescriptionDTO() };
         private readonly IEnumerable<SpecialtyDTO> _listSpecialty;
         private readonly IEnumerable<SpecialtyDTO> _blankListSpecialty = new List<SpecialtyDTO>().AsEnumerable();
         private readonly IEnumerable<SpecialtyResponseApiModel> _blankResponse = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel() }.AsEnumerable();
@@ -172,11 +172,36 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _testService.GetSpecialtyById(null));
         }
 
+        //not working
+        [Fact]
+        public async Task GetSpecialtyDescriptionsById_ShouldReturnSpecialtyDescriptions_ById()
+        {
+            // Arrange
+            _specialtyToUniversityRepository.Setup(s => s.GetAll()).ReturnsAsync(new List<SpecialtyToUniversityDTO>());
+            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(It.IsAny<SpecialtyToUniversityDTO>())).Returns(new List<SpecialtyToUniversityResponseApiModel>());
+
+            // Act
+            var result = await _testService.GetAllSpecialtyDescriptionsById("id");
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.IsType<ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>>(result.Object);
+        }
+
+        [Fact]
+        public async Task GetSpecialtyDescriptionsById_ShouldReturnException_IfNotFoundSpecialtyDescriptions()
+        {
+            // Arrange
+            _specialtyToUniversityRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync((SpecialtyToUniversityDTO)null);
+            // Assert
+            await Assert.ThrowsAnyAsync<NotFoundException>(() => _testService.GetAllSpecialtyDescriptionsById(null));
+        }
+
         [Fact]
         public void Dispose_ShouldDisposeRepositories()
         {
             // Arrange
-            var specialtyToUniRepo = new Mock<IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+            var specialtyToUniRepo = new Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
             var educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
             var paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
             var specialtyRepo = new Mock<IRepository<Specialty, SpecialtyDTO>>();

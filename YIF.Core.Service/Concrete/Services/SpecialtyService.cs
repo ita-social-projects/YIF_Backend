@@ -136,7 +136,7 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
-        public async Task<ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>> GetAllSpecialtyDiscriptionsById(string id)
+        public async Task<ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>> GetAllSpecialtyDescriptionsById(string id)
         {
             var result = new ResponseApiModel<IEnumerable<SpecialtyToUniversityResponseApiModel>>();
             var specialtyDescriptions = await _specialtyToUniversityRepository.GetSpecialtyInUniversityDescriptionsById(id);
