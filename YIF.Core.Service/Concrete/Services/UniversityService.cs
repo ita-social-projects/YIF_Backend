@@ -16,8 +16,10 @@ namespace YIF.Core.Service.Concrete.Services
     public class UniversityService : IUniversityService<University>
     {
         private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
-        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionRepository;
+        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
+        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
+        private readonly IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -25,17 +27,22 @@ namespace YIF.Core.Service.Concrete.Services
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
-            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyRepository,
+            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
+            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
+            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
+            IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
             ResourceManager resourceManager)
         {
             _universityRepository = universityRepository;
-            _specialtyRepository = specialtyRepository;
             _directionRepository = directionRepository;
             _graduateRepository = graduateRepository;
+            _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
+            _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
+            _specialtyToUniversityRepository = specialtyToUniversityRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -72,9 +79,33 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
                 // Get all specialties by name
-                var specialties = await _specialtyRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
+                var specialties = await _specialtyToUniversityRepository.Find(x => x.Specialty.Name == filterModel.SpecialtyName);
 
                 filteredUniversities = filteredUniversities.Where(x => specialties.Any(y => y.UniversityId == x.Id));
+            }
+
+            if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
+            {
+                //Filtering for educationFormToDescription that has such EducationForm
+                var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+
+                //From all specialtyToUniversity set which contains educationFormToDescription
+                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
+                var specialtyToUniversity = specialtyToUniversityAll
+                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+
+                filteredUniversities = filteredUniversities.Where(x => specialtyToUniversity.Any(y => y.UniversityId == x.Id));
+            }
+
+            if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
+            {
+                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+
+                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
+                var specialtyToUniversity = specialtyToUniversityAll
+                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+
+                filteredUniversities = filteredUniversities.Where(x => specialtyToUniversity.Any(y => y.UniversityId == x.Id));
             }
 
             return _mapper.Map<IEnumerable<UniversityResponseApiModel>>(filteredUniversities.Distinct().ToList());

@@ -45,6 +45,7 @@ namespace YIF.Core.Domain.Repositories
             var list = _context.SpecialtyToUniversities
                 .Include(x => x.Specialty)
                 .Include(x => x.University)
+                .Include(x => x.SpecialtyInUniversityDescription)
                 .Where(predicate)
                 .ToList();
 
@@ -65,27 +66,9 @@ namespace YIF.Core.Domain.Repositories
         public async Task<IEnumerable<SpecialtyToUniversityDTO>> GetAll()
         {
             var list = await _context.SpecialtyToUniversities
-                .Join(_context.Universities,
-                      su => su.UniversityId,
-                      u => u.Id,
-                      (su, u) => new SpecialtyToUniversity
-                      {
-                          Id = su.Id,
-                          SpecialtyId = su.SpecialtyId,
-                          UniversityId = su.UniversityId,
-                          University = u
-                      })
-                .Join(_context.Specialties,
-                      su => su.SpecialtyId,
-                      s => s.Id,
-                      (su, s) => new SpecialtyToUniversity
-                      {
-                          Id = su.Id,
-                          SpecialtyId = su.SpecialtyId,
-                          UniversityId = su.UniversityId,
-                          University = su.University,
-                          Specialty = s
-                      })
+                .Include(x => x.Specialty)
+                .Include(x => x.University)
+                .Include(x => x.SpecialtyInUniversityDescription)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(list);
