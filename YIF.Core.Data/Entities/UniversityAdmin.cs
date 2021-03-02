@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Entities
 {
@@ -8,13 +10,15 @@ namespace YIF.Core.Data.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        public string UniversityId { get; set; }
-
+        
         [ForeignKey("UniversityId")]
+        public string UniversityId { get; set; }
         public virtual University University { get; set; }
-        /// <summary>
-        /// Link to university moderator
-        /// </summary>
-        public virtual UniversityModerator Moderator { get; set; }     
+
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
+        public virtual DbUser User { get; set; }
+
+        public virtual ICollection<UniversityModerator> Moderators { get; set; }
     }
 }

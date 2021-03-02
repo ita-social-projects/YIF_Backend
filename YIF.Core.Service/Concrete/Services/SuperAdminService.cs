@@ -104,7 +104,6 @@ namespace YIF.Core.Service.Concrete.Services
 
             UniversityModerator toAdd = new UniversityModerator
             {
-                UniversityId = university.Id,
                 UserId = dbUser.Id,
                 AdminId = admin.Id
             };

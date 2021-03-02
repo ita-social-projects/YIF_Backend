@@ -2183,7 +2183,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
             }
         }
-
+        
         public async static Task SeedUniversityModerators(EFDbContext context, UserManager<DbUser> userManager)
         {
             if (context.UniversityModerators.Count() == 0)

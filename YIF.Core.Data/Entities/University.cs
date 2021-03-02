@@ -23,10 +23,6 @@ namespace YIF.Core.Data.Entities
         /// </summary>
         public virtual ICollection<UniversityAdmin> Admins { get; set; }
         /// <summary>
-        /// List of university moderators
-        /// </summary>
-        public virtual ICollection<UniversityModerator> Moderators { get; set; }
-        /// <summary>
         /// List of university lectures
         /// </summary>
         public virtual ICollection<Lecture> Lectures { get; set; }
