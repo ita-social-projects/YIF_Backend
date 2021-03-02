@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210228221633_AdjustedName")]
-    partial class AdjustedName
+    [Migration("20210301181534_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -954,7 +954,7 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany()
+                        .WithMany("SpecialtyToUniversities")
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")

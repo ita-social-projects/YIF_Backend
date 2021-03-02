@@ -7,10 +7,9 @@ namespace YIF.Core.Data.Entities
         public string EducationalProgramLink { get; set; }
         public string Description { get; set; }
 
-        public ICollection<ExamRequirement> ExamRequirements { get; set; }
-
-        public ICollection<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
-
-        public ICollection<EducationFormToDescription> EducationFormToDescriptions { get; set; }
+        public virtual ICollection<SpecialtyToUniversity> SpecialtyToUniversities { get; set; }
+        public virtual ICollection<ExamRequirement> ExamRequirements { get; set; }
+        public virtual ICollection<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
+        public virtual ICollection<EducationFormToDescription> EducationFormToDescriptions { get; set; }
     }
 }

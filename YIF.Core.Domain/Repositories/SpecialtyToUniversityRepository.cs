@@ -11,12 +11,12 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class SpecialityToUniversityRepository : IRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>
+    public class SpecialtyToUniversityRepository : ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public SpecialityToUniversityRepository(IApplicationDbContext context, IMapper mapper)
+        public SpecialtyToUniversityRepository(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -72,6 +72,34 @@ namespace YIF.Core.Domain.Repositories
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(list);
+        }
+        public async Task<IEnumerable<SpecialtyToUniversityDTO>> GetSpecialtyInUniversityDescriptionsById(string id)
+        {
+            var specialtyToUniversity = await _context.SpecialtyToUniversities
+              .Where(su => su.SpecialtyId == id)
+              .Where(sdi => sdi.SpecialtyInUniversityDescriptionId != null)
+              .Include(u => u.University)
+              .Include(s => s.Specialty)
+              .Include(sd => sd.SpecialtyInUniversityDescription)
+              .ThenInclude(e => e.ExamRequirements)
+                  .ThenInclude(e => e.Exam)
+              .Include(sd => sd.SpecialtyInUniversityDescription)
+                  .ThenInclude(e => e.PaymentFormToDescriptions)
+                      .ThenInclude(e => e.PaymentForm)
+              .Include(sd => sd.SpecialtyInUniversityDescription)
+                  .ThenInclude(e => e.EducationFormToDescriptions)
+                      .ThenInclude(e => e.EducationForm)
+              .ToListAsync();
+
+            foreach (var item in specialtyToUniversity)
+            {
+                if(item.SpecialtyInUniversityDescription.Description == null)
+                {
+                    item.SpecialtyInUniversityDescription.Description = item.Specialty.Description;
+                }
+            }
+
+            return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(specialtyToUniversity);
         }
     }
 }

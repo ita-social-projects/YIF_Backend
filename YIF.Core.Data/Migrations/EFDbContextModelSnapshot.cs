@@ -952,7 +952,7 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany()
+                        .WithMany("SpecialtyToUniversities")
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
@@ -7,11 +6,14 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
     {
         public string Id { get; set; }
         public string EducationalProgramLink { get; set; }
+        public string Description { get; set; }
 
-        public ICollection<ExamRequirementDTO> ExamRequirements { get; set; }
+        public virtual ICollection<SpecialtyToUniversityDTO> SpecialtyToUniversities { get; set; }
 
-        public ICollection<PaymentFormToDescriptionDTO> PaymentFormToDescriptions { get; set; }
+        public virtual ICollection<ExamRequirementDTO> ExamRequirements { get; set; }
 
-        public ICollection<EducationFormToDescriptionDTO> EducationFormToDescriptions { get; set; }
+        public virtual ICollection<PaymentFormToDescriptionDTO> PaymentFormToDescriptions { get; set; }
+
+        public virtual ICollection<EducationFormToDescriptionDTO> EducationFormToDescriptions { get; set; }
     }
 }
