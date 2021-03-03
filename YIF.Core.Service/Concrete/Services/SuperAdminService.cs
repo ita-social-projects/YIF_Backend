@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -21,6 +22,7 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SuperAdminService : ISuperAdminService
     {
+        private readonly IUserService<DbUser> _userService;
         private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
@@ -36,6 +38,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ResourceManager _resourceManager;
 
         public SuperAdminService(
+            IUserService<DbUser> userService,
             IUserRepository<DbUser, UserDTO> userRepository,
             UserManager<DbUser> userManager,
             SignInManager<DbUser> signInManager,
@@ -50,6 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
             ITokenRepository<TokenDTO> tokenRepository,
             ResourceManager resourceManager)
         {
+            _userService = userService;
             _userRepository = userRepository;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -93,7 +97,7 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = universityAdminModel.Email
             };
 
-            var registerResult = await _userRepository.Create(dbUser, null, universityAdminModel.Password, ProjectRoles.UniversityAdmin);
+            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.UniversityAdmin);
             if (registerResult != string.Empty)
             {                
                 throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
@@ -110,29 +114,29 @@ namespace YIF.Core.Service.Concrete.Services
             };
             await _universityModeratorRepository.AddUniModerator(toAdd);
 
+            return null;
+            ////to do change logic and response model
 
-            //to do change logic and response model
 
+            //var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
+            //var refreshToken = _jwtService.CreateRefreshToken();
 
-            var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
-            var refreshToken = _jwtService.CreateRefreshToken();
+            //var tokenDb = await _tokenRepository.FindUserToken(dbUser.Id);
+            //if (tokenDb == null)
+            //{
+            //    tokenDb = new TokenDTO
+            //    {
+            //        Id = dbUser.Id,
+            //        RefreshToken = refreshToken,
+            //        RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
+            //    };
+            //    await _tokenRepository.AddUserToken(tokenDb);
+            //}
+            //else await _tokenRepository.UpdateUserToken(dbUser.Id, refreshToken);
 
-            var tokenDb = await _tokenRepository.FindUserToken(dbUser.Id);
-            if (tokenDb == null)
-            {
-                tokenDb = new TokenDTO
-                {
-                    Id = dbUser.Id,
-                    RefreshToken = refreshToken,
-                    RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
-                };
-                await _tokenRepository.AddUserToken(tokenDb);
-            }
-            else await _tokenRepository.UpdateUserToken(dbUser.Id, refreshToken);
+            //await _signInManager.SignInAsync(dbUser, isPersistent: false);
 
-            await _signInManager.SignInAsync(dbUser, isPersistent: false);
-
-            return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
+            //return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel)
@@ -228,18 +232,59 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel uniPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel universityPostApiModel, HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
-            var ch = await _universityRepository.GetByName(uniPostApiModel.Name);
+            var ch = await _universityRepository.GetByName(universityPostApiModel.Name);
             if (ch != null)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("UniversityWithSuchNameAlreadyExists"));
             }
             
-            await _universityRepository.AddUniversity(_mapper.Map<University>(uniPostApiModel));
+            var university = await _universityRepository.AddUniversity(_mapper.Map<University>(universityPostApiModel));
 
+            var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
+            if (adminCheck != null)
+            {
+                throw new InvalidOperationException(_resourceManager.GetString("AdministratorOfThisSchoolAlreadyExists"));
+            }
+
+            var searchUser = _userManager.FindByEmailAsync(universityPostApiModel.UniversityAdminEmail);
+            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
+            {
+                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
+            }
+
+            var dbUser = new DbUser
+            {
+                Email = universityPostApiModel.UniversityAdminEmail,
+                UserName = universityPostApiModel.UniversityAdminEmail
+            };
+
+            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.UniversityAdmin);
+            if (registerResult != string.Empty)
+            {
+                throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+            }
+
+            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
+            var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
+
+            UniversityModerator toAdd = new UniversityModerator
+            {
+                UniversityId = university.Id,
+                UserId = dbUser.Id,
+                AdminId = admin.Id
+            };
+            await _universityModeratorRepository.AddUniModerator(toAdd);
+
+            //
+            var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(universityPostApiModel.UniversityAdminEmail, request);
+            if (!resultResetPasswordByEmail.Success)
+            {
+                throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+            }
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("UniversityAdded")), true);
         }
 

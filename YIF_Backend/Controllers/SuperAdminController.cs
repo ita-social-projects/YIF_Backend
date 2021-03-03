@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Service.Concrete.Services;
+
 namespace YIF_Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -115,33 +117,20 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
         [HttpPost("AddUniversity")]
-        public async Task<IActionResult> AddUniversity(
-            string Name,
-            string Abbreviation,
-            string Site,
-            string Address,
-            string Phone,
-            string Email,
-            string Description,
-            float Lat,
-            float Lon)
+        public async Task<IActionResult> AddUniversity([FromBody] UniversityPostApiModel model)
         {
-            var universityPostApiModel = new UniversityPostApiModel
-            {
-                Name = Name,
-                Abbreviation = Abbreviation,
-                Site = Site,
-                Address = Address,
-                Phone = Phone,
-                Email = Email,
-                Description = Description,
-                Lat = Lat,
-                Lon = Lon,
-            };
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
 
-            var result = await _superAdminService.AddUniversity(universityPostApiModel);
-            return Created(string.Empty, result.Object);
+            ImageBase64Validator validator = new ImageBase64Validator();
+            var validResults = validator.Validate(model.ImageApiModel);
+
+            if (!validResults.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
+
+            var result = await _superAdminService.AddUniversity(model, Request);
+            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
+
 
         /// <summary>
         /// Get all UniAdmins.
