@@ -100,11 +100,11 @@ namespace YIF_Backend
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "YIF API",
+                    Title = "YITF API",
                     Description = "A project ASP.NET Core Web API",
                     Contact = new OpenApiContact
                     {
-                        Name = "Team YIF",
+                        Name = "Team YITF",
                         Email = "yifteam2020@gmail.com",
                         Url = new Uri("https://github.com/ita-social-projects/YIF_Backend/blob/dev/README.md")
                     }
