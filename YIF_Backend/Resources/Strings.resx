@@ -180,6 +180,9 @@
   <data name="RefreshTokenExpired" xml:space="preserve">
     <value>Термін дії рефреш-токена закінчився</value>
   </data>
+  <data name="ResetPasswordByEmailFailed" xml:space="preserve">
+    <value>Не вдалося надіслати лист користувачу</value>
+  </data>
   <data name="RestoreAccount" xml:space="preserve">
     <value>Відновити обліковий запис</value>
   </data>

@@ -8,7 +8,7 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<string> AddUniversity(University university);
+        Task<K> AddUniversity(University university);
         Task<K> GetByName(string name);
         Task AddFavorite(UniversityToGraduate universityToGraduate);
         Task RemoveFavorite(UniversityToGraduate universityToGraduate);
