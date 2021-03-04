@@ -40,7 +40,7 @@ namespace YIF.Core.Service.Mapping
             CreateMap<SpecialtyToUniversity, SpecialtyToUniversityDTO>();
 
             CreateMap<SpecialtyToUniversityDTO, SpecialtyToUniversityResponseApiModel>()
-                .ForMember(dst => dst.UniversityName, opt => opt.MapFrom(src => src.University.Name))
+                .ForMember(dst => dst.UniversityAbbreviation, opt => opt.MapFrom(src => src.University.Abbreviation))
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
                 .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyInUniversityDescription.EducationalProgramLink))

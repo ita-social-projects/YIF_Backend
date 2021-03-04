@@ -5,6 +5,14 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
     public class SpecialtyToUniversityResponseApiModel
     {
         /// <summary>
+        /// Gets or sets the specialty id to which this specialty to university belongs.
+        /// </summary>
+        public string SpecialtyId { get; set; }
+        /// <summary>
+        /// Gets or sets the university id to which this specialty to university belongs.
+        /// </summary>
+        public string UniversityId { get; set; }
+        /// <summary>
         /// Gets or sets the specialty name to which this specialty to university belongs.
         /// </summary>
         public string SpecialtyName { get; set; }
@@ -13,9 +21,9 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string SpecialtyCode { get; set; }
         /// <summary>
-        /// Gets or sets the university name to which this specialty to university belongs.
+        /// Gets or sets the university abbreviation to which this specialty to university belongs.
         /// </summary>
-        public string UniversityName { get; set; }
+        public string UniversityAbbreviation { get; set; }
         /// <summary>
         /// Gets or sets the education program link to which this specialty to university belongs.
         /// </summary>
