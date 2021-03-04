@@ -10,7 +10,8 @@ namespace YIF.Core.Data.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        
+        public bool IsBanned { get; set; } = false;
+
         [ForeignKey("UniversityId")]
         public string UniversityId { get; set; }
         public virtual University University { get; set; }
