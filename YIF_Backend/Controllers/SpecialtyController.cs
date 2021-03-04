@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -118,6 +119,46 @@ namespace YIF_Backend.Controllers
             var result = await _specialtyService.GetAllSpecialtyDescriptionsById(id);
             _logger.LogInformation("Getting a specialty descriptions");
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Add specialty with university to favorite.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="201">Returns if the specialty with university has been successfully added to the favorites list</response>
+        /// <response code="400">If id is not valid or slecialty with university has already been added to favorites</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not graduate</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("Favorites")]
+        [Authorize(Roles = "Graduate")]
+        public async Task<IActionResult> AddUniversityToFavorite(string specialtyId, string universityId)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            await _specialtyService.AddSpecialtyAndUniversityToFavorite(specialtyId, universityId, userId);
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", null);
+        }
+
+        /// <summary>
+        /// Delete specialty with university from favorite.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if the specialty with university has been successfully deleted from the favorites list</response>
+        /// <response code="400">If id is not valid or specialty with university has not been added to favorites</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not graduate</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("Favorites")]
+        [Authorize(Roles = "Graduate")]
+        public async Task<IActionResult> DeleteUniversityFromFavorite(string specialtyId, string universityId)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            await _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(specialtyId, universityId, userId);
+            return NoContent();
         }
     }
 }

@@ -13,6 +13,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilter(FilterApiModel filterModel);
         Task<IEnumerable<string>> GetSpecialtiesNamesByFilter(FilterApiModel filterModel);
         Task<IEnumerable<SpecialtyToUniversityResponseApiModel>> GetAllSpecialtyDescriptionsById(string id);
+        Task AddSpecialtyAndUniversityToFavorite(string specialtyId, string universityId, string userId);
+        Task DeleteSpecialtyAndUniversityFromFavorite(string specialtyId, string universityId, string userId);
 
     }
 }

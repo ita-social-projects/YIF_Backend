@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace YIF.Core.Data.Entities
 {
@@ -11,5 +12,6 @@ namespace YIF.Core.Data.Entities
 
         [ForeignKey("DirectionId")]
         public virtual Direction Direction { get; set; }
+        public virtual ICollection<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
     }
 }

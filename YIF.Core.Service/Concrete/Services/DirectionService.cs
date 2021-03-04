@@ -17,7 +17,7 @@ namespace YIF.Core.Service.Concrete.Services
     public class DirectionService : IDirectionService
     {
         private readonly IRepository<Direction, DirectionDTO> _directionRepository;
-        private readonly IRepository<Specialty, SpecialtyDTO> _specialtyRepository;
+        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionToUniversityRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -25,7 +25,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public DirectionService(
             IRepository<Direction, DirectionDTO> directionRepository,
-            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionToUniversityRepository,
             IMapper mapper,
             IPaginationService paginationService,

@@ -192,8 +192,17 @@
   <data name="SpecialtiesNotFound" xml:space="preserve">
     <value>Спеціальностей немає</value>
   </data>
+  <data name="SpecialtyAndUniversityIsAlreadyFavorite" xml:space="preserve">
+    <value>Спеціальність і університет уже в улюбленому</value>
+  </data>
+  <data name="SpecialtyAndUniversityIsNotFavorite" xml:space="preserve">
+    <value>Спеціальності і університету немає в улюбленому</value>
+  </data>
   <data name="SpecialtyDescriptionsNotFound" xml:space="preserve">
     <value>Описів спеціальності не  знайдено</value>
+  </data>
+  <data name="SpecialtyNotFound" xml:space="preserve">
+    <value>Спеціальності не знайдено</value>
   </data>
   <data name="SpecialtyWithSuchIdNotFound" xml:space="preserve">
     <value>Спеціальність не знайдена із таким id</value>
