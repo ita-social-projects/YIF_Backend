@@ -36,29 +36,16 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<string> Delete(string adminId)
         {
-            var universityAdmin = _dbContext.Users.Where(u => u.IsDeleted == false)
-                .Join(_dbContext.UniversityModerators,
-                      user => user.Id,
-                      moderator => moderator.UserId,
-                      (user, moderator) => new UniversityModerator
-                      {
-                          UserId = user.Id,
-                          AdminId = moderator.AdminId
-                      })
-                .Join(_dbContext.UniversityAdmins.Where(a => a.Id == adminId),
-                      moderator => moderator.AdminId,
-                      admin => admin.Id,
-                      (moderator, admin) => new UniversityAdmin
-                      {
-                          Id = moderator.UserId,
-                          UniversityId = admin.UniversityId
-                      });
+            var universityAdmin = _dbContext.UniversityAdmins
+            .Where(admin => admin.Id == adminId && admin.User.IsDeleted == false)
+            .Include(x => x.University)
+            .Include(y => y.User);
 
             if (universityAdmin.Count() == 0)
             {
                 return null;
             }
-            var user = await _userManager.FindByIdAsync(universityAdmin.First().Id);
+            var user = await _userManager.FindByIdAsync(universityAdmin.First().UserId);
             user.IsDeleted = true;
             await _userManager.UpdateAsync(user);
             await _dbContext.SaveChangesAsync();

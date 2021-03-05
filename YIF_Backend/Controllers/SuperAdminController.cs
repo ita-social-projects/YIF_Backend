@@ -68,7 +68,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Delete University admin(sets its asp.net user IsDeleted to true.
+        /// Delete University admin (sets its asp.net user IsDeleted to true).
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
