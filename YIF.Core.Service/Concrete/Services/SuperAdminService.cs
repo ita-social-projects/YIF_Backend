@@ -216,6 +216,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            string ch = await _universityAdminRepository.Disable(schoolUniAdminDeleteApi.Id);
+            if (ch == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {schoolUniAdminDeleteApi.Id}");
+            }
+            return result.Set(new DescriptionResponseApiModel(ch), true);
+        }
+
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
         {            
             var result = new ResponseApiModel<DescriptionResponseApiModel>();

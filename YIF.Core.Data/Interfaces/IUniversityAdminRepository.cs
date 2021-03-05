@@ -9,6 +9,7 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<string> AddUniAdmin(UniversityAdmin universityAdmin);
         Task<string> Delete(string adminId);
+        Task<string> Disable(string adminId);
         Task<K> GetById(string id);
         Task<K> GetByUniversityId(string universityId);
         Task<K> GetByUniversityIdWithoutIsDeletedCheck(string universityId);

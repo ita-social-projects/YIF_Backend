@@ -86,6 +86,24 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Disable University admin (sets its University Admin IsBanned to true).
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPut("DisableUniversityAdmin")]
+        public async Task<IActionResult> DisableUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
+            var result = await _superAdminService.DisableUniversityAdmin(model);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
         /// Delete School admin(sets its asp.net user IsDeleted to true.
         /// </summary>
         /// <returns>Success message</returns>
