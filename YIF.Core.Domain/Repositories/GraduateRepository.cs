@@ -63,6 +63,7 @@ namespace YIF.Core.Domain.Repositories
         public async Task<GraduateDTO> GetByUserId(string userId)
         {
             var graduate = await _context.Graduates
+                .AsNoTracking()
                 .Where(g => g.UserId.Equals(userId))
                 .FirstOrDefaultAsync();
             return _mapper.Map<GraduateDTO>(graduate);

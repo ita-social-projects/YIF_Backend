@@ -13,5 +13,6 @@ namespace YIF.Core.Data.Interfaces
         Task AddFavorite(UniversityToGraduate universityToGraduate);
         Task RemoveFavorite(UniversityToGraduate universityToGraduate);
         Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
+        Task<bool> ContainsById(string id);
     }
 }

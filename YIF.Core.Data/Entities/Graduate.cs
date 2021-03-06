@@ -25,5 +25,7 @@ namespace YIF.Core.Data.Entities
         /// List of favorite universities
         /// </summary>
         public virtual ICollection<UniversityToGraduate> UniversityGraduates { get; set; }
+        public virtual ICollection<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
+
     }
 }

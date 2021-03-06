@@ -34,5 +34,7 @@ namespace YIF.Core.Data.Entities
         /// List of graduates who liked the university
         /// </summary>
         public virtual ICollection<UniversityToGraduate> UniversityGraduates { get; set; }
+        public virtual ICollection<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
+
     }
 }

@@ -18,7 +18,9 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
         private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
         private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
-        private readonly IRepository<Specialty, SpecialtyDTO> _specialtyRepository;
+        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
+        private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
+        private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
@@ -26,7 +28,9 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
             IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
-            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
+            IUniversityRepository<University, UniversityDTO> universityRepository,
+            IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
@@ -34,6 +38,8 @@ namespace YIF.Core.Service.Concrete.Services
             _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
             _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
             _specialtyRepository = specialtyRepository;
+            _universityRepository = universityRepository;
+            _graduateRepository = graduateRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
         }
@@ -145,6 +151,64 @@ namespace YIF.Core.Service.Concrete.Services
             }
             var result = _mapper.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(specialtyDescriptions);
             return result;
+        }
+        public async Task AddSpecialtyAndUniversityToFavorite(string specialtyId,string universityId, string userId)
+        {
+            var graduate = await _graduateRepository.GetByUserId(userId);
+
+            var entity = new SpecialtyToUniversityToGraduate()
+            {
+                SpecialtyId = specialtyId,
+                UniversityId = universityId,
+                GraduateId = graduate.Id
+            };
+
+            var favorites = await _specialtyToUniversityRepository.FavoriteContains(entity);
+            var university = await _universityRepository.ContainsById(universityId);
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+
+            if (favorites == true)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndUniversityIsAlreadyFavorite"));
+
+            if (graduate == null)
+                throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
+
+            if (university == false)
+                throw new BadRequestException(_resourceManager.GetString("UniversityNotFound"));
+
+            if (specialty == false)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            await _specialtyToUniversityRepository.AddFavorite(entity);
+        }
+        public async Task DeleteSpecialtyAndUniversityFromFavorite(string specialtyId ,string universityId, string userId)
+        {
+            var graduate = await _graduateRepository.GetByUserId(userId);
+
+            var entity = new SpecialtyToUniversityToGraduate()
+            {
+                SpecialtyId = specialtyId,
+                UniversityId = universityId,
+                GraduateId = graduate.Id
+            };
+
+            var favorites = await _specialtyToUniversityRepository.FavoriteContains(entity);
+            var university = await _universityRepository.ContainsById(universityId);
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+
+            if (favorites == false)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndUniversityIsNotFavorite"));
+
+            if (graduate == null)
+                throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
+
+            if (university == false)
+                throw new BadRequestException(_resourceManager.GetString("UniversityNotFound"));
+
+            if (specialty == false)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            await _specialtyToUniversityRepository.RemoveFavorite(entity);
         }
     }
 }

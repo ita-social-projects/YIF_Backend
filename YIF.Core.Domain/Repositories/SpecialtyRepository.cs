@@ -11,7 +11,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class SpecialtyRepository : IRepository<Specialty, SpecialtyDTO>
+    public class SpecialtyRepository : ISpecialtyRepository<Specialty, SpecialtyDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -69,6 +69,18 @@ namespace YIF.Core.Domain.Repositories
             }
 
             return null;
+        }
+
+        public async Task<bool> ContainsById(string id)
+        {
+            var result = await _context.Specialties
+                          .AsNoTracking()
+                          .Where(x => x.Id == id)
+                          .FirstOrDefaultAsync();
+
+            if (result != null)
+                return true;
+            return false;
         }
     }
 }

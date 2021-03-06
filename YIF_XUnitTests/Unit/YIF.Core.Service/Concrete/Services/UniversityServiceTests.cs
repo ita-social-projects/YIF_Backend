@@ -22,7 +22,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private static readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityRepository = new Mock<IUniversityRepository<University, UniversityDTO>>();
-        private static readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
         private static readonly Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>> _educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
         private static readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
         private static readonly Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository = new Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
@@ -33,7 +32,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         private static readonly UniversityService universityService = new UniversityService(
             _universityRepository.Object,
-            _specialtyRepository.Object,
             _directionRepository.Object,
             _educationFormToDescriptionRepository.Object,
             _paymentFormToDescriptionRepository.Object,

@@ -34,6 +34,8 @@ namespace YIF.Core.Data.Interfaces
         DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
         DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
         DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
+        DbSet<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
+
 
         Task<int> SaveChangesAsync();
         int SaveChanges();

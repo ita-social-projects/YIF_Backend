@@ -22,7 +22,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private readonly IDirectionService _directionService;
         private readonly Mock<IRepository<Direction, DirectionDTO>> _repositoryDirection;
-        private readonly Mock<IRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
+        private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>> _directionToUniversityRepository;
         private readonly Mock<IMapper> _mapper;
         private readonly Mock<IPaginationService> _paginationService;
@@ -31,7 +31,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public DirectionServiceTests()
         {
             _repositoryDirection = new Mock<IRepository<Direction, DirectionDTO>>();
-            _specialtyRepository = new Mock<IRepository<Specialty, SpecialtyDTO>>();
+            _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
             _directionToUniversityRepository = new Mock<IRepository<DirectionToUniversity, DirectionToUniversityDTO>>();
             _mapper = new Mock<IMapper>();
             _paginationService = new Mock<IPaginationService>();

@@ -27,7 +27,6 @@ namespace YIF.Core.Service.Concrete.Services
 
         public UniversityService(
             IUniversityRepository<University, UniversityDTO> universityRepository,
-            IRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionRepository,
             IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,

@@ -101,5 +101,28 @@ namespace YIF.Core.Domain.Repositories
 
             return _mapper.Map<IEnumerable<SpecialtyToUniversityDTO>>(specialtyToUniversity);
         }
+        public async Task AddFavorite(SpecialtyToUniversityToGraduate specialtyToUniversityToGraduate)
+        {
+            await _context.SpecialtyToUniversityToGraduates.AddAsync(specialtyToUniversityToGraduate);
+            await _context.SaveChangesAsync();
+        }
+        public async Task RemoveFavorite(SpecialtyToUniversityToGraduate specialtyToUniversityToGraduate)
+        {
+            _context.SpecialtyToUniversityToGraduates.Remove(specialtyToUniversityToGraduate);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<bool> FavoriteContains(SpecialtyToUniversityToGraduate specialtyToUniversityToGraduate)
+        {
+            var result = await _context.SpecialtyToUniversityToGraduates
+                .AsNoTracking()
+                .Where(x => x.SpecialtyId == specialtyToUniversityToGraduate.SpecialtyId)
+                .Where(x => x.UniversityId == specialtyToUniversityToGraduate.UniversityId)
+                .Where(x => x.GraduateId == specialtyToUniversityToGraduate.GraduateId)
+                .FirstOrDefaultAsync();
+
+            if (result != null)
+                return true;
+            return false;
+        }
     }
 }

@@ -66,7 +66,7 @@ namespace YIF_Backend
             services.AddTransient<IUserProfileRepository<UserProfile, UserProfileDTO>, UserProfileRepository>();
             services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
             services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
-            services.AddTransient<IRepository<Specialty, SpecialtyDTO>, SpecialtyRepository>();
+            services.AddTransient<ISpecialtyRepository<Specialty, SpecialtyDTO>, SpecialtyRepository>();
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
             services.AddTransient<IRepository<DirectionToUniversity, DirectionToUniversityDTO>, DirectionToUniversityRepository>();
             services.AddTransient<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>, SpecialtyToUniversityRepository>();

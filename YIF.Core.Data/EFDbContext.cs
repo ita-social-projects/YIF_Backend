@@ -45,6 +45,8 @@ namespace YIF.Core.Data
         public  DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
         public DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
         public DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
+        public DbSet<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
+
         #endregion
 
         public async Task<int> SaveChangesAsync()
@@ -171,6 +173,27 @@ namespace YIF.Core.Data
 
             builder.Entity<SpecialtyToGraduate>()
                 .HasKey(c => new { c.Id, c.GraduateId, c.SpecialtyId });
+
+            builder.Entity<SpecialtyToUniversityToGraduate>()
+                .HasKey(k => new { k.SpecialtyId, k.UniversityId, k.GraduateId });
+
+            builder.Entity<SpecialtyToUniversityToGraduate>()
+                .HasOne(x => x.Specialty)
+                .WithMany(x => x.SpecialtyToUniversityToGraduates)
+                .HasForeignKey(x => x.SpecialtyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SpecialtyToUniversityToGraduate>()
+               .HasOne(x => x.University)
+               .WithMany(x => x.SpecialtyToUniversityToGraduates)
+               .HasForeignKey(x => x.UniversityId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SpecialtyToUniversityToGraduate>()
+               .HasOne(x => x.Graduate)
+               .WithMany(x => x.SpecialtyToUniversityToGraduates)
+               .HasForeignKey(x => x.GraduateId)
+               .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
 

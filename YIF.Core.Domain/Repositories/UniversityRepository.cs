@@ -108,5 +108,17 @@ namespace YIF.Core.Domain.Repositories
             _context.UniversitiesToGraduates.Remove(universityToGraduate);
             await _context.SaveChangesAsync();
         }
+        public async Task<bool> ContainsById(string id)
+        {
+            var result = await _context.Universities
+                .AsNoTracking()
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (result != null)
+                return true;
+            return false;
+        }
+
     }
 }
