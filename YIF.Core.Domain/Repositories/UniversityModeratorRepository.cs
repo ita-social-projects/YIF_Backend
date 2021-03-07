@@ -48,7 +48,6 @@ namespace YIF.Core.Domain.Repositories
             var moderators = await _dbContext.UniversityModerators
                 .Include(x => x.User)
                 .Include(x => x.Admin)
-                .Include(x => x.University)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<UniversityModeratorDTO>>(moderators.AsEnumerable());

@@ -104,7 +104,6 @@ namespace YIF.Core.Service.Concrete.Services
 
             UniversityModerator toAdd = new UniversityModerator
             {
-                UniversityId = university.Id,
                 UserId = dbUser.Id,
                 AdminId = admin.Id
             };
@@ -247,10 +246,6 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>();
             var admins = await _universityAdminRepository.GetAllUniAdmins();
-            if (admins.Count() < 1)
-            {
-                throw new NotFoundException(_resourceManager.GetString("AdminsNotFound"));
-            }
             result.Object = _mapper.Map<IEnumerable<UniversityAdminResponseApiModel>>(admins);
             return result.Set(true);
         }

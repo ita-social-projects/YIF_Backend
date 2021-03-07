@@ -22,6 +22,7 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dto => dto.Roles, opt => opt.MapFrom<GetRolesResolver>());
             CreateMap<UserDTO, DbUser>().AfterMap<SetRolesResolver>();
             CreateMap<UserDTO, UserApiModel>().ReverseMap();
+            CreateMap<UserDTO, UserForUniversityAdminResponseApiModel>();
 
             CreateMap<DbUser, UserProfileDTO>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserProfile == null ? "unknown" : src.UserProfile.Name))

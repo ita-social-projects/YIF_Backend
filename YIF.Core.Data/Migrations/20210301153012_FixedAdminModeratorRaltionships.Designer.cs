@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210301153012_FixedAdminModeratorRaltionships")]
+    partial class FixedAdminModeratorRaltionships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,9 +524,6 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EducationalProgramLink")
                         .HasColumnType("nvarchar(max)");
 
@@ -578,26 +577,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasIndex("UniversityId");
 
                     b.ToTable("SpecialtyToUniversities");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversityToGraduate", b =>
-                {
-                    b.Property<string>("SpecialtyId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UniversityId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("GraduateId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("SpecialtyId", "UniversityId", "GraduateId");
-
-                    b.HasIndex("GraduateId");
-
-                    b.HasIndex("UniversityId");
-
-                    b.ToTable("SpecialtyToUniversityToGraduates");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
@@ -686,9 +665,6 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsBanned")
-                        .HasColumnType("bit");
 
                     b.Property<string>("UniversityId")
                         .HasColumnType("nvarchar(450)");
@@ -973,32 +949,11 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany("SpecialtyToUniversities")
+                        .WithMany()
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany()
-                        .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversityToGraduate", b =>
-                {
-                    b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
-                        .WithMany("SpecialtyToUniversityToGraduates")
-                        .HasForeignKey("GraduateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
-                        .WithMany("SpecialtyToUniversityToGraduates")
-                        .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("YIF.Core.Data.Entities.University", "University")
-                        .WithMany("SpecialtyToUniversityToGraduates")
                         .HasForeignKey("UniversityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

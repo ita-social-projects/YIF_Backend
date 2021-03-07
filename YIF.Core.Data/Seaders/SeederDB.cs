@@ -988,46 +988,70 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-
-
-        public static void SeedUniversityAdmins(EFDbContext context)
+        public async static Task SeedUniversityAdmins(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if(context.UniversityAdmins.Count() == 0)
+            if (context.UniversityAdmins.Count() == 0)
             {
                 var admins = new List<UniversityAdmin>();
                 string currentUniversity = string.Empty;
                 var universities = context.Universities.ToList();
 
                 #region НУВГП
-                currentUniversity = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
-
-                admins.Add(new UniversityAdmin
                 {
-                    UniversityId = currentUniversity
-                });
+                    currentUniversity = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
+                    var dbUser = new DbUser
+                    {
+                        Email = "nuweeAdmin@gmail.com",
+                        UserName = "NuweeAdmin",
+                        PhoneNumber = "+380-31-415-9265"
+                    };
+                    var universityAdmin = new UniversityAdmin
+                    {
+                        UniversityId = currentUniversity,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityAdmin);
+                }
                 #endregion
 
                 #region КПІ
                 currentUniversity = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
-
-                admins.Add(new UniversityAdmin
                 {
-                    UniversityId = currentUniversity
-                });
+                    currentUniversity = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                    var dbUser = new DbUser
+                    {
+                        Email = "kpiAdmin@gmail.com",
+                        UserName = "kpiAdmin",
+                        PhoneNumber = "+380-31-415-9266"
+                    };
+                    var universityAdmin = new UniversityAdmin
+                    {
+                        UniversityId = currentUniversity,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityAdmin);
+                }
                 #endregion
 
                 #region АВВУ
                 currentUniversity = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
-
-                admins.Add(new UniversityAdmin
                 {
-                    UniversityId = currentUniversity
-                });
+                    currentUniversity = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
+                    var dbUser = new DbUser
+                    {
+                        Email = "naifAdmin@gmail.com",
+                        UserName = "naifAdmin",
+                        PhoneNumber = "+380-31-415-9267"
+                    };
+                    var universityAdmin = new UniversityAdmin
+                    {
+                        UniversityId = currentUniversity,
+                        User = dbUser
+                    };
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityAdmin);
+                }
                 #endregion
-
-                context.UniversityAdmins.AddRange(admins);
-                context.SaveChanges();
-            }         
+            }
         }
 
         public static void SeedEducationForms(EFDbContext context)
@@ -2183,7 +2207,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
             }
         }
-
+        
         public async static Task SeedUniversityModerators(EFDbContext context, UserManager<DbUser> userManager)
         {
             if (context.UniversityModerators.Count() == 0)
@@ -2193,15 +2217,15 @@ namespace YIF.Core.Data.Seaders
 
                 #region НУВГП
                 {
+
                     var dbUser = new DbUser
                     {
-                        Email = "qtoni6@gmail.com",
-                        UserName = "ArnoldBeasley"
+                        Email = "nuweeModerator@gmail.com",
+                        UserName = "NuweeModerator"
                     };
                     var universityModerator = new UniversityModerator
                     {
                         AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
@@ -2215,7 +2239,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var universityModerator = new UniversityModerator
                     {
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
@@ -2229,7 +2253,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var universityModerator = new UniversityModerator
                     {
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
@@ -2246,7 +2270,6 @@ namespace YIF.Core.Data.Seaders
                     var universityModerator = new UniversityModerator
                     {
                         AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
@@ -2260,7 +2283,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var universityModerator = new UniversityModerator
                     {
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
@@ -2274,7 +2297,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var universityModerator = new UniversityModerator
                     {
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
@@ -2288,7 +2311,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var universityModerator = new UniversityModerator
                     {
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
@@ -2305,7 +2328,6 @@ namespace YIF.Core.Data.Seaders
                     var universityModerator = new UniversityModerator
                     {
                         AdminId = admins.FirstOrDefault(x => x.University.Name == "Академія внутрішніх військ МВС України").Id,
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
@@ -2319,7 +2341,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var universityModerator = new UniversityModerator
                     {
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
@@ -2391,7 +2413,7 @@ namespace YIF.Core.Data.Seaders
                 await SeederDB.SeedSpecialities(context);
                 SeederDB.SeedUniversities(context);
                 SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                SeederDB.SeedUniversityAdmins(context);
+                await SeederDB.SeedUniversityAdmins(context, manager);
                 await SeederDB.SeedUniversityModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);
                 SeederDB.SeedEducationForms(context);

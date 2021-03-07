@@ -69,25 +69,27 @@ namespace YIF.Core.Data
 
             #region University
 
+            builder.Entity<UniversityAdmin>()
+                .HasOne(x => x.University)
+                .WithMany(x => x.Admins)
+                .HasForeignKey(x => x.UniversityId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
             builder.Entity<UniversityModerator>()
                 .HasOne(x => x.Admin)
-                .WithOne(x => x.Moderator)
+                .WithMany(x => x.Moderators)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UniversityModerator>()
-                .HasOne(x => x.University)
+                .HasOne(x => x.Admin)
                 .WithMany(x => x.Moderators)
+                .HasForeignKey(x => x.AdminId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Lecture>()
                 .HasOne(x => x.University)
                 .WithMany(x => x.Lectures)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<University>()
-                .HasMany(x => x.Moderators)
-                .WithOne(x => x.University)
-                .HasForeignKey(x => x.UniversityId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UniversityToGraduate>()

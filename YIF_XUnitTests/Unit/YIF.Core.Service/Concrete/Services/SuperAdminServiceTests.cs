@@ -3,6 +3,7 @@ using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
@@ -38,14 +40,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly SuperAdminService superAdminService;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
-        private readonly UniversityAdmin uniAdmin = new UniversityAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9" };
+        private readonly UniversityAdmin uniAdmin = new UniversityAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "a87613a2-e535-4c95-a34c-ecd182272cba" };
         private readonly University uni = new University { Id = "007a43f8-7553-4eec-9e91-898a9cba37c9", Name = "Uni1Stub", Description = "Descripton1Stub", ImagePath = "Image1Path" };
-        private readonly UniversityModerator universityModerator = new UniversityModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
+        private readonly UniversityModerator universityModerator = new UniversityModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
 
         private readonly List<UniversityAdmin> _databaseUniAdmins = new List<UniversityAdmin>();
+        private readonly List<UniversityAdminDTO> _universityAdminsDTO;
         private readonly List<DbUser> _databaseDbUsers = new List<DbUser>();
         private readonly List<University> _databaseUniversities = new List<University>();
         private readonly List<UniversityModerator> _databaseUniversityModerators = new List<UniversityModerator>();
+        private readonly List<UniversityAdminResponseApiModel> _listViewModel;
 
         public readonly UniversityAdminApiModel model = new UniversityAdminApiModel
         {
@@ -95,6 +99,43 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _databaseUniversities.Add(uni);
             _databaseUniAdmins.Add(uniAdmin);
             _databaseUniversityModerators.Add(universityModerator);
+
+            _universityAdminsDTO = new List<UniversityAdminDTO>()
+            {
+                new UniversityAdminDTO {Id="1", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9" },
+                new UniversityAdminDTO {Id="2", UniversityId = "107a43f8-7553-4eec-9e91-898a9cba37c9" },
+            };
+            _listViewModel = new List<UniversityAdminResponseApiModel>()
+            {
+                new UniversityAdminResponseApiModel { Id = _universityAdminsDTO[0].Id,  },
+                new UniversityAdminResponseApiModel { Id = _universityAdminsDTO[1].Id,  }
+            };
+
+        }
+        [Fact]
+        public async Task GetAllUniAdmins_ShouldReturnAllAdmins_IfThereAreMoreThanOneAdmin()
+        {
+            //Arrange
+            _universityAdminRepository.Setup(x => x.GetAllUniAdmins()).Returns(Task.FromResult(_universityAdminsDTO.AsEnumerable()));
+            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminResponseApiModel>>(_universityAdminsDTO)).Returns(_listViewModel);
+
+            // Act
+            var result = await superAdminService.GetAllUniversityAdmins();
+            var users = result.Object.ToList();
+
+            //Assert
+            Assert.True(result.Success);
+            Assert.Equal(users[0].Id, _listViewModel[0].Id);
+            Assert.Equal(users[1].Id, _listViewModel[1].Id);
+        }
+        [Fact]
+        public async Task GetAllUniAdmins_ShouldReturnFalse_IfThereAreNoAdmins()
+        {
+            // Arrange
+            _universityAdminRepository.Setup(s => s.GetAllUniAdmins()).Returns(Task.FromResult(new List<UniversityAdminDTO>().AsEnumerable()));
+
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetAllUniversityAdmins());
         }
         [Fact]
         public async Task AddUniAdmin_NoUniFound_returnsResult()
@@ -166,10 +207,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             SchoolUniAdminDeleteApiModel model = new SchoolUniAdminDeleteApiModel { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3" };
             _userManager.Setup(p => p.FindByIdAsync(_user.Id)).Returns(Task.FromResult<DbUser>(_user));
             _universityAdminRepository.Setup(p => p.Delete(model.Id)).Returns(Task.FromResult<string>("User IsDeleted was updated"));
-            
+
             //Act
             var a = await superAdminService.DeleteUniversityAdmin(model);
-            
+
             //Assert
             Assert.Equal("User IsDeleted was updated", a.Object.Message);
         }

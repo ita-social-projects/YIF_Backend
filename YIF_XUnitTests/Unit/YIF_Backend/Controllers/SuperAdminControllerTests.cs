@@ -264,7 +264,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var responseModel = new ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>> { Success = true, 
                 Object = (IEnumerable<UniversityAdminResponseApiModel>)new List<UniversityAdminResponseApiModel>
             {
-                new UniversityAdminResponseApiModel {Id="Id",UniversityId="Id",UniversityName="UniversityName"}
+                new UniversityAdminResponseApiModel { Id= "Id" }
             }
         };
             _superAdminService.Setup(x => x.GetAllUniversityAdmins()).Returns(Task.FromResult(responseModel));
