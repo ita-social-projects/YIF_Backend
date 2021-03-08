@@ -34,6 +34,11 @@ namespace YIF.Core.Domain.Repositories
         public async Task<string> Create(DbUser dbUser, Object entityUser, string userPassword, string role)
         {
             IdentityResult result = null;
+            if(dbUser == null)
+            {
+                throw new ArgumentNullException("dbUser");
+            }
+
             if(userPassword == null)
             {
                 result = await _userManager.CreateAsync(dbUser);
