@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace YIF_Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
+    //[Authorize(Roles = "SuperAdmin")]
     public class SuperAdminController : ControllerBase
     {
         private readonly ISuperAdminService _superAdminService;
@@ -106,7 +108,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds University Beta.
+        /// Adds University and email for admin.
         /// </summary>
         /// <returns></returns>
         /// <response code="201"></response>
@@ -116,7 +118,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
-        [HttpPost("AddUniversity")]
+        [HttpPost("AddUniversityAndAdmin")]
         public async Task<IActionResult> AddUniversity([FromBody] UniversityPostApiModel model)
         {
             if (!ModelState.IsValid)
@@ -127,7 +129,7 @@ namespace YIF_Backend.Controllers
 
             if (!validResults.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
 
-            var result = await _superAdminService.AddUniversity(model, Request);
+            var result = await _superAdminService.AddUniversityAndAdmin(model, Request);
             return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
         }
 

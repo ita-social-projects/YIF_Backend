@@ -108,7 +108,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             UniversityModerator toAdd = new UniversityModerator
             {
-                UniversityId = university.Id,
+                //UniversityId = university.Id,
                 UserId = dbUser.Id,
                 AdminId = admin.Id
             };
@@ -232,7 +232,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel universityPostApiModel, HttpRequest request)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversityAndAdmin(UniversityPostApiModel universityPostApiModel, HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
@@ -270,14 +270,6 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
             var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
-
-            UniversityModerator toAdd = new UniversityModerator
-            {
-                UniversityId = university.Id,
-                UserId = dbUser.Id,
-                AdminId = admin.Id
-            };
-            await _universityModeratorRepository.AddUniModerator(toAdd);
 
             //
             var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(universityPostApiModel.UniversityAdminEmail, request);
