@@ -17,7 +17,11 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath));
-            CreateMap<University, UniversityPostApiModel>().ReverseMap();
+
+            CreateMap<UniversityDTO, UniversityPostApiModel>()
+                .ForMember(post => post.ImageApiModel, un => un.Ignore())
+                .ForMember(post => post.UniversityAdminEmail, un => un.Ignore())
+                .ReverseMap();
 
             CreateMap<Direction, DirectionDTO>()
                 .ReverseMap();

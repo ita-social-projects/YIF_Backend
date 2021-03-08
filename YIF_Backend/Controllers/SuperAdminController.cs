@@ -13,7 +13,7 @@ namespace YIF_Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    //[Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public class SuperAdminController : ControllerBase
     {
         private readonly ISuperAdminService _superAdminService;

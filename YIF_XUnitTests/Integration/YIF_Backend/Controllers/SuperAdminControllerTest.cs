@@ -1,55 +1,57 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF_Backend.Controllers;
 
-namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
+namespace YIF_XUnitTests.Integration.Fixture
 {
-    public class SuperAdminControllerTest : IClassFixture<BaseTestServerFixture>
+    public class SuperAdminControllerTest : TestServerFixture
     {
-        private readonly BaseTestServerFixture _fixture;
+        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)
+          : base(fixture) { }
 
-        public SuperAdminControllerTest(BaseTestServerFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        //private SuperAdminController _superAdminController;
 
-        [Theory]
-        [InlineData("", "", "", "", "", "", "", 0, 0)]
-        public async Task AddUniversity_EndpointsReturnSuccess(
-            string Name,
-            string Abbreviation,
-            string Site,
-            string Address,
-            string Phone,
-            string Email,
-            string Description,
-            float Lat,
-            float Lon)
-        {
-            var postRequest = new
-            {
-                Url = "api/SuperAdmin/AddUniversity?",
-                Body = new
-                {
-                    Name = "Product",
-                    Abbreviation = "Product",
-                    Site = "Product",
-                    Address = "Product",
-                    Phone = "Product",
-                    Email = "Product",
-                    Description = "Product",
-                    Lat = 0.0,
-                    Lon = 0.0,
-                }
-            };
-            // Act            
-            var response = await _fixture.Client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+        //[TestInitialize]
+        //public void Initialize()
+        //{
+        //    var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        //    {
+        // new Claim(ClaimTypes.Name, "UserName"),
+        // new Claim(ClaimTypes.Role, "SuperAdmin")
+        //    }));
 
-            //var response = await _fixture.Client.GetAsync($"api/SuperAdmin/AddUniversity?" +
-            //    $"Name={Name}&Abbreviation={Abbreviation}&Site={Site}&Address={Address}&Phone={Phone}&Email={Email}" +
-            //    $"&Description={Description}&Description={Description}&Description={Description}&Lat={Lat}&Lon={Lon}");
+        //    _superAdminController = new SuperAdminController();
+        //    _superAdminController.ControllerContext = new ControllerContext()
+        //    {
+        //        HttpContext = new DefaultHttpContext() { User = user }
+        //    };
+        //}
 
-            // Assert
-            response.EnsureSuccessStatusCode();
-        }
+
+        //[Theory]
+        //[InlineData("api/Direction/All")]
+        //[InlineData("api/Direction/All?page=1")]
+        //[InlineData("api/Direction/All?page=1&pageSize=10")]
+        //[InlineData("api/Direction/All?DirectionName=Інформаційні технології")]
+        //[InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&UniversityName=Київський політехнічний інститут імені Ігоря Сікорського&UniversityAbbreviation=КПІ")]
+        //[InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&UniversityName=Київський політехнічний інститут імені Ігоря Сікорського&UniversityAbbreviation=КПІ&page=1&pageSize=10")]
+        //public async Task GetAll_EndpointsReturnSuccessAndCorrectContentObject(string endpoint)
+        //{
+        //    // Act            
+        //    var response = await _client.GetAsync(endpoint).;
+
+        //    // Assert
+        //    response.EnsureSuccessStatusCode();
+        //    var stringResponse = await response.Content.ReadAsStringAsync();
+        //    var models = JsonConvert.DeserializeObject<IEnumerable<DirectionResponseApiModel>>(stringResponse);
+        //    Assert.NotEmpty(models);
+        //}
     }
 }

@@ -80,9 +80,9 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<UniversityDTO> AddUniversity(University university)
         {
-            var result = await _context.Universities.AddAsync(university);
+            await _context.Universities.AddAsync(university);
             await _context.SaveChangesAsync();
-            return _mapper.Map<UniversityDTO>(result);
+            return _mapper.Map<UniversityDTO>(university);
         }
 
         public async Task<UniversityDTO> GetByName(string name)

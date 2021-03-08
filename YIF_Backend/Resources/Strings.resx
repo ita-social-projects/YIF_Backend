@@ -219,6 +219,12 @@
   <data name="UniversityAdded" xml:space="preserve">
     <value>Університет додано</value>
   </data>
+  <data name="UniversityAdminFailed" xml:space="preserve">
+    <value>Не вдалося добавити адміна</value>
+  </data>
+  <data name="UniversityAndAdminAdded" xml:space="preserve">
+    <value>Університет додано. Адміну надісланий лист.</value>
+  </data>
   <data name="UniversityIsAlreadyFavorite" xml:space="preserve">
     <value>Даний університет вже додано до улюблених</value>
   </data>

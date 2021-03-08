@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
@@ -36,6 +39,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository<TokenDTO> _tokenRepository;
         private readonly ResourceManager _resourceManager;
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
 
         public SuperAdminService(
             IUserService<DbUser> userService,
@@ -51,7 +56,9 @@ namespace YIF.Core.Service.Concrete.Services
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
             ITokenRepository<TokenDTO> tokenRepository,
-            ResourceManager resourceManager)
+            ResourceManager resourceManager, 
+            IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             _userService = userService;
             _userRepository = userRepository;
@@ -67,6 +74,8 @@ namespace YIF.Core.Service.Concrete.Services
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
             _resourceManager = resourceManager;
+            _env = env;
+            _configuration = configuration;
         }
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
         {
@@ -241,14 +250,19 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new InvalidOperationException(_resourceManager.GetString("UniversityWithSuchNameAlreadyExists"));
             }
-            
-            var university = await _universityRepository.AddUniversity(_mapper.Map<University>(universityPostApiModel));
 
-            var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
-            if (adminCheck != null)
-            {
-                throw new InvalidOperationException(_resourceManager.GetString("AdministratorOfThisSchoolAlreadyExists"));
-            }
+            #region imageSaving
+            var serverPath = _env.ContentRootPath;
+            var folerName = _configuration.GetValue<string>("ImagesPath");
+            var path = Path.Combine(serverPath, folerName);
+
+            var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(universityPostApiModel.ImageApiModel.Photo, path);
+            #endregion
+
+            var universityDTO = _mapper.Map<UniversityDTO>(universityPostApiModel);
+            universityDTO.ImagePath = fileName;
+
+            var university = await _universityRepository.AddUniversity(_mapper.Map<University>(universityDTO));
 
             var searchUser = _userManager.FindByEmailAsync(universityPostApiModel.UniversityAdminEmail);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
@@ -268,16 +282,21 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
             }
 
-            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
-            var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
+            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id, UserId = dbUser.Id });
 
-            //
+            var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
+            if (admin == null)
+            {
+                throw new InvalidOperationException(_resourceManager.GetString("UniversityAdminFailed"));
+            }
+
+            //To check
             var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(universityPostApiModel.UniversityAdminEmail, request);
             if (!resultResetPasswordByEmail.Success)
             {
                 throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
             }
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("UniversityAdded")), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("UniversityAndAdminAdded")), true);
         }
 
         public async Task<ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>> GetAllUniversityAdmins()
