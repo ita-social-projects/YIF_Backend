@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210304111916_AddIsBanned")]
-    partial class AddIsBanned
+    [Migration("20210309131915_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -582,6 +582,26 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("SpecialtyToUniversities");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversityToGraduate", b =>
+                {
+                    b.Property<string>("SpecialtyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UniversityId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("GraduateId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SpecialtyId", "UniversityId", "GraduateId");
+
+                    b.HasIndex("GraduateId");
+
+                    b.HasIndex("UniversityId");
+
+                    b.ToTable("SpecialtyToUniversityToGraduates");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
                 {
                     b.Property<string>("Id")
@@ -955,11 +975,32 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.SpecialtyInUniversityDescription", "SpecialtyInUniversityDescription")
-                        .WithMany()
+                        .WithMany("SpecialtyToUniversities")
                         .HasForeignKey("SpecialtyInUniversityDescriptionId");
 
                     b.HasOne("YIF.Core.Data.Entities.University", "University")
                         .WithMany()
+                        .HasForeignKey("UniversityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToUniversityToGraduate", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
+                        .WithMany("SpecialtyToUniversityToGraduates")
+                        .HasForeignKey("GraduateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
+                        .WithMany("SpecialtyToUniversityToGraduates")
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.University", "University")
+                        .WithMany("SpecialtyToUniversityToGraduates")
                         .HasForeignKey("UniversityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
