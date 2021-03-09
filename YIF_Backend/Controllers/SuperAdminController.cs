@@ -76,12 +76,12 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPut("DeleteUniversityAdmin")]
-        public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
+        [HttpDelete("DeleteUniversityAdmin")]
+        public async Task<IActionResult> DeleteUniversityAdmin(string adminId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.DeleteUniversityAdmin(model);
+            var result = await _superAdminService.DeleteUniversityAdmin(adminId);
             return Ok(result.Object);
         }
 
@@ -95,11 +95,11 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPut("DisableUniversityAdmin")]
-        public async Task<IActionResult> DisableUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
+        public async Task<IActionResult> DisableUniversityAdmin(string adminId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.DisableUniversityAdmin(model);
+            var result = await _superAdminService.DisableUniversityAdmin(adminId);
             return Ok(result.Object);
         }
 

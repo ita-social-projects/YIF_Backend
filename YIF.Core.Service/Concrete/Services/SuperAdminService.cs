@@ -205,24 +205,24 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            string ch = await _universityAdminRepository.Delete(schoolUniAdminDeleteApi.Id);
+            string ch = await _universityAdminRepository.Delete(adminId);
             if (ch == null)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {schoolUniAdminDeleteApi.Id}");
+                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            string ch = await _universityAdminRepository.Disable(schoolUniAdminDeleteApi.Id);
+            string ch = await _universityAdminRepository.Disable(adminId);
             if (ch == null)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {schoolUniAdminDeleteApi.Id}");
+                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }

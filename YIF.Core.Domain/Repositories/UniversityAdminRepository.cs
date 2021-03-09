@@ -67,27 +67,14 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<UniversityAdminDTO> GetByUniversityId(string universityId)
         {
-            var universityAdmin = _dbContext.Users.Where(u => u.IsDeleted == false)
-                   .Join(_dbContext.UniversityModerators,
-                         user => user.Id,
-                         moderator => moderator.UserId,
-                         (user, moderator) => new UniversityModerator
-                         {
-                             UserId = user.Id,
-                             AdminId = moderator.AdminId
-                         })
-                   .Join(_dbContext.UniversityAdmins.Where(a => a.UniversityId == universityId),
-                         moderator => moderator.AdminId,
-                         admin => admin.Id,
-                         (moderator, admin) => new UniversityAdminDTO
-                         {
-                             Id = moderator.UserId,
-                             UniversityId = admin.UniversityId
-                         });
+            var universityAdmin = await _dbContext.UniversityAdmins
+                .Where(admin => admin.UniversityId == universityId && admin.User.IsDeleted == false)
+                .Include(x => x.University)
+                .Include(y => y.User).FirstOrDefaultAsync();
 
-            if (universityAdmin.Count() != 0)
+            if (universityAdmin != null)
             {
-                return await universityAdmin.FirstOrDefaultAsync();
+                return _mapper.Map<UniversityAdminDTO>(universityAdmin);
             }
             return null;
         }

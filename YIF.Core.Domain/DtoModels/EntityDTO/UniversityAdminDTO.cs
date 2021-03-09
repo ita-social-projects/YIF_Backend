@@ -6,9 +6,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
     {
         public string Id { get; set; }
         public UserDTO User { get; set; }
-        public string UniversityId { get; set; }
-        public string UniversityName { get; set; }
-        public string UniversityAbbreviation { get; set; }
         public UniversityDTO University { get; set; }
         /// <summary>
         /// Link to university moderator

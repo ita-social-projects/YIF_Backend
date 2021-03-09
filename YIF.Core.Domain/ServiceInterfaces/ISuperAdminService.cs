@@ -9,8 +9,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
     {
         Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(string id);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(string id);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi);
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversity(UniversityPostApiModel schoolUniAdminDeleteApi);
         Task<ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>> GetAllUniversityAdmins();
