@@ -526,7 +526,9 @@ namespace YIF.Core.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    UniversityId = table.Column<string>(nullable: true)
+                    IsBanned = table.Column<bool>(nullable: false),
+                    UniversityId = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -535,6 +537,12 @@ namespace YIF.Core.Data.Migrations
                         name: "FK_UniversityAdmins_Universities_UniversityId",
                         column: x => x.UniversityId,
                         principalTable: "Universities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UniversityAdmins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -592,6 +600,37 @@ namespace YIF.Core.Data.Migrations
                         name: "FK_SpecialtyToGraduates_Specialties_SpecialtyId",
                         column: x => x.SpecialtyId,
                         principalTable: "Specialties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SpecialtyToUniversityToGraduates",
+                columns: table => new
+                {
+                    SpecialtyId = table.Column<string>(nullable: false),
+                    UniversityId = table.Column<string>(nullable: false),
+                    GraduateId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecialtyToUniversityToGraduates", x => new { x.SpecialtyId, x.UniversityId, x.GraduateId });
+                    table.ForeignKey(
+                        name: "FK_SpecialtyToUniversityToGraduates_Graduates_GraduateId",
+                        column: x => x.GraduateId,
+                        principalTable: "Graduates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SpecialtyToUniversityToGraduates_Specialties_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalTable: "Specialties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SpecialtyToUniversityToGraduates_Universities_UniversityId",
+                        column: x => x.UniversityId,
+                        principalTable: "Universities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -657,7 +696,6 @@ namespace YIF.Core.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    UniversityId = table.Column<string>(nullable: true),
                     AdminId = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -668,12 +706,6 @@ namespace YIF.Core.Data.Migrations
                         name: "FK_UniversityModerators_UniversityAdmins_AdminId",
                         column: x => x.AdminId,
                         principalTable: "UniversityAdmins",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UniversityModerators_Universities_UniversityId",
-                        column: x => x.UniversityId,
-                        principalTable: "Universities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -836,6 +868,16 @@ namespace YIF.Core.Data.Migrations
                 column: "UniversityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SpecialtyToUniversityToGraduates_GraduateId",
+                table: "SpecialtyToUniversityToGraduates",
+                column: "GraduateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialtyToUniversityToGraduates_UniversityId",
+                table: "SpecialtyToUniversityToGraduates",
+                column: "UniversityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SuperAdmins_UserId",
                 table: "SuperAdmins",
                 column: "UserId");
@@ -851,16 +893,14 @@ namespace YIF.Core.Data.Migrations
                 column: "UniversityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UniversityModerators_AdminId",
-                table: "UniversityModerators",
-                column: "AdminId",
-                unique: true,
-                filter: "[AdminId] IS NOT NULL");
+                name: "IX_UniversityAdmins_UserId",
+                table: "UniversityAdmins",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UniversityModerators_UniversityId",
+                name: "IX_UniversityModerators_AdminId",
                 table: "UniversityModerators",
-                column: "UniversityId");
+                column: "AdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UniversityModerators_UserId",
@@ -913,6 +953,9 @@ namespace YIF.Core.Data.Migrations
                 name: "SpecialtyToUniversities");
 
             migrationBuilder.DropTable(
+                name: "SpecialtyToUniversityToGraduates");
+
+            migrationBuilder.DropTable(
                 name: "SuperAdmins");
 
             migrationBuilder.DropTable(
@@ -943,10 +986,10 @@ namespace YIF.Core.Data.Migrations
                 name: "SchoolAdmins");
 
             migrationBuilder.DropTable(
-                name: "Specialties");
+                name: "SpecialtyInUniversityDescriptions");
 
             migrationBuilder.DropTable(
-                name: "SpecialtyInUniversityDescriptions");
+                name: "Specialties");
 
             migrationBuilder.DropTable(
                 name: "Graduates");
@@ -961,10 +1004,10 @@ namespace YIF.Core.Data.Migrations
                 name: "Schools");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Universities");
 
             migrationBuilder.DropTable(
-                name: "Universities");
+                name: "AspNetUsers");
         }
     }
 }
