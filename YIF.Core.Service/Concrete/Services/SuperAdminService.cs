@@ -251,6 +251,12 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new InvalidOperationException(_resourceManager.GetString("UniversityWithSuchNameAlreadyExists"));
             }
 
+            var searchUser = _userManager.FindByEmailAsync(universityPostApiModel.UniversityAdminEmail);
+            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
+            {
+                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
+            }
+
             #region imageSaving
             var serverPath = _env.ContentRootPath;
             var folerName = _configuration.GetValue<string>("ImagesPath");
@@ -263,12 +269,6 @@ namespace YIF.Core.Service.Concrete.Services
             universityDTO.ImagePath = fileName;
 
             var university = await _universityRepository.AddUniversity(_mapper.Map<University>(universityDTO));
-
-            var searchUser = _userManager.FindByEmailAsync(universityPostApiModel.UniversityAdminEmail);
-            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
-            {
-                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
-            }
 
             var dbUser = new DbUser
             {

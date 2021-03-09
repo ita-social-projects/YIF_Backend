@@ -130,7 +130,7 @@ namespace YIF_Backend.Controllers
             if (!validResults.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
 
             var result = await _superAdminService.AddUniversityAndAdmin(model, Request);
-            return result.Success ? Ok(result.Description) : (IActionResult)BadRequest(result.Description);
+            return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
 
 

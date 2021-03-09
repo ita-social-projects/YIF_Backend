@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
@@ -9,12 +10,15 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         [BindRequired]
         public string Abbreviation { get; set; }
         [BindRequired]
+        [Url]
         public string Site { get; set; }
         [BindRequired]
         public string Address { get; set; }
         [BindRequired]
+        [Phone]
         public string Phone { get; set; }
         [BindRequired]
+        [EmailAddress]
         public string Email { get; set; }
         [BindRequired]
         public string Description { get; set; }
@@ -25,6 +29,7 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         [BindRequired]
         public ImageApiModel ImageApiModel { get; set; }
         [BindRequired]
+        [EmailAddress]
         public string UniversityAdminEmail { get; set; }
     }
 }
