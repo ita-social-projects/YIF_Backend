@@ -1,57 +1,93 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF_Backend.Controllers;
+using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.Fixture
 {
     public class SuperAdminControllerTest : TestServerFixture
     {
         public SuperAdminControllerTest(ApiWebApplicationFactory fixture)
-          : base(fixture) { }
+          : base(fixture)
+        {
+            _client = fixture.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
+        }
 
-        //private SuperAdminController _superAdminController;
+        [Theory]
+        [MemberData(nameof(SuperAdminInputAttribute.GetWrongData), MemberType = typeof(SuperAdminInputAttribute))]
+        public async Task AddUniversityAndAdmin_Input_WrongUniversityPostApiModel_site(StringContent content)
+        {
+            // Act
+            var response = await _client.PostAsync("/api/SuperAdmin/AddUniversityAndAdmin", content);
 
-        //[TestInitialize]
-        //public void Initialize()
-        //{
-        //    var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-        //    {
-        // new Claim(ClaimTypes.Name, "UserName"),
-        // new Claim(ClaimTypes.Role, "SuperAdmin")
-        //    }));
+            // Assert
+            Assert.True( response.StatusCode == System.Net.HttpStatusCode.BadRequest);
+        }
 
-        //    _superAdminController = new SuperAdminController();
-        //    _superAdminController.ControllerContext = new ControllerContext()
-        //    {
-        //        HttpContext = new DefaultHttpContext() { User = user }
-        //    };
-        //}
+        [Fact]
+        public async Task AddUniversityAndAdmin_Output_WithCorectData()
+        {
+            // Arrange
+            var postRequest = new
+            {
+                Url = "/api/SuperAdmin/AddUniversityAndAdmin",
+                Body = SuperAdminInputAttribute.GetCorrectData
+            };
 
+            // Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
-        //[Theory]
-        //[InlineData("api/Direction/All")]
-        //[InlineData("api/Direction/All?page=1")]
-        //[InlineData("api/Direction/All?page=1&pageSize=10")]
-        //[InlineData("api/Direction/All?DirectionName=Інформаційні технології")]
-        //[InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&UniversityName=Київський політехнічний інститут імені Ігоря Сікорського&UniversityAbbreviation=КПІ")]
-        //[InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&UniversityName=Київський політехнічний інститут імені Ігоря Сікорського&UniversityAbbreviation=КПІ&page=1&pageSize=10")]
-        //public async Task GetAll_EndpointsReturnSuccessAndCorrectContentObject(string endpoint)
-        //{
-        //    // Act            
-        //    var response = await _client.GetAsync(endpoint).;
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
 
-        //    // Assert
-        //    response.EnsureSuccessStatusCode();
-        //    var stringResponse = await response.Content.ReadAsStringAsync();
-        //    var models = JsonConvert.DeserializeObject<IEnumerable<DirectionResponseApiModel>>(stringResponse);
-        //    Assert.NotEmpty(models);
-        //}
+        [Fact]
+        public async Task AddUniversityAndAdmin_Output_ByAddingSameUniversityTwoTimes()
+        {            
+            // Arrange
+            var postRequest = new
+            {
+                Url = "/api/SuperAdmin/AddUniversityAndAdmin",
+                Body = SuperAdminInputAttribute.GetCorrectData
+            };
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+            response.EnsureSuccessStatusCode();
+
+            postRequest.Body.UniversityAdminEmail = "name@gmail.com";
+            // Act
+            response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            // Assert
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.Conflict);
+        }
+
+        [Fact]
+        public async Task AddUniversityAndAdmin_Output_ByAddingSameAdminTwoTimes()
+        {
+            // Arrange
+            var postRequest = new
+            {
+                Url = "/api/SuperAdmin/AddUniversityAndAdmin",
+                Body = SuperAdminInputAttribute.GetCorrectData
+            };
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+            response.EnsureSuccessStatusCode();
+
+            postRequest.Body.Name = "name";
+            // Act
+            response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            // Assert
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.Conflict);
+        }
     }
 }

@@ -250,7 +250,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Arrange
             superAdminController.ModelState.AddModelError("model", "error");
             // Act
-            var result = await superAdminController.AddUniversity(null);
+            var result = await superAdminController.AddUniversityAndAdmin(null);
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);

@@ -6,9 +6,9 @@ namespace YIF_XUnitTests.Integration.Fixture
 {
     public abstract class TestServerFixture : IClassFixture<ApiWebApplicationFactory>
     {
-        protected readonly ApiWebApplicationFactory _factory;
-        protected readonly HttpClient _client;
-        protected readonly IConfiguration _configuration;
+        protected ApiWebApplicationFactory _factory;
+        protected HttpClient _client;
+        protected IConfiguration _configuration;
 
         public TestServerFixture(ApiWebApplicationFactory fixture)
         {

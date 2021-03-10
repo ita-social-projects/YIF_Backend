@@ -119,7 +119,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
         [HttpPost("AddUniversityAndAdmin")]
-        public async Task<IActionResult> AddUniversity([FromBody] UniversityPostApiModel model)
+        public async Task<IActionResult> AddUniversityAndAdmin([FromBody] UniversityPostApiModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
