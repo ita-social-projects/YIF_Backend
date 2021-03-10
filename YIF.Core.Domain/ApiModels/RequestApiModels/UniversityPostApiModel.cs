@@ -5,31 +5,38 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
     public class UniversityPostApiModel
     {
-        [BindRequired]
+        [Required]
+        [StringLength(255)]
         public string Name { get; set; }
-        [BindRequired]
+        [Required]
+        [StringLength(255)]
         public string Abbreviation { get; set; }
-        [BindRequired]
+        [Required]
         [Url]
+        [StringLength(255)]
         public string Site { get; set; }
-        [BindRequired]
+        [Required]
+        [StringLength(255)]
         public string Address { get; set; }
-        [BindRequired]
+        [Required]
         [Phone]
         public string Phone { get; set; }
-        [BindRequired]
+        [Required]
         [EmailAddress]
+        [StringLength(255)]
         public string Email { get; set; }
-        [BindRequired]
+        [Required]
+        [StringLength(255)]
         public string Description { get; set; }
-        [BindRequired]
+        [Required]
         public float Lat { get; set; }
-        [BindRequired]
+        [Required]
         public float Lon { get; set; }
-        [BindRequired]
+        [Required]
         public ImageApiModel ImageApiModel { get; set; }
-        [BindRequired]
+        [Required]
         [EmailAddress]
+        [StringLength(255)]
         public string UniversityAdminEmail { get; set; }
     }
 }
