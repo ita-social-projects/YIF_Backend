@@ -79,8 +79,6 @@ namespace YIF_Backend.Controllers
         [HttpDelete("DeleteUniversityAdmin/{id}")]
         public async Task<IActionResult> DeleteUniversityAdmin(string id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.DeleteUniversityAdmin(id);
             return Ok(result.Object);
         }
@@ -97,8 +95,6 @@ namespace YIF_Backend.Controllers
         [HttpPut("DisableUniversityAdmin/{id}")]
         public async Task<IActionResult> DisableUniversityAdmin(string id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _superAdminService.DisableUniversityAdmin(id);
             return Ok(result.Object);
         }

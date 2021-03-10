@@ -17,6 +17,7 @@ namespace YIF.Core.Domain.Repositories
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly UserManager<DbUser> _userManager;
+
         public UniversityAdminRepository(
             IApplicationDbContext context,
             IMapper mapper,
@@ -34,32 +35,14 @@ namespace YIF.Core.Domain.Repositories
             return string.Empty;
         }
 
-        public async Task<string> Delete(string adminId)
+        public async Task<string> Delete(DbUser user)
         {
-            var universityAdmin = _dbContext.UniversityAdmins
-            .Where(admin => admin.Id == adminId && admin.User.IsDeleted == false)
-            .Include(x => x.University)
-            .Include(y => y.User);
-
-            if (universityAdmin.Count() == 0)
-            {
-                return null;
-            }
-            var user = await _userManager.FindByIdAsync(universityAdmin.First().UserId);
-            user.IsDeleted = true;
-            await _userManager.UpdateAsync(user);
-            await _dbContext.SaveChangesAsync();
-            return "User IsDeleted was updated";
+            //isDelete is User's field, we're using UserRepository.Delete
+            return "";
         }
 
-        public async Task<string> Disable(string adminId)
+        public async Task<string> Disable(UniversityAdmin admin)
         {
-            var admin = await _dbContext.UniversityAdmins.FirstOrDefaultAsync(a => a.Id == adminId);
-
-            if (admin == null)
-            {
-                return null;
-            }
             admin.IsBanned = true;
             _dbContext.UniversityAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
@@ -94,16 +77,25 @@ namespace YIF.Core.Domain.Repositories
         {
             var universityAdmin = await _dbContext.UniversityAdmins
                 .Where(admin => admin.User.IsDeleted == false)
-            .Include(x => x.University)
-            .Include(y => y.User)
-            .ToListAsync();
+                .Include(x => x.University)
+                .Include(y => y.User)
+                .ToListAsync();
 
             return _mapper.Map<IEnumerable<UniversityAdminDTO>>(universityAdmin);
         }
 
+        public async Task<UniversityAdminDTO> GetUserByAdminId(string id)
+        {
+            var universityAdmin = await _dbContext.UniversityAdmins.AsNoTracking()
+                .Where(admin => admin.Id == id && admin.User.IsDeleted == false)
+                .Include(y => y.User)
+                .FirstOrDefaultAsync();
+            return _mapper.Map<UniversityAdminDTO>(universityAdmin);
+        }
+
         public async Task<UniversityAdminDTO> GetById(string id)
         {
-            var admin = await _dbContext.UniversityAdmins.FirstOrDefaultAsync(a => a.Id == id);
+            var admin = await _dbContext.UniversityAdmins.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
             return _mapper.Map<UniversityAdminDTO>(admin);
         }
 

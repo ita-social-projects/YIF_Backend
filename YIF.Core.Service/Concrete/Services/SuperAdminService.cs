@@ -208,23 +208,25 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            string ch = await _universityAdminRepository.Delete(adminId);
+            var ch = await _universityAdminRepository.GetUserByAdminId(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
-            return result.Set(new DescriptionResponseApiModel(ch), true);
+            await _userRepository.Delete(ch.User.Id);
+            return result.Set(new DescriptionResponseApiModel("User IsDeleted was updated"), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            string ch = await _universityAdminRepository.Disable(adminId);
+            var ch = await _universityAdminRepository.GetById(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
-            return result.Set(new DescriptionResponseApiModel(ch), true);
+            var res = await _universityAdminRepository.Disable(_mapper.Map<UniversityAdmin>(ch));
+            return result.Set(new DescriptionResponseApiModel(res), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
