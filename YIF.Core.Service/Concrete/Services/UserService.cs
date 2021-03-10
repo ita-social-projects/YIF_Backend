@@ -256,7 +256,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(_resourceManager.GetString("UserDoesNotExist"));
             }
 
-            if (user.Token == null || user.Token.RefreshToken != refreshToken)
+            if (user.Token == null)
             {                
                 throw new BadRequestException(_resourceManager.GetString("YouMustLogInFirst"));
             }
