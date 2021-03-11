@@ -150,9 +150,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             if (success)
             {
-                _superAdminService.Setup(x => x.DeleteUniversityAdmin(requestModel)).Returns(Task.FromResult(responseModel));
+                _superAdminService.Setup(x => x.DeleteUniversityAdmin(requestModel.Id)).Returns(Task.FromResult(responseModel));
                 // Act
-                var result = await superAdminController.DeleteUniversityAdmin(requestModel);
+                var result = await superAdminController.DeleteUniversityAdmin(requestModel.Id);
                 // Assert
                 var responseResult = Assert.IsType<OkObjectResult>(result);
                 var model = (DescriptionResponseApiModel)responseResult.Value;
@@ -160,9 +160,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             }
             else
             {
-                _superAdminService.Setup(x => x.DeleteUniversityAdmin(requestModel)).Throws(error);
+                _superAdminService.Setup(x => x.DeleteUniversityAdmin(requestModel.Id)).Throws(error);
                 // Assert
-                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DeleteUniversityAdmin(requestModel));
+                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DeleteUniversityAdmin(requestModel.Id));
                 Assert.Equal(error.Message, exeption.Message);
             }
         }

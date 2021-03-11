@@ -75,11 +75,11 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<UniversityAdminDTO>> GetAllUniAdmins()
         {
-            var universityAdmin = await _dbContext.UniversityAdmins
+            var universityAdmin = _dbContext.UniversityAdmins
                 .Where(admin => admin.User.IsDeleted == false)
                 .Include(x => x.University)
                 .Include(y => y.User)
-                .ToListAsync();
+                .ToList();
 
             return _mapper.Map<IEnumerable<UniversityAdminDTO>>(universityAdmin);
         }

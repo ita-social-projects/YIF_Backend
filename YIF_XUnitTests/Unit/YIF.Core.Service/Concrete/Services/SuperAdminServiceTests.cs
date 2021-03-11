@@ -215,12 +215,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task DeleteAdmin_ReturnsSuccessDeleteMessage()
         {
             //Arrange
-            SchoolUniAdminDeleteApiModel model = new SchoolUniAdminDeleteApiModel { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3" };
+            var user = new DbUser() { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3" };
             _userManager.Setup(p => p.FindByIdAsync(_user.Id)).Returns(Task.FromResult<DbUser>(_user));
-            _universityAdminRepository.Setup(p => p.Delete(model.Id)).Returns(Task.FromResult<string>("User IsDeleted was updated"));
+            _universityAdminRepository.Setup(p => p.Delete(user)).Returns(Task.FromResult<string>("User IsDeleted was updated"));
 
             //Act
-            var a = await superAdminService.DeleteUniversityAdmin(model);
+            var a = await superAdminService.DeleteUniversityAdmin(uniAdmin.Id);
 
             //Assert
             Assert.Equal("User IsDeleted was updated", a.Object.Message);
