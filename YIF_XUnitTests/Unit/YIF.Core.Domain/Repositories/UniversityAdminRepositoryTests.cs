@@ -36,16 +36,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _dbContextMock = new Mock<IApplicationDbContext>();
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
-            var _universityAdminsDTO = new List<UniversityAdmin>()
-            {
-                uniAdmin
-            };
 
-            var _listViewModel = new List<UniversityAdminDTO>()
-            {
-                new UniversityAdminDTO { Id = uniAdmin.Id, UniversityId = uniAdmin.UniversityId }
-            };
-            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminDTO>>(_universityAdminsDTO)).Returns(_listViewModel);
             _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
 
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
@@ -65,15 +56,41 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public async Task GetAllUniAdmins_ShouldReturnAllAdminsFromDatabase()
         {
             // Arrange
-            
+            var _dbContextMock = new Mock<IApplicationDbContext>();
+            var _mapperMock = new Mock<IMapper>();
+            var _userManagerMock = new FakeUserManager<DbUser>();
+
+            var _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
+            var _userStub = new DbUser { Id = "UserId", UserName = "Name", Email = "example@mail.com" };
+            var _admin = new UniversityAdmin { Id = "adminId", UserId = "UserId", User = _userStub };
+
+            var _listDTO = new List<UniversityAdminDTO>();
+            _listDTO.Add(new UniversityAdminDTO { Id = "adminId", UserId = "UserId" });
+            var _listView = new List<UniversityAdmin>();
+            _listView.Add(new UniversityAdmin { Id = "adminId", UserId = "UserId" });
+
+            _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(new List<UniversityAdmin> { _admin }));
+            _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(new List<DbUser> { _userStub }));
+            _dbContextMock.Setup(s => s.SaveChangesAsync()).Verifiable();
+
+            var _universityAdminsDTO = new List<UniversityAdmin>()
+            {
+                _admin
+            };
+
+            var _listViewModel = new List<UniversityAdminDTO>()
+            {
+                new UniversityAdminDTO { Id = _admin.Id, UniversityId = _admin.UniversityId }
+            };
+            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminDTO>>(_universityAdminsDTO)).Returns(_listViewModel);
             // Act
             var list = (await _universityAdminRepository.GetAllUniAdmins()).ToList();
 
             //Assert
-            Assert.NotEmpty(list);
+            Assert.Equal(_admin.Id, list[0].Id);
         }
         [Fact]
-        public async Task GetAllUniAdmins_ShouldReturnNull_IfThereAreNoAdmins()
+        public async Task GetAllUniAdmins_ShouldReturnEmpty_IfThereAreNoAdmins()
         {
             // Arrange
             var _dbContextMock = new Mock<IApplicationDbContext>();
@@ -85,7 +102,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             var list = await _universityAdminRepository.GetAllUniAdmins();
 
             //Assert
-            Assert.Null(list);
+            Assert.Empty(list);
         }
         [Fact]
         public async Task Create_UniAdmin_ReturnsEmptyString()
@@ -94,26 +111,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             string a = await _universityAdminRepository.AddUniAdmin(uniAdmin);
             //Assert
             Assert.Equal(string.Empty, a);
-        }
-
-        [Fact]
-        public async Task DeleteAdmin_WrongId_ReturnsNull()
-        {
-            //Act
-            string a = await _universityAdminRepository.Delete("sdfsdf");
-            //Assert
-            Assert.Null(a);
-        }
-
-        [Fact]
-        public async Task DeleteAdmin_ReturnsSuccessDeleteString()
-        {
-            //Arrange
-            _userManagerMock.ResponseObject = _user;
-            //Act
-            string a = await _universityAdminRepository.Delete("3b16d794-7aaa-4ca5-943a-36d328f86ed3");
-            //Assert
-            Assert.Equal("User IsDeleted was updated", a);
         }
     }
 }

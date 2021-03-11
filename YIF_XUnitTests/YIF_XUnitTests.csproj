@@ -20,6 +20,7 @@
     <ProjectReference Include="..\YIF.Core.Domain\YIF.Core.Domain.csproj" />
     <ProjectReference Include="..\YIF.Core.Service\YIF.Core.Service.csproj" />
     <ProjectReference Include="..\YIF_Backend\YIF_Backend.csproj" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.10" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="16.8.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
