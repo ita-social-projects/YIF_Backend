@@ -81,9 +81,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         {
             // Act
             _userManagerMock.ResIsSuccess = IdentityResult.Failed();
-            var errors = await _testRepo.Create(null, null, null, null);
-            // Assert
-            Assert.True(errors.Length > 0);
+            _ = await Assert.ThrowsAsync<ArgumentNullException>(async () => await _testRepo.Create(null, null, null, null)); 
         }
 
         [Fact]

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -23,6 +25,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class SuperAdminServiceTests
     {
+        private readonly Mock<IUserService<DbUser>> _userService;
         private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository;
         private readonly Mock<FakeUserManager<DbUser>> _userManager;
         private readonly FakeSignInManager<DbUser> _signInManager;
@@ -38,6 +41,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ITokenRepository<TokenDTO>> _tokenRepository;
         private readonly Mock<ResourceManager> _resourceManager;
         private readonly SuperAdminService superAdminService;
+        private readonly Mock<IWebHostEnvironment> _env;
+        private readonly Mock<IConfiguration> _configuration;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
         private readonly UniversityAdmin uniAdmin = new UniversityAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "a87613a2-e535-4c95-a34c-ecd182272cba" };
@@ -55,10 +60,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             UniversityName = "Name",
             Email = "Email",
-            Password = "Password"
         };
         public SuperAdminServiceTests()
         {
+            _userService = new Mock<IUserService<DbUser>>();
             _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
             _userManager = new Mock<FakeUserManager<DbUser>>();
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
@@ -73,7 +78,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _dbContextMock = new Mock<IApplicationDbContext>();
             _tokenRepository = new Mock<ITokenRepository<TokenDTO>>();
             _resourceManager = new Mock<ResourceManager>();
+            _env = new Mock<IWebHostEnvironment>();
+            _configuration = new Mock<IConfiguration>();
+
             superAdminService = new SuperAdminService(
+                                                    _userService.Object,
                                                     _userRepository.Object,
                                                     _userManager.Object,
                                                     _signInManager,
@@ -86,7 +95,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _schoolAdminRepository.Object,
                                                     _schoolModeratorRepository.Object,
                                                     _tokenRepository.Object,
-                                                    _resourceManager.Object);
+                                                    _resourceManager.Object,
+                                                    _env.Object,
+                                                    _configuration.Object);
 
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));

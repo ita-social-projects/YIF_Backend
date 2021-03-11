@@ -78,11 +78,11 @@ namespace YIF.Core.Domain.Repositories
             return null;
         }
 
-        public async Task<string> AddUniversity(University university)
+        public async Task<UniversityDTO> AddUniversity(University university)
         {
-            var result = await _context.Universities.AddAsync(university);
+            await _context.Universities.AddAsync(university);
             await _context.SaveChangesAsync();
-            return string.Empty;
+            return _mapper.Map<UniversityDTO>(university);
         }
 
         public async Task<UniversityDTO> GetByName(string name)

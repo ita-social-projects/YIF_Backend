@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace YIF.Core.Domain.ApiModels.IdentityApiModels
 {
@@ -40,11 +41,13 @@ namespace YIF.Core.Domain.ApiModels.IdentityApiModels
         /// Get or set the user phone number.
         /// </summary>
         /// <example>+380672222000</example>
+        [Phone]
         public string PhoneNumber { get; set; }
 
         /// <summary>
         /// Get or set the school name to which this user belongs.
-        /// </summary>
+        /// </summary>        
+        [Required]
         public string SchoolName { get; set; }
     }
 }

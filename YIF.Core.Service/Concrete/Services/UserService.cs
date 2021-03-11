@@ -354,31 +354,17 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<ResponseApiModel<ImageApiModel>> ChangeUserPhoto(ImageApiModel model, string userId, HttpRequest request)
         {
-            var user = await _userRepository.GetUserWithUserProfile(userId);
-
-            string base64 = model.Photo;
-            if (base64.Contains(","))
-            {
-                base64 = base64.Split(',')[1];
-            }
-
-            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
+            var serverPath = _env.ContentRootPath;
             var folerName = _configuration.GetValue<string>("ImagesPath");
             var path = Path.Combine(serverPath, folerName);
 
-            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(model.Photo, path);
 
-            string ext = ".jpg";
-            string fileName = Guid.NewGuid().ToString("D") + ext;
-            string filePathSave = Path.Combine(path, fileName);
+            var user = await _userRepository.GetUserWithUserProfile(userId);
 
             string filePathDelete = null;
             if (user.UserProfile != null && user.UserProfile.Photo != null)
                 filePathDelete = Path.Combine(path, user.UserProfile.Photo);
-
-            //Convert Base64 Encoded string to Byte Array.
-            byte[] imageBytes = Convert.FromBase64String(base64);
-            File.WriteAllBytes(filePathSave, imageBytes);
 
             var result = await _userRepository.UpdateUserPhoto(user, fileName);
 

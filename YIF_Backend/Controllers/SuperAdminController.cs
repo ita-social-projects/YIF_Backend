@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Service.Concrete.Services;
+
 namespace YIF_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
+    [Authorize(Roles = "SuperAdmin")]
     public class SuperAdminController : ControllerBase
     {
         private readonly ISuperAdminService _superAdminService;
@@ -104,7 +108,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds University Beta.
+        /// Adds University and email for admin.
         /// </summary>
         /// <returns></returns>
         /// <response code="201"></response>
@@ -114,14 +118,21 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
-        [HttpPost("AddUniversity")]
-        public async Task<IActionResult> AddUniversity([FromBody] UniversityPostApiModel model)
+        [HttpPost("AddUniversityAndAdmin")]
+        public async Task<IActionResult> AddUniversityAndAdmin([FromBody] UniversityPostApiModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.AddUniversity(model);
-            return Created(string.Empty, result.Object);
+
+            ImageBase64Validator validator = new ImageBase64Validator();
+            var validResults = validator.Validate(model.ImageApiModel);
+
+            if (!validResults.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
+
+            var result = await _superAdminService.AddUniversityAndAdmin(model, Request);
+            return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
+
 
         /// <summary>
         /// Get all UniAdmins.
