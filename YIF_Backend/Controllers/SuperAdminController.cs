@@ -72,7 +72,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Delete University admin(sets its asp.net user IsDeleted to true.
+        /// Delete University admin (sets its asp.net user IsDeleted to true).
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -80,12 +80,26 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPut("DeleteUniversityAdmin")]
-        public async Task<IActionResult> DeleteUniversityAdmin([FromBody] SchoolUniAdminDeleteApiModel model)
+        [HttpDelete("DeleteUniversityAdmin/{id}")]
+        public async Task<IActionResult> DeleteUniversityAdmin(string id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.DeleteUniversityAdmin(model);
+            var result = await _superAdminService.DeleteUniversityAdmin(id);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Disable University admin (sets its University Admin IsBanned to true).
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPut("DisableUniversityAdmin/{id}")]
+        public async Task<IActionResult> DisableUniversityAdmin(string id)
+        {
+            var result = await _superAdminService.DisableUniversityAdmin(id);
             return Ok(result.Object);
         }
 

@@ -64,10 +64,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// </summary>
         public virtual IEnumerable<UniversityAdminDTO> Admins { get; set; }
         /// <summary>
-        /// List of university moderators
-        /// </summary>
-        public virtual IEnumerable<UniversityModeratorDTO> Moderators { get; set; }
-        /// <summary>
         /// List of university lectures
         /// </summary>
         public virtual IEnumerable<LectureDTO> Lectures { get; set; }
