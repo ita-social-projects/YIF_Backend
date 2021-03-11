@@ -167,18 +167,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             }
         }
 
-        [Fact]
-        public async Task DeleteUniversityAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid()
-        {
-            // Arrange
-            superAdminController.ModelState.AddModelError("model", "error");
-            // Act
-            var result = await superAdminController.DeleteUniversityAdmin(null);
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
-        }
-
         [Theory]
         [InlineData(true, "succes")]
         [InlineData(false, "wrong")]
