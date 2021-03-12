@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace YIF.Core.Service.Concrete.Services
+namespace YIF.Core.Service.Concrete
 {
-    class ConvertImageApiModelToPath
+    public static class ConvertImageApiModelToPath
     {
         /// <summary>
         /// To save Base64 photo into server path
@@ -15,6 +13,11 @@ namespace YIF.Core.Service.Concrete.Services
         /// <returns>File name</returns>
         public static string FromBase64ToImageFilePath(string base64, string path)
         {
+            if(String.IsNullOrWhiteSpace(base64) || String.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentNullException();
+            }
+
             if (base64.Contains(","))
             {
                 base64 = base64.Split(',')[1];
