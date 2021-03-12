@@ -29,6 +29,10 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string EducationalProgramLink { get; set; }
         /// <summary>
+        /// Field to determine if there is a specialty and university in favorites
+        /// </summary>
+        public bool IsFavorite { get; set; }
+        /// <summary>
         /// Gets or sets the description to which this specialty to university belongs.
         /// </summary>
         public string Description { get; set; }
