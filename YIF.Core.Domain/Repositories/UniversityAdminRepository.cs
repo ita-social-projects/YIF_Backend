@@ -46,7 +46,15 @@ namespace YIF.Core.Domain.Repositories
             admin.IsBanned = true;
             _dbContext.UniversityAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
-            return "Admin IsBanned was updated";
+            return "Admin IsBanned was set true";
+        }
+
+        public async Task<string> Enable(UniversityAdmin admin)
+        {
+            admin.IsBanned = false;
+            _dbContext.UniversityAdmins.Update(admin);
+            await _dbContext.SaveChangesAsync();
+            return "Admin IsBanned was set false";
         }
         public async Task<UniversityAdminDTO> GetByUniversityId(string universityId)
         {

@@ -239,7 +239,15 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
-            var res = await _universityAdminRepository.Disable(_mapper.Map<UniversityAdmin>(ch));
+            string res = "";
+            if (ch.IsBanned == false)
+            {
+                res = await _universityAdminRepository.Disable(_mapper.Map<UniversityAdmin>(ch));
+            }
+            else
+            {
+                res = await _universityAdminRepository.Enable(_mapper.Map<UniversityAdmin>(ch));
+            }
             return result.Set(new DescriptionResponseApiModel(res), true);
         }
 
