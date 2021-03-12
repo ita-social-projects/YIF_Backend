@@ -95,5 +95,18 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var responseResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsType<SpecialtyResponseApiModel>(responseResult.Value);
         }
+
+        [Fact]
+        public async Task GetSpecialtyDescriptionsAsync_EndpointReturnsOk()
+        {
+            // Arrange
+            var list = new List<SpecialtyToUniversityResponseApiModel>() { new SpecialtyToUniversityResponseApiModel() }.AsEnumerable();
+            _specialtyService.Setup(x => x.GetAllSpecialtyDescriptionsById(It.IsAny<string>())).ReturnsAsync(list);
+            // Act
+            var result = await _testControl.GetSpecialtyDescriptionsAsync(It.IsAny<string>());
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            Assert.IsAssignableFrom<IEnumerable<SpecialtyToUniversityResponseApiModel>>(responseResult.Value);
+        }
     }
 }

@@ -35,6 +35,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly IEnumerable<SpecialtyDTO> _listSpecialty;
         private readonly IEnumerable<SpecialtyDTO> _blankListSpecialty = new List<SpecialtyDTO>().AsEnumerable();
         private readonly IEnumerable<SpecialtyResponseApiModel> _blankResponse = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel() }.AsEnumerable();
+        private readonly IEnumerable<SpecialtyToUniversityDTO> _listSpecialtyToUniversityDTO;
 
         public SpecialtyServiceTests()
         {
@@ -50,6 +51,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 );
 
             _listSpecialty = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
+            _listSpecialtyToUniversityDTO = new List<SpecialtyToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
             var listSpecialtyToUniversity = new List<SpecialtyToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
             _specialtyToUniversityRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToUniversity, bool>>>()))
                     .ReturnsAsync(listSpecialtyToUniversity);
@@ -175,19 +177,17 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _specialtyService.GetSpecialtyById(null));
         }
 
-        //not working
         [Fact]
         public async Task GetSpecialtyDescriptionsById_ShouldReturnSpecialtyDescriptions_ById()
         {
-            // Arrange
-            _specialtyToUniversityRepository.Setup(s => s.GetAll()).ReturnsAsync(new List<SpecialtyToUniversityDTO>());
-            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(It.IsAny<SpecialtyToUniversityDTO>())).Returns(new List<SpecialtyToUniversityResponseApiModel>());
+            //// Arrange
+            _specialtyToUniversityRepository.Setup(x => x.GetSpecialtyInUniversityDescriptionsById(It.IsAny<string>())).ReturnsAsync(_listSpecialtyToUniversityDTO);
 
             // Act
-            var result = await _specialtyService.GetAllSpecialtyDescriptionsById("id");
+            var result = await _specialtyService.GetAllSpecialtyDescriptionsById(It.IsAny<string>());
 
             // Assert
-            Assert.IsType<SpecialtyToUniversityResponseApiModel>(result);
+            Assert.NotNull(result);
         }
 
         [Fact]
