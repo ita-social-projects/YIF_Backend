@@ -1370,7 +1370,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-  EducationalProgramLink = "example.com",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
