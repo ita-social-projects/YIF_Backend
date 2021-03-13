@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -23,13 +24,16 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ResourceManager _resourceManager;
+        private readonly IApplicationDbContext _context;
 
         public TestController(
             IUserService<DbUser> userService, 
-            ResourceManager resourceManager)
+            ResourceManager resourceManager,
+            IApplicationDbContext context)
         {
             _userService = userService;
             _resourceManager = resourceManager;
+            _context = context;
         }
 
         /// <summary>
@@ -102,6 +106,22 @@ namespace YIF_Backend.Controllers
         public void CreateServerError()
         {
             throw new Exception(_resourceManager.GetString("TestServerErrorMessage"));
+        }
+
+        /// <summary>
+        /// Delete Institution of Education 
+        /// /// </summary>
+        /// <returns>Success delete</returns>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteInstitution/{id}")]
+        public async Task<IActionResult> DeleteInstitution(string id)
+        {
+            var inst = _context.InstitutionOfEducations.Find(id);
+            _context.InstitutionOfEducations.Remove(inst);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
