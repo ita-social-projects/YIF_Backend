@@ -22,10 +22,10 @@ namespace YIF.Core.Data.Entities
         public virtual DbUser User { get; set; }
 
         /// <summary>
-        /// List of favorite universities
+        /// List of favorite institutionOfEducations
         /// </summary>
-        public virtual ICollection<UniversityToGraduate> UniversityGraduates { get; set; }
-        public virtual ICollection<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
+        public virtual ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
+        public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
 
     }
 }

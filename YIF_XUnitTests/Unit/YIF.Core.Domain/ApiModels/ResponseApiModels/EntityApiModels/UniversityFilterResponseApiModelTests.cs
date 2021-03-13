@@ -7,7 +7,7 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class UniversityFilterResponseApiModelTests
+    public class InstitutionOfEducationFilterResponseApiModelTests
     {
         [Theory]
         [InlineData("Direction", "Name", "Specialty","Image")]
@@ -15,7 +15,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.ApiModels.ResponseApiModels
         [InlineData("", "", "", "")]
         public void Ctor_ShouldImplementParameters(string Id, string Name, string Description, string ImagePath)
         {
-            var apiModel = new UniversityResponseApiModel
+            var apiModel = new InstitutionOfEducationResponseApiModel
             {
                 Id = Id,
                 Name = Name,

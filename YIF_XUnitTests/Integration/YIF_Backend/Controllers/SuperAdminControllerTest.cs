@@ -25,22 +25,22 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Theory]
         [MemberData(nameof(SuperAdminInputAttribute.GetWrongData), MemberType = typeof(SuperAdminInputAttribute))]
-        public async Task AddUniversityAndAdmin_Input_WrongUniversityPostApiModel_site(StringContent content)
+        public async Task AddInstitutionOfEducationAndAdmin_Input_WrongInstitutionOfEducationPostApiModel_site(StringContent content)
         {
             // Act
-            var response = await _client.PostAsync("/api/SuperAdmin/AddUniversityAndAdmin", content);
+            var response = await _client.PostAsync("/api/SuperAdmin/AddInstitutionOfEducationAndAdmin", content);
 
             // Assert
             Assert.True( response.StatusCode == System.Net.HttpStatusCode.BadRequest);
         }
 
         [Fact]
-        public async Task AddUniversityAndAdmin_Output_WithCorectData()
+        public async Task AddInstitutionOfEducationAndAdmin_Output_WithCorectData()
         {
             // Arrange
             var postRequest = new
             {
-                Url = "/api/SuperAdmin/AddUniversityAndAdmin",
+                Url = "/api/SuperAdmin/AddInstitutionOfEducationAndAdmin",
                 Body = SuperAdminInputAttribute.GetCorrectData
             };
 
@@ -52,18 +52,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task AddUniversityAndAdmin_Output_ByAddingSameUniversityTwoTimes()
+        public async Task AddInstitutionOfEducationAndAdmin_Output_ByAddingSameInstitutionOfEducationTwoTimes()
         {            
             // Arrange
             var postRequest = new
             {
-                Url = "/api/SuperAdmin/AddUniversityAndAdmin",
+                Url = "/api/SuperAdmin/AddInstitutionOfEducationAndAdmin",
                 Body = SuperAdminInputAttribute.GetCorrectData
             };
             var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
             response.EnsureSuccessStatusCode();
 
-            postRequest.Body.UniversityAdminEmail = "name@gmail.com";
+            postRequest.Body.InstitutionOfEducationAdminEmail = "name@gmail.com";
             // Act
             response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
@@ -72,12 +72,12 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task AddUniversityAndAdmin_Output_ByAddingSameAdminTwoTimes()
+        public async Task AddInstitutionOfEducationAndAdmin_Output_ByAddingSameAdminTwoTimes()
         {
             // Arrange
             var postRequest = new
             {
-                Url = "/api/SuperAdmin/AddUniversityAndAdmin",
+                Url = "/api/SuperAdmin/AddInstitutionOfEducationAndAdmin",
                 Body = SuperAdminInputAttribute.GetCorrectData
             };
             var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));

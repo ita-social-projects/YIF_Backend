@@ -79,7 +79,7 @@ namespace YIF_Backend.Controllers
         /// <response code="403">If user doesn't have enough rights</response>
         /// <response code="404">If users not found</response>
         [HttpGet("Admins")]
-        [Authorize(Roles = "SuperAdmin,UniversityModerator,SchoolModerator")]
+        [Authorize(Roles = "SuperAdmin,InstitutionOfEducationModerator,SchoolModerator")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]

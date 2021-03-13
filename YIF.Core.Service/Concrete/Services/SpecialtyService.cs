@@ -15,30 +15,30 @@ namespace YIF.Core.Service.Concrete.Services
 {
     public class SpecialtyService : ISpecialtyService
     {
-        private readonly ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> _specialtyToUniversityRepository;
+        private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
         private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
         private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
-        private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
+        private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
         public SpecialtyService(
-            ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO> specialtyToUniversityRepository,
+            ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
             IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
-            IUniversityRepository<University, UniversityDTO> universityRepository,
+            IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
-            _specialtyToUniversityRepository = specialtyToUniversityRepository;
+            _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
             _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
             _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
             _specialtyRepository = specialtyRepository;
-            _universityRepository = universityRepository;
+            _institutionOfEducationRepository = institutionOfEducationRepository;
             _graduateRepository = graduateRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
@@ -47,7 +47,7 @@ namespace YIF.Core.Service.Concrete.Services
         public void Dispose()
         {
             _specialtyRepository.Dispose();
-            _specialtyToUniversityRepository.Dispose();
+            _specialtyToInstitutionOfEducationRepository.Dispose();
         }
 
         public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilter(FilterApiModel filterModel)
@@ -64,17 +64,17 @@ namespace YIF.Core.Service.Concrete.Services
                 specilaties = specilaties.Where(s => s.Direction.Name == filterModel.DirectionName);
             }
 
-            if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
+            if (filterModel.InstitutionOfEducationName != string.Empty && filterModel.InstitutionOfEducationName != null)
             {
-                var specialtyToUniversity = await _specialtyToUniversityRepository.Find(su => su.University.Name == filterModel.UniversityName);
-                var specialtyId = specialtyToUniversity.Select(su => su.SpecialtyId);
+                var specialtyToInstitutionOfEducation = await _specialtyToInstitutionOfEducationRepository.Find(su => su.InstitutionOfEducation.Name == filterModel.InstitutionOfEducationName);
+                var specialtyId = specialtyToInstitutionOfEducation.Select(su => su.SpecialtyId);
                 specilaties = specilaties.Where(s => specialtyId.Contains(s.Id));
             }
 
-            if (filterModel.UniversityAbbreviation != string.Empty && filterModel.UniversityAbbreviation != null)
+            if (filterModel.InstitutionOfEducationAbbreviation != string.Empty && filterModel.InstitutionOfEducationAbbreviation != null)
             {
-                var specialtyToUniversity = await _specialtyToUniversityRepository.Find(su => su.University.Abbreviation == filterModel.UniversityAbbreviation);
-                var specialtyIds = specialtyToUniversity.Select(su => su.SpecialtyId);
+                var specialtyToInstitutionOfEducation = await _specialtyToInstitutionOfEducationRepository.Find(su => su.InstitutionOfEducation.Abbreviation == filterModel.InstitutionOfEducationAbbreviation);
+                var specialtyIds = specialtyToInstitutionOfEducation.Select(su => su.SpecialtyId);
                 specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
             }
 
@@ -83,23 +83,23 @@ namespace YIF.Core.Service.Concrete.Services
                 //Filtering for educationFormToDescription that has such EducationForm
                 var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
 
-                //From all specialtyToUniversity set which contains educationFormToDescription
-                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
-                var specialtyToUniversity = specialtyToUniversityAll
-                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+                //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
+                var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
+                var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
+                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyInInstitutionOfEducationDescriptionId == x.SpecialtyInInstitutionOfEducationDescriptionId));
 
-                specilaties = specilaties.Where(x => specialtyToUniversity.Any(y => y.SpecialtyId == x.Id));
+                specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
             {
                 var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
 
-                var specialtyToUniversityAll = await _specialtyToUniversityRepository.GetAll();
-                var specialtyToUniversity = specialtyToUniversityAll
-                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyInUniversityDescriptionId == x.SpecialtyInUniversityDescriptionId));
+                var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
+                var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
+                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyInInstitutionOfEducationDescriptionId == x.SpecialtyInInstitutionOfEducationDescriptionId));
 
-                specilaties = specilaties.Where(x => specialtyToUniversity.Any(y => y.SpecialtyId == x.Id));
+                specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
             return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
         }
@@ -142,73 +142,73 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
-        public async Task<IEnumerable<SpecialtyToUniversityResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
+        public async Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
         {
-            var specialtyDescriptions = await _specialtyToUniversityRepository.GetSpecialtyInUniversityDescriptionsById(id);
+            var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyInInstitutionOfEducationDescriptionsById(id);
             if (specialtyDescriptions.Count() < 1)
             {
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyDescriptionsNotFound"));
             }
-            var result = _mapper.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(specialtyDescriptions);
+            var result = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(specialtyDescriptions);
             return result;
         }
-        public async Task AddSpecialtyAndUniversityToFavorite(string specialtyId,string universityId, string userId)
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId,string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
 
-            var entity = new SpecialtyToUniversityToGraduate()
+            var entity = new SpecialtyToInstitutionOfEducationToGraduate()
             {
                 SpecialtyId = specialtyId,
-                UniversityId = universityId,
+                InstitutionOfEducationId = institutionOfEducationId,
                 GraduateId = graduate.Id
             };
 
-            var favorites = await _specialtyToUniversityRepository.FavoriteContains(entity);
-            var university = await _universityRepository.ContainsById(universityId);
+            var favorites = await _specialtyToInstitutionOfEducationRepository.FavoriteContains(entity);
+            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(institutionOfEducationId);
             var specialty = await _specialtyRepository.ContainsById(specialtyId);
 
             if (favorites == true)
-                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndUniversityIsAlreadyFavorite"));
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndInstitutionOfEducationIsAlreadyFavorite"));
 
             if (graduate == null)
                 throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
 
-            if (university == false)
-                throw new BadRequestException(_resourceManager.GetString("UniversityNotFound"));
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
 
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            await _specialtyToUniversityRepository.AddFavorite(entity);
+            await _specialtyToInstitutionOfEducationRepository.AddFavorite(entity);
         }
-        public async Task DeleteSpecialtyAndUniversityFromFavorite(string specialtyId ,string universityId, string userId)
+        public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId ,string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
 
-            var entity = new SpecialtyToUniversityToGraduate()
+            var entity = new SpecialtyToInstitutionOfEducationToGraduate()
             {
                 SpecialtyId = specialtyId,
-                UniversityId = universityId,
+                InstitutionOfEducationId = institutionOfEducationId,
                 GraduateId = graduate.Id
             };
 
-            var favorites = await _specialtyToUniversityRepository.FavoriteContains(entity);
-            var university = await _universityRepository.ContainsById(universityId);
+            var favorites = await _specialtyToInstitutionOfEducationRepository.FavoriteContains(entity);
+            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(institutionOfEducationId);
             var specialty = await _specialtyRepository.ContainsById(specialtyId);
 
             if (favorites == false)
-                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndUniversityIsNotFavorite"));
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndInstitutionOfEducationIsNotFavorite"));
 
             if (graduate == null)
                 throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
 
-            if (university == false)
-                throw new BadRequestException(_resourceManager.GetString("UniversityNotFound"));
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
 
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            await _specialtyToUniversityRepository.RemoveFavorite(entity);
+            await _specialtyToInstitutionOfEducationRepository.RemoveFavorite(entity);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace YIF.Core.Domain.EntityForResponse
 {
-    public class UniversityForUniversityAdminResponseApiModel
+    public class InstitutionOfEducationForInstitutionOfEducationAdminResponseApiModel
     {
         /// <summary>
         /// Unique id
@@ -13,13 +13,13 @@ namespace YIF.Core.Domain.EntityForResponse
         public string Id { get; set; }
 
         /// <summary>
-        /// Name of university
+        /// Name of institutionOfEducation
         /// </summary>
         /// <example>Національний університет водного господарства та природокористування</example>
         public string Name { get; set; }
 
         /// <summary>
-        /// Short name of university
+        /// Short name of institutionOfEducation
         /// </summary>
         /// <example>НУВГП</example>
         public string Abbreviation { get; set; }
