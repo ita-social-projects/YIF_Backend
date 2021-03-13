@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -2423,6 +2424,74 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 Console.WriteLine("Database seeded.");
+            }
+        }
+
+        public async static void SeedDataURL(IServiceProvider services)
+        {
+            using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<EFDbContext>();
+
+                var htmlUrl = @"https://zakon.rada.gov.ua/laws/show/266-2015-%D0%BF/print";
+
+                HtmlWeb web = new HtmlWeb();
+                var htmlDoc = await web.LoadFromWebAsync(htmlUrl);
+                var trNodes = htmlDoc.DocumentNode.SelectNodes("//*[@id=\"article\"]/div/span/em[3]/div/table/tr");
+
+                if (trNodes != null)
+                {
+                    //in case of this htmlUrl. Header in first <tr>
+                    trNodes.RemoveAt(0);
+                    Direction direction = new Direction();
+                    List<Specialty> directionSpecialties = new List<Specialty>();
+
+                    foreach (var trNode in trNodes)
+                    {
+                        var tdNodes = trNode.ChildNodes.Where(x => x.Name == "td").ToList();
+                        switch (tdNodes.Count)
+                        {
+                            //with direction
+                            case 4:
+                                //Add previos data
+                                if (direction.Code != null)
+                                {
+                                    direction.Specialties = directionSpecialties;
+                                    context.Directions.Add(direction);
+                                    context.SaveChanges();
+                                }
+
+                                //Add new direction
+                                direction = new Direction();
+                                direction.Code = tdNodes[0].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                                direction.Name = tdNodes[1].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+
+                                //Add new specialties
+                                directionSpecialties = new List<Specialty>();
+                                Specialty specialty = new Specialty();
+                                specialty.Code = tdNodes[2].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                                specialty.Name = tdNodes[3].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                                specialty.Direction = direction;
+                                context.Specialties.Add(specialty);
+
+                                directionSpecialties.Add(specialty);
+                                break;
+
+                            //only specialty
+                            case 2:
+                                Specialty specialty1 = new Specialty();
+                                specialty1.Code = tdNodes[0].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                                specialty1.Name = tdNodes[1].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                                specialty1.Direction = direction;
+                                context.Specialties.Add(specialty1);
+
+                                directionSpecialties.Add(specialty1);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             }
         }
     }

@@ -215,6 +215,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
+            SeederDB.SeedDataURL(app.ApplicationServices);
             //SeederDB.SeedData(app.ApplicationServices);
             if (_currentEnvironment.IsEnvironment("Testing"))
             {
@@ -228,7 +229,7 @@ namespace YIF_Backend
             {
                 c.IndexStream = () => GetType().Assembly.GetManifestResourceStream("YIF_Backend.Swagger.index.html");
 
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "YIF API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "YITF API V1");
             });
             #endregion
 
