@@ -134,7 +134,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> AddUniversityToFavorite(string specialtyId, string universityId)
+        public async Task<IActionResult> AddSpecialtyAndUniversityToFavorite(string specialtyId, string universityId)
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.AddSpecialtyAndUniversityToFavorite(specialtyId, universityId, userId);
@@ -154,7 +154,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpDelete("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> DeleteUniversityFromFavorite(string specialtyId, string universityId)
+        public async Task<IActionResult> DeleteSpecialtyAndUniversityFromFavorite(string specialtyId, string universityId)
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(specialtyId, universityId, userId);
