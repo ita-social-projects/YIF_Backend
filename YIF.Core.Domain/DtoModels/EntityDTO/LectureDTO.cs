@@ -5,9 +5,9 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
     public class LectureDTO
     {
         public string Id { get; set; }
-        public string UniversityId { get; set; }
+        public string InstitutionOfEducationId { get; set; }
 
-        public UniversityDTO University { get; set; }
+        public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
         /// <summary>
         /// Link to Identity user
         /// </summary>

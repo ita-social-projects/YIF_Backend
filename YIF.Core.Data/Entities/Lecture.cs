@@ -9,10 +9,10 @@ namespace YIF.Core.Data.Entities
         [Key, ForeignKey("User")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        public string UniversityId { get; set; }
+        public string InstitutionOfEducationId { get; set; }
 
-        [ForeignKey("UniversityId")]
-        public University University { get; set; }
+        [ForeignKey("InstitutionOfEducationId")]
+        public InstitutionOfEducation InstitutionOfEducation { get; set; }
         /// <summary>
         /// Link to Identity user
         /// </summary>

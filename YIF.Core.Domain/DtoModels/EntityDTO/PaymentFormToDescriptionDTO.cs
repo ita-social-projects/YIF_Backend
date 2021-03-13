@@ -4,9 +4,9 @@
     {
         public string Id { get; set; }
         public string PaymentFormId { get; set; }
-        public string SpecialtyInUniversityDescriptionId { get; set; }
+        public string SpecialtyInInstitutionOfEducationDescriptionId { get; set; }
 
         public virtual PaymentFormDTO PaymentForm { get; set; }
-        public virtual SpecialtyInUniversityDescriptionDTO SpecialtyInUniversityDescription { get; set; }
+        public virtual SpecialtyInInstitutionOfEducationDescriptionDTO SpecialtyInInstitutionOfEducationDescription { get; set; }
     }
 }

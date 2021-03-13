@@ -43,7 +43,7 @@ namespace YIF.Core.Domain.Repositories
         public Task<IEnumerable<PaymentFormToDescriptionDTO>> Find(Expression<Func<PaymentFormToDescription, bool>> predicate)
         {
             var list = _context.PaymentFormToDescriptions
-                .Include(x => x.SpecialtyInUniversityDescription)
+                .Include(x => x.SpecialtyInInstitutionOfEducationDescription)
                 .Include(x => x.PaymentForm)
                 .Where(predicate)
                 .ToList();

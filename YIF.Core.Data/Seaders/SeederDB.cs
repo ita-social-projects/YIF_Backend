@@ -23,14 +23,14 @@ namespace YIF.Core.Data.Seaders
                 var schoolAdminRole = new IdentityRole(ProjectRoles.SchoolAdmin);
                 await roleManager.CreateAsync(schoolAdminRole);
 
-                var universityAdminRole = new IdentityRole(ProjectRoles.UniversityAdmin);
-                await roleManager.CreateAsync(universityAdminRole);
+                var institutionOfEducationAdminRole = new IdentityRole(ProjectRoles.InstitutionOfEducationAdmin);
+                await roleManager.CreateAsync(institutionOfEducationAdminRole);
 
                 var schoolModeratorRole = new IdentityRole(ProjectRoles.SchoolModerator);
                 await roleManager.CreateAsync(schoolModeratorRole);
 
-                var universityModeratorRole = new IdentityRole(ProjectRoles.UniversityModerator);
-                await roleManager.CreateAsync(universityModeratorRole);
+                var institutionOfEducationModeratorRole = new IdentityRole(ProjectRoles.InstitutionOfEducationModerator);
+                await roleManager.CreateAsync(institutionOfEducationModeratorRole);
 
                 var lectureRole = new IdentityRole(ProjectRoles.Lecture);
                 await roleManager.CreateAsync(lectureRole);
@@ -497,7 +497,7 @@ namespace YIF.Core.Data.Seaders
 
         #endregion
 
-        #region University
+        #region InstitutionOfEducation
 
         public async static Task SeedDirections(EFDbContext context)
         {
@@ -693,14 +693,14 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public static void SeedUniversities(EFDbContext context)
+        public static void SeedInstitutionOfEducations(EFDbContext context)
         {
-            if (context.Universities.Count() == 0)
+            if (context.InstitutionOfEducations.Count() == 0)
             {
-                var univerities = new List<University>();
+                var univerities = new List<InstitutionOfEducation>();
 
                 #region НУВГП
-                univerities.Add(new University
+                univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Національний університет водного господарства та природокористування",
                     Abbreviation = "НУВГП",
@@ -714,13 +714,14 @@ namespace YIF.Core.Data.Seaders
                     " проводить науково-дослідну роботу. ",
                     Lat = 50.61798003111006f,
                     Lon = 26.25865398659906f,
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
                     EndOfCampaign = new DateTime(2021, 8, 31)
                 });
                 #endregion
 
                 #region МЕГУ
-                univerities.Add(new University 
+                univerities.Add(new InstitutionOfEducation 
                 {
                     Name = "Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука",
                     Abbreviation = "МЕГУ",
@@ -733,13 +734,14 @@ namespace YIF.Core.Data.Seaders
                     "які серйозно знадобляться в житті кожному, хто навчатиметься в нашому університеті.",
                     Lat = 50.6097214170274f,
                     Lon = 26.288458069318498f,
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
                     EndOfCampaign = new DateTime(2021, 8, 31)
                 });
                 #endregion
 
                 #region ОА
-                univerities.Add(new University 
+                univerities.Add(new InstitutionOfEducation 
                 {
                     Name = "Національний університет \"Острозька академія\"",
                     Abbreviation = "ОА",
@@ -757,13 +759,14 @@ namespace YIF.Core.Data.Seaders
                     "З Острозькою академією пов’язується ренесанс українського народу.",
                     Lat = 50.329296716686464f,
                     Lon = 26.512545745229293f,
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
                     EndOfCampaign = new DateTime(2021, 8, 31)
                 });
                 #endregion
 
                 #region РДГУ
-                univerities.Add(new University 
+                univerities.Add(new InstitutionOfEducation 
                 {
                     Name = "Рівненський державний гуманітарний університет",
                     Abbreviation = "РДГУ",
@@ -778,13 +781,14 @@ namespace YIF.Core.Data.Seaders
                     "інноваційним потенціалом сучасних технологій навчання студентів.",
                     Lat = 50.62372932193232f,
                     Lon = 26.260765167100683f,
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
                     EndOfCampaign = new DateTime(2021, 8, 31)
                 });
                 #endregion
 
                 #region КПІ
-                univerities.Add(new University
+                univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Київський політехнічний інститут імені Ігоря Сікорського",
                     Abbreviation="КПІ",
@@ -795,11 +799,16 @@ namespace YIF.Core.Data.Seaders
                     " заснований в Києві у 1898 р., на сьогодні це один із найбільших університетів" +
                     " України за кількістю студентів з широким спектром спеціальностей і освітніх програм " +
                     "для підготовки фахівців з технічних і гуманітарних наук",
+                    Lat = 50.4491699f,
+                    Lon = 30.4561487f,
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
+                    StartOfCampaign = new DateTime(2021, 8, 13),
+                    EndOfCampaign = new DateTime(2021, 8, 31)
                 });
                 #endregion
 
                 #region НАВС
-                univerities.Add(new University
+                univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Академія внутрішніх військ МВС України",
                     Abbreviation = "НАВС",
@@ -810,245 +819,248 @@ namespace YIF.Core.Data.Seaders
                     " підпорядкований Міністерству внутрішніх справ України та розташований у Києві",
                     Lat = 50.43278409191516f,
                     Lon = 30.471873937648123f,
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
+                    StartOfCampaign = new DateTime(2021, 8, 13),
+                    EndOfCampaign = new DateTime(2021, 8, 31)
                 });
                 #endregion
 
-                context.Universities.AddRange(univerities);
+                context.InstitutionOfEducations.AddRange(univerities);
                 context.SaveChanges();
             }
         }
 
 
-        public static void SeedDirectionsAndSpecialitiesToUniversity(EFDbContext context)
+        public static void SeedDirectionsAndSpecialitiesToInstitutionOfEducation(EFDbContext context)
         {
-            if (context.DirectionsToUniversities.Count() == 0 || context.SpecialtyToUniversities.Count() == 0)
+            if (context.DirectionsToInstitutionOfEducations.Count() == 0 || context.SpecialtyToInstitutionOfEducations.Count() == 0)
             {
                 var directions = context.Directions.ToList();
                 var specialities = context.Specialties.ToList();
-                var universities = context.Universities.ToList();
+                var institutionOfEducations = context.InstitutionOfEducations.ToList();
 
-                var directionsToUniversities = new List<DirectionToUniversity>();
-                var specialitiesToUniversities = new List<SpecialtyToUniversity>();
+                var directionsToInstitutionOfEducations = new List<DirectionToInstitutionOfEducation>();
+                var specialitiesToInstitutionOfEducations = new List<SpecialtyToInstitutionOfEducation>();
 
-                var currentUniversityId = string.Empty;
+                var currentInstitutionOfEducationId = string.Empty;
 
                 #region Академія внутрішніх військ МВС України
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
-                directionsToUniversities.AddRange(new List<DirectionToUniversity>
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
+                directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Соціальні та поведінкові науки").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,UniversityId = currentUniversityId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Соціальні та поведінкові науки").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
-                specialitiesToUniversities.AddRange(new List<SpecialtyToUniversity>
+                specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Соціальні та поведінкові науки
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Соціологія").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Соціологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion
                     #region Математика та статистика
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,UniversityId = currentUniversityId }
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
                     #endregion
                 });
                 #endregion
 
                 #region Національний університет "Острозька академія"
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Національний університет \"Острозька академія\"").Id;
-                directionsToUniversities.AddRange(new List<DirectionToUniversity>
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Національний університет \"Острозька академія\"").Id;
+                directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,UniversityId = currentUniversityId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
-                specialitiesToUniversities.AddRange(new List<SpecialtyToUniversity>
+                specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Інформаційні технології
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion
                     #region Математика та статистика
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion
                     #region Електрична інженерія
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,UniversityId = currentUniversityId }
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
                     #endregion
                 });
                 #endregion
 
                 #region Національний університет водного господарства та природокористування
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Національний університет водного господарства та природокористування").Id;
-                directionsToUniversities.AddRange(new List<DirectionToUniversity>
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Національний університет водного господарства та природокористування").Id;
+                directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Автоматизація та приладобудування").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,UniversityId = currentUniversityId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Автоматизація та приладобудування").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
-                specialitiesToUniversities.AddRange(new List<SpecialtyToUniversity>
+                specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Інформаційні технології
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion
                     #region Автоматизація та приладобудування
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Автоматизація та комп’ютерно-інтегровані технології").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Автоматизація та комп’ютерно-інтегровані технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion
                     #region Електрична інженерія
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Енергетичне машинобудування").Id,UniversityId = currentUniversityId }
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Енергетичне машинобудування").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
                     #endregion
                 });
                 #endregion
 
                 #region Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука").Id;
-                directionsToUniversities.AddRange(new List<DirectionToUniversity>
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука").Id;
+                directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,UniversityId = currentUniversityId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
-                specialitiesToUniversities.AddRange(new List<SpecialtyToUniversity>
+                specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Математика та статистика
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion                 
                 });
                 #endregion
 
                 #region Київський політехнічний інститут імені Ігоря Сікорського
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
-                directionsToUniversities.AddRange(new List<DirectionToUniversity>
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Автоматизація та приладобудування").Id,UniversityId = currentUniversityId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Інформаційні технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Автоматизація та приладобудування").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
-                specialitiesToUniversities.AddRange(new List<SpecialtyToUniversity>
+                specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Електрична інженерія
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Електроенергетика, електротехніка та електромеханіка").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Електроенергетика, електротехніка та електромеханіка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion  
                     #region Математика та статистика
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion 
                     #region Інформаційні технології
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інформаційні системи та технології").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп’ютерна інженерія").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп'ютерні науки").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інформаційні системи та технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп’ютерна інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп'ютерні науки").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion 
                     #region Автоматизація та приладобудування
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Мікро- та наносистемна техніка").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Мікро- та наносистемна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion 
 
                 });
                 #endregion
 
                 #region Рівненський державний гуманітарний університет
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
-                directionsToUniversities.AddRange(new List<DirectionToUniversity>
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
+                directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,UniversityId = currentUniversityId },
-                    new DirectionToUniversity { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,UniversityId = currentUniversityId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
-                specialitiesToUniversities.AddRange(new List<SpecialtyToUniversity>
+                specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Електрична інженерія
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion  
                     #region Математика та статистика
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,UniversityId = currentUniversityId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion                   
                 });
                 #endregion
 
 
-                context.DirectionsToUniversities.AddRange(directionsToUniversities);
-                context.SpecialtyToUniversities.AddRange(specialitiesToUniversities);
+                context.DirectionsToInstitutionOfEducations.AddRange(directionsToInstitutionOfEducations);
+                context.SpecialtyToInstitutionOfEducations.AddRange(specialitiesToInstitutionOfEducations);
                 context.SaveChanges();
 
             }
         }
 
-        public async static Task SeedUniversityAdmins(EFDbContext context, UserManager<DbUser> userManager)
+        public async static Task SeedInstitutionOfEducationAdmins(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if (context.UniversityAdmins.Count() == 0)
+            if (context.InstitutionOfEducationAdmins.Count() == 0)
             {
-                var admins = new List<UniversityAdmin>();
-                string currentUniversity = string.Empty;
-                var universities = context.Universities.ToList();
+                var admins = new List<InstitutionOfEducationAdmin>();
+                string currentInstitutionOfEducation = string.Empty;
+                var institutionOfEducations = context.InstitutionOfEducations.ToList();
 
                 #region НУВГП
                 {
-                    currentUniversity = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
+                    currentInstitutionOfEducation = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id;
                     var dbUser = new DbUser
                     {
                         Email = "nuweeAdmin@gmail.com",
                         UserName = "NuweeAdmin",
                         PhoneNumber = "+380-31-415-9265"
                     };
-                    var universityAdmin = new UniversityAdmin
+                    var institutionOfEducationAdmin = new InstitutionOfEducationAdmin
                     {
-                        UniversityId = currentUniversity,
+                        InstitutionOfEducationId = currentInstitutionOfEducation,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityAdmin);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationAdmin, institutionOfEducationAdmin);
                 }
                 #endregion
 
                 #region КПІ
-                currentUniversity = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                currentInstitutionOfEducation = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
                 {
-                    currentUniversity = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                    currentInstitutionOfEducation = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id;
                     var dbUser = new DbUser
                     {
                         Email = "kpiAdmin@gmail.com",
                         UserName = "kpiAdmin",
                         PhoneNumber = "+380-31-415-9266"
                     };
-                    var universityAdmin = new UniversityAdmin
+                    var institutionOfEducationAdmin = new InstitutionOfEducationAdmin
                     {
-                        UniversityId = currentUniversity,
+                        InstitutionOfEducationId = currentInstitutionOfEducation,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityAdmin);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationAdmin, institutionOfEducationAdmin);
                 }
                 #endregion
 
                 #region АВВУ
-                currentUniversity = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
+                currentInstitutionOfEducation = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
                 {
-                    currentUniversity = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
+                    currentInstitutionOfEducation = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id;
                     var dbUser = new DbUser
                     {
                         Email = "naifAdmin@gmail.com",
                         UserName = "naifAdmin",
                         PhoneNumber = "+380-31-415-9267"
                     };
-                    var universityAdmin = new UniversityAdmin
+                    var institutionOfEducationAdmin = new InstitutionOfEducationAdmin
                     {
-                        UniversityId = currentUniversity,
+                        InstitutionOfEducationId = currentInstitutionOfEducation,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityAdmin);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationAdmin, institutionOfEducationAdmin);
                 }
                 #endregion
             }
@@ -1147,26 +1159,26 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public static void SeedSpecialtyInUniversityDescription(EFDbContext context)
+        public static void SeedSpecialtyInInstitutionOfEducationDescription(EFDbContext context)
         {
-            if (context.SpecialtyInUniversityDescriptions.Count() == 0)
+            if (context.SpecialtyInInstitutionOfEducationDescriptions.Count() == 0)
             {
-                var specialityDescriptions = new List<SpecialtyInUniversityDescription>();
+                var specialityDescriptions = new List<SpecialtyInInstitutionOfEducationDescription>();
 
-                var specialtyToUniversities = context.SpecialtyToUniversities.ToList();
+                var specialtyToInstitutionOfEducations = context.SpecialtyToInstitutionOfEducations.ToList();
                 var exams = context.Exams.ToList();
                 var educationForms = context.EducationForms.ToList();
                 var paymentForms = context.PaymentForms.ToList();
-                var universities = context.Universities.ToList();
+                var institutionOfEducations = context.InstitutionOfEducations.ToList();
 
-                var currentUniversityId = string.Empty;
+                var currentInstitutionOfEducationId = string.Empty;
 
                 #region Академія внутрішніх військ МВС України
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
 
                 #region Соціологія
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement> 
@@ -1189,8 +1201,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Політологія
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1213,8 +1225,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Статистика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1239,11 +1251,11 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region Національний університет "Острозька академія"
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Національний університет \"Острозька академія\"").Id;
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Національний університет \"Острозька академія\"").Id;
 
                 #region Системний аналіз
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1266,8 +1278,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Інженерія програмного забезпечення
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1290,8 +1302,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Кібербезпека
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1314,8 +1326,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1338,8 +1350,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Прикладна математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1362,8 +1374,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Гідроенергетика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1388,11 +1400,11 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region Національний університет водного господарства та природокористування
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Національний університет водного господарства та природокористування").Id;
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Національний університет водного господарства та природокористування").Id;
 
                 #region Системний аналіз
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1415,8 +1427,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Інженерія програмного забезпечення
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1439,8 +1451,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Метрологія та інформаційно-вимірювальна техніка
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1463,8 +1475,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Автоматизація та комп’ютерно-інтегровані технології
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Автоматизація та комп’ютерно-інтегровані технології" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Автоматизація та комп’ютерно-інтегровані технології" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1487,8 +1499,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Гідроенергетика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1511,8 +1523,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Енергетичне машинобудування
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Енергетичне машинобудування" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Енергетичне машинобудування" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1537,11 +1549,11 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука").Id;
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука").Id;
 
                 #region Математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1564,8 +1576,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Статистика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1590,11 +1602,11 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region Київський політехнічний інститут імені Ігоря Сікорського
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
 
                 #region Атомна енергетика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1617,8 +1629,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Теплоенергетика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1641,8 +1653,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Електроенергетика, електротехніка та електромеханіка
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Електроенергетика, електротехніка та електромеханіка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Електроенергетика, електротехніка та електромеханіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1665,8 +1677,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1689,8 +1701,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Прикладна математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1713,8 +1725,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Статистика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1737,8 +1749,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Інженерія програмного забезпечення
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1761,8 +1773,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Інформаційні системи та технології
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інформаційні системи та технології" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інформаційні системи та технології" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1785,8 +1797,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Кібербезпека
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1809,8 +1821,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Комп’ютерна інженерія
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Комп’ютерна інженерія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Комп’ютерна інженерія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1833,8 +1845,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Комп'ютерні науки
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Комп'ютерні науки" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Комп'ютерні науки" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1857,8 +1869,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Системний аналіз
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1881,8 +1893,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Метрологія та інформаційно-вимірювальна техніка
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1905,8 +1917,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Мікро- та наносистемна техніка
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Мікро- та наносистемна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Мікро- та наносистемна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1931,11 +1943,11 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region Рівненський державний гуманітарний університет
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
+                currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
 
                 #region Атомна енергетика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1958,8 +1970,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Теплоенергетика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -1982,8 +1994,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -2006,8 +2018,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Прикладна математика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -2030,8 +2042,8 @@ namespace YIF.Core.Data.Seaders
                     };
                 #endregion
                 #region Статистика
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                    new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                    new SpecialtyInInstitutionOfEducationDescription
                     {
                         EducationalProgramLink = "",
                         ExamRequirements = new List<ExamRequirement>
@@ -2063,7 +2075,7 @@ namespace YIF.Core.Data.Seaders
         {
             if (context.Lectures.Count() == 0)
             {
-                var universities = context.Universities.ToList();
+                var institutionOfEducations = context.InstitutionOfEducations.ToList();
 
                 #region НУВГП
                 {
@@ -2075,7 +2087,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2090,7 +2102,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2105,7 +2117,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2122,7 +2134,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2137,7 +2149,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2154,7 +2166,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2169,7 +2181,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2184,7 +2196,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2199,7 +2211,7 @@ namespace YIF.Core.Data.Seaders
                     var lecture = new Lecture
                     {
 
-                        UniversityId = universities.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
+                        InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
@@ -2208,12 +2220,12 @@ namespace YIF.Core.Data.Seaders
             }
         }
         
-        public async static Task SeedUniversityModerators(EFDbContext context, UserManager<DbUser> userManager)
+        public async static Task SeedInstitutionOfEducationModerators(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if (context.UniversityModerators.Count() == 0)
+            if (context.InstitutionOfEducationModerators.Count() == 0)
             {
-                var universities = context.Universities.ToList();
-                var admins = context.UniversityAdmins.ToList();
+                var institutionOfEducations = context.InstitutionOfEducations.ToList();
+                var admins = context.InstitutionOfEducationAdmins.ToList();
 
                 #region НУВГП
                 {
@@ -2223,12 +2235,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "nuweeModerator@gmail.com",
                         UserName = "NuweeModerator"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationAdmin, institutionOfEducationModerator);
                 }
 
                 {
@@ -2237,12 +2249,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "cfarid.nadji2r@devist.com",
                         UserName = "SafwanWickens"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationModerator, institutionOfEducationModerator);
                 }
 
                 {
@@ -2251,12 +2263,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "hselma_kra@jomcs.com",
                         UserName = "DanieleHicks"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Національний університет водного господарства та природокористування").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationModerator, institutionOfEducationModerator);
                 }
                 #endregion
 
@@ -2267,12 +2279,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "dill.pazee@azel.xyz",
                         UserName = "GiaVang"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationAdmin, institutionOfEducationModerator);
                 }
 
                 {
@@ -2281,12 +2293,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "2soso@hustletussle.com",
                         UserName = "SuhailMcloughlin"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationModerator, institutionOfEducationModerator);
                 }
 
                 {
@@ -2295,12 +2307,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "vhamimi.salah@nanbianshan.com",
                         UserName = "MirzaReed"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationModerator, institutionOfEducationModerator);
                 }
 
                 {
@@ -2309,12 +2321,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "7chhavi.s@cagi.ru",
                         UserName = "AntonRoberts"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationModerator, institutionOfEducationModerator);
                 }
                 #endregion
 
@@ -2325,12 +2337,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "fmourad_v7w@hotmail-s.com",
                         UserName = "AlexisHolding"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Академія внутрішніх військ МВС України").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityAdmin, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationAdmin, institutionOfEducationModerator);
                 }
 
                 {
@@ -2339,12 +2351,12 @@ namespace YIF.Core.Data.Seaders
                         Email = "jleart.blakaj2n@twseel.com",
                         UserName = "ConorBloggs"
                     };
-                    var universityModerator = new UniversityModerator
+                    var institutionOfEducationModerator = new InstitutionOfEducationModerator
                     {
-                        AdminId = admins.FirstOrDefault(x => x.University.Name == "Академія внутрішніх військ МВС України").Id,
+                        AdminId = admins.FirstOrDefault(x => x.InstitutionOfEducation.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.UniversityModerator, universityModerator);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.InstitutionOfEducationModerator, institutionOfEducationModerator);
                 }
                 #endregion
             }
@@ -2393,9 +2405,9 @@ namespace YIF.Core.Data.Seaders
 
                 // Directions: 1
                 // Specialities: 6
-                // Universities: 3
-                // UniversityAdmins: 3
-                // UniversityModerators: 9
+                // InstitutionOfEducations: 3
+                // InstitutionOfEducationAdmins: 3
+                // InstitutionOfEducationModerators: 9
                 // Lectures: 9
 
                 await SeederDB.SeedRoles(managerRole);
@@ -2408,18 +2420,18 @@ namespace YIF.Core.Data.Seaders
                 await SeederDB.SeedGraduates(context, manager);
                 #endregion
 
-                #region University
+                #region InstitutionOfEducation
                 await SeederDB.SeedDirections(context);
                 await SeederDB.SeedSpecialities(context);
-                SeederDB.SeedUniversities(context);
-                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                await SeederDB.SeedUniversityAdmins(context, manager);
-                await SeederDB.SeedUniversityModerators(context, manager);
+                SeederDB.SeedInstitutionOfEducations(context);
+                SeederDB.SeedDirectionsAndSpecialitiesToInstitutionOfEducation(context);
+                await SeederDB.SeedInstitutionOfEducationAdmins(context, manager);
+                await SeederDB.SeedInstitutionOfEducationModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);
                 SeederDB.SeedEducationForms(context);
                 SeederDB.SeedPaymentForms(context);
                 SeederDB.SeedExams(context);
-                SeederDB.SeedSpecialtyInUniversityDescription(context);
+                SeederDB.SeedSpecialtyInInstitutionOfEducationDescription(context);
                 #endregion
 
                 Console.WriteLine("Database seeded.");

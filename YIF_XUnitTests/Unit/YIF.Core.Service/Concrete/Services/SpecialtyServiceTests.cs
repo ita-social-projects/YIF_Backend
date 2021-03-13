@@ -21,17 +21,17 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class SpecialtyServiceTests
     {
         private readonly SpecialtyService _specialtyService;
-        private readonly Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>> _specialtyToUniversityRepository = new Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+        private readonly Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>> _specialtyToInstitutionOfEducationRepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private readonly Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>> _educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
         private readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
-        private readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityRepository = new Mock<IUniversityRepository<University, UniversityDTO>>();
+        private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
         private readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
-        private readonly SpecialtyToUniversityDTO _specialtyToUniversityDTO = new SpecialtyToUniversityDTO { SpecialtyId = "id", University = new UniversityDTO(), SpecialtyInUniversityDescription = new SpecialtyInUniversityDescriptionDTO() };
+        private readonly SpecialtyToInstitutionOfEducationDTO _specialtyToInstitutionOfEducationDTO = new SpecialtyToInstitutionOfEducationDTO { SpecialtyId = "id", InstitutionOfEducation = new InstitutionOfEducationDTO(), SpecialtyInInstitutionOfEducationDescription = new SpecialtyInInstitutionOfEducationDescriptionDTO() };
         private readonly IEnumerable<SpecialtyDTO> _listSpecialty;
         private readonly IEnumerable<SpecialtyDTO> _blankListSpecialty = new List<SpecialtyDTO>().AsEnumerable();
         private readonly IEnumerable<SpecialtyResponseApiModel> _blankResponse = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel() }.AsEnumerable();
@@ -39,25 +39,25 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public SpecialtyServiceTests()
         {
             _specialtyService = new SpecialtyService(
-                _specialtyToUniversityRepository.Object,
+                _specialtyToInstitutionOfEducationRepository.Object,
                 _educationFormToDescriptionRepository.Object,
                 _paymentFormToDescriptionRepository.Object,
                 _specialtyRepository.Object,
-                _universityRepository.Object,
+                _institutionOfEducationRepository.Object,
                 _graduateRepository.Object,
                 _mapper.Object,
                 _resourceManager.Object
                 );
 
             _listSpecialty = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
-            var listSpecialtyToUniversity = new List<SpecialtyToUniversityDTO>() { _specialtyToUniversityDTO }.AsEnumerable();
-            _specialtyToUniversityRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToUniversity, bool>>>()))
-                    .ReturnsAsync(listSpecialtyToUniversity);
+            var listSpecialtyToInstitutionOfEducation = new List<SpecialtyToInstitutionOfEducationDTO>() { _specialtyToInstitutionOfEducationDTO }.AsEnumerable();
+            _specialtyToInstitutionOfEducationRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                    .ReturnsAsync(listSpecialtyToInstitutionOfEducation);
         }
 
         [Theory]
-        [InlineData("Specialty", "Direction", "University", "Abbreviation")]
-        [InlineData("Specialty", null, "University", null)]
+        [InlineData("Specialty", "Direction", "InstitutionOfEducation", "Abbreviation")]
+        [InlineData("Specialty", null, "InstitutionOfEducation", null)]
         [InlineData(null, "Direction", null, "Abbreviation")]
         [InlineData(null, null, null, null)]
         public async Task GetAllSpecialtiesByFilter_ShouldReturnOk(string specialty, string direction, string uniName, string uniAbbr)
@@ -67,8 +67,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 SpecialtyName = _specialtyDTO.Name = specialty,
                 DirectionName = _specialtyDTO.Direction.Name = direction,
-                UniversityName = _specialtyToUniversityDTO.University.Name = uniName,
-                UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = uniAbbr
+                InstitutionOfEducationName = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Name = uniName,
+                InstitutionOfEducationAbbreviation = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Abbreviation = uniAbbr
             };
 
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpecialty);
@@ -108,8 +108,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Theory]
-        [InlineData("Specialty", "Direction", "University", "Abbreviation")]
-        [InlineData("Specialty", null, "University", null)]
+        [InlineData("Specialty", "Direction", "InstitutionOfEducation", "Abbreviation")]
+        [InlineData("Specialty", null, "InstitutionOfEducation", null)]
         [InlineData("Specialty", null, null, null)]
         public async Task GetSpecialtiesNamesByFilter_ShouldReturnList_IfDatabaseNotEmpty2(string specialty, string direction, string uniName, string uniAbbr)
         {
@@ -118,8 +118,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 SpecialtyName = _specialtyDTO.Name = specialty,
                 DirectionName = _specialtyDTO.Direction.Name = direction,
-                UniversityName = _specialtyToUniversityDTO.University.Name = uniName,
-                UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = uniAbbr
+                InstitutionOfEducationName = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Name = uniName,
+                InstitutionOfEducationAbbreviation = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Abbreviation = uniAbbr
             };
 
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpecialty);
@@ -141,8 +141,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 SpecialtyName = _specialtyDTO.Name = null,
                 DirectionName = _specialtyDTO.Direction.Name = null,
-                UniversityName = _specialtyToUniversityDTO.University.Name = null,
-                UniversityAbbreviation = _specialtyToUniversityDTO.University.Abbreviation = null
+                InstitutionOfEducationName = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Name = null,
+                InstitutionOfEducationAbbreviation = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Abbreviation = null
             };
 
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_blankListSpecialty);
@@ -180,43 +180,43 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetSpecialtyDescriptionsById_ShouldReturnSpecialtyDescriptions_ById()
         {
             // Arrange
-            _specialtyToUniversityRepository.Setup(s => s.GetAll()).ReturnsAsync(new List<SpecialtyToUniversityDTO>());
-            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyToUniversityResponseApiModel>>(It.IsAny<SpecialtyToUniversityDTO>())).Returns(new List<SpecialtyToUniversityResponseApiModel>());
+            _specialtyToInstitutionOfEducationRepository.Setup(s => s.GetAll()).ReturnsAsync(new List<SpecialtyToInstitutionOfEducationDTO>());
+            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(It.IsAny<SpecialtyToInstitutionOfEducationDTO>())).Returns(new List<SpecialtyToInstitutionOfEducationResponseApiModel>());
 
             // Act
             var result = await _specialtyService.GetAllSpecialtyDescriptionsById("id");
 
             // Assert
-            Assert.IsType<SpecialtyToUniversityResponseApiModel>(result);
+            Assert.IsType<SpecialtyToInstitutionOfEducationResponseApiModel>(result);
         }
 
         [Fact]
         public async Task GetSpecialtyDescriptionsById_ShouldReturnException_IfNotFoundSpecialtyDescriptions()
         {
             // Arrange
-            _specialtyToUniversityRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync((SpecialtyToUniversityDTO)null);
+            _specialtyToInstitutionOfEducationRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync((SpecialtyToInstitutionOfEducationDTO)null);
             // Assert
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _specialtyService.GetAllSpecialtyDescriptionsById(null));
         }
 
         [Fact]
-        public async Task AddSpecialtyAndUniversityToFavorite_ShouldAddSpecialtyAndUniversityToFavorite_IfEverythingOk()
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_ShouldAddSpecialtyAndInstitutionOfEducationToFavorite_IfEverythingOk()
         {
             // Arrange  
             bool favorite = false;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -226,35 +226,35 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
             var exception = await Record
-                .ExceptionAsync(() => _specialtyService.AddSpecialtyAndUniversityToFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId));
+                .ExceptionAsync(() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId));
 
             // Assert
             Assert.Null(exception);
         }
 
         [Fact]
-        public void AddSpecialtyAndUniversityToFavorite_ShouldThrowBadRequestException_IfSpecialtyAndUniversityHasAlreadyBeenAddedToFavorites()
+        public void AddSpecialtyAndInstitutionOfEducationToFavorite_ShouldThrowBadRequestException_IfSpecialtyAndInstitutionOfEducationHasAlreadyBeenAddedToFavorites()
         {
             // Arrange  
             bool favorite = false;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -264,33 +264,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndUniversityToFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public void AddSpecialtyAndUniversityToFavorite_ShouldThrowBadRequestException_IfUniversityNotFound()
+        public void AddSpecialtyAndInstitutionOfEducationToFavorite_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
         {
             bool favorite = true;
-            bool university = false;
+            bool institutionOfEducation = false;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -300,33 +300,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndUniversityToFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public void AddSpecialtyAndUniversityToFavorite_ShouldThrowBadRequestException_IfSpecialtyNotFound()
+        public void AddSpecialtyAndInstitutionOfEducationToFavorite_ShouldThrowBadRequestException_IfSpecialtyNotFound()
         {
             bool favorite = true;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = false;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -336,33 +336,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndUniversityToFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public void AddSpecialtyAndUniversityToFavorite_ShouldThrowBadRequestException_IfGraduateNotFound()
+        public void AddSpecialtyAndInstitutionOfEducationToFavorite_ShouldThrowBadRequestException_IfGraduateNotFound()
         {
             bool favorite = true;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = true;
             var graduate = new GraduateDTO {};
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -372,31 +372,31 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndUniversityToFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public async Task DeleteUniversityFromFavorite_ShouldDeleteUniversityFromFavorite_IfEverythingOk()
+        public async Task DeleteInstitutionOfEducationFromFavorite_ShouldDeleteInstitutionOfEducationFromFavorite_IfEverythingOk()
         {
             bool favorite = true;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            _specialtyToUniversityRepository
-                .Setup(su => su.FavoriteContains(It.IsAny<SpecialtyToUniversityToGraduate>()))
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(su => su.FavoriteContains(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -406,34 +406,34 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
             var exception = await Record
-               .ExceptionAsync(() => _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+               .ExceptionAsync(() => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
 
             // Assert
             Assert.Null(exception);
         }
 
         [Fact]
-        public void DeleteSpecialtyAndUniversityFromFavorite_ShouldThrowBadRequestException_IfSpecialtyAndUniversityHasNotBeenAddedToFavorites()
+        public void DeleteSpecialtyAndInstitutionOfEducationFromFavorite_ShouldThrowBadRequestException_IfSpecialtyAndInstitutionOfEducationHasNotBeenAddedToFavorites()
         {
             bool favorite = true;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -443,33 +443,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public void DeleteSpecialtyAndUniversityFromFavorite_ShouldThrowBadRequestException_IfUniversityNotFound()
+        public void DeleteSpecialtyAndInstitutionOfEducationFromFavorite_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
         {
             bool favorite = true;
-            bool university = false;
+            bool institutionOfEducation = false;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -479,33 +479,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public void DeleteSpecialtyAndUniversityFromFavorite_ShouldThrowBadRequestException_IfSpecialtyNotFound()
+        public void DeleteSpecialtyAndInstitutionOfEducationFromFavorite_ShouldThrowBadRequestException_IfSpecialtyNotFound()
         {
             bool favorite = true;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = false;
             var graduate = new GraduateDTO { Id = "GraduateId" };
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -515,33 +515,33 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
         [Fact]
-        public void DeleteSpecialtyAndUniversityFromFavorite_ShouldThrowBadRequestException_IfGraduateNotFound()
+        public void DeleteSpecialtyAndInstitutionOfEducationFromFavorite_ShouldThrowBadRequestException_IfGraduateNotFound()
         {
             bool favorite = true;
-            bool university = true;
+            bool institutionOfEducation = true;
             bool specialty = false;
             var graduate = new GraduateDTO {};
 
-            var entity = GetFavoriteSpecialtyAndUniversities();
+            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
 
-            _specialtyToUniversityRepository
+            _specialtyToInstitutionOfEducationRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
 
-            _universityRepository
+            _institutionOfEducationRepository
                 .Setup(ur => ur.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(university);
+                .ReturnsAsync(institutionOfEducation);
 
             _specialtyRepository
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -551,22 +551,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(graduate);
 
-            _specialtyToUniversityRepository
-               .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToUniversityToGraduate>()));
+            _specialtyToInstitutionOfEducationRepository
+               .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(entity.SpecialtyId, entity.UniversityId, entity.GraduateId);
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
-        private SpecialtyToUniversityToGraduate GetFavoriteSpecialtyAndUniversities()
+        private SpecialtyToInstitutionOfEducationToGraduate GetFavoriteSpecialtyAndInstitutionOfEducations()
         {
-           return   new SpecialtyToUniversityToGraduate
+           return   new SpecialtyToInstitutionOfEducationToGraduate
                     {
                     SpecialtyId = "1",
-                    UniversityId = "1",
+                    InstitutionOfEducationId = "1",
                     GraduateId = "1"
                     };
         }
@@ -575,11 +575,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public void Dispose_ShouldDisposeRepositories()
         {
             // Arrange
-            var specialtyToUniRepo = new Mock<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>>();
+            var specialtyToUniRepo = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
             var educationFormToDescriptionRepository = new Mock<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
             var paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
             var specialtyRepo = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
-            var universityRepository = new Mock<IUniversityRepository<University, UniversityDTO>>();
+            var institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
             var graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
             var specToUniResult = false;
             var specResult = false;
@@ -592,7 +592,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 educationFormToDescriptionRepository.Object,
                 paymentFormToDescriptionRepository.Object,
                 specialtyRepo.Object,
-                universityRepository.Object,
+                institutionOfEducationRepository.Object,
                 graduateRepository.Object,
                 _mapper.Object,
                 _resourceManager.Object);

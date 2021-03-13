@@ -18,7 +18,7 @@ namespace YIF.Core.Service.Concrete.Services
     {
         private readonly IRepository<Direction, DirectionDTO> _directionRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
-        private readonly IRepository<DirectionToUniversity, DirectionToUniversityDTO> _directionToUniversityRepository;
+        private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToInstitutionOfEducationRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
         private readonly ResourceManager _resourceManager;
@@ -26,7 +26,7 @@ namespace YIF.Core.Service.Concrete.Services
         public DirectionService(
             IRepository<Direction, DirectionDTO> directionRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
-            IRepository<DirectionToUniversity, DirectionToUniversityDTO> directionToUniversityRepository,
+            IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToInstitutionOfEducationRepository,
             IMapper mapper,
             IPaginationService paginationService,
             ResourceManager resourceManager)
@@ -35,7 +35,7 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
             _paginationService = paginationService;
             _specialtyRepository = specialtyRepository;
-            _directionToUniversityRepository = directionToUniversityRepository;
+            _directionToInstitutionOfEducationRepository = directionToInstitutionOfEducationRepository;
             _resourceManager = resourceManager;
         }
 
@@ -55,17 +55,17 @@ namespace YIF.Core.Service.Concrete.Services
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
 
-            if (filterModel.UniversityName != string.Empty && filterModel.UniversityName != null)
+            if (filterModel.InstitutionOfEducationName != string.Empty && filterModel.InstitutionOfEducationName != null)
             {
-                var directionToUniversity = await _directionToUniversityRepository.Find(du => du.University.Name == filterModel.UniversityName);
-                var filteredDirections = directionToUniversity.Select(du => du.DirectionId);
+                var directionToInstitutionOfEducation = await _directionToInstitutionOfEducationRepository.Find(du => du.InstitutionOfEducation.Name == filterModel.InstitutionOfEducationName);
+                var filteredDirections = directionToInstitutionOfEducation.Select(du => du.DirectionId);
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
 
-            if (filterModel.UniversityAbbreviation != string.Empty && filterModel.UniversityAbbreviation != null)
+            if (filterModel.InstitutionOfEducationAbbreviation != string.Empty && filterModel.InstitutionOfEducationAbbreviation != null)
             {
-                var directionToUniversity = await _directionToUniversityRepository.Find(du => du.University.Abbreviation == filterModel.UniversityAbbreviation);
-                var filteredDirections = directionToUniversity.Select(du => du.DirectionId);
+                var directionToInstitutionOfEducation = await _directionToInstitutionOfEducationRepository.Find(du => du.InstitutionOfEducation.Abbreviation == filterModel.InstitutionOfEducationAbbreviation);
+                var filteredDirections = directionToInstitutionOfEducation.Select(du => du.DirectionId);
                 directions = directions.Where(d => filteredDirections.Contains(d.Id));
             }
             

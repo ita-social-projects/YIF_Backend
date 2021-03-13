@@ -4,7 +4,7 @@ using System.Text;
 
 namespace YIF.Core.Domain.ApiModels.IdentityApiModels
 {
-    public class UserForUniversityAdminResponseApiModel
+    public class UserForInstitutionOfEducationAdminResponseApiModel
     {
         /// <summary>
         /// Gets or sets the primary key for this user.

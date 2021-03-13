@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -21,15 +22,15 @@ namespace YIF.Core.Data
         #region Tables
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
 
-        public DbSet<UniversityModerator> UniversityModerators { get; set; }
-        public DbSet<UniversityAdmin> UniversityAdmins { get; set; }
+        public DbSet<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
+        public DbSet<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
-        public DbSet<University> Universities { get; set; }
+        public DbSet<InstitutionOfEducation> InstitutionOfEducations { get; set; }
         public DbSet<Direction> Directions { get; set; }
         public DbSet<Specialty> Specialties { get; set; }
-        public DbSet<DirectionToUniversity> DirectionsToUniversities { get; set; }
-        public DbSet<SpecialtyToUniversity> SpecialtyToUniversities { get; set; }
-        public DbSet<UniversityToGraduate> UniversitiesToGraduates { get; set; }
+        public DbSet<DirectionToInstitutionOfEducation> DirectionsToInstitutionOfEducations { get; set; }
+        public DbSet<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
+        public DbSet<InstitutionOfEducationToGraduate> InstitutionOfEducationsToGraduates { get; set; }
         public DbSet<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
         public DbSet<SchoolModerator> SchoolModerators { get; set; }
         public DbSet<SchoolAdmin> SchoolAdmins { get; set; }
@@ -42,10 +43,10 @@ namespace YIF.Core.Data
         public DbSet<ExamRequirement> ExamRequirements { get; set; }
         public DbSet<EducationForm> EducationForms { get; set; }
         public DbSet<PaymentForm> PaymentForms { get; set; }
-        public  DbSet<SpecialtyInUniversityDescription> SpecialtyInUniversityDescriptions { get; set; }
+        public  DbSet<SpecialtyInInstitutionOfEducationDescription> SpecialtyInInstitutionOfEducationDescriptions { get; set; }
         public DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
         public DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
-        public DbSet<SpecialtyToUniversityToGraduate> SpecialtyToUniversityToGraduates { get; set; }
+        public DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
 
         #endregion
 
@@ -67,55 +68,61 @@ namespace YIF.Core.Data
             builder.Entity<SuperAdmin>()
                 .HasOne(x => x.User);
 
-            #region University
+            #region InstitutionOfEducation
 
-            builder.Entity<UniversityAdmin>()
-                .HasOne(x => x.University)
+            builder.Entity<InstitutionOfEducationAdmin>()
+                .HasOne(x => x.InstitutionOfEducation)
                 .WithMany(x => x.Admins)
-                .HasForeignKey(x => x.UniversityId)
+                .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            builder.Entity<UniversityModerator>()
+            builder.Entity<InstitutionOfEducationModerator>()
                 .HasOne(x => x.Admin)
                 .WithMany(x => x.Moderators)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<UniversityModerator>()
+            builder.Entity<InstitutionOfEducationModerator>()
                 .HasOne(x => x.Admin)
                 .WithMany(x => x.Moderators)
                 .HasForeignKey(x => x.AdminId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Lecture>()
-                .HasOne(x => x.University)
+                .HasOne(x => x.InstitutionOfEducation)
                 .WithMany(x => x.Lectures)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<UniversityToGraduate>()
-                .HasKey(ug => new {ug.UniversityId, ug.GraduateId});
+            builder.Entity<InstitutionOfEducationToGraduate>()
+                .HasKey(ug => new {ug.InstitutionOfEducationId, ug.GraduateId});
 
-            builder.Entity<UniversityToGraduate>()
-                .HasOne(ug => ug.University)
-                .WithMany(u => u.UniversityGraduates)
-                .HasForeignKey(ug => ug.UniversityId);
+            builder.Entity<InstitutionOfEducationToGraduate>()
+                .HasOne(ug => ug.InstitutionOfEducation)
+                .WithMany(u => u.InstitutionOfEducationGraduates)
+                .HasForeignKey(ug => ug.InstitutionOfEducationId);
 
-            builder.Entity<UniversityToGraduate>()
+            builder.Entity<InstitutionOfEducationToGraduate>()
                 .HasOne(ug => ug.Graduate)
-                .WithMany(g => g.UniversityGraduates)
+                .WithMany(g => g.InstitutionOfEducationGraduates)
                 .HasForeignKey(ug => ug.GraduateId);
 
-            //builder.Entity<University>()//потестить каскадку
+            //builder.Entity<InstitutionOfEducation>()//потестить каскадку
             //    .HasMany(x => x.Admins)
-            //    .WithOne(x => x.University)
-            //    .HasForeignKey(x => x.UniversityId)
+            //    .WithOne(x => x.InstitutionOfEducation)
+            //    .HasForeignKey(x => x.InstitutionOfEducationId)
             //    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<University>()
+            builder.Entity<InstitutionOfEducation>()
                 .HasMany(x => x.Lectures)
-                .WithOne(x => x.University)
-                .HasForeignKey(x => x.UniversityId)
+                .WithOne(x => x.InstitutionOfEducation)
+                .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<InstitutionOfEducation>()
+                .Property(e => e.InstitutionOfEducationType)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (InstitutionOfEducationType)Enum.Parse(typeof(InstitutionOfEducationType), v));
 
             builder.Entity<Direction>()
                 .HasMany(x => x.Specialties)
@@ -123,24 +130,24 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.DirectionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<DirectionToUniversity>()
-                .HasKey(c => new {c.Id, c.UniversityId, c.DirectionId});
+            builder.Entity<DirectionToInstitutionOfEducation>()
+                .HasKey(c => new {c.Id, c.InstitutionOfEducationId, c.DirectionId});
 
-            builder.Entity<SpecialtyToUniversity>()
-                .HasKey(c => new {c.Id, c.UniversityId, c.SpecialtyId});
+            builder.Entity<SpecialtyToInstitutionOfEducation>()
+                .HasKey(c => new {c.Id, c.InstitutionOfEducationId, c.SpecialtyId});
 
-            builder.Entity<SpecialtyToUniversity>()
-                .HasOne(x => x.SpecialtyInUniversityDescription)
-                .WithMany(x => x.SpecialtyToUniversities)
-                .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
+            builder.Entity<SpecialtyToInstitutionOfEducation>()
+                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .WithMany(x => x.SpecialtyToInstitutionOfEducations)
+                .HasForeignKey(x => x.SpecialtyInInstitutionOfEducationDescriptionId);
             
             builder.Entity<PaymentFormToDescription>()
-                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyInUniversityDescriptionId});
+                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyInInstitutionOfEducationDescriptionId});
 
             builder.Entity<PaymentFormToDescription>()
-                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
                 .WithMany(x => x.PaymentFormToDescriptions)
-                .HasForeignKey(k => k.SpecialtyInUniversityDescriptionId);
+                .HasForeignKey(k => k.SpecialtyInInstitutionOfEducationDescriptionId);
 
             builder.Entity<PaymentFormToDescription>()
                 .HasOne(x => x.PaymentForm)
@@ -148,7 +155,7 @@ namespace YIF.Core.Data
                 .HasForeignKey(k => k.PaymentFormId);
 
             builder.Entity<EducationFormToDescription>()
-                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyInUniversityDescriptionId});
+                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyInInstitutionOfEducationDescriptionId});
 
             builder.Entity<EducationFormToDescription>()
                 .HasOne(x => x.EducationForm)
@@ -156,12 +163,12 @@ namespace YIF.Core.Data
                 .HasForeignKey(k => k.EducationFormId);
 
             builder.Entity<EducationFormToDescription>()
-                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
                 .WithMany(x => x.EducationFormToDescriptions)
-                .HasForeignKey(k => k.SpecialtyInUniversityDescriptionId);
+                .HasForeignKey(k => k.SpecialtyInInstitutionOfEducationDescriptionId);
 
             builder.Entity<ExamRequirement>()
-                .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyInUniversityDescriptionId});
+                .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyInInstitutionOfEducationDescriptionId});
 
             builder.Entity<ExamRequirement>()
                 .HasOne(x => x.Exam)
@@ -169,31 +176,31 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.ExamId);
 
             builder.Entity<ExamRequirement>()
-                .HasOne(x => x.SpecialtyInUniversityDescription)
+                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
                 .WithMany(x => x.ExamRequirements)
-                .HasForeignKey(x => x.SpecialtyInUniversityDescriptionId);
+                .HasForeignKey(x => x.SpecialtyInInstitutionOfEducationDescriptionId);
 
             builder.Entity<SpecialtyToGraduate>()
                 .HasKey(c => new { c.Id, c.GraduateId, c.SpecialtyId });
 
-            builder.Entity<SpecialtyToUniversityToGraduate>()
-                .HasKey(k => new { k.SpecialtyId, k.UniversityId, k.GraduateId });
+            builder.Entity<SpecialtyToInstitutionOfEducationToGraduate>()
+                .HasKey(k => new { k.SpecialtyId, k.InstitutionOfEducationId, k.GraduateId });
 
-            builder.Entity<SpecialtyToUniversityToGraduate>()
+            builder.Entity<SpecialtyToInstitutionOfEducationToGraduate>()
                 .HasOne(x => x.Specialty)
-                .WithMany(x => x.SpecialtyToUniversityToGraduates)
+                .WithMany(x => x.SpecialtyToInstitutionOfEducationToGraduates)
                 .HasForeignKey(x => x.SpecialtyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<SpecialtyToUniversityToGraduate>()
-               .HasOne(x => x.University)
-               .WithMany(x => x.SpecialtyToUniversityToGraduates)
-               .HasForeignKey(x => x.UniversityId)
+            builder.Entity<SpecialtyToInstitutionOfEducationToGraduate>()
+               .HasOne(x => x.InstitutionOfEducation)
+               .WithMany(x => x.SpecialtyToInstitutionOfEducationToGraduates)
+               .HasForeignKey(x => x.InstitutionOfEducationId)
                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<SpecialtyToUniversityToGraduate>()
+            builder.Entity<SpecialtyToInstitutionOfEducationToGraduate>()
                .HasOne(x => x.Graduate)
-               .WithMany(x => x.SpecialtyToUniversityToGraduates)
+               .WithMany(x => x.SpecialtyToInstitutionOfEducationToGraduates)
                .HasForeignKey(x => x.GraduateId)
                .OnDelete(DeleteBehavior.Cascade);
 

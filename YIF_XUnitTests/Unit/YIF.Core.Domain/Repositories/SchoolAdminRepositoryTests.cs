@@ -78,7 +78,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         }
 
         [Fact]
-        public async Task GetByUniversityId_ReturnsNullForBadId()
+        public async Task GetByInstitutionOfEducationId_ReturnsNullForBadId()
         {
             //Act
             var a = await _schoolAdminRepository.GetBySchoolId("sdfs");

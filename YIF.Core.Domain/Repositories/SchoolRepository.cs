@@ -22,12 +22,12 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<SchoolDTO> GetByName(string name)
         {
-            var university = await _context.Schools.
+            var institutionOfEducation = await _context.Schools.
                 Where(p => p.Name == name).
                 FirstOrDefaultAsync();
-            if (university != null)
+            if (institutionOfEducation != null)
             {
-                return _mapper.Map<SchoolDTO>(university);
+                return _mapper.Map<SchoolDTO>(institutionOfEducation);
             }
             return null;
         }
