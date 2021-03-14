@@ -215,7 +215,8 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            SeederDB.SeedDataURL(app.ApplicationServices);
+            //SeederDB.SeedSpecialtyDirectionURL(app.ApplicationServices);
+            SeederDB.SeedInstitutionOfEducationURL(app.ApplicationServices, "");
             //SeederDB.SeedData(app.ApplicationServices);
             if (_currentEnvironment.IsEnvironment("Testing"))
             {

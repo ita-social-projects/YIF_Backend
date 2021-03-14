@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Excel = Microsoft.Office.Interop.Excel;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Shared;
+using System.Runtime.InteropServices;
 
 namespace YIF.Core.Data.Seaders
 {
@@ -2427,7 +2428,7 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public async static void SeedDataURL(IServiceProvider services)
+        public async static void SeedSpecialtyDirectionURL(IServiceProvider services)
         {
             using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
@@ -2492,6 +2493,63 @@ namespace YIF.Core.Data.Seaders
                         }
                     }
                 }
+            }
+        }
+
+        public static void SeedInstitutionOfEducationURL(IServiceProvider services, string pathToXLS)
+        {
+            using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                //Create COM Objects. Create a COM object for everything that is referenced
+                Excel.Application xlApp = new Excel.Application();
+                Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(@"D:\repos\reestr-perelik1.xls");
+                Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
+                Excel.Range xlRange = xlWorksheet.UsedRange;
+
+                int rowCount = xlRange.Rows.Count;
+                int colCount = xlRange.Columns.Count;
+
+                //excel is not zero based!!
+                for (int i = 2; i <= rowCount; i++)
+                {
+                    University university = new University();
+                    university.Name = xlRange.Cells[i, 2].ToString();
+                    university.Abbreviation = xlRange.Cells[i, 3].ToString();
+                    university.Address = xlRange.Cells[i, 10].ToString(); 
+                    university.Email = xlRange.Cells[i, 12].ToString();
+
+                    //Phone
+                    string cellString = xlRange.Cells[i, 11].ToString();
+                    cellString = cellString.ToCharArray().Where(c => !Char.IsWhiteSpace(c)).ToString();
+                    university.Phone = cellString.Split(',').FirstOrDefault();
+
+                    //Type
+                    //string type = xlRange.Cells[i, 8].ToString();
+                    //if (Enum.GetName(typeof(enumType), enumValue) == type)
+                    //{
+                    //    university.type = ;
+                    //}
+                    //else
+                    //{
+                    //    university.type = ;
+                    //}
+                }
+
+                //cleanup
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                //release com objects to fully kill excel process from running in the background
+                Marshal.ReleaseComObject(xlRange);
+                Marshal.ReleaseComObject(xlWorksheet);
+
+                //close and release
+                xlWorkbook.Close();
+                Marshal.ReleaseComObject(xlWorkbook);
+
+                //quit and release
+                xlApp.Quit();
+                Marshal.ReleaseComObject(xlApp);
             }
         }
     }
