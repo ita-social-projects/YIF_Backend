@@ -113,7 +113,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Act
             var a = await _universityAdminRepository.Disable(uniAdmin);
             //Assert
-            Assert.Equal("Admin IsBanned was set true", a);
+            Assert.Equal("Admin IsBanned was set to true", a);
         }
         [Fact]
         public async Task Enable_ShouldReturnSuccessfulMessage()
@@ -121,9 +121,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Act
             var a = await _universityAdminRepository.Enable(uniAdmin);
             //Assert
-            Assert.Equal("Admin IsBanned was set false", a);
+            Assert.Equal("Admin IsBanned was set to false", a);
         }
-        [Fact]
+        /*[Fact]
         public async Task GetUserByAdminId_ShouldReturnUniversityAdmin()
         {
             // Arrange
@@ -131,6 +131,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             // Act
             
             // Assert
-        }
+        }*/
     }
 }

@@ -239,7 +239,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
-            string res = "";
+            string res;
             if (ch.IsBanned == false)
             {
                 res = await _universityAdminRepository.Disable(_mapper.Map<UniversityAdmin>(ch));
