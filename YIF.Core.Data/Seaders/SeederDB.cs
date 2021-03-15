@@ -898,7 +898,7 @@ namespace YIF.Core.Data.Seaders
                 {
                     #region Соціальні та поведінкові науки
                     new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Соціологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     #endregion
                     #region Математика та статистика
                     new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
@@ -1218,11 +1218,9 @@ namespace YIF.Core.Data.Seaders
                 #region Академія внутрішніх військ МВС України
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
 
-                #region Академія внутрішніх військ МВС України
-                currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
                 #region Економіка
-                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Економіка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
-                   new SpecialtyInUniversityDescription
+                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Економіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
+                   new SpecialtyInInstitutionOfEducationDescription
                    {
                        Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
                        " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
@@ -1244,6 +1242,8 @@ namespace YIF.Core.Data.Seaders
                             new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
                             new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
                        }
+                   };
+                #endregion
 
                 #region Соціологія
                 context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
