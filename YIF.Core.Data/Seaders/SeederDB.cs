@@ -528,42 +528,54 @@ namespace YIF.Core.Data.Seaders
                 {
                     Name = "Інженерія програмного забезпечення",
                     Code = "121",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Комп'ютерні науки",
                     Code = "122",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Комп’ютерна інженерія",
                     Code = "123",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Системний аналіз",
                     Code = "124",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Кібербезпека",
                     Code = "125",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Інформаційні системи та технології",
                     Code = "126",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
                 #endregion
 
@@ -574,21 +586,27 @@ namespace YIF.Core.Data.Seaders
                 {
                     Name = "Математика",
                     Code = "111",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Статистика",
                     Code = "112",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Прикладна математика",
                     Code = "113",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
                 #endregion
 
@@ -599,28 +617,36 @@ namespace YIF.Core.Data.Seaders
                 {
                     Name = "Економіка",
                     Code = "051",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Політологія",
                     Code = "052",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Психологія",
                     Code = "053",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Соціологія",
                     Code = "054",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
                 #endregion
 
@@ -631,21 +657,27 @@ namespace YIF.Core.Data.Seaders
                 {
                     Name = "Автоматизація та комп’ютерно-інтегровані технології",
                     Code = "151",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Метрологія та інформаційно-вимірювальна техніка",
                     Code = "152",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
                 {
                     Name = "Мікро- та наносистемна техніка",
                     Code = "153",
-                    DirectionId = currentDirection
+                    DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
                 #endregion
 
@@ -657,6 +689,8 @@ namespace YIF.Core.Data.Seaders
                     Name = "Електроенергетика, електротехніка та електромеханіка",
                     Code = "141",
                     DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
@@ -664,6 +698,8 @@ namespace YIF.Core.Data.Seaders
                     Name = "Енергетичне машинобудування",
                     Code = "142",
                     DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
@@ -671,6 +707,8 @@ namespace YIF.Core.Data.Seaders
                     Name = "Атомна енергетика",
                     Code = "143",
                     DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
@@ -678,6 +716,8 @@ namespace YIF.Core.Data.Seaders
                     Name = "Теплоенергетика",
                     Code = "144",
                     DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
 
                 specialities.Add(new Specialty
@@ -685,6 +725,8 @@ namespace YIF.Core.Data.Seaders
                     Name = "Гідроенергетика",
                     Code = "145",
                     DirectionId = currentDirection,
+                    Description = "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі."
                 });
                 #endregion
 
@@ -845,6 +887,8 @@ namespace YIF.Core.Data.Seaders
                     #region Соціальні та поведінкові науки
                     new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Соціологія").Id,UniversityId = currentUniversityId },
                     new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Економіка").Id,UniversityId = currentUniversityId },
+                    new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Психологія").Id,UniversityId = currentUniversityId },
                     #endregion
                     #region Математика та статистика
                     new SpecialtyToUniversity { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,UniversityId = currentUniversityId }
@@ -1163,12 +1207,39 @@ namespace YIF.Core.Data.Seaders
 
                 #region Академія внутрішніх військ МВС України
                 currentUniversityId = universities.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
-
+                #region Економіка
+                context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Економіка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
+                   new SpecialtyInUniversityDescription
+                   {
+                       Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
+                       EducationalProgramLink = "example.com",
+                       ExamRequirements = new List<ExamRequirement>
+                       {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Історія України").Id, MinimumScore = 100, Coefficient = 0.25},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                       },
+                       EducationFormToDescriptions = new List<EducationFormToDescription>
+                       {
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
+                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
+                       },
+                       PaymentFormToDescriptions = new List<PaymentFormToDescription>
+                       {
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
+                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
+                       }
+                   };
+                #endregion
                 #region Соціологія
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement> 
                         { 
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
@@ -1192,7 +1263,9 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
@@ -1216,7 +1289,9 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
@@ -1245,7 +1320,9 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1269,7 +1346,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1293,7 +1370,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1317,7 +1394,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1341,7 +1418,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1365,7 +1442,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1394,7 +1471,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1418,7 +1495,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1442,7 +1519,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.30},
@@ -1466,7 +1543,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Автоматизація та комп’ютерно-інтегровані технології" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1490,7 +1567,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1514,7 +1591,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Енергетичне машинобудування" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1543,7 +1620,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1567,7 +1644,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
@@ -1596,7 +1673,9 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
+                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.28},
@@ -1620,7 +1699,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.28},
@@ -1644,7 +1723,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Електроенергетика, електротехніка та електромеханіка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1668,7 +1747,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1692,7 +1771,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1716,7 +1795,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1740,7 +1819,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1764,7 +1843,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Інформаційні системи та технології" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1788,7 +1867,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1812,7 +1891,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Комп’ютерна інженерія" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1836,7 +1915,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Комп'ютерні науки" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1860,7 +1939,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1884,7 +1963,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1908,7 +1987,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Мікро- та наносистемна техніка" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.25},
@@ -1937,7 +2016,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1961,7 +2040,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -1985,7 +2064,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -2009,7 +2088,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
@@ -2033,7 +2112,7 @@ namespace YIF.Core.Data.Seaders
                 context.SpecialtyToUniversities.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.UniversityId == currentUniversityId).SpecialtyInUniversityDescription =
                     new SpecialtyInUniversityDescription
                     {
-                        EducationalProgramLink = "",
+                        EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},

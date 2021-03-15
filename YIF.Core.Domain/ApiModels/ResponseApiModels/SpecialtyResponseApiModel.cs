@@ -26,5 +26,9 @@
         /// Gets or sets the direction name to which this specialty belongs.
         /// </summary>
         public string DirectionName { get; set; }
+        /// <summary>
+        /// Field to determine if there is a specialty in favorites
+        /// </summary>
+        public bool IsFavorite { get; set; }
     }
 }
