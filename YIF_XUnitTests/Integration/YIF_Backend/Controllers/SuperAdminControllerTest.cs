@@ -4,9 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
-namespace YIF_XUnitTests.Integration.Fixture
+namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
     public class SuperAdminControllerTest : TestServerFixture
     {

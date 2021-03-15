@@ -30,9 +30,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("UniName", "email@gmailcom", "Password1+")]
-        [InlineData("", "email@gmailcom", "Password1+")]
-        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string uniName, string email, string password)
+        [InlineData("UniName", "email@gmailcom")]
+        [InlineData("", "email@gmailcom")]
+        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string uniName, string email)
         {
             // Arrange
             var requestModel = new UniversityAdminApiModel
@@ -53,8 +53,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("NotInDatabaseUniName", "email@gmailcom", "Password1+")]
-        public async Task AddUniAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataInСorrect(string uniName, string email, string password)
+        [InlineData("NotInDatabaseUniName", "email@gmailcom")]
+        public async Task AddUniAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataInСorrect(string uniName, string email)
         {
             // Arrange
             var requestModel = new UniversityAdminApiModel

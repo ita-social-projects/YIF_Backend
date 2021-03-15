@@ -1,12 +1,8 @@
-﻿using AutoMapper;
-using Moq;
-using System;
+﻿using Moq;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
-using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.Repositories;
 
