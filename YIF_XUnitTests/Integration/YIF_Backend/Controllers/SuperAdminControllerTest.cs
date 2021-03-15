@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -103,51 +105,29 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
-
         [Fact]
-        public async Task DisableUniversityAdmin()
+        public async Task DeleteUniversityAdmin()
         {
             // Arrange
-            var request = "/api/SuperAdmin/DisableUniversityAdmin/{id}";
-
+            var admin = _context.UniversityAdmins.First();
+            
             // Act
-            var response = await _client.GetAsync(request);
+            var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteUniversityAdmin/{0}", admin.Id));
 
             // Assert
             response.EnsureSuccessStatusCode();
         }
-
         [Fact]
-        public async Task Delete_Output_WrongId()
+        public async Task DisableUniversityAdmin()
         {
             // Arrange
-            var postRequest = new
-            {
-                Url = "/api/SuperAdmin/DeleteUniversityAdmin",
-                Body = "123-456"
-            };
+            var admin = _context.UniversityAdmins.First();
 
             // Act
-            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+            var response = await _client.PostAsync(string.Format("/api/SuperAdmin/DisableUniversityAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
 
             // Assert
-            Assert.True(response.StatusCode == System.Net.HttpStatusCode.NotFound);
-        }
-        [Fact]
-        public async Task Delete_Output_CorrectId()
-        {
-            // Arrange
-            var postRequest = new
-            {
-                Url = "api/SuperAdmin/DeleteUniversityAdmin",
-                Body = "3f12265c-fe11-42b3-948a-3ca678b7b2e0"
-            };
-
-            // Act
-            var response = await _client.DeleteAsync(postRequest.Url);
-
-            // Assert
-            Assert.True(response.StatusCode == System.Net.HttpStatusCode.OK);
+            response.EnsureSuccessStatusCode();
         }
     }
 }
