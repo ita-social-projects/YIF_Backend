@@ -416,7 +416,10 @@ namespace YIF.Core.Service.Concrete.Services
                 var token = await manager.GeneratePasswordResetTokenAsync(user);
                 token = System.Web.HttpUtility.UrlEncode(token);
 
-                var serverUrl = $"{request.Scheme}://{request.Host}/";
+                //To change
+                var serverUrl = "http://localhost:3000/newPassword/";
+                //var serverUrl = $"{request.Scheme}://{request.Host}/";
+
                 var url = serverUrl + $"restore?id={user.Id}&token={token}";
 
                 var topic = user.IsDeleted ?
