@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +13,8 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 {
@@ -39,8 +41,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
 
-            _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
-
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));
             _dbContextMock.Setup(p => p.Universities).Returns(DbContextMock.GetQueryableMockDbSet<University>(_databaseUniversities));
@@ -52,16 +52,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _databaseUniversities.Add(uni);
             _databaseUniAdmins.Add(uniAdmin);
             _databaseUniversityModerators.Add(universityModerator);
+
+            _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
         }
 
         [Fact]
         public async Task GetAllUniAdmins_ShouldReturnAllAdminsFromDatabase()
         {
             // Arrange
-            var _dbContextMock = new Mock<IApplicationDbContext>();
-            var _mapperMock = new Mock<IMapper>();
-            var _userManagerMock = new FakeUserManager<DbUser>();
-
             var _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
             var _userStub = new DbUser { Id = "UserId", UserName = "Name", Email = "example@mail.com" };
             var _admin = new UniversityAdmin { Id = "adminId", UserId = "UserId", User = _userStub };
@@ -129,41 +127,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         public async Task GetUserByAdminId_ShouldReturnUniversityAdmin()
         {
             // Arrange
-            var _userStub = new DbUser { Id = "UserId", UserName = "Name", Email = "example@mail.com" };
-            var _admin = new UniversityAdmin { Id = "adminId", UserId = "UserId", User = _userStub };
-            var data = new List<UniversityAdmin>()
-            {
-                _admin
-            }.AsQueryable();
 
-            var _listViewModel = new List<UniversityAdminDTO>()
-            {
-                new UniversityAdminDTO { Id = _admin.Id, UniversityId = _admin.UniversityId }
-            };
-            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminDTO>>(data)).Returns(_listViewModel);
-
-            var mockSet = new Mock<DbSet<UniversityAdmin>>();
-            mockSet.As<IDbAsyncEnumerable<UniversityAdmin>>()
-                .Setup(m => m.GetAsyncEnumerator())
-                .Returns(new TestDbAsyncEnumerator<UniversityAdmin>(data.GetEnumerator()));
-
-            mockSet.As<IQueryable<UniversityAdmin>>()
-                .Setup(m => m.Provider)
-                .Returns(new TestDbAsyncQueryProvider<UniversityAdmin>(data.Provider));
-
-            mockSet.As<IQueryable<UniversityAdmin>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockSet.As<IQueryable<UniversityAdmin>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockSet.As<IQueryable<UniversityAdmin>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-            var mockContext = new Mock<IApplicationDbContext>();
-            mockContext.Setup(c => c.UniversityAdmins).Returns(mockSet.Object);
-
-            var service = new UniversityAdminRepository(mockContext.Object, _mapperMock.Object, _userManagerMock);
-
-            //Act
-            var a = await _universityAdminRepository.GetUserByAdminId(uniAdmin.Id);
-            //Assert
-            Assert.Equal(uniAdmin.Id, a.Id);
+            // Act
+            
+            // Assert
         }
     }
 }
