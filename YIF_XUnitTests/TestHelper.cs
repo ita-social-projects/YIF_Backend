@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 
 namespace YIF_XUnitTests
 {
+    // =================================
     // For mocking Async behavior for IQueryable elements
     internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
@@ -145,7 +147,7 @@ namespace YIF_XUnitTests
                 .Returns(new TestAsyncEnumerator<T>(queryable.GetEnumerator()));
             dbSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(new TestAsyncQueryProvider<T>(queryable.Provider));
 
-            dbSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
+            //dbSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
             dbSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
             dbSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
             dbSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());

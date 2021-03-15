@@ -46,7 +46,15 @@ namespace YIF.Core.Domain.Repositories
             admin.IsBanned = true;
             _dbContext.UniversityAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
-            return "Admin IsBanned was updated";
+            return "Admin IsBanned was set to true";
+        }
+
+        public async Task<string> Enable(UniversityAdmin admin)
+        {
+            admin.IsBanned = false;
+            _dbContext.UniversityAdmins.Update(admin);
+            await _dbContext.SaveChangesAsync();
+            return "Admin IsBanned was set to false";
         }
         public async Task<UniversityAdminDTO> GetByUniversityId(string universityId)
         {
@@ -75,11 +83,11 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<UniversityAdminDTO>> GetAllUniAdmins()
         {
-            var universityAdmin = _dbContext.UniversityAdmins
+            var universityAdmin = await _dbContext.UniversityAdmins
                 .Where(admin => admin.User.IsDeleted == false)
                 .Include(x => x.University)
                 .Include(y => y.User)
-                .ToList();
+                .ToListAsync();
 
             return _mapper.Map<IEnumerable<UniversityAdminDTO>>(universityAdmin);
         }

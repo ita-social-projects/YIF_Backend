@@ -12,6 +12,7 @@ namespace YIF.Core.Data.Interfaces
         Task<string> AddUniAdmin(UniversityAdmin universityAdmin);
         Task<string> Delete(DbUser user);
         Task<string> Disable(UniversityAdmin adminId);
+        Task<string> Enable(UniversityAdmin adminId);
         Task<K> GetById(string id);
         Task<K> GetByUniversityId(string universityId);
         Task<K> GetByUniversityIdWithoutIsDeletedCheck(string universityId);

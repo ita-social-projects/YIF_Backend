@@ -88,7 +88,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Disable University admin (sets its University Admin IsBanned to true).
+        /// Disable/Enable University admin (sets its University Admin IsBanned to true or false).
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -96,7 +96,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPut("DisableUniversityAdmin/{id}")]
+        [HttpPost("DisableUniversityAdmin/{id}")]
         public async Task<IActionResult> DisableUniversityAdmin(string id)
         {
             var result = await _superAdminService.DisableUniversityAdmin(id);

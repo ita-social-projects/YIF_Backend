@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,6 +13,8 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
 {
@@ -37,8 +41,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
 
-            _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
-
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));
             _dbContextMock.Setup(p => p.Universities).Returns(DbContextMock.GetQueryableMockDbSet<University>(_databaseUniversities));
@@ -50,30 +52,23 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _databaseUniversities.Add(uni);
             _databaseUniAdmins.Add(uniAdmin);
             _databaseUniversityModerators.Add(universityModerator);
+
+            _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
         }
 
         [Fact]
         public async Task GetAllUniAdmins_ShouldReturnAllAdminsFromDatabase()
         {
             // Arrange
-            var _dbContextMock = new Mock<IApplicationDbContext>();
-            var _mapperMock = new Mock<IMapper>();
-            var _userManagerMock = new FakeUserManager<DbUser>();
-
             var _universityAdminRepository = new UniversityAdminRepository(_dbContextMock.Object, _mapperMock.Object, _userManagerMock);
             var _userStub = new DbUser { Id = "UserId", UserName = "Name", Email = "example@mail.com" };
             var _admin = new UniversityAdmin { Id = "adminId", UserId = "UserId", User = _userStub };
-
-            var _listDTO = new List<UniversityAdminDTO>();
-            _listDTO.Add(new UniversityAdminDTO { Id = "adminId", UserId = "UserId" });
-            var _listView = new List<UniversityAdmin>();
-            _listView.Add(new UniversityAdmin { Id = "adminId", UserId = "UserId" });
 
             _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(new List<UniversityAdmin> { _admin }));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(new List<DbUser> { _userStub }));
             _dbContextMock.Setup(s => s.SaveChangesAsync()).Verifiable();
 
-            var _universityAdminsDTO = new List<UniversityAdmin>()
+            var _universityAdmins = new List<UniversityAdmin>()
             {
                 _admin
             };
@@ -82,7 +77,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             {
                 new UniversityAdminDTO { Id = _admin.Id, UniversityId = _admin.UniversityId }
             };
-            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminDTO>>(_universityAdminsDTO)).Returns(_listViewModel);
+            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminDTO>>(_universityAdmins)).Returns(_listViewModel);
             // Act
             var list = (await _universityAdminRepository.GetAllUniAdmins()).ToList();
 
@@ -112,5 +107,30 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Assert
             Assert.Equal(string.Empty, a);
         }
+        [Fact]
+        public async Task Disable_ShouldReturnSuccessfulMessage()
+        {
+            //Act
+            var a = await _universityAdminRepository.Disable(uniAdmin);
+            //Assert
+            Assert.Equal("Admin IsBanned was set to true", a);
+        }
+        [Fact]
+        public async Task Enable_ShouldReturnSuccessfulMessage()
+        {
+            //Act
+            var a = await _universityAdminRepository.Enable(uniAdmin);
+            //Assert
+            Assert.Equal("Admin IsBanned was set to false", a);
+        }
+        /*[Fact]
+        public async Task GetUserByAdminId_ShouldReturnUniversityAdmin()
+        {
+            // Arrange
+
+            // Act
+            
+            // Assert
+        }*/
     }
 }
