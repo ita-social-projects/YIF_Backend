@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -23,13 +24,16 @@ namespace YIF_Backend.Controllers
     {
         private readonly IUserService<DbUser> _userService;
         private readonly ResourceManager _resourceManager;
+        private readonly IApplicationDbContext _context;
 
         public TestController(
-            IUserService<DbUser> userService, 
-            ResourceManager resourceManager)
+            IUserService<DbUser> userService,
+            ResourceManager resourceManager,
+            IApplicationDbContext context)
         {
             _userService = userService;
             _resourceManager = resourceManager;
+            _context = context;
         }
 
         /// <summary>
@@ -79,7 +83,7 @@ namespace YIF_Backend.Controllers
         /// <response code="403">If user doesn't have enough rights</response>
         /// <response code="404">If users not found</response>
         [HttpGet("Admins")]
-        [Authorize(Roles = "SuperAdmin,UniversityModerator,SchoolModerator")]
+        [Authorize(Roles = "SuperAdmin,InstitutionOfEducationModerator,SchoolModerator")]
         [ProducesResponseType(typeof(IEnumerable<UserApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -102,6 +106,22 @@ namespace YIF_Backend.Controllers
         public void CreateServerError()
         {
             throw new Exception(_resourceManager.GetString("TestServerErrorMessage"));
+        }
+
+        /// <summary>
+        /// Delete University
+        /// /// </summary>
+        /// <returns>Success delete</returns>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteUniversity/{id}")]
+        public async Task<IActionResult> DeleteUniversity(string id)
+        {
+            var inst = _context.Universities.Find(id);
+            _context.Universities.Remove(inst);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
