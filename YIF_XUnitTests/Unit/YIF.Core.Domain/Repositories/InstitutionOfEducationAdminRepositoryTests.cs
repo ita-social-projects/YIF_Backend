@@ -7,10 +7,7 @@ using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using Newtonsoft.Json;
-using System.Linq;
 using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
@@ -112,43 +109,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             string a = await _institutionOfEducationAdminRepository.AddUniAdmin(uniAdmin);
             //Assert
             Assert.Equal(string.Empty, a);
-        }
-
-        [Fact]
-        public async Task GetAllUniversities()
-        {
-            // Arrange
-            var request = "/api/SuperAdmin/GetAllUniversities";
-
-            // Act
-            var response = await _client.GetAsync(request);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-        }
-        [Fact]
-        public async Task DeleteUniversityAdmin()
-        {
-            // Arrange
-            var admin = _context.UniversityAdmins.First();
-
-            // Act
-            var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteUniversityAdmin/{0}", admin.Id));
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-        }
-        [Fact]
-        public async Task DisableUniversityAdmin()
-        {
-            // Arrange
-            var admin = _context.UniversityAdmins.First();
-
-            // Act
-            var response = await _client.PostAsync(string.Format("/api/SuperAdmin/DisableUniversityAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
-
-            // Assert
-            response.EnsureSuccessStatusCode();
         }
     }
 }

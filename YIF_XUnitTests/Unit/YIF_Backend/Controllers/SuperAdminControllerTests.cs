@@ -54,7 +54,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("NotInDatabaseUniName", "email@gmailcom")]
-        public async Task AddUniAdmin_EndpointsReturnErrorNoUniversityWithSuchName_IfDataInСorrect(string uniName, string email)
+        public async Task AddUniAdmin_EndpointsReturnErrorNoInstitutionOfEducationWithSuchName_IfDataInСorrect(string uniName, string email)
         {
             // Arrange
             var requestModel = new InstitutionOfEducationAdminApiModel

@@ -239,32 +239,32 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task DeleteAdmin_NoAdminfound()
         {
             //Arrange
-            _universityAdminRepository
+            _institutionOfEducationAdminRepository
                 .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
-                .Returns(Task.FromResult<UniversityAdminDTO>(null));
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(null));
 
             //Act
 
             //Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteUniversityAdmin(uniAdmin.Id));
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id));
         }
         [Fact]
         public async Task DisableAdmin_ReturnsSuccessDisableMessage()
         {
             //Arrange
-            _universityAdminRepository
+            _institutionOfEducationAdminRepository
                 .Setup(p => p.GetById(uniAdmin.Id))
-                .Returns(Task.FromResult<UniversityAdminDTO>(new UniversityAdminDTO
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
                     UserId = uniAdmin.UserId,
                     User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
                 }));
-            _universityAdminRepository.Setup(x => x.Disable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to true"));
-            _mapperMock.Setup(x => x.Map<UniversityAdmin>(It.IsAny<UniversityAdminDTO>())).Returns(uniAdmin);
+            _institutionOfEducationAdminRepository.Setup(x => x.Disable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to true"));
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
-            var a = await superAdminService.DisableUniversityAdmin(uniAdmin.Id);
+            var a = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
             Assert.Equal("Admin IsBanned was set to true", a.Object.Message);
@@ -273,20 +273,20 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task DisableAdmin_ReturnsSuccessEnableMessage()
         {
             //Arrange
-            _universityAdminRepository
+            _institutionOfEducationAdminRepository
                 .Setup(p => p.GetById(uniAdmin.Id))
-                .Returns(Task.FromResult<UniversityAdminDTO>(new UniversityAdminDTO
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
                     UserId = uniAdmin.UserId,
                     User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" },
                     IsBanned = true
                 }));
-            _universityAdminRepository.Setup(x => x.Enable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to false"));
-            _mapperMock.Setup(x => x.Map<UniversityAdmin>(It.IsAny<UniversityAdminDTO>())).Returns(uniAdmin);
+            _institutionOfEducationAdminRepository.Setup(x => x.Enable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to false"));
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
-            var a = await superAdminService.DisableUniversityAdmin(uniAdmin.Id);
+            var a = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
             Assert.Equal("Admin IsBanned was set to false", a.Object.Message);
