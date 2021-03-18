@@ -27,7 +27,7 @@ namespace YIF_Backend.Controllers
         private readonly IApplicationDbContext _context;
 
         public TestController(
-            IUserService<DbUser> userService,
+            IUserService<DbUser> userService, 
             ResourceManager resourceManager,
             IApplicationDbContext context)
         {
@@ -109,17 +109,17 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Delete University
+        /// Delete Institution of Education 
         /// /// </summary>
         /// <returns>Success delete</returns>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpDelete("DeleteUniversity/{id}")]
-        public async Task<IActionResult> DeleteUniversity(string id)
+        [HttpDelete("DeleteInstitution/{id}")]
+        public async Task<IActionResult> DeleteInstitution(string id)
         {
-            var inst = _context.Universities.Find(id);
-            _context.Universities.Remove(inst);
+            var inst = _context.InstitutionOfEducations.Find(id);
+            _context.InstitutionOfEducations.Remove(inst);
             _context.SaveChanges();
             return Ok();
         }
