@@ -15,7 +15,7 @@ namespace YIF.Core.Data.Interfaces
         Task<string> Enable(InstitutionOfEducationAdmin adminId);
         Task<K> GetById(string id);
         Task<K> GetByInstitutionOfEducationId(string universityId);
-        Task<K> GetByUInstitutionOfEducationIdWithoutIsDeletedCheck(string universityId);
+        Task<K> GetByInstitutionOfEducationIdWithoutIsDeletedCheck(string universityId);
         Task<K> GetUserByAdminId(string id);
         Task<IEnumerable<K>> GetAllUniAdmins();
     }
