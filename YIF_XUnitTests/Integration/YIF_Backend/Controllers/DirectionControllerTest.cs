@@ -3,29 +3,26 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF_XUnitTests.Integration.Fixture;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    public class DirectionControllerTest : IClassFixture<BaseTestServerFixture>
+    public class DirectionControllerTest : TestServerFixture
     {
-        private readonly BaseTestServerFixture _fixture;
-
-        public DirectionControllerTest(BaseTestServerFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        public DirectionControllerTest(ApiWebApplicationFactory fixture)
+          : base(fixture) { }
 
         [Theory]
-        [InlineData("api/Direction/All")]
-        [InlineData("api/Direction/All?page=1")]
-        [InlineData("api/Direction/All?page=1&pageSize=10")]
-        [InlineData("api/Direction/All?DirectionName=Інформаційні технології")]
-        [InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ")]
-        [InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ&page=1&pageSize=10")]
+        [InlineData("/api/Direction/All")]
+        [InlineData("/api/Direction/All?page=1")]
+        [InlineData("/api/Direction/All?page=1&pageSize=10")]
+        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології")]
+        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ")]
+        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ&page=1&pageSize=10")]
         public async Task GetAll_EndpointsReturnSuccessAndCorrectContentObject(string endpoint)
         {
             // Act            
-            var response = await _fixture.Client.GetAsync(endpoint);
+            var response = await _client.GetAsync(endpoint);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -44,7 +41,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             string institutionOfEducationName, string institutionOfEducationAbbreviation)
         {
             // Act            
-            var response = await _fixture.Client.GetAsync($"api/Direction/Names?DirectionName={directionName}&SpecialtyName={specialtyName}&InstitutionOfEducationName={institutionOfEducationName}&InstitutionOfEducationAbbreviation={institutionOfEducationAbbreviation}");
+            var response = await _client.GetAsync($"/api/Direction/Names?DirectionName={directionName}&SpecialtyName={specialtyName}&InstitutionOfEducationName={institutionOfEducationName}&InstitutionOfEducationAbbreviation={institutionOfEducationAbbreviation}");
             // Assert
             response.EnsureSuccessStatusCode();
             var stringResponse = await response.Content.ReadAsStringAsync();

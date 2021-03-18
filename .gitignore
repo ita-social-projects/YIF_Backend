@@ -292,3 +292,4 @@ __pycache__/
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore
 /YIF_Backend/appsettings.Testing.json
+/YIF_XUnitTests/appsettings.Testing.json

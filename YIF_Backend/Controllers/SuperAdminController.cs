@@ -96,7 +96,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPut("DisableInstitutionOfEducationAdmin/{id}")]
+        [HttpPost("DisableInstitutionOfEducationAdmin/{id}")]
         public async Task<IActionResult> DisableInstitutionOfEducationAdmin(string id)
         {
             var result = await _superAdminService.DisableInstitutionOfEducationAdmin(id);

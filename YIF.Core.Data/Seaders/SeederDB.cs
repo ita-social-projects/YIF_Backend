@@ -1217,34 +1217,6 @@ namespace YIF.Core.Data.Seaders
 
                 #region Академія внутрішніх військ МВС України
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
-
-                #region Економіка
-                context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Економіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
-                   new SpecialtyInInstitutionOfEducationDescription
-                   {
-                       Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
-                       " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
-                       EducationalProgramLink = "example.com",
-                       ExamRequirements = new List<ExamRequirement>
-                       {
-                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.2},
-                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Історія України").Id, MinimumScore = 100, Coefficient = 0.25},
-                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
-                       },
-                       EducationFormToDescriptions = new List<EducationFormToDescription>
-                       {
-                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "денна").Id},
-                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "заочна").Id},
-                            new EducationFormToDescription { EducationFormId = educationForms.FirstOrDefault(x => x.Name == "вечірня").Id},
-                       },
-                       PaymentFormToDescriptions = new List<PaymentFormToDescription>
-                       {
-                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "бюджет").Id},
-                            new PaymentFormToDescription {PaymentFormId = paymentForms.FirstOrDefault(x => x.Name == "контракт").Id}
-                       }
-                   };
-                #endregion
-
                 #region Соціологія
                 context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).SpecialtyInInstitutionOfEducationDescription =
                     new SpecialtyInInstitutionOfEducationDescription
