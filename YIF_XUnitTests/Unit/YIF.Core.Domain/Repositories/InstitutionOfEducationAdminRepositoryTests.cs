@@ -10,6 +10,7 @@ using YIF.Core.Data.Interfaces;
 using Newtonsoft.Json;
 using System.Linq;
 using YIF.Core.Domain.DtoModels.EntityDTO;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
