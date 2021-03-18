@@ -31,9 +31,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<IUniversityAdminRepository<UniversityAdminDTO>> _universityAdminRepository;
-        private readonly Mock<IUniversityRepository<University, UniversityDTO>> _universityRepository;
-        private readonly Mock<IUniversityModeratorRepository<UniversityModeratorDTO>> _universityModeratorRepository;
+        private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>> _institutionOfEducationAdminRepository;
+        private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository;
+        private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>> _institutionOfEducationModeratorRepository;
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
@@ -45,20 +45,20 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IConfiguration> _configuration;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
-        private readonly UniversityAdmin uniAdmin = new UniversityAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
-        private readonly University uni = new University { Id = "007a43f8-7553-4eec-9e91-898a9cba37c9", Name = "Uni1Stub", Description = "Descripton1Stub", ImagePath = "Image1Path" };
-        private readonly UniversityModerator universityModerator = new UniversityModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
+        private readonly InstitutionOfEducationAdmin uniAdmin = new InstitutionOfEducationAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", InstitutionOfEducationId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
+        private readonly InstitutionOfEducation uni = new InstitutionOfEducation { Id = "007a43f8-7553-4eec-9e91-898a9cba37c9", Name = "Uni1Stub", Description = "Descripton1Stub", ImagePath = "Image1Path" };
+        private readonly InstitutionOfEducationModerator institutionOfEducationModerator = new InstitutionOfEducationModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
 
-        private readonly List<UniversityAdmin> _databaseUniAdmins = new List<UniversityAdmin>();
-        private readonly List<UniversityAdminDTO> _universityAdminsDTO;
+        private readonly List<InstitutionOfEducationAdmin> _databaseUniAdmins = new List<InstitutionOfEducationAdmin>();
+        private readonly List<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminsDTO;
         private readonly List<DbUser> _databaseDbUsers = new List<DbUser>();
-        private readonly List<University> _databaseUniversities = new List<University>();
-        private readonly List<UniversityModerator> _databaseUniversityModerators = new List<UniversityModerator>();
-        private readonly List<UniversityAdminResponseApiModel> _listViewModel;
+        private readonly List<InstitutionOfEducation> _databaseInstitutionOfEducations = new List<InstitutionOfEducation>();
+        private readonly List<InstitutionOfEducationModerator> _databaseInstitutionOfEducationModerators = new List<InstitutionOfEducationModerator>();
+        private readonly List<InstitutionOfEducationAdminResponseApiModel> _listViewModel;
 
-        public readonly UniversityAdminApiModel model = new UniversityAdminApiModel
+        public readonly InstitutionOfEducationAdminApiModel model = new InstitutionOfEducationAdminApiModel
         {
-            UniversityName = "Name",
+            InstitutionOfEducationName = "Name",
             Email = "Email",
         };
         public SuperAdminServiceTests()
@@ -69,9 +69,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
-            _universityAdminRepository = new Mock<IUniversityAdminRepository<UniversityAdminDTO>>();
-            _universityRepository = new Mock<IUniversityRepository<University, UniversityDTO>>();
-            _universityModeratorRepository = new Mock<IUniversityModeratorRepository<UniversityModeratorDTO>>();
+            _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
+            _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
+            _institutionOfEducationModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
@@ -88,9 +88,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _signInManager,
                                                     _jwtService.Object,
                                                     _mapperMock.Object,
-                                                    _universityRepository.Object,
-                                                    _universityAdminRepository.Object,
-                                                    _universityModeratorRepository.Object,
+                                                    _institutionOfEducationRepository.Object,
+                                                    _institutionOfEducationAdminRepository.Object,
+                                                    _institutionOfEducationModeratorRepository.Object,
                                                     _schoolRepository.Object,
                                                     _schoolAdminRepository.Object,
                                                     _schoolModeratorRepository.Object,
@@ -99,27 +99,27 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _env.Object,
                                                     _configuration.Object);
 
-            _dbContextMock.Setup(p => p.UniversityAdmins).Returns(DbContextMock.GetQueryableMockDbSet<UniversityAdmin>(_databaseUniAdmins));
+            _dbContextMock.Setup(p => p.InstitutionOfEducationAdmins).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducationAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));
-            _dbContextMock.Setup(p => p.Universities).Returns(DbContextMock.GetQueryableMockDbSet<University>(_databaseUniversities));
-            _dbContextMock.Setup(p => p.UniversityModerators).Returns(DbContextMock.GetQueryableMockDbSet<UniversityModerator>(_databaseUniversityModerators));
+            _dbContextMock.Setup(p => p.InstitutionOfEducations).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducation>(_databaseInstitutionOfEducations));
+            _dbContextMock.Setup(p => p.InstitutionOfEducationModerators).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducationModerator>(_databaseInstitutionOfEducationModerators));
 
 
             _dbContextMock.Setup(s => s.SaveChangesAsync()).Verifiable();
             _databaseDbUsers.Add(_user);
-            _databaseUniversities.Add(uni);
+            _databaseInstitutionOfEducations.Add(uni);
             _databaseUniAdmins.Add(uniAdmin);
-            _databaseUniversityModerators.Add(universityModerator);
+            _databaseInstitutionOfEducationModerators.Add(institutionOfEducationModerator);
 
-            _universityAdminsDTO = new List<UniversityAdminDTO>()
+            _institutionOfEducationAdminsDTO = new List<InstitutionOfEducationAdminDTO>()
             {
-                new UniversityAdminDTO {Id="1", UniversityId = "007a43f8-7553-4eec-9e91-898a9cba37c9" },
-                new UniversityAdminDTO {Id="2", UniversityId = "107a43f8-7553-4eec-9e91-898a9cba37c9" },
+                new InstitutionOfEducationAdminDTO {Id="1", InstitutionOfEducationId = "007a43f8-7553-4eec-9e91-898a9cba37c9" },
+                new InstitutionOfEducationAdminDTO {Id="2", InstitutionOfEducationId = "107a43f8-7553-4eec-9e91-898a9cba37c9" },
             };
-            _listViewModel = new List<UniversityAdminResponseApiModel>()
+            _listViewModel = new List<InstitutionOfEducationAdminResponseApiModel>()
             {
-                new UniversityAdminResponseApiModel { Id = _universityAdminsDTO[0].Id,  },
-                new UniversityAdminResponseApiModel { Id = _universityAdminsDTO[1].Id,  }
+                new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[0].Id,  },
+                new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[1].Id,  }
             };
 
         }
@@ -127,11 +127,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetAllUniAdmins_ShouldReturnAllAdmins_IfThereAreMoreThanOneAdmin()
         {
             //Arrange
-            _universityAdminRepository.Setup(x => x.GetAllUniAdmins()).Returns(Task.FromResult(_universityAdminsDTO.AsEnumerable()));
-            _mapperMock.Setup(s => s.Map<IEnumerable<UniversityAdminResponseApiModel>>(_universityAdminsDTO)).Returns(_listViewModel);
+            _institutionOfEducationAdminRepository.Setup(x => x.GetAllUniAdmins()).Returns(Task.FromResult(_institutionOfEducationAdminsDTO.AsEnumerable()));
+            _mapperMock.Setup(s => s.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(_institutionOfEducationAdminsDTO)).Returns(_listViewModel);
 
             // Act
-            var result = await superAdminService.GetAllUniversityAdmins();
+            var result = await superAdminService.GetAllInstitutionOfEducationAdmins();
             var users = result.Object.ToList();
 
             //Assert
@@ -143,10 +143,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetAllUniAdmins_ShouldReturnEmpty_IfThereAreNoAdmins()
         {
             // Arrange
-            _universityAdminRepository.Setup(s => s.GetAllUniAdmins()).Returns(Task.FromResult(new List<UniversityAdminDTO>().AsEnumerable()));
+            _institutionOfEducationAdminRepository.Setup(s => s.GetAllUniAdmins()).Returns(Task.FromResult(new List<InstitutionOfEducationAdminDTO>().AsEnumerable()));
 
             // Act
-            var result = await superAdminService.GetAllUniversityAdmins();
+            var result = await superAdminService.GetAllInstitutionOfEducationAdmins();
             var users = result.Object.ToList();
             //Assert
             Assert.True(result.Success);
@@ -155,35 +155,35 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [Fact]
         public async Task AddUniAdmin_NoUniFound_returnsResult()
         {
-            List<UniversityDTO> listNull = new List<UniversityDTO>();
-            _universityRepository.Setup(p => p.Find(It.IsAny<Expression<Func<University, bool>>>())).ReturnsAsync(listNull);
+            List<InstitutionOfEducationDTO> listNull = new List<InstitutionOfEducationDTO>();
+            _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>())).ReturnsAsync(listNull);
 
             // Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddUniversityAdmin(model));
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddInstitutionOfEducationAdmin(model));
         }
 
         [Fact]
         public async Task AddUniAdmin_AdminAlreadyExists_returnsResult()
         {
-            UniversityAdminDTO universityAdmin = new UniversityAdminDTO
+            InstitutionOfEducationAdminDTO institutionOfEducationAdmin = new InstitutionOfEducationAdminDTO
             {
                 Id = "Id",
-                UniversityId = "SomeUniId"
+                InstitutionOfEducationId = "SomeUniId"
             };
-            List<UniversityDTO> list = new List<UniversityDTO>
+            List<InstitutionOfEducationDTO> list = new List<InstitutionOfEducationDTO>
             {
-                new UniversityDTO
+                new InstitutionOfEducationDTO
                 {
                     Id = "id"
                 }
             };
-            _universityRepository.Setup(p => p.Find(It.IsAny<Expression<Func<University, bool>>>()))
+            _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>()))
                                                                                                 .ReturnsAsync(list);
-            _universityAdminRepository.Setup(p => p.GetByUniversityId("id"))
-                                                                          .ReturnsAsync(universityAdmin);
+            _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationId("id"))
+                                                                          .ReturnsAsync(institutionOfEducationAdmin);
 
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddUniversityAdmin(model));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(model));
         }
         [Fact]
         public async Task AddUniAdmin_UserAlreadyExists_returnsResult()
@@ -192,36 +192,36 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 Id = "Id"
             };
-            UniversityAdminDTO universityAdmin = new UniversityAdminDTO
+            InstitutionOfEducationAdminDTO institutionOfEducationAdmin = new InstitutionOfEducationAdminDTO
             {
                 Id = "Id",
-                UniversityId = "SomeUniId"
+                InstitutionOfEducationId = "SomeUniId"
             };
-            List<UniversityDTO> list = new List<UniversityDTO>
+            List<InstitutionOfEducationDTO> list = new List<InstitutionOfEducationDTO>
             {
-                new UniversityDTO
+                new InstitutionOfEducationDTO
                 {
                     Id = "id"
                 }
             };
-            _universityRepository.Setup(p => p.Find(It.IsAny<Expression<Func<University, bool>>>()))
+            _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>()))
                                                                                                 .ReturnsAsync(list);
-            _universityAdminRepository.Setup(p => p.GetByUniversityId("sdfs"))
-                                                                          .ReturnsAsync(universityAdmin);
+            _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationId("sdfs"))
+                                                                          .ReturnsAsync(institutionOfEducationAdmin);
             _userManager.Setup(p => p.FindByEmailAsync("Email")).
                                                             ReturnsAsync(user);
 
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddUniversityAdmin(model));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(model));
         }
 
         [Fact]
         public async Task DeleteAdmin_ReturnsSuccessDeleteMessage()
         {
             //Arrange
-            _universityAdminRepository
+            _institutionOfEducationAdminRepository
                 .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
-                .Returns(Task.FromResult<UniversityAdminDTO>(new UniversityAdminDTO
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                     { 
                         Id = uniAdmin.Id,
                         UserId = uniAdmin.UserId,
@@ -230,7 +230,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userRepository.Setup(p => p.Delete(uniAdmin.UserId)).Returns(Task.FromResult<bool>(true));
 
             //Act
-            var a = await superAdminService.DeleteUniversityAdmin(uniAdmin.Id);
+            var a = await superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
             Assert.Equal("User IsDeleted was updated", a.Object.Message);

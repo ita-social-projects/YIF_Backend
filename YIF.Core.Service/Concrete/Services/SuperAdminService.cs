@@ -31,9 +31,9 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
-        private readonly IUniversityAdminRepository<UniversityAdminDTO> _universityAdminRepository;
-        private readonly IUniversityRepository<University, UniversityDTO> _universityRepository;
-        private readonly IUniversityModeratorRepository<UniversityModeratorDTO> _universityModeratorRepository;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
@@ -49,9 +49,9 @@ namespace YIF.Core.Service.Concrete.Services
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper,
-            IUniversityRepository<University, UniversityDTO> universityRepository,
-            IUniversityAdminRepository<UniversityAdminDTO> universityAdminRepository,
-            IUniversityModeratorRepository<UniversityModeratorDTO> universityModeratorRepository,
+            IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
+            IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
@@ -66,9 +66,9 @@ namespace YIF.Core.Service.Concrete.Services
             _signInManager = signInManager;
             _jwtService = _IJwtService;
             _mapper = mapper;
-            _universityAdminRepository = universityAdminRepository;
-            _universityRepository = universityRepository;
-            _universityModeratorRepository = universityModeratorRepository;
+            _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
+            _institutionOfEducationRepository = institutionOfEducationRepository;
+            _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _schoolRepository = schoolRepository;
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
@@ -77,24 +77,24 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
         }
-        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel)
+        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddInstitutionOfEducationAdmin(InstitutionOfEducationAdminApiModel institutionOfEducationAdminModel)
         {
             var result = new ResponseApiModel<AuthenticateResponseApiModel>();
 
             //take uni
-            var universities = await _universityRepository.Find(x => x.Name == universityAdminModel.UniversityName);
-            if (universities.Count() == 0)
+            var institutionOfEducations = await _institutionOfEducationRepository.Find(x => x.Name == institutionOfEducationAdminModel.InstitutionOfEducationName);
+            if (institutionOfEducations.Count() == 0)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("UniversityWithSuchNameNotFound")}: {universityAdminModel.UniversityName}");
+                throw new NotFoundException($"{_resourceManager.GetString("InstitutionOfEducationWithSuchNameNotFound")}: {institutionOfEducationAdminModel.InstitutionOfEducationName}");
             }
-            var university = universities.First();
-            var adminCheck = await _universityAdminRepository.GetByUniversityId(university.Id);
+            var institutionOfEducation = institutionOfEducations.First();
+            var adminCheck = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(institutionOfEducation.Id);
             if (adminCheck != null)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("AdministratorOfThisSchoolAlreadyExists"));
             }
 
-            var searchUser = _userManager.FindByEmailAsync(universityAdminModel.Email);
+            var searchUser = _userManager.FindByEmailAsync(institutionOfEducationAdminModel.Email);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
@@ -102,26 +102,26 @@ namespace YIF.Core.Service.Concrete.Services
 
             var dbUser = new DbUser
             {
-                Email = universityAdminModel.Email,
-                UserName = universityAdminModel.Email
+                Email = institutionOfEducationAdminModel.Email,
+                UserName = institutionOfEducationAdminModel.Email
             };
 
-            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.UniversityAdmin);
+            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationAdmin);
             if (registerResult != string.Empty)
             {                
                 throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
             }
 
-            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id });
-            var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
+            await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin { InstitutionOfEducationId = institutionOfEducation.Id });
+            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(institutionOfEducation.Id);
 
-            UniversityModerator toAdd = new UniversityModerator
+            InstitutionOfEducationModerator toAdd = new InstitutionOfEducationModerator
             {
-                //UniversityId = university.Id,
+                //InstitutionOfEducationId = institutionOfEducation.Id,
                 UserId = dbUser.Id,
                 AdminId = admin.Id
             };
-            await _universityModeratorRepository.AddUniModerator(toAdd);
+            await _institutionOfEducationModeratorRepository.AddUniModerator(toAdd);
 
             return null;
             ////to do change logic and response model
@@ -219,10 +219,10 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(string adminId)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _universityAdminRepository.GetUserByAdminId(adminId);
+            var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
@@ -231,10 +231,10 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel("User IsDeleted was updated"), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(string adminId)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _universityAdminRepository.GetById(adminId);
+            var ch = await _institutionOfEducationAdminRepository.GetById(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
@@ -242,11 +242,11 @@ namespace YIF.Core.Service.Concrete.Services
             string res;
             if (ch.IsBanned == false)
             {
-                res = await _universityAdminRepository.Disable(_mapper.Map<UniversityAdmin>(ch));
+                res = await _institutionOfEducationAdminRepository.Disable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
             }
             else
             {
-                res = await _universityAdminRepository.Enable(_mapper.Map<UniversityAdmin>(ch));
+                res = await _institutionOfEducationAdminRepository.Enable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
             }
             return result.Set(new DescriptionResponseApiModel(res), true);
         }
@@ -262,17 +262,17 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversityAndAdmin(UniversityPostApiModel universityPostApiModel, HttpRequest request)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel, HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
-            var ch = await _universityRepository.GetByName(universityPostApiModel.Name);
+            var ch = await _institutionOfEducationRepository.GetByName(institutionOfEducationPostApiModel.Name);
             if (ch != null)
             {
-                throw new InvalidOperationException(_resourceManager.GetString("UniversityWithSuchNameAlreadyExists"));
+                throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationWithSuchNameAlreadyExists"));
             }
 
-            var searchUser = _userManager.FindByEmailAsync(universityPostApiModel.UniversityAdminEmail);
+            var searchUser = _userManager.FindByEmailAsync(institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail);
             if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
@@ -283,48 +283,48 @@ namespace YIF.Core.Service.Concrete.Services
             var folerName = _configuration.GetValue<string>("ImagesPath");
             var path = Path.Combine(serverPath, folerName);
 
-            var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(universityPostApiModel.ImageApiModel.Photo, path);
+            var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(institutionOfEducationPostApiModel.ImageApiModel.Photo, path);
             #endregion
 
-            var universityDTO = _mapper.Map<UniversityDTO>(universityPostApiModel);
-            universityDTO.ImagePath = fileName;
+            var institutionOfEducationDTO = _mapper.Map<InstitutionOfEducationDTO>(institutionOfEducationPostApiModel);
+            institutionOfEducationDTO.ImagePath = fileName;
 
-            var university = await _universityRepository.AddUniversity(_mapper.Map<University>(universityDTO));
+            var institutionOfEducation = await _institutionOfEducationRepository.AddInstitutionOfEducation(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTO));
 
             var dbUser = new DbUser
             {
-                Email = universityPostApiModel.UniversityAdminEmail,
-                UserName = universityPostApiModel.UniversityAdminEmail
+                Email = institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail,
+                UserName = institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail
             };
 
-            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.UniversityAdmin);
+            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationAdmin);
             if (registerResult != string.Empty)
             {
                 throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
             }
 
-            await _universityAdminRepository.AddUniAdmin(new UniversityAdmin { UniversityId = university.Id, UserId = dbUser.Id });
+            await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin { InstitutionOfEducationId = institutionOfEducation.Id, UserId = dbUser.Id });
 
-            var admin = await _universityAdminRepository.GetByUniversityIdWithoutIsDeletedCheck(university.Id);
+            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(institutionOfEducation.Id);
             if (admin == null)
             {
-                throw new InvalidOperationException(_resourceManager.GetString("UniversityAdminFailed"));
+                throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailed"));
             }
 
             //To check
-            var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(universityPostApiModel.UniversityAdminEmail, request);
+            var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail, request);
             if (!resultResetPasswordByEmail.Success)
             {
                 throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
             }
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("UniversityAndAdminAdded")), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InstitutionOfEducationAndAdminAdded")), true);
         }
 
-        public async Task<ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>> GetAllUniversityAdmins()
+        public async Task<ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>> GetAllInstitutionOfEducationAdmins()
         {
-            var result = new ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>();
-            var admins = await _universityAdminRepository.GetAllUniAdmins();
-            result.Object = _mapper.Map<IEnumerable<UniversityAdminResponseApiModel>>(admins);
+            var result = new ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>();
+            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
+            result.Object = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins);
             return result.Set(true);
         }
         public async Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins()

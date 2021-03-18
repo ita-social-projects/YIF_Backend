@@ -33,13 +33,13 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Link to next page
         /// </summary>
-        /// <example>https://yifbackend.tk/api/University?page=3</example>
+        /// <example>https://yifbackend.tk/api/InstitutionOfEducation?page=3</example>
         public string NextPage { get; set; }
 
         /// <summary>
         /// Link to previous page
         /// </summary>
-        /// <example>https://yifbackend.tk/api/University?page=1</example>
+        /// <example>https://yifbackend.tk/api/InstitutionOfEducation?page=1</example>
         public string PrevPage { get; set; }
 
         /// <summary>

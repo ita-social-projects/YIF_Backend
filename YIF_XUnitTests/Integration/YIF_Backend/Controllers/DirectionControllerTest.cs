@@ -20,8 +20,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         [InlineData("api/Direction/All?page=1")]
         [InlineData("api/Direction/All?page=1&pageSize=10")]
         [InlineData("api/Direction/All?DirectionName=Інформаційні технології")]
-        [InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&UniversityName=Київський політехнічний інститут імені Ігоря Сікорського&UniversityAbbreviation=КПІ")]
-        [InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&UniversityName=Київський політехнічний інститут імені Ігоря Сікорського&UniversityAbbreviation=КПІ&page=1&pageSize=10")]
+        [InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ")]
+        [InlineData("api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ&page=1&pageSize=10")]
         public async Task GetAll_EndpointsReturnSuccessAndCorrectContentObject(string endpoint)
         {
             // Act            
@@ -41,10 +41,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         [InlineData("Інформаційні технології", "Кібербезпека", "Київський політехнічний інститут імені Ігоря Сікорського", "")]
         [InlineData("Інформаційні технології", "Кібербезпека", "Київський політехнічний інститут імені Ігоря Сікорського", "КПІ")]
         public async Task GetDirectionNames_EndpointsReturnSuccessAndCorrectContentObject(string directionName, string specialtyName,
-            string universityName, string universityAbbreviation)
+            string institutionOfEducationName, string institutionOfEducationAbbreviation)
         {
             // Act            
-            var response = await _fixture.Client.GetAsync($"api/Direction/Names?DirectionName={directionName}&SpecialtyName={specialtyName}&UniversityName={universityName}&UniversityAbbreviation={universityAbbreviation}");
+            var response = await _fixture.Client.GetAsync($"api/Direction/Names?DirectionName={directionName}&SpecialtyName={specialtyName}&InstitutionOfEducationName={institutionOfEducationName}&InstitutionOfEducationAbbreviation={institutionOfEducationAbbreviation}");
             // Assert
             response.EnsureSuccessStatusCode();
             var stringResponse = await response.Content.ReadAsStringAsync();

@@ -16,8 +16,8 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
 
         public virtual UserDTO User { get; set; }
         /// <summary>
-        /// List of favorite universities
+        /// List of favorite institutionOfEducations
         /// </summary>
-        public virtual ICollection<UniversityToGraduateDTO> UniversityGraduates { get; set; }
+        public virtual ICollection<InstitutionOfEducationToGraduateDTO> InstitutionOfEducationGraduates { get; set; }
     }
 }

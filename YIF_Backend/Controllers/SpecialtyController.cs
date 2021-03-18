@@ -36,8 +36,8 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetAllSpecialtiesAsync(
             string DirectionName,
             string SpecialtyName,
-            string UniversityName,
-            string UniversityAbbreviation,
+            string InstitutionOfEducationName,
+            string InstitutionOfEducationAbbreviation,
             string PaymentForm,
             string EducationForm)
         {
@@ -45,8 +45,8 @@ namespace YIF_Backend.Controllers
             {
                 DirectionName = DirectionName,
                 SpecialtyName = SpecialtyName,
-                UniversityName = UniversityName,
-                UniversityAbbreviation = UniversityAbbreviation,
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
                 PaymentForm = PaymentForm,
                 EducationForm = EducationForm
             };
@@ -69,15 +69,15 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetAllSpecialtiesNamesAsync(
             string DirectionName,
             string SpecialtyName,
-            string UniversityName,
-            string UniversityAbbreviation)
+            string InstitutionOfEducationName,
+            string InstitutionOfEducationAbbreviation)
         {
             var filterModel = new FilterApiModel
             {
                 DirectionName = DirectionName,
                 SpecialtyName = SpecialtyName,
-                UniversityName = UniversityName,
-                UniversityAbbreviation = UniversityAbbreviation
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation
             };
 
             var result = await _specialtyService.GetSpecialtiesNamesByFilter(filterModel); 
@@ -111,7 +111,7 @@ namespace YIF_Backend.Controllers
         /// <response code="404">If specialty descriptions not found</response>
         /// <param name="id" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Specialty Id</param>
         [HttpGet("Descriptions/{id}")]
-        [ProducesResponseType(typeof(IEnumerable<SpecialtyToUniversityResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpecialtyDescriptionsAsync(string id)
@@ -122,11 +122,11 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Add specialty with university to favorite.
+        /// Add specialty with institutionOfEducation to favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="201">Returns if the specialty with university has been successfully added to the favorites list</response>
-        /// <response code="400">If id is not valid or slecialty with university has already been added to favorites</response>
+        /// <response code="201">Returns if the specialty with institutionOfEducation has been successfully added to the favorites list</response>
+        /// <response code="400">If id is not valid or slecialty with institutionOfEducation has already been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
@@ -134,19 +134,19 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> AddUniversityToFavorite(string specialtyId, string universityId)
+        public async Task<IActionResult> AddInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId)
         {
             var userId = User.FindFirst("id")?.Value;
-            await _specialtyService.AddSpecialtyAndUniversityToFavorite(specialtyId, universityId, userId);
+            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(specialtyId, institutionOfEducationId, userId);
             return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", null);
         }
 
         /// <summary>
-        /// Delete specialty with university from favorite.
+        /// Delete specialty with institutionOfEducation from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the specialty with university has been successfully deleted from the favorites list</response>
-        /// <response code="400">If id is not valid or specialty with university has not been added to favorites</response>
+        /// <response code="204">Returns if the specialty with institutionOfEducation has been successfully deleted from the favorites list</response>
+        /// <response code="400">If id is not valid or specialty with institutionOfEducation has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
@@ -154,10 +154,10 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpDelete("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> DeleteUniversityFromFavorite(string specialtyId, string universityId)
+        public async Task<IActionResult> DeleteInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId)
         {
             var userId = User.FindFirst("id")?.Value;
-            await _specialtyService.DeleteSpecialtyAndUniversityFromFavorite(specialtyId, universityId, userId);
+            await _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(specialtyId, institutionOfEducationId, userId);
             return NoContent();
         }
     }

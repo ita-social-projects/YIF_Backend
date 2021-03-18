@@ -8,13 +8,13 @@ namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface ISuperAdminService
     {
-        Task<ResponseApiModel<AuthenticateResponseApiModel>> AddUniversityAdmin(UniversityAdminApiModel universityAdminModel);
+        Task<ResponseApiModel<AuthenticateResponseApiModel>> AddInstitutionOfEducationAdmin(InstitutionOfEducationAdminApiModel institutionOfEducationAdminModel);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteUniversityAdmin(string id);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> DisableUniversityAdmin(string id);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducationAdmin(string id);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string id);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddUniversityAndAdmin(UniversityPostApiModel schoolUniAdminDeleteApi, HttpRequest request);
-        Task<ResponseApiModel<IEnumerable<UniversityAdminResponseApiModel>>> GetAllUniversityAdmins();
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(InstitutionOfEducationPostApiModel schoolUniAdminDeleteApi, HttpRequest request);
+        Task<ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>> GetAllInstitutionOfEducationAdmins();
         Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins();
     }
 }

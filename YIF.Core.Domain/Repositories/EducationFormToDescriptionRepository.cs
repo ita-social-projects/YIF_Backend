@@ -43,7 +43,7 @@ namespace YIF.Core.Domain.Repositories
         public Task<IEnumerable<EducationFormToDescriptionDTO>> Find(Expression<Func<EducationFormToDescription, bool>> predicate)
         {
             var list = _context.EducationFormToDescriptions
-                .Include(x => x.SpecialtyInUniversityDescription)
+                .Include(x => x.SpecialtyInInstitutionOfEducationDescription)
                 .Include(x => x.EducationForm)
                 .Where(predicate)
                 .ToList();

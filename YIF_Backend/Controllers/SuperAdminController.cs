@@ -28,24 +28,24 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds University Admin and Moderator.
+        /// Adds InstitutionOfEducation Admin and Moderator.
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
         /// <response code="201">Returns object with tokens</response>
         /// <response code="400">If model state is not valid</response>
-        /// <response code="404">If university not found</response>
+        /// <response code="404">If institutionOfEducation not found</response>
         /// <response code="409">If email or password incorrect</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("AddUniversityAdmin")]
-        public async Task<IActionResult> AddUniversityAdmin([FromBody] UniversityAdminApiModel model)
+        [HttpPost("AddInstitutionOfEducationAdmin")]
+        public async Task<IActionResult> AddInstitutionOfEducationAdmin([FromBody] InstitutionOfEducationAdminApiModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.AddUniversityAdmin(model);
+            var result = await _superAdminService.AddInstitutionOfEducationAdmin(model);
             return Created(string.Empty, result.Object);
         }
 
@@ -72,7 +72,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Delete University admin (sets its asp.net user IsDeleted to true).
+        /// Delete InstitutionOfEducation admin (sets its asp.net user IsDeleted to true).
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -80,15 +80,15 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpDelete("DeleteUniversityAdmin/{id}")]
-        public async Task<IActionResult> DeleteUniversityAdmin(string id)
+        [HttpDelete("DeleteInstitutionOfEducationAdmin/{id}")]
+        public async Task<IActionResult> DeleteInstitutionOfEducationAdmin(string id)
         {
-            var result = await _superAdminService.DeleteUniversityAdmin(id);
+            var result = await _superAdminService.DeleteInstitutionOfEducationAdmin(id);
             return Ok(result.Object);
         }
 
         /// <summary>
-        /// Disable/Enable University admin (sets its University Admin IsBanned to true or false).
+        /// Disable InstitutionOfEducation admin (sets its InstitutionOfEducation Admin IsBanned to true  or false).
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -96,10 +96,10 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("DisableUniversityAdmin/{id}")]
-        public async Task<IActionResult> DisableUniversityAdmin(string id)
+        [HttpPut("DisableInstitutionOfEducationAdmin/{id}")]
+        public async Task<IActionResult> DisableInstitutionOfEducationAdmin(string id)
         {
-            var result = await _superAdminService.DisableUniversityAdmin(id);
+            var result = await _superAdminService.DisableInstitutionOfEducationAdmin(id);
             return Ok(result.Object);
         }
 
@@ -122,18 +122,18 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds University and email for admin.
+        /// Adds InstitutionOfEducation and email for admin.
         /// </summary>
         /// <returns></returns>
         /// <response code="201"></response>
         /// <response code="400">If model state is not valid</response>
-        /// <response code="409">University Already exists</response>
+        /// <response code="409">InstitutionOfEducation Already exists</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
-        [HttpPost("AddUniversityAndAdmin")]
-        public async Task<IActionResult> AddUniversityAndAdmin([FromBody] UniversityPostApiModel model)
+        [HttpPost("AddInstitutionOfEducationAndAdmin")]
+        public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationPostApiModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
@@ -143,7 +143,7 @@ namespace YIF_Backend.Controllers
 
             if (!validResults.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
 
-            var result = await _superAdminService.AddUniversityAndAdmin(model, Request);
+            var result = await _superAdminService.AddInstitutionOfEducationAndAdmin(model, Request);
             return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
 
@@ -154,13 +154,13 @@ namespace YIF_Backend.Controllers
         /// <returns>List of users</returns>
         /// <response code="200">Returns a list of users</response>
         /// <response code="404">If there are no users</response>
-        [HttpGet("GetAllUniversities")]
-        [ProducesResponseType(typeof(IEnumerable<UniversityAdminResponseApiModel>), 200)]
+        [HttpGet("GetAllInstitutionOfEducations")]
+        [ProducesResponseType(typeof(IEnumerable<InstitutionOfEducationAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllUniUsersAsync()
         {
-            var result = await _superAdminService.GetAllUniversityAdmins();
+            var result = await _superAdminService.GetAllInstitutionOfEducationAdmins();
             return Ok(result.Object);
         }
 
@@ -171,7 +171,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Returns a list of users</response>
         /// <response code="404">If there are no users</response>
         [HttpGet("GetAllSchools")]
-        [ProducesResponseType(typeof(IEnumerable<UniversityAdminResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<InstitutionOfEducationAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllSchoolUsersAsync()
