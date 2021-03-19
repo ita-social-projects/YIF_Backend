@@ -122,11 +122,11 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Add specialty with institutionOfEducation to favorite.
+        /// Add specialty with institution of education to favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="201">Returns if the specialty with institutionOfEducation has been successfully added to the favorites list</response>
-        /// <response code="400">If id is not valid or slecialty with institutionOfEducation has already been added to favorites</response>
+        /// <response code="200">Returns if the specialty with institution of education has been successfully added to the favorites list</response>
+        /// <response code="400">If id is not valid or specialty with institution of education has already been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
@@ -134,19 +134,19 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> AddInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId)
+        public async Task<IActionResult> AddSpecialtyAndInstitutionOfEducationToFavorite([FromBody] SpecialtyAndInstitutionOfEducationToFavoritePostApiModel request)
         {
             var userId = User.FindFirst("id")?.Value;
-            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(specialtyId, institutionOfEducationId, userId);
-            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", null);
+            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request.SpecialtyId, request.InstitutionOfEducationId, userId);
+            return Ok();
         }
 
         /// <summary>
-        /// Delete specialty with institutionOfEducation from favorite.
+        /// Delete specialty with institution of education from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the specialty with institutionOfEducation has been successfully deleted from the favorites list</response>
-        /// <response code="400">If id is not valid or specialty with institutionOfEducation has not been added to favorites</response>
+        /// <response code="204">Returns if the specialty with institution of education has been successfully deleted from the favorites list</response>
+        /// <response code="400">If id is not valid or specialty with institution of education has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
@@ -154,7 +154,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpDelete("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> DeleteInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId)
+        public async Task<IActionResult> RemoveSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId)
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(specialtyId, institutionOfEducationId, userId);

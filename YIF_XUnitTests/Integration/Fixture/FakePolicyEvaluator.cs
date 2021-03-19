@@ -9,15 +9,12 @@ namespace YIF_XUnitTests.Integration.Fixture
 {
     public class FakePolicyEvaluator : IPolicyEvaluator
     {
+        public static Claim[] claims { get; set; }
         public virtual async Task<AuthenticateResult> AuthenticateAsync(AuthorizationPolicy policy, HttpContext context)
         {
             var principal = new ClaimsPrincipal();
-            principal.AddIdentity(new ClaimsIdentity(new[] {
-            new Claim("Permission", "CanViewPage"),
-            new Claim("Manager", "yes"),
-            new Claim(ClaimTypes.Role, "Administrator"),
-            new Claim(ClaimTypes.NameIdentifier, "John")
-        }, "FakeScheme"));
+            principal.AddIdentity(new ClaimsIdentity(claims, "FakeScheme"));
+            context.User = principal;
             return await Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(principal,
                 new AuthenticationProperties(), "FakeScheme")));
         }

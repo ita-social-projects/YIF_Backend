@@ -33,6 +33,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
         private readonly SpecialtyToInstitutionOfEducationDTO _specialtyToInstitutionOfEducationDTO = new SpecialtyToInstitutionOfEducationDTO { SpecialtyId = "id", InstitutionOfEducation = new InstitutionOfEducationDTO(), SpecialtyToIoEDescription = new SpecialtyToIoEDescriptionDTO() };
         private readonly IEnumerable<SpecialtyDTO> _listSpecialty;
+        private readonly IEnumerable<SpecialtyToInstitutionOfEducationDTO> _listSpecialityToInstitutionOfEducationDTO;
         private readonly IEnumerable<SpecialtyDTO> _blankListSpecialty = new List<SpecialtyDTO>().AsEnumerable();
         private readonly IEnumerable<SpecialtyResponseApiModel> _blankResponse = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel() }.AsEnumerable();
 
@@ -50,6 +51,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 );
 
             _listSpecialty = new List<SpecialtyDTO>() { _specialtyDTO }.AsEnumerable();
+            _listSpecialityToInstitutionOfEducationDTO = new List<SpecialtyToInstitutionOfEducationDTO>() { _specialtyToInstitutionOfEducationDTO }.AsEnumerable();
             var listSpecialtyToInstitutionOfEducation = new List<SpecialtyToInstitutionOfEducationDTO>() { _specialtyToInstitutionOfEducationDTO }.AsEnumerable();
             _specialtyToInstitutionOfEducationRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
                     .ReturnsAsync(listSpecialtyToInstitutionOfEducation);
@@ -180,14 +182,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetSpecialtyDescriptionsById_ShouldReturnSpecialtyDescriptions_ById()
         {
             // Arrange
-            _specialtyToInstitutionOfEducationRepository.Setup(s => s.GetAll()).ReturnsAsync(new List<SpecialtyToInstitutionOfEducationDTO>());
-            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(It.IsAny<SpecialtyToInstitutionOfEducationDTO>())).Returns(new List<SpecialtyToInstitutionOfEducationResponseApiModel>());
+            _specialtyToInstitutionOfEducationRepository.Setup(s => s.GetSpecialtyToIoEDescriptionsById(It.IsAny<string>())).ReturnsAsync(_listSpecialityToInstitutionOfEducationDTO);
 
             // Act
-            var result = await _specialtyService.GetAllSpecialtyDescriptionsById("id");
+            var result = await _specialtyService.GetAllSpecialtyDescriptionsById(It.IsAny<string>());
 
             // Assert
-            Assert.IsType<SpecialtyToInstitutionOfEducationResponseApiModel>(result);
+            Assert.NotNull(result);
         }
 
         [Fact]

@@ -1042,6 +1042,21 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+        public async static void SeedSpecialtyToInstitutionOfEducationToGraduate(EFDbContext context)
+        {
+            if (context.SpecialtyToInstitutionOfEducationToGraduates.Count() == 0)
+            {
+                var graduate = context.Graduates.ToList();
+                var specialtyToUniversity = context.SpecialtyToInstitutionOfEducations.ToList();
+
+                await context.SpecialtyToInstitutionOfEducationToGraduates.AddRangeAsync(new List<SpecialtyToInstitutionOfEducationToGraduate>
+                {
+                    new SpecialtyToInstitutionOfEducationToGraduate { GraduateId = graduate.FirstOrDefault().Id, SpecialtyId = specialtyToUniversity.FirstOrDefault().SpecialtyId, InstitutionOfEducationId = specialtyToUniversity.FirstOrDefault().InstitutionOfEducationId }
+                });
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async static Task SeedInstitutionOfEducationAdmins(EFDbContext context, UserManager<DbUser> userManager)
         {
             if (context.InstitutionOfEducationAdmins.Count() == 0)
@@ -2476,6 +2491,7 @@ namespace YIF.Core.Data.Seaders
                 await SeederDB.SeedSpecialities(context);
                 SeederDB.SeedInstitutionOfEducations(context);
                 SeederDB.SeedDirectionsAndSpecialitiesToInstitutionOfEducation(context);
+                SeederDB.SeedSpecialtyToInstitutionOfEducationToGraduate(context);
                 await SeederDB.SeedInstitutionOfEducationAdmins(context, manager);
                 await SeederDB.SeedInstitutionOfEducationModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);

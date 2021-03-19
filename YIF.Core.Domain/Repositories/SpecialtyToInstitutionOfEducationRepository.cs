@@ -89,6 +89,7 @@ namespace YIF.Core.Domain.Repositories
               .Include(sd => sd.SpecialtyToIoEDescription)
                   .ThenInclude(e => e.EducationFormToDescriptions)
                       .ThenInclude(e => e.EducationForm)
+              .AsNoTracking()
               .ToListAsync();
 
             foreach (var item in specialtyToInstitutionOfEducation)
