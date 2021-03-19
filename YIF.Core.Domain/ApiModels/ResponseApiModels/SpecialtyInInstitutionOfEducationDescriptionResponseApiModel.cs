@@ -2,7 +2,7 @@
 
 namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class SpecialtyInInstitutionOfEducationDescriptionResponseApiModel
+    public class SpecialtyToIoEDescriptionResponseApiModel
     {
         /// <summary>
         /// Gets or sets the educational program link for this description.

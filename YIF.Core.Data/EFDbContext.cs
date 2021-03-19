@@ -16,7 +16,7 @@ namespace YIF.Core.Data
     {       
         public EFDbContext(DbContextOptions<EFDbContext> options) : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         #region Tables
@@ -43,7 +43,7 @@ namespace YIF.Core.Data
         public DbSet<ExamRequirement> ExamRequirements { get; set; }
         public DbSet<EducationForm> EducationForms { get; set; }
         public DbSet<PaymentForm> PaymentForms { get; set; }
-        public  DbSet<SpecialtyInInstitutionOfEducationDescription> SpecialtyInInstitutionOfEducationDescriptions { get; set; }
+        public  DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
         public DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
         public DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
         public DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
@@ -137,17 +137,17 @@ namespace YIF.Core.Data
                 .HasKey(c => new {c.Id, c.InstitutionOfEducationId, c.SpecialtyId});
 
             builder.Entity<SpecialtyToInstitutionOfEducation>()
-                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .HasOne(x => x.SpecialtyToIoEDescription)
                 .WithMany(x => x.SpecialtyToInstitutionOfEducations)
-                .HasForeignKey(x => x.SpecialtyInInstitutionOfEducationDescriptionId);
+                .HasForeignKey(x => x.SpecialtyToIoEDescriptionId);
             
             builder.Entity<PaymentFormToDescription>()
-                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyInInstitutionOfEducationDescriptionId});
+                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyToIoEDescriptionId});
 
             builder.Entity<PaymentFormToDescription>()
-                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .HasOne(x => x.SpecialtyToIoEDescription)
                 .WithMany(x => x.PaymentFormToDescriptions)
-                .HasForeignKey(k => k.SpecialtyInInstitutionOfEducationDescriptionId);
+                .HasForeignKey(k => k.SpecialtyToIoEDescriptionId);
 
             builder.Entity<PaymentFormToDescription>()
                 .HasOne(x => x.PaymentForm)
@@ -155,7 +155,7 @@ namespace YIF.Core.Data
                 .HasForeignKey(k => k.PaymentFormId);
 
             builder.Entity<EducationFormToDescription>()
-                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyInInstitutionOfEducationDescriptionId});
+                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyToIoEDescriptionId});
 
             builder.Entity<EducationFormToDescription>()
                 .HasOne(x => x.EducationForm)
@@ -163,12 +163,12 @@ namespace YIF.Core.Data
                 .HasForeignKey(k => k.EducationFormId);
 
             builder.Entity<EducationFormToDescription>()
-                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .HasOne(x => x.SpecialtyToIoEDescription)
                 .WithMany(x => x.EducationFormToDescriptions)
-                .HasForeignKey(k => k.SpecialtyInInstitutionOfEducationDescriptionId);
+                .HasForeignKey(k => k.SpecialtyToIoEDescriptionId);
 
             builder.Entity<ExamRequirement>()
-                .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyInInstitutionOfEducationDescriptionId});
+                .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyToIoEDescriptionId});
 
             builder.Entity<ExamRequirement>()
                 .HasOne(x => x.Exam)
@@ -176,9 +176,9 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.ExamId);
 
             builder.Entity<ExamRequirement>()
-                .HasOne(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .HasOne(x => x.SpecialtyToIoEDescription)
                 .WithMany(x => x.ExamRequirements)
-                .HasForeignKey(x => x.SpecialtyInInstitutionOfEducationDescriptionId);
+                .HasForeignKey(x => x.SpecialtyToIoEDescriptionId);
 
             builder.Entity<SpecialtyToGraduate>()
                 .HasKey(c => new { c.Id, c.GraduateId, c.SpecialtyId });

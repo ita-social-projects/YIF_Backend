@@ -2,7 +2,7 @@
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
-    public class SpecialtyInInstitutionOfEducationDescriptionDTO
+    public class SpecialtyToIoEDescriptionDTO
     {
         public string Id { get; set; }
         public string EducationalProgramLink { get; set; }

@@ -86,7 +86,7 @@ namespace YIF.Core.Service.Concrete.Services
                 //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyInInstitutionOfEducationDescriptionId == x.SpecialtyInInstitutionOfEducationDescriptionId));
+                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
 
                 specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
@@ -97,7 +97,7 @@ namespace YIF.Core.Service.Concrete.Services
 
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyInInstitutionOfEducationDescriptionId == x.SpecialtyInInstitutionOfEducationDescriptionId));
+                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
 
                 specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
@@ -144,7 +144,7 @@ namespace YIF.Core.Service.Concrete.Services
         }
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
         {
-            var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyInInstitutionOfEducationDescriptionsById(id);
+            var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyToIoEDescriptionsById(id);
             if (specialtyDescriptions.Count() < 1)
             {
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyDescriptionsNotFound"));

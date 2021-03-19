@@ -45,7 +45,7 @@ namespace YIF.Core.Domain.Repositories
             var list = _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                .Include(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .Include(x => x.SpecialtyToIoEDescription)
                 .Where(predicate)
                 .ToList();
 
@@ -68,34 +68,34 @@ namespace YIF.Core.Domain.Repositories
             var list = await _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                .Include(x => x.SpecialtyInInstitutionOfEducationDescription)
+                .Include(x => x.SpecialtyToIoEDescription)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list);
         }
-        public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> GetSpecialtyInInstitutionOfEducationDescriptionsById(string id)
+        public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> GetSpecialtyToIoEDescriptionsById(string id)
         {
             var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations
               .Where(su => su.SpecialtyId == id)
-              .Where(sdi => sdi.SpecialtyInInstitutionOfEducationDescriptionId != null)
+              .Where(sdi => sdi.SpecialtyToIoEDescriptionId != null)
               .Include(u => u.InstitutionOfEducation)
               .Include(s => s.Specialty)
-              .Include(sd => sd.SpecialtyInInstitutionOfEducationDescription)
+              .Include(sd => sd.SpecialtyToIoEDescription)
               .ThenInclude(e => e.ExamRequirements)
                   .ThenInclude(e => e.Exam)
-              .Include(sd => sd.SpecialtyInInstitutionOfEducationDescription)
+              .Include(sd => sd.SpecialtyToIoEDescription)
                   .ThenInclude(e => e.PaymentFormToDescriptions)
                       .ThenInclude(e => e.PaymentForm)
-              .Include(sd => sd.SpecialtyInInstitutionOfEducationDescription)
+              .Include(sd => sd.SpecialtyToIoEDescription)
                   .ThenInclude(e => e.EducationFormToDescriptions)
                       .ThenInclude(e => e.EducationForm)
               .ToListAsync();
 
             foreach (var item in specialtyToInstitutionOfEducation)
             {
-                if(item.SpecialtyInInstitutionOfEducationDescription.Description == null)
+                if(item.SpecialtyToIoEDescription.Description == null)
                 {
-                    item.SpecialtyInInstitutionOfEducationDescription.Description = item.Specialty.Description;
+                    item.SpecialtyToIoEDescription.Description = item.Specialty.Description;
                 }
             }
 

@@ -6,10 +6,10 @@ namespace YIF.Core.Data.Entities
     {
         public string SpecialtyId { get; set; }
         public string InstitutionOfEducationId { get; set; }
-        public string SpecialtyInInstitutionOfEducationDescriptionId { get; set; }
+        public string SpecialtyToIoEDescriptionId { get; set; }
 
-        [ForeignKey("SpecialtyInInstitutionOfEducationDescriptionId")]
-        public virtual SpecialtyInInstitutionOfEducationDescription SpecialtyInInstitutionOfEducationDescription { get; set; }
+        [ForeignKey("SpecialtyToIoEDescriptionId")]
+        public virtual SpecialtyToIoEDescription SpecialtyToIoEDescription { get; set; }
         [ForeignKey("SpecialtyId")]
         public virtual Specialty Specialty { get; set; }
         [ForeignKey("InstitutionOfEducationId")]

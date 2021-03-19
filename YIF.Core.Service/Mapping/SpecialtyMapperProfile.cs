@@ -34,8 +34,8 @@ namespace YIF.Core.Service.Mapping
             CreateMap<PaymentFormToDescriptionDTO, PaymentFormToDescriptionResponseApiModel>()
                 .ForMember(dst => dst.PaymentFormName, opt => opt.MapFrom(src => src.PaymentForm.Name));
 
-            CreateMap<SpecialtyInInstitutionOfEducationDescription, SpecialtyInInstitutionOfEducationDescriptionDTO>();
-            CreateMap<SpecialtyInInstitutionOfEducationDescriptionDTO, SpecialtyInInstitutionOfEducationDescriptionResponseApiModel>();
+            CreateMap<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>();
+            CreateMap<SpecialtyToIoEDescriptionDTO, SpecialtyToIoEDescriptionResponseApiModel>();
 
             CreateMap<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>();
 
@@ -43,11 +43,11 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.InstitutionOfEducationAbbreviation, opt => opt.MapFrom(src => src.InstitutionOfEducation.Abbreviation))
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
-                .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyInInstitutionOfEducationDescription.EducationalProgramLink))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.SpecialtyInInstitutionOfEducationDescription.Description))
-                .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.SpecialtyInInstitutionOfEducationDescription.ExamRequirements))
-                .ForMember(dst => dst.EducationFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyInInstitutionOfEducationDescription.EducationFormToDescriptions))
-                .ForMember(dst => dst.PaymentFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyInInstitutionOfEducationDescription.PaymentFormToDescriptions));
+                .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationalProgramLink))
+                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.Description))
+                .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.ExamRequirements))
+                .ForMember(dst => dst.EducationFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationFormToDescriptions))
+                .ForMember(dst => dst.PaymentFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.PaymentFormToDescriptions));
 
         }
     }

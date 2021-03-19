@@ -2,7 +2,7 @@
 
 namespace YIF.Core.Data.Entities
 {
-    public class SpecialtyInInstitutionOfEducationDescription : BaseEntity
+    public class SpecialtyToIoEDescription : BaseEntity
     {
         public string EducationalProgramLink { get; set; }
         public string Description { get; set; }
