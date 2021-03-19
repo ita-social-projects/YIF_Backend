@@ -29,8 +29,8 @@ namespace YIF_Backend.Controllers
         [HttpGet("All")]
         public async Task<IActionResult> GetAllDirections(string DirectionName,
             string SpecialtyName,
-            string UniversityName,
-            string UniversityAbbreviation,
+            string InstitutionOfEducationName,
+            string InstitutionOfEducationAbbreviation,
             int page = 1, int pageSize = 10)
         {
             var pageModel = new PageApiModel
@@ -43,8 +43,8 @@ namespace YIF_Backend.Controllers
             {
                 DirectionName = DirectionName,
                 SpecialtyName = SpecialtyName,
-                UniversityName = UniversityName,
-                UniversityAbbreviation = UniversityAbbreviation
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation
             };
 
             var directions = await _directionService.GetAllDirectionsByFilter(pageModel, filterModel);
@@ -64,15 +64,15 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetDirectionNames(
             string DirectionName,
             string SpecialtyName,
-            string UniversityName,
-            string UniversityAbbreviation)
+            string InstitutionOfEducationName,
+            string InstitutionOfEducationAbbreviation)
         {
             var filterModel = new FilterApiModel
             {
                 DirectionName = DirectionName,
                 SpecialtyName = SpecialtyName,
-                UniversityName = UniversityName,
-                UniversityAbbreviation = UniversityAbbreviation
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation
             };
 
             var result = await _directionService.GetDirectionsNamesByFilter(filterModel);

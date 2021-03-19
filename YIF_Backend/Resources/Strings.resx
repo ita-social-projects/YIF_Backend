@@ -147,7 +147,7 @@
   <data name="ErrorOccurred" xml:space="preserve">
     <value>Не знаю, що, але щось точно не так</value>
   </data>
-  <data name="FavoriteUniversitiesNotFound" xml:space="preserve">
+  <data name="FavoriteInstitutionOfEducationsNotFound" xml:space="preserve">
     <value>Немає вибраних університетів</value>
   </data>
   <data name="GraduateNotFound" xml:space="preserve">
@@ -195,10 +195,10 @@
   <data name="SpecialtiesNotFound" xml:space="preserve">
     <value>Спеціальностей немає</value>
   </data>
-  <data name="SpecialtyAndUniversityIsAlreadyFavorite" xml:space="preserve">
+  <data name="SpecialtyAndInstitutionOfEducationIsAlreadyFavorite" xml:space="preserve">
     <value>Спеціальність і університет уже в улюбленому</value>
   </data>
-  <data name="SpecialtyAndUniversityIsNotFavorite" xml:space="preserve">
+  <data name="SpecialtyAndInstitutionOfEducationIsNotFavorite" xml:space="preserve">
     <value>Спеціальності і університету немає в улюбленому</value>
   </data>
   <data name="SpecialtyDescriptionsNotFound" xml:space="preserve">
@@ -213,34 +213,34 @@
   <data name="TestServerErrorMessage" xml:space="preserve">
     <value>Тестова помилка сервера успішно запущена</value>
   </data>
-  <data name="UniversitiesNotFound" xml:space="preserve">
+  <data name="InstitutionOfEducationsNotFound" xml:space="preserve">
     <value>Університети не було знайдено</value>
   </data>
-  <data name="UniversityAdded" xml:space="preserve">
+  <data name="InstitutionOfEducationAdded" xml:space="preserve">
     <value>Університет додано</value>
   </data>
-  <data name="UniversityAdminFailed" xml:space="preserve">
+  <data name="InstitutionOfEducationAdminFailed" xml:space="preserve">
     <value>Не вдалося добавити адміна</value>
   </data>
-  <data name="UniversityAndAdminAdded" xml:space="preserve">
+  <data name="InstitutionOfEducationAndAdminAdded" xml:space="preserve">
     <value>Університет додано. Адміну надісланий лист.</value>
   </data>
-  <data name="UniversityIsAlreadyFavorite" xml:space="preserve">
+  <data name="InstitutionOfEducationIsAlreadyFavorite" xml:space="preserve">
     <value>Даний університет вже додано до улюблених</value>
   </data>
-  <data name="UniversityIsNotFavorite" xml:space="preserve">
+  <data name="InstitutionOfEducationIsNotFavorite" xml:space="preserve">
     <value>Даний університет не було додано до улюблених</value>
   </data>
-  <data name="UniversityNotFound" xml:space="preserve">
+  <data name="InstitutionOfEducationNotFound" xml:space="preserve">
     <value>Університет не було знайдено</value>
   </data>
-  <data name="UniversityWithSuchIdNotFound" xml:space="preserve">
+  <data name="InstitutionOfEducationWithSuchIdNotFound" xml:space="preserve">
     <value>Університет з таким id не знайдено</value>
   </data>
-  <data name="UniversityWithSuchNameAlreadyExists" xml:space="preserve">
+  <data name="InstitutionOfEducationWithSuchNameAlreadyExists" xml:space="preserve">
     <value>Університет із таким іменем вже існує</value>
   </data>
-  <data name="UniversityWithSuchNameNotFound" xml:space="preserve">
+  <data name="InstitutionOfEducationWithSuchNameNotFound" xml:space="preserve">
     <value>В базі даних немає університету із назвою</value>
   </data>
   <data name="UserAlreadyExists" xml:space="preserve">

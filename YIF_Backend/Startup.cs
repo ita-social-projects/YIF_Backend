@@ -65,11 +65,11 @@ namespace YIF_Backend
             services.AddTransient<IUserRepository<DbUser, UserDTO>, UserRepository>();
             services.AddTransient<IUserProfileRepository<UserProfile, UserProfileDTO>, UserProfileRepository>();
             services.AddTransient<ISchoolGraduateRepository<SchoolDTO>, SchoolGraduateRepository>();
-            services.AddTransient<IUniversityRepository<University, UniversityDTO>, UniversityRepository>();
+            services.AddTransient<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>, InstitutionOfEducationRepository>();
             services.AddTransient<ISpecialtyRepository<Specialty, SpecialtyDTO>, SpecialtyRepository>();
             services.AddTransient<IRepository<Direction, DirectionDTO>, DirectionRepository>();
-            services.AddTransient<IRepository<DirectionToUniversity, DirectionToUniversityDTO>, DirectionToUniversityRepository>();
-            services.AddTransient<ISpecialtyToUniversityRepository<SpecialtyToUniversity, SpecialtyToUniversityDTO>, SpecialtyToUniversityRepository>();
+            services.AddTransient<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>, DirectionToInstitutionOfEducationRepository>();
+            services.AddTransient<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>, SpecialtyToInstitutionOfEducationRepository>();
             services.AddTransient<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>, EducationFormToDescriptionRepository>();
             services.AddTransient<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>, PaymentFormToDescriptionRepository>();
             services.AddTransient<ITokenRepository<TokenDTO>, TokenRepository>();
@@ -78,12 +78,12 @@ namespace YIF_Backend
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
-            services.AddTransient<IUniversityModeratorRepository<UniversityModeratorDTO>, UniversityModeratorRepository>();
-            services.AddTransient<IUniversityAdminRepository<UniversityAdminDTO>, UniversityAdminRepository>();
+            services.AddTransient<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>, InstitutionOfEducationModeratorRepository>();
+            services.AddTransient<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>, InstitutionOfEducationAdminRepository>();
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
-            services.AddTransient<IUniversityService<University>, UniversityService>();
+            services.AddTransient<IInstitutionOfEducationService<InstitutionOfEducation>, InstitutionOfEducationService>();
             services.AddTransient<IDirectionService, DirectionService>();
             services.AddTransient<ISchoolService, SchoolService>();
             services.AddTransient<IPaginationService, PaginationService>();
@@ -215,7 +215,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             if (_currentEnvironment.IsEnvironment("Testing"))
             {
                 SeederDB.SeedData(app.ApplicationServices);

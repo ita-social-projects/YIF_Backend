@@ -42,15 +42,15 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 DirectionName = "SomeDirection",
                 SpecialtyName = "SomeSpeciality",
-                UniversityName = "SomeUniversity",
-                UniversityAbbreviation = "SU"
+                InstitutionOfEducationName = "SomeInstitutionOfEducation",
+                InstitutionOfEducationAbbreviation = "SU"
             };
 
             _directionService.Setup(x => x.GetAllDirections(new PageApiModel { Page = 1, PageSize = 10, Url = "link" }))
                 .Returns(Task.FromResult(responseModel));
 
             // Act
-            var result = await _directionController.GetAllDirections(filter.DirectionName, filter.SpecialtyName, filter.UniversityName, filter.UniversityAbbreviation);
+            var result = await _directionController.GetAllDirections(filter.DirectionName, filter.SpecialtyName, filter.InstitutionOfEducationName, filter.InstitutionOfEducationAbbreviation);
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
@@ -66,15 +66,15 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 DirectionName = "SomeDirection",
                 SpecialtyName = "SomeSpeciality",
-                UniversityName = "SomeUniversity",
-                UniversityAbbreviation = "SU"
+                InstitutionOfEducationName = "SomeInstitutionOfEducation",
+                InstitutionOfEducationAbbreviation = "SU"
             };
 
             _directionService.Setup(x => x.GetDirectionsNamesByFilter(filter))
                 .Returns(Task.FromResult(responseModel));
 
             // Act
-            var result = await _directionController.GetDirectionNames(filter.DirectionName, filter.SpecialtyName, filter.UniversityName, filter.UniversityAbbreviation);
+            var result = await _directionController.GetDirectionNames(filter.DirectionName, filter.SpecialtyName, filter.InstitutionOfEducationName, filter.InstitutionOfEducationAbbreviation);
 
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);

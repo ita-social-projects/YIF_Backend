@@ -698,7 +698,7 @@ namespace YIF.Core.Service.Concrete.Services
             var users = (await GetAllUsers()).Object;
             result.Object = users.Where(
                     u => u.Roles.Contains(ProjectRoles.SchoolAdmin) ||
-                    u.Roles.Contains(ProjectRoles.UniversityAdmin)
+                    u.Roles.Contains(ProjectRoles.InstitutionOfEducationAdmin)
                     );
             if (result.Object.Count() < 0)
             {

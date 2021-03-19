@@ -39,28 +39,28 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 DirectionName = "",
                 SpecialtyName = "",
-                UniversityName = "",
-                UniversityAbbreviation = "",
+                InstitutionOfEducationName = "",
+                InstitutionOfEducationAbbreviation = "",
                 PaymentForm = "",
                 EducationForm = ""
             };
             // Act
-            var result = await _testControl.GetAllSpecialtiesAsync(apiModel.DirectionName, apiModel.SpecialtyName, apiModel.UniversityName,
-                apiModel.UniversityAbbreviation, apiModel.PaymentForm, apiModel.EducationForm);
+            var result = await _testControl.GetAllSpecialtiesAsync(apiModel.DirectionName, apiModel.SpecialtyName, apiModel.InstitutionOfEducationName,
+                apiModel.InstitutionOfEducationAbbreviation, apiModel.PaymentForm, apiModel.EducationForm);
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsAssignableFrom<IEnumerable<SpecialtyResponseApiModel>>(responseResult.Value);
         }
 
         [Theory]
-        [InlineData("direction", "speciality", "universityName", "universityAbbreviation")]
-        [InlineData("", "speciality", "", "universityAbbreviation")]
+        [InlineData("direction", "speciality", "institutionOfEducationName", "institutionOfEducationAbbreviation")]
+        [InlineData("", "speciality", "", "institutionOfEducationAbbreviation")]
         [InlineData("", "", "", "")]
         public async Task GetAllSpecialtiesNamesAsync_EndpointReturnsOk(
             string directionName,
             string specialityName,
-            string universityName,
-            string universityAbbreviation)
+            string institutionOfEducationName,
+            string institutionOfEducationAbbreviation)
         {
             // Arrange
 
@@ -68,14 +68,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 DirectionName = directionName,
                 SpecialtyName = specialityName,
-                UniversityName = universityName,
-                UniversityAbbreviation = universityAbbreviation
+                InstitutionOfEducationName = institutionOfEducationName,
+                InstitutionOfEducationAbbreviation = institutionOfEducationAbbreviation
             };
 
             var response = new List<string>().AsEnumerable();
             _specialtyService.Setup(x => x.GetSpecialtiesNamesByFilter(It.IsAny<FilterApiModel>())).ReturnsAsync(response);
             // Act
-            var result = await _testControl.GetAllSpecialtiesNamesAsync(directionName, specialityName, universityName, universityAbbreviation);
+            var result = await _testControl.GetAllSpecialtiesNamesAsync(directionName, specialityName, institutionOfEducationName, institutionOfEducationAbbreviation);
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsAssignableFrom<IEnumerable<string>>(responseResult.Value);

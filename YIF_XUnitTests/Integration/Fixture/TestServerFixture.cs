@@ -18,7 +18,7 @@ namespace YIF_XUnitTests.Integration.Fixture
             _factory = fixture;
             _client = _factory.CreateClient();
 
-            _context = fixture.Services.CreateScope().ServiceProvider.GetRequiredService<EFDbContext>();
+            _context = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<EFDbContext>();
         }
     }
 }

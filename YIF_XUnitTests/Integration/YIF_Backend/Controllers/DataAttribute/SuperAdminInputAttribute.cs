@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
@@ -14,12 +15,12 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-        public static UniversityPostApiModel GetCorrectData
+        public static InstitutionOfEducationPostApiModel GetCorrectData
         {
             get
             {
                 var name = RandomString(10);
-                return new UniversityPostApiModel
+                return new InstitutionOfEducationPostApiModel
                 {
                     Name = name,
                     Abbreviation = "string",
@@ -28,20 +29,40 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                     Phone = "380671111111",
                     Email = name + "@example.com",
                     Description = "string",
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     Lat = 0,
                     Lon = 0,
                     ImageApiModel = new ImageApiModel
                     {
                         Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAATUlEQVQYV2NsCJsfwMHDPpOBgYHhx5ef6YyVoVNfGllri7GwMjOcOnDpFWNjxIKX6iZyYv///We4de7xK0aQFmYWppm///xlYGJgTAcAcGcbPQnK4IEAAAAASUVORK5CYII="
                     },
-                    UniversityAdminEmail = name + "@example.com"
+                    InstitutionOfEducationAdminEmail = name + "@example.com"
                 };
             }
         }
+
         public static IEnumerable<object[]> GetWrongData
         {
             get
             {
+                yield return new object[] {ContentHelper.GetStringContent(new
+                {
+                    Name = "string",
+                    Abbreviation = "string",
+                    Site = "https://localhost:44388/swagger/index.html",
+                    Address = "string",
+                    Phone = "380671111111",
+                    Email = "user@example.com",
+                    Description = "string",
+                    InstitutionOfEducationType = "string",
+                    Lat = 0,
+                    Lon = 0,
+                    ImageApiModel = new ImageApiModel
+                    {
+                        Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAATUlEQVQYV2NsCJsfwMHDPpOBgYHhx5ef6YyVoVNfGllri7GwMjOcOnDpFWNjxIKX6iZyYv///We4de7xK0aQFmYWppm///xlYGJgTAcAcGcbPQnK4IEAAAAASUVORK5CYII="
+                    },
+                    InstitutionOfEducationAdminEmail = "user@example.com"
+                })};
                 yield return new object[] {ContentHelper.GetStringContent(new
                 {
                     Name = "string",
@@ -51,13 +72,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                     Phone = "380671111111",
                     Email = "user@example.com",
                     Description = "string",
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     Lat = 0,
                     Lon = 0,
                     ImageApiModel = new ImageApiModel
                     {
                         Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAATUlEQVQYV2NsCJsfwMHDPpOBgYHhx5ef6YyVoVNfGllri7GwMjOcOnDpFWNjxIKX6iZyYv///We4de7xK0aQFmYWppm///xlYGJgTAcAcGcbPQnK4IEAAAAASUVORK5CYII="
                     },
-                    UniversityAdminEmail = "user@example.com"
+                    InstitutionOfEducationAdminEmail = "user@example.com"
                 })};
                 yield return new object[] {ContentHelper.GetStringContent(new
                 {
@@ -68,13 +90,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                     Phone = "string",
                     Email = "user@example.com",
                     Description = "string",
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     Lat = 0,
                     Lon = 0,
                     ImageApiModel = new ImageApiModel
                     {
                         Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAATUlEQVQYV2NsCJsfwMHDPpOBgYHhx5ef6YyVoVNfGllri7GwMjOcOnDpFWNjxIKX6iZyYv///We4de7xK0aQFmYWppm///xlYGJgTAcAcGcbPQnK4IEAAAAASUVORK5CYII="
                     },
-                    UniversityAdminEmail = "user@example.com"
+                    InstitutionOfEducationAdminEmail = "user@example.com"
                 })};
                 yield return new object[] {ContentHelper.GetStringContent(new
                 {
@@ -85,13 +108,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                     Phone = "380671111111",
                     Email = "string",
                     Description = "string",
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     Lat = 0,
                     Lon = 0,
                     ImageApiModel = new ImageApiModel
                     {
                         Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAATUlEQVQYV2NsCJsfwMHDPpOBgYHhx5ef6YyVoVNfGllri7GwMjOcOnDpFWNjxIKX6iZyYv///We4de7xK0aQFmYWppm///xlYGJgTAcAcGcbPQnK4IEAAAAASUVORK5CYII="
                     },
-                    UniversityAdminEmail = "user@example.com"
+                    InstitutionOfEducationAdminEmail = "user@example.com"
                 })};
                 yield return new object[] {ContentHelper.GetStringContent(new
                 {
@@ -102,13 +126,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                     Phone = "380671111111",
                     Email = "user@example.com",
                     Description = "string",
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     Lat = 0,
                     Lon = 0,
                     ImageApiModel = new ImageApiModel
                     {
                         Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAATUlEQVQYV2NsCJsfwMHDPpOBgYHhx5ef6YyVoVNfGllri7GwMjOcOnDpFWNjxIKX6iZyYv///We4de7xK0aQFmYWppm///xlYGJgTAcAcGcbPQnK4IEAAAAASUVORK5CYII="
                     },
-                    UniversityAdminEmail = "string"
+                    InstitutionOfEducationAdminEmail = "string"
                 })};
                 yield return new object[] {ContentHelper.GetStringContent(new
                 {
@@ -119,13 +144,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                     Phone = "380671111111",
                     Email = "user@example.com",
                     Description = "string",
+                    InstitutionOfEducationType = InstitutionOfEducationType.University,
                     Lat = 0,
                     Lon = 0,
                     ImageApiModel = new ImageApiModel
                     {
                         Photo = "string"
                     },
-                    UniversityAdminEmail = "user@example.com"
+                    InstitutionOfEducationAdminEmail = "user@example.com"
                 })};
             }
         }
