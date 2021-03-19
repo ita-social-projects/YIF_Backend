@@ -170,7 +170,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         [Theory]
         [InlineData(true, "succes")]
         [InlineData(false, "wrong")]
-        public async Task DisableUniversityAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
+        public async Task DisableInstitutionOfEducationAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
         {
             // Arrange
             var requestModel = new SchoolUniAdminDeleteApiModel { Id = "id" };
@@ -179,9 +179,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             if (success)
             {
-                _superAdminService.Setup(x => x.DisableUniversityAdmin(requestModel.Id)).Returns(Task.FromResult(responseModel));
+                _superAdminService.Setup(x => x.DisableInstitutionOfEducationAdmin(requestModel.Id)).Returns(Task.FromResult(responseModel));
                 // Act
-                var result = await superAdminController.DisableUniversityAdmin(requestModel.Id);
+                var result = await superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id);
                 // Assert
                 var responseResult = Assert.IsType<OkObjectResult>(result);
                 var model = (DescriptionResponseApiModel)responseResult.Value;
@@ -189,9 +189,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             }
             else
             {
-                _superAdminService.Setup(x => x.DisableUniversityAdmin(requestModel.Id)).Throws(error);
+                _superAdminService.Setup(x => x.DisableInstitutionOfEducationAdmin(requestModel.Id)).Throws(error);
                 // Assert
-                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableUniversityAdmin(requestModel.Id));
+                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id));
                 Assert.Equal(error.Message, exeption.Message);
             }
         }
