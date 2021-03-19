@@ -1,32 +1,42 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Data.Entity;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_Backend;
+using YIF_XUnitTests.Integration.Fixture;
+using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    public class SpecialtyControllerTests
+    public class SpecialtyControllerTests: TestServerFixture
     {
-        private readonly HttpClient _client;
-
-        public SpecialtyControllerTests()
+        private readonly SpecialtyInputAttribute _specialtyInputAttribute;
+        public SpecialtyControllerTests(ApiWebApplicationFactory fixture)
+       : base(fixture)
         {
-            var clientOptions = new WebApplicationFactoryClientOptions
+            _client = fixture.WithWebHostBuilder(builder =>
             {
-                BaseAddress = new Uri("https://localhost:44324/api/Specialty/")
-            };
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
 
-            var appFactory = new WebApplicationFactory<Startup>();
-            _client = appFactory.CreateClient(clientOptions);
+            _specialtyInputAttribute = new SpecialtyInputAttribute(_context);
         }
 
         [Fact]
         public async Task GetAll_EndpointsReturnSuccessAndCorrectContentType()
         {
             // Act            
-            var response = await _client.GetAsync("All");
+            var response = await _client.GetAsync("/api/Specialty/All");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -38,7 +48,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GetNames_EndpointsReturnSuccessAndCorrectContentType()
         {
             // Act            
-            var response = await _client.GetAsync("Names");
+            var response = await _client.GetAsync("/api/Specialty/Names");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -52,12 +62,81 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GetById_EndpointReturnNotFound(string url)
         {
             // Act            
-            var response = await _client.GetAsync(url);
+            var response = await _client.GetAsync($"/api/Specialty/{url}");
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
+        }
+
+        [Fact]
+        public async Task GetSpecialtyDescriptions_EndpointsReturnSuccessAndCorrectContentType()
+        {
+            //Arrange
+            var entity = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().FirstOrDefault();
+            var Id = entity.SpecialtyId;
+
+            // Act
+            var response = await _client.GetAsync($"/api/Specialty/Descriptions/{Id}");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Fact]
+        public async Task GetSpecialtyDescriptions_EndpointReturnNotFound()
+        {
+            //Arrange
+            var Id = "abc";
+
+            // Act            
+            var response = await _client.GetAsync($"/api/Specialty/Descriptions/{Id}");
+
+            // Assert
+            Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+   [Fact]
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_EndpointsReturnOk()
+        {
+            //Arrange
+            _specialtyInputAttribute.SetUserIdByGraduateUserIdForHttpContext();
+            var favorite = _context.SpecialtyToInstitutionOfEducationToGraduates.AsNoTracking().FirstOrDefault();
+
+            _context.SpecialtyToInstitutionOfEducationToGraduates.Remove(favorite);
+            _context.SaveChanges();
+
+            var model = new SpecialtyAndInstitutionOfEducationToFavoritePostApiModel
+            {
+                SpecialtyId = favorite.SpecialtyId,
+                InstitutionOfEducationId = favorite.InstitutionOfEducationId
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/Specialty/Favorites", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task RemoveSpecialtyAndInstitutionOfEducationFromFavorite_EndpointReturnNoContent()
+        {
+            //Arrange
+            var favorite = _context.SpecialtyToInstitutionOfEducationToGraduates.AsNoTracking().FirstOrDefault();
+            var userId = _context.Graduates.AsNoTracking().Where(x => x.Id == favorite.GraduateId).FirstOrDefault().UserId;
+            _specialtyInputAttribute.SetUserIdForHttpContext(userId);
+
+            //Act
+            var response = await _client.DeleteAsync($"/api/Specialty/Favorites?specialtyId={favorite.SpecialtyId}&institutionOfEducationId={favorite.InstitutionOfEducationId}");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
         }
     }
 }
