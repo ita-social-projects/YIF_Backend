@@ -15,6 +15,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id);
         Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId, string userId);
         Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId);
-
+        Task AddSpecialtyToFavorite(string specialtyId, string userId);
+        Task DeleteSpecialtyFromFavorite(string specialtyId, string userId);
     }
 }

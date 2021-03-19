@@ -562,14 +562,293 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
+
+        [Fact]
+        public async Task AddSpecialtyToFavorite_ShouldAddSpecialtyToFavorite_IfEverythingOk()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            var specialty = GetSpecialties().ToList()[2];
+            var graduate = new GraduateDTO { Id = "GraduateId" };
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.AddFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>()));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void AddSpecialtyToFavorite_ShouldThrowBadRequestException_IfSpecialtyHasAlreadyAddedToFavorite()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            var specialty = GetSpecialties().ToList()[0];
+            var graduate = new GraduateDTO { Id = "GraduateId" };
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.AddFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+
+            // Act
+            Func<Task> act = () => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+        [Fact]
+        public void AddSpecialtyToFavorite_ShouldThrowBadRequestException_IfSpecialtyNotFound()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            //SpecialtyNotFound
+            SpecialtyDTO specialty = null;
+            var graduate = new GraduateDTO { Id = "GraduateId" };
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.AddFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+
+            // Act
+            Func<Task> act = () => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+        [Fact]
+        public void AddSpecialtyToFavorite_ShouldThrowBadRequestException_IfGraduateNotFound()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            var specialty = GetSpecialties().ToList()[0];
+            // Graduate not found
+            GraduateDTO graduate = null;
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.AddFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+
+            // Act
+            Func<Task> act = () => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteSpecialtyFromFavorite_ShouldDeleteSpecialtyFromFavorite_IfEverythingOk()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            var specialty = GetSpecialties().ToList()[0];
+            var graduate = new GraduateDTO { Id = "GraduateId" };
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>()));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void DeleteSpecialtyFromFavorite_ShouldThrowBadRequestException_IfSpecialtyHasNotBeenInFavorites()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            //Get specialty which is not in list of favorites
+            var specialty = GetSpecialties().ToList()[2];
+            var graduate = new GraduateDTO { Id = "GraduateId" };
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+            // Act
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public void DeleteSpecialtyFromFavorite_ShouldThrowBadRequestException_IfSpecialtyNotFound()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            //Specialty not found
+            SpecialtyDTO specialty = null;
+            var graduate = new GraduateDTO { Id = "GraduateId" };
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+            // Act
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+        [Fact]
+        public void DeleteSpecialtyFromFavorite_ShouldThrowBadRequestException_IfGraduateNotFound()
+        {
+            // Arrange  
+            var favoriteSpecialtyList = GetFavoriteSpecialties();
+            var specialty = GetSpecialties().ToList()[0];
+            //Graduate not found
+            GraduateDTO graduate = null;
+
+            _specialtyRepository
+                .Setup(sr => sr.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteSpecialtyList);
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _graduateRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
+            _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
+
+            // Act
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
         private SpecialtyToInstitutionOfEducationToGraduate GetFavoriteSpecialtyAndInstitutionOfEducations()
         {
-           return   new SpecialtyToInstitutionOfEducationToGraduate
-                    {
-                    SpecialtyId = "1",
-                    InstitutionOfEducationId = "1",
-                    GraduateId = "1"
-                    };
+            return new SpecialtyToInstitutionOfEducationToGraduate
+            {
+                SpecialtyId = "1",
+                InstitutionOfEducationId = "1",
+                GraduateId = "1"
+            };
+        }
+        private IEnumerable<SpecialtyDTO> GetFavoriteSpecialties()
+        {
+            return new List<SpecialtyDTO>
+            {
+                new SpecialtyDTO
+                {
+                    Id = "1",
+                    Code = "111"
+                },
+                new SpecialtyDTO
+                {
+                    Id = "2",
+                    Code = "121"
+                }
+
+            };
+        }
+        private IEnumerable<SpecialtyDTO> GetSpecialties()
+        {
+            return new List<SpecialtyDTO>
+            {
+                new SpecialtyDTO
+                {
+                    Id = "1",
+                    Code = "111"
+                },
+                new SpecialtyDTO
+                {
+                    Id = "2",
+                    Code = "121"
+                },
+                new SpecialtyDTO
+                {
+                    Id="3",
+                    Code = "122"
+                }
+            };
         }
 
         [Fact]

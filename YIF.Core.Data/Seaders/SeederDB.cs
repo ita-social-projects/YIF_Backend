@@ -1051,7 +1051,31 @@ namespace YIF.Core.Data.Seaders
 
                 await context.SpecialtyToInstitutionOfEducationToGraduates.AddRangeAsync(new List<SpecialtyToInstitutionOfEducationToGraduate>
                 {
-                    new SpecialtyToInstitutionOfEducationToGraduate { GraduateId = graduate.FirstOrDefault().Id, SpecialtyId = specialtyToUniversity.FirstOrDefault().SpecialtyId, InstitutionOfEducationId = specialtyToUniversity.FirstOrDefault().InstitutionOfEducationId }
+                    new SpecialtyToInstitutionOfEducationToGraduate
+                    {
+                        GraduateId = graduate.FirstOrDefault().Id, 
+                        SpecialtyId = specialtyToUniversity.FirstOrDefault().SpecialtyId, 
+                        InstitutionOfEducationId = specialtyToUniversity.FirstOrDefault().InstitutionOfEducationId
+                    }
+                });
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async static void SeedSpecialtyToGraduate(EFDbContext context)
+        {
+            if (context.SpecialtyToGraduates.Count() == 0)
+            {
+                var graduate = context.Graduates.ToList();
+                var specialty = context.Specialties.ToList();
+
+                await context.SpecialtyToGraduates.AddRangeAsync(new List<SpecialtyToGraduate>
+                {
+                    new SpecialtyToGraduate
+                    {
+                        GraduateId = graduate.FirstOrDefault().Id,
+                        SpecialtyId = specialty.FirstOrDefault().Id
+                    }
                 });
                 await context.SaveChangesAsync();
             }
@@ -2492,6 +2516,7 @@ namespace YIF.Core.Data.Seaders
                 SeederDB.SeedInstitutionOfEducations(context);
                 SeederDB.SeedDirectionsAndSpecialitiesToInstitutionOfEducation(context);
                 SeederDB.SeedSpecialtyToInstitutionOfEducationToGraduate(context);
+                SeederDB.SeedSpecialtyToGraduate(context);
                 await SeederDB.SeedInstitutionOfEducationAdmins(context, manager);
                 await SeederDB.SeedInstitutionOfEducationModerators(context, manager);
                 await SeederDB.SeedLectures(context, manager);

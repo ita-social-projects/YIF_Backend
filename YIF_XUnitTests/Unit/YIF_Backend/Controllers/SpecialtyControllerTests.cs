@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -31,7 +32,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _testControl = new SpecialtyController(_specialtyService.Object, _logger.Object);
             _mockContext = new Mock<HttpContext>();
             _fakeIdentity = new GenericIdentity("User");
-            _roles = new string[] { "Graduate" };
+            _roles = new string[] {"Graduate"};
             _principal = new GenericPrincipal(_fakeIdentity, _roles);
             _testControl.ControllerContext = new ControllerContext()
             {
@@ -59,7 +60,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 EducationForm = ""
             };
             // Act
-            var result = await _testControl.GetAllSpecialtiesAsync(apiModel.DirectionName, apiModel.SpecialtyName, apiModel.InstitutionOfEducationName,
+            var result = await _testControl.GetAllSpecialtiesAsync(apiModel.DirectionName, apiModel.SpecialtyName,
+                apiModel.InstitutionOfEducationName,
                 apiModel.InstitutionOfEducationAbbreviation, apiModel.PaymentForm, apiModel.EducationForm);
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
@@ -87,9 +89,11 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             };
 
             var response = new List<string>().AsEnumerable();
-            _specialtyService.Setup(x => x.GetSpecialtiesNamesByFilter(It.IsAny<FilterApiModel>())).ReturnsAsync(response);
+            _specialtyService.Setup(x => x.GetSpecialtiesNamesByFilter(It.IsAny<FilterApiModel>()))
+                .ReturnsAsync(response);
             // Act
-            var result = await _testControl.GetAllSpecialtiesNamesAsync(directionName, specialityName, institutionOfEducationName, institutionOfEducationAbbreviation);
+            var result = await _testControl.GetAllSpecialtiesNamesAsync(directionName, specialityName,
+                institutionOfEducationName, institutionOfEducationAbbreviation);
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
             Assert.IsAssignableFrom<IEnumerable<string>>(responseResult.Value);
@@ -114,13 +118,15 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task GetSpecialtyDescriptionsAsync_EndpointReturnsOk()
         {
             // Arrange
-            var list = new List<SpecialtyToInstitutionOfEducationResponseApiModel>() { new SpecialtyToInstitutionOfEducationResponseApiModel() }.AsEnumerable();
+            var list = new List<SpecialtyToInstitutionOfEducationResponseApiModel>()
+                {new SpecialtyToInstitutionOfEducationResponseApiModel()}.AsEnumerable();
             _specialtyService.Setup(x => x.GetAllSpecialtyDescriptionsById(It.IsAny<string>())).ReturnsAsync(list);
             // Act
             var result = await _testControl.GetSpecialtyDescriptionsAsync(It.IsAny<string>());
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            Assert.IsAssignableFrom<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(responseResult.Value);
+            Assert.IsAssignableFrom<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(
+                responseResult.Value);
         }
 
         [Fact]
@@ -128,28 +134,63 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             _mockContext.SetupGet(hc => hc.User).Returns(_principal);
-            _specialtyService.Setup(x => x.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            _specialtyService.Setup(x =>
+                x.AddSpecialtyAndInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<string>()));
 
             // Act
-            var result = await _testControl.AddSpecialtyAndInstitutionOfEducationToFavorite(new SpecialtyAndInstitutionOfEducationToFavoritePostApiModel()
-            {
-                SpecialtyId = It.IsAny<string>(),
-                InstitutionOfEducationId = It.IsAny<string>()
-            });
+            var result = await _testControl.AddSpecialtyAndInstitutionOfEducationToFavorite(
+                new SpecialtyAndInstitutionOfEducationToFavoritePostApiModel()
+                {
+                    SpecialtyId = It.IsAny<string>(),
+                    InstitutionOfEducationId = It.IsAny<string>()
+                });
 
             // Assert
             Assert.IsType<OkResult>(result);
         }
 
         [Fact]
-        public async Task DeleteSpecialtyAndUniversityFromFavorite_EndpointReturnsOk()
+        public async Task DeleteSpecialtyAndUniversityFromFavorite_EndpointReturnsNoContentResult()
         {
             // Arrange
             _mockContext.SetupGet(hc => hc.User).Returns(_principal);
-            _specialtyService.Setup(x => x.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));
+            _specialtyService.Setup(x =>
+                x.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>(),
+                    It.IsAny<string>()));
 
             // Act
-            var result = await _testControl.RemoveSpecialtyAndInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
+            var result =
+                await _testControl.RemoveSpecialtyAndInstitutionOfEducationFromFavorite(It.IsAny<string>(),
+                    It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task AddSpecialtyToFavorite_EndpointReturnsOk()
+        {
+            // Arrange
+            _mockContext.SetupGet(hc => hc.User).Returns(_principal);
+            _specialtyService.Setup(x => x.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>()));
+
+            // Act
+            var result = await _testControl.AddSpecialtyToFavorite(It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteSpecialtyToFavorite_EndpointReturnsNoContentResult()
+        {
+            // Arrange
+            _mockContext.SetupGet(hc => hc.User).Returns(_principal);
+            _specialtyService.Setup(x => x.DeleteSpecialtyFromFavorite(It.IsAny<string>(), It.IsAny<string>()));
+
+            // Act
+            var result = await _testControl.DeleteSpecialtyFromFavorite(It.IsAny<string>());
 
             // Assert
             Assert.IsType<NoContentResult>(result);

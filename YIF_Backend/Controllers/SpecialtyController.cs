@@ -160,5 +160,44 @@ namespace YIF_Backend.Controllers
             await _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(specialtyId, institutionOfEducationId, userId);
             return NoContent();
         }
+        /// <summary>
+        /// Add specialty to favorite.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="200">Returns if the specialty has been successfully added to the favorites list</response>
+        /// <response code="400">If id is not valid or specialty has already been added to favorites</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not graduate</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("Favorites/{specialtyId}")]
+        [Authorize(Roles = "Graduate")]
+        public async Task<IActionResult> AddSpecialtyToFavorite(string specialtyId)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            await _specialtyService.AddSpecialtyToFavorite(specialtyId, userId);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete specialty from favorite.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if the specialty has been successfully deleted from the favorites list</response>
+        /// <response code="400">If id is not valid or specialty has not been added to favorites</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not graduate</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("Favorites/{specialtyId}")]
+        [Authorize(Roles = "Graduate")]
+        public async Task<IActionResult> DeleteSpecialtyFromFavorite(string specialtyId)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            await _specialtyService.DeleteSpecialtyFromFavorite(specialtyId, userId);
+            return NoContent();
+        }
     }
 }

@@ -101,7 +101,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 response.Content.Headers.ContentType.ToString());
         }
 
-   [Fact]
+        [Fact]
         public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_EndpointsReturnOk()
         {
             //Arrange
@@ -133,10 +133,47 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _specialtyInputAttribute.SetUserIdForHttpContext(userId);
 
             //Act
-            var response = await _client.DeleteAsync($"/api/Specialty/Favorites?specialtyId={favorite.SpecialtyId}&institutionOfEducationId={favorite.InstitutionOfEducationId}");
+            var response = await _client.DeleteAsync(
+                $"/api/Specialty/Favorites?specialtyId={favorite.SpecialtyId}&institutionOfEducationId={favorite.InstitutionOfEducationId}");
 
             //Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task AddSpecialtyFavorite_EndpointsReturnOk()
+        {
+            //Arrange
+            _specialtyInputAttribute.SetUserIdByGraduateUserIdForHttpContext();
+            var favorite = _context.SpecialtyToGraduates.AsNoTracking().FirstOrDefault();
+
+            _context.SpecialtyToGraduates.Remove(favorite);
+            _context.SaveChanges();
+
+            var model = favorite.SpecialtyId;
+
+            // Act            
+            var response = await _client.PostAsync($"/api/Specialty/Favorites/{favorite.SpecialtyId}", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task RemoveSpecialtyFromFavorite_EndpointReturnNoContent()
+        {
+            //Arrange
+            var favorite = _context.SpecialtyToGraduates.AsNoTracking().FirstOrDefault();
+            var userId = _context.Graduates.AsNoTracking().Where(x => x.Id == favorite.GraduateId).FirstOrDefault().UserId;
+            _specialtyInputAttribute.SetUserIdForHttpContext(userId);
+
+            //Act
+            var response = await _client.DeleteAsync(
+                $"/api/Specialty/Favorites/{favorite.SpecialtyId}");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }

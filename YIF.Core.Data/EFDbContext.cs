@@ -179,9 +179,19 @@ namespace YIF.Core.Data
                 .HasOne(x => x.SpecialtyToIoEDescription)
                 .WithMany(x => x.ExamRequirements)
                 .HasForeignKey(x => x.SpecialtyToIoEDescriptionId);
+            
+            builder.Entity<SpecialtyToGraduate>()
+                .HasKey(c => new { c.GraduateId, c.SpecialtyId });
 
             builder.Entity<SpecialtyToGraduate>()
-                .HasKey(c => new { c.Id, c.GraduateId, c.SpecialtyId });
+                .HasOne(sg => sg.Specialty)
+                .WithMany(u => u.SpecialtyToGraduates)
+                .HasForeignKey(sg => sg.SpecialtyId);
+
+            builder.Entity<SpecialtyToGraduate>()
+                .HasOne(sg => sg.Graduate)
+                .WithMany(g => g.SpecialtyToGraduates)
+                .HasForeignKey(sg => sg.GraduateId);
 
             builder.Entity<SpecialtyToInstitutionOfEducationToGraduate>()
                 .HasKey(k => new { k.SpecialtyId, k.InstitutionOfEducationId, k.GraduateId });
