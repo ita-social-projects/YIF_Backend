@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -25,15 +27,18 @@ namespace YIF_Backend.Controllers
         private readonly IUserService<DbUser> _userService;
         private readonly ResourceManager _resourceManager;
         private readonly IApplicationDbContext _context;
+        private readonly UserManager<DbUser> _userManager;
 
         public TestController(
             IUserService<DbUser> userService, 
             ResourceManager resourceManager,
-            IApplicationDbContext context)
+            IApplicationDbContext context,
+            UserManager<DbUser> userManager)
         {
             _userService = userService;
             _resourceManager = resourceManager;
             _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -110,7 +115,7 @@ namespace YIF_Backend.Controllers
 
         /// <summary>
         /// Delete Institution of Education 
-        /// /// </summary>
+        /// </summary>
         /// <returns>Success delete</returns>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -120,7 +125,48 @@ namespace YIF_Backend.Controllers
         {
             var inst = _context.InstitutionOfEducations.Find(id);
             _context.InstitutionOfEducations.Remove(inst);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete user from database 
+        /// </summary>
+        /// <returns>Success delete</returns>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteUser/{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+
+            // Find the user
+            var user = await _userManager.FindByIdAsync(id);
+            var logins = await _userManager.GetLoginsAsync(user);
+
+            // Delete every login, if he has
+            foreach (var login in logins)
+            {
+                await _userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
+            }
+
+            // Delete every role, if he has
+            var rolesForUser = await _userManager.GetRolesAsync(user);
+            foreach (var item in rolesForUser)
+            {
+                // item should be the name of the role
+                var result = await _userManager.RemoveFromRoleAsync(user, item);
+            }
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            await _userManager.RemoveClaimsAsync(user, userClaims);
+
+            //var admin = _context.InstitutionOfEducationAdmins.Find(id);
+            // _context.InstitutionOfEducationAdmins.Remove(admin);
+
+            // Delete the user itself
+            await _userManager.DeleteAsync(user);
+            await _context.SaveChangesAsync();
             return Ok();
         }
     }

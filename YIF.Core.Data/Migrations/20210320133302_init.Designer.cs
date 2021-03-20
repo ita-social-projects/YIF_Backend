@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210309131915_init")]
+    [Migration("20210320133302_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -378,6 +378,117 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducation", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Abbreviation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndOfCampaign")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InstitutionOfEducationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Lat")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Lon")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Site")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartOfCampaign")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InstitutionOfEducations");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("InstitutionOfEducationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstitutionOfEducationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("InstitutionOfEducationAdmins");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationModerator", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AdminId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("InstitutionOfEducationModerators");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationToGraduate", b =>
+                {
+                    b.Property<string>("InstitutionOfEducationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("GraduateId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("InstitutionOfEducationId", "GraduateId");
+
+                    b.HasIndex("GraduateId");
+
+                    b.ToTable("InstitutionOfEducationsToGraduates");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
                 {
                     b.Property<string>("Id")
@@ -482,9 +593,7 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId")
-                        .IsUnique()
-                        .HasFilter("[AdminId] IS NOT NULL");
+                    b.HasIndex("AdminId");
 
                     b.HasIndex("SchoolId");
 
@@ -516,23 +625,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasIndex("DirectionId");
 
                     b.ToTable("Specialties");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToIoEDescription", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EducationalProgramLink")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SpecialtyToIoEDescriptions");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToGraduate", b =>
@@ -573,11 +665,11 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasKey("Id", "InstitutionOfEducationId", "SpecialtyId");
 
+                    b.HasIndex("InstitutionOfEducationId");
+
                     b.HasIndex("SpecialtyId");
 
                     b.HasIndex("SpecialtyToIoEDescriptionId");
-
-                    b.HasIndex("InstitutionOfEducationId");
 
                     b.ToTable("SpecialtyToInstitutionOfEducations");
                 });
@@ -602,18 +694,30 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("SpecialtyToInstitutionOfEducationToGraduates");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToIoEDescription", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EducationalProgramLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpecialtyToIoEDescriptions");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("SuperAdmins");
                 });
@@ -634,113 +738,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblTokens");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducation", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Abbreviation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndOfCampaign")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("Lat")
-                        .HasColumnType("real");
-
-                    b.Property<float>("Lon")
-                        .HasColumnType("real");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Site")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartOfCampaign")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InstitutionOfEducations");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsBanned")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("InstitutionOfEducationId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InstitutionOfEducationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("InstitutionOfEducationAdmins");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationModerator", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AdminId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("InstitutionOfEducationModerators");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationToGraduate", b =>
-                {
-                    b.Property<string>("InstitutionOfEducationId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("GraduateId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("InstitutionOfEducationId", "GraduateId");
-
-                    b.HasIndex("GraduateId");
-
-                    b.ToTable("InstitutionOfEducationsToGraduates");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.UserProfile", b =>
@@ -829,8 +826,9 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.BaseUser", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("BaseUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.DirectionToInstitutionOfEducation", b =>
@@ -886,14 +884,55 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Graduates")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
+                        .WithMany("Admins")
+                        .HasForeignKey("InstitutionOfEducationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany("InstitutionOfEducationAdmins")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationModerator", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", "Admin")
+                        .WithMany("Moderators")
+                        .HasForeignKey("AdminId");
+
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany("InstitutionOfEducationModerators")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationToGraduate", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
+                        .WithMany("InstitutionOfEducationGraduates")
+                        .HasForeignKey("GraduateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
+                        .WithMany("InstitutionOfEducationGraduates")
+                        .HasForeignKey("InstitutionOfEducationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
+                        .WithMany("Lectures")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -929,8 +968,8 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.SchoolModerator", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.SchoolAdmin", "Admin")
-                        .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.SchoolModerator", "AdminId")
+                        .WithMany("SchoolModerators")
+                        .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.School", "School")
@@ -939,8 +978,9 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("SchoolModerators")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Specialty", b =>
@@ -968,6 +1008,12 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToInstitutionOfEducation", b =>
                 {
+                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
+                        .WithMany()
+                        .HasForeignKey("InstitutionOfEducationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
                         .WithMany()
                         .HasForeignKey("SpecialtyId")
@@ -977,12 +1023,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasOne("YIF.Core.Data.Entities.SpecialtyToIoEDescription", "SpecialtyToIoEDescription")
                         .WithMany("SpecialtyToInstitutionOfEducations")
                         .HasForeignKey("SpecialtyToIoEDescriptionId");
-
-                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
-                        .WithMany()
-                        .HasForeignKey("InstitutionOfEducationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToInstitutionOfEducationToGraduate", b =>
@@ -993,15 +1033,15 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
-                        .WithMany("SpecialtyToInstitutionOfEducationToGraduates")
-                        .HasForeignKey("SpecialtyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
                         .WithMany("SpecialtyToInstitutionOfEducationToGraduates")
                         .HasForeignKey("InstitutionOfEducationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
+                        .WithMany("SpecialtyToInstitutionOfEducationToGraduates")
+                        .HasForeignKey("SpecialtyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1009,8 +1049,10 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("SuperAdmins")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Token", b =>
@@ -1018,45 +1060,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithOne("Token")
                         .HasForeignKey("YIF.Core.Data.Entities.Token", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", b =>
-                {
-                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
-                        .WithMany("Admins")
-                        .HasForeignKey("InstitutionOfEducationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationModerator", b =>
-                {
-                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", "Admin")
-                        .WithMany("Moderators")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationToGraduate", b =>
-                {
-                    b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
-                        .WithMany("InstitutionOfEducationGraduates")
-                        .HasForeignKey("GraduateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
-                        .WithMany("InstitutionOfEducationGraduates")
-                        .HasForeignKey("InstitutionOfEducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
