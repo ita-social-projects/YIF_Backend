@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -139,32 +138,7 @@ namespace YIF_Backend.Controllers
         [HttpDelete("DeleteUser/{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-
-            // Find the user
             var user = await _userManager.FindByIdAsync(id);
-            var logins = await _userManager.GetLoginsAsync(user);
-
-            // Delete every login, if he has
-            foreach (var login in logins)
-            {
-                await _userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
-            }
-
-            // Delete every role, if he has
-            var rolesForUser = await _userManager.GetRolesAsync(user);
-            foreach (var item in rolesForUser)
-            {
-                // item should be the name of the role
-                var result = await _userManager.RemoveFromRoleAsync(user, item);
-            }
-
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            await _userManager.RemoveClaimsAsync(user, userClaims);
-
-            //var admin = _context.InstitutionOfEducationAdmins.Find(id);
-            // _context.InstitutionOfEducationAdmins.Remove(admin);
-
-            // Delete the user itself
             await _userManager.DeleteAsync(user);
             await _context.SaveChangesAsync();
             return Ok();
