@@ -133,6 +133,24 @@ namespace YIF.Core.Data
             builder.Entity<DirectionToInstitutionOfEducation>()
                 .HasKey(c => new {c.Id, c.InstitutionOfEducationId, c.DirectionId});
 
+            builder.Entity<DirectionToInstitutionOfEducation>()
+                .HasOne(x => x.Direction)
+                .WithMany(x => x.DirectionToInstitutionOfEducations)
+                .HasForeignKey(x => x.DirectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Specialty>()
+                .HasOne(x => x.Direction)
+                .WithMany(x => x.Specialties)
+                .HasForeignKey(x => x.DirectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<DirectionToInstitutionOfEducation>()
+                .HasOne(x => x.InstitutionOfEducation)
+                .WithMany(x => x.DirectionToInstitutionOfEducation)
+                .HasForeignKey(x => x.InstitutionOfEducationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<SpecialtyToInstitutionOfEducation>()
                 .HasKey(c => new {c.Id, c.InstitutionOfEducationId, c.SpecialtyId});
 

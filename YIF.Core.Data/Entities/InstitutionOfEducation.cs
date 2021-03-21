@@ -37,6 +37,7 @@ namespace YIF.Core.Data.Entities
         /// </summary>
         public virtual ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
         public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
+        public virtual ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducation { get; set; }
 
     }
 }

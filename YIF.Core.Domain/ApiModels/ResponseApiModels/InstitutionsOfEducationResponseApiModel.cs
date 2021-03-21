@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using YIF.Core.Data.Entities;
-using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 
 namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class InstitutionOfEducationResponseApiModel
+    public class InstitutionsOfEducationResponseApiModel
     {
         /// <summary>
         /// Unique id
@@ -97,10 +95,5 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         /// <example>true</example>
         public bool IsFavorite { get; set; }
-
-        /// <summary>
-        ///Directions that belong to this institution of education
-        /// </summary>
-        public IEnumerable<DirectionForIoEResponseApiModel> Directions { get; set; }
     }
 }

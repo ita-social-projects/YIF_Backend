@@ -12,6 +12,7 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
@@ -26,12 +27,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
         private static readonly Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>> _specialtyToInstitutionOfEducationRepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
-        private static readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionRepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
+        private static readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
+        private static readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
         private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
         private static readonly InstitutionOfEducationService institutionOfEducationService = new InstitutionOfEducationService(
             _institutionOfEducationRepository.Object,
+            _directionToIoERepository.Object,
             _directionRepository.Object,
             _educationFormToDescriptionRepository.Object,
             _paymentFormToDescriptionRepository.Object,
@@ -83,16 +86,16 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository.Setup(x => x.GetAll())
                 .ReturnsAsync(institutionOfEducationsList);
 
-            _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToInstitutionOfEducation, bool>>>()))
+            _directionToIoERepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(directionsList);
 
             _institutionOfEducationRepository.Setup(x => x.Find(x => x.Name == apiModel.InstitutionOfEducationName))
                 .ReturnsAsync(institutionOfEducationsList);
 
-            _mapperMock.Setup(x => x.Map<IEnumerable<InstitutionOfEducationResponseApiModel>>(institutionOfEducationsList))
-                .Returns(new List<InstitutionOfEducationResponseApiModel>
+            _mapperMock.Setup(x => x.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducationsList))
+                .Returns(new List<InstitutionsOfEducationResponseApiModel>
                 {
-                    new InstitutionOfEducationResponseApiModel
+                    new InstitutionsOfEducationResponseApiModel
                     {
                         Name = "Name"
                     }
@@ -165,13 +168,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToInstitutionOfEducationRepository.Setup(x => x.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(specialtyList);
 
-            _directionRepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToInstitutionOfEducation, bool>>>()))
+            _directionToIoERepository.Setup(x => x.Find(It.IsAny<Expression<Func<DirectionToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(directionList);
 
-            _mapperMock.Setup(x => x.Map<IEnumerable<InstitutionOfEducationResponseApiModel>>(institutionOfEducationsList))
-                .Returns(new List<InstitutionOfEducationResponseApiModel>
+            _mapperMock.Setup(x => x.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducationsList))
+                .Returns(new List<InstitutionsOfEducationResponseApiModel>
                 {
-                    new InstitutionOfEducationResponseApiModel
+                    new InstitutionsOfEducationResponseApiModel
                     {
                         Name = "Name"
                     }
@@ -188,16 +191,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetInstitutionOfEducationById_ShouldReturnInstitutionOfEducationReponseModel_WhenUserIsFound()
         {
             // Arrange
-            var institutionOfEducationDTO = new InstitutionOfEducationDTO
-            {
-                Id = "institutionOfEducationId",
-                Name = "TestName"
-            };
+            var institutionOfEducationDTO = new InstitutionOfEducationDTO();
 
-            var favorites = new List<InstitutionOfEducationDTO>
-            {
-                institutionOfEducationDTO
-            };
+            var directions = new List<DirectionDTO>();
+
+            var favorites = new List<InstitutionOfEducationDTO>();
 
             _institutionOfEducationRepository
                 .Setup(ur => ur.Get(It.IsAny<string>()))
@@ -207,9 +205,17 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
                 .ReturnsAsync(favorites);
 
+            _directionRepository
+                .Setup(x => x.GetByIoEId(It.IsAny<string>()))
+                .ReturnsAsync(directions);
+
             _mapperMock
                 .Setup(m => m.Map<InstitutionOfEducationResponseApiModel>(It.IsAny<InstitutionOfEducationDTO>()))
-                .Returns(new InstitutionOfEducationResponseApiModel { Id = "institutionOfEducationId", Name = "TestName" });
+                .Returns(new InstitutionOfEducationResponseApiModel());
+
+            _mapperMock
+                .Setup(x => x.Map<DirectionForIoEResponseApiModel>(It.IsAny<DirectionDTO>()))
+                .Returns(new DirectionForIoEResponseApiModel());
 
             // Act
             var result = await institutionOfEducationService.GetInstitutionOfEducationById(It.IsAny<string>(), It.IsAny<string>());
@@ -243,7 +249,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var institutionOfEducationPage = GetInstitutionOfEducationPage();
 
             _mapperMock
-                .Setup(m => m.Map<IEnumerable<InstitutionOfEducationResponseApiModel>>(institutionOfEducationList))
+                .Setup(m => m.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducationList))
                 .Returns(institutionOfEducationResponseList);
 
             _paginationService
@@ -262,7 +268,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await institutionOfEducationService.GetInstitutionOfEducationsPage(filterModel, It.IsAny<PageApiModel>());
 
             // Assert
-            Assert.IsType<PageResponseApiModel<InstitutionOfEducationResponseApiModel>>(result);
+            Assert.IsType<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>>(result);
         }
 
         [Fact]
@@ -283,7 +289,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(institutionOfEducationResponseList);
 
             // Act
-            Func<Task<PageResponseApiModel<InstitutionOfEducationResponseApiModel>>> act = () => institutionOfEducationService.GetInstitutionOfEducationsPage(filterModel, It.IsAny<PageApiModel>());
+            Func<Task<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>>> act = () => institutionOfEducationService.GetInstitutionOfEducationsPage(filterModel, It.IsAny<PageApiModel>());
 
             // Assert
             Assert.ThrowsAsync<NotFoundException>(act);
@@ -338,7 +344,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var institutionOfEducationResponseList = GetResponseInstitutionOfEducations();
 
             _mapperMock
-                .Setup(m => m.Map<IEnumerable<InstitutionOfEducationResponseApiModel>>(institutionOfEducationList))
+                .Setup(m => m.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducationList))
                 .Returns(institutionOfEducationResponseList);
 
             _institutionOfEducationRepository
@@ -645,21 +651,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
         }
 
-        private IEnumerable<InstitutionOfEducationResponseApiModel> GetResponseInstitutionOfEducations()
+        private IEnumerable<InstitutionsOfEducationResponseApiModel> GetResponseInstitutionOfEducations()
         {
-            return new List<InstitutionOfEducationResponseApiModel>
+            return new List<InstitutionsOfEducationResponseApiModel>
             {
-                new InstitutionOfEducationResponseApiModel
+                new InstitutionsOfEducationResponseApiModel
                 {
                     Id = "1",
                     Name = "InstitutionOfEducation 1"
                 },
-                new InstitutionOfEducationResponseApiModel
+                new InstitutionsOfEducationResponseApiModel
                 {
                     Id = "2",
                     Name = "InstitutionOfEducation 2"
                 },
-                new InstitutionOfEducationResponseApiModel
+                new InstitutionsOfEducationResponseApiModel
                 {
                     Id = "3",
                     Name = "InstitutionOfEducation 3"
@@ -684,9 +690,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             };
         }
 
-        private PageResponseApiModel<InstitutionOfEducationResponseApiModel> GetInstitutionOfEducationPage()
+        private PageResponseApiModel<InstitutionsOfEducationResponseApiModel> GetInstitutionOfEducationPage()
         {
-            return new PageResponseApiModel<InstitutionOfEducationResponseApiModel>
+            return new PageResponseApiModel<InstitutionsOfEducationResponseApiModel>
             {
                 PageSize = 1,
                 CurrentPage = 1,
