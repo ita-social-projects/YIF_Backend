@@ -38,7 +38,6 @@ namespace YIF.Core.Domain.Repositories
         public async Task<InstitutionOfEducationDTO> Get(string id)
         {
             var institutionOfEducation = await _context.InstitutionOfEducations
-                .Include(x => x.DirectionToInstitutionOfEducation)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
