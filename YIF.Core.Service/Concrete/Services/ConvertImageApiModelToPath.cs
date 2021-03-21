@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YIF.Core.Service.Concrete.Services
 {
-    class ConvertImageApiModelToPath
+    static class ConvertImageApiModelToPath
     {
         /// <summary>
         /// To save Base64 photo into server path

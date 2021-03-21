@@ -215,12 +215,16 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedSpecialtyDirectionURL(app.ApplicationServices);
-            SeederDB.SeedInstitutionOfEducationURL(app.ApplicationServices, "");
-            //SeederDB.SeedData(app.ApplicationServices);
+            var url = new Uri[] 
+            {
+                new Uri(Configuration.GetValue<string>("ParseUrl:SpecialtyDirection")),
+                new Uri(Configuration.GetValue<string>("ParseUrl:VNZ")),
+                new Uri(Configuration.GetValue<string>("ParseUrl:College"))
+            };
+            SeederDB.SeedData(app.ApplicationServices, url);
             if (_currentEnvironment.IsEnvironment("Testing"))
             {
-                SeederDB.SeedData(app.ApplicationServices);
+                SeederDB.SeedData(app.ApplicationServices, url);
             }
             #endregion
 

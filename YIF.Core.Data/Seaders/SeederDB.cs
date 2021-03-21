@@ -10,6 +10,10 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Shared;
 using System.Runtime.InteropServices;
+using System.Web;
+using System.Text.RegularExpressions;
+using System.Data;
+using System.IO;
 
 namespace YIF.Core.Data.Seaders
 {
@@ -2370,7 +2374,7 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public async static void SeedData(IServiceProvider services)
+        public async static void SeedData(IServiceProvider services, Uri[] url)
         {
             using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
@@ -2400,109 +2404,258 @@ namespace YIF.Core.Data.Seaders
                 // UniversityModerators: 9
                 // Lectures: 9
 
-                await SeederDB.SeedRoles(managerRole);
-                await SeederDB.SeedSuperAdmin(context, manager);
+                //await SeederDB.SeedRoles(managerRole);
+                //await SeederDB.SeedSuperAdmin(context, manager);
 
-                #region School
-                SeederDB.SeedSchools(context);
-                SeederDB.SeedSchoolAdmins(context);
-                await SeederDB.SeedSchoolModerators(context, manager);
-                await SeederDB.SeedGraduates(context, manager);
-                #endregion
+                //#region School
+                //SeederDB.SeedSchools(context);
+                //SeederDB.SeedSchoolAdmins(context);
+                //await SeederDB.SeedSchoolModerators(context, manager);
+                //await SeederDB.SeedGraduates(context, manager);
+                //#endregion
 
-                #region University
-                await SeederDB.SeedDirections(context);
-                await SeederDB.SeedSpecialities(context);
-                SeederDB.SeedUniversities(context);
-                SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
-                await SeederDB.SeedUniversityAdmins(context, manager);
-                await SeederDB.SeedUniversityModerators(context, manager);
-                await SeederDB.SeedLectures(context, manager);
-                SeederDB.SeedEducationForms(context);
-                SeederDB.SeedPaymentForms(context);
-                SeederDB.SeedExams(context);
-                SeederDB.SeedSpecialtyInUniversityDescription(context);
-                #endregion
+                //#region University
+                //await SeederDB.SeedDirections(context);
+                //await SeederDB.SeedSpecialities(context);
+                //SeederDB.SeedUniversities(context);
+                //SeederDB.SeedDirectionsAndSpecialitiesToUniversity(context);
+                //await SeederDB.SeedUniversityAdmins(context, manager);
+                //await SeederDB.SeedUniversityModerators(context, manager);
+                //await SeederDB.SeedLectures(context, manager);
+                //SeederDB.SeedEducationForms(context);
+                //SeederDB.SeedPaymentForms(context);
+                //SeederDB.SeedExams(context);
+                //SeederDB.SeedSpecialtyInUniversityDescription(context);
+                //#endregion
+
+                //We need at least 3 specialty/Direction, VNZ, College
+                if (url.Length < 3)
+                {
+                    return;
+                }
+
+                SeedSpecialtyDirectionURL(url[0], context);
+
+                DataTable exportToExcel = InitDataTable();
+
+                exportToExcel = await SeedInstitutionOfEducationFromURLtoXLS(url[1], exportToExcel);
+                exportToExcel = await SeedInstitutionOfEducationFromURLtoXLS(url[2], exportToExcel);
+
+                TableToExcel(exportToExcel, @"1.xlsx");
 
                 Console.WriteLine("Database seeded.");
             }
         }
 
-        public async static void SeedSpecialtyDirectionURL(IServiceProvider services)
+        private static DataTable InitDataTable()
         {
-            using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            DataTable exportToExcel = new DataTable();
+
+            exportToExcel.Columns.Add("Name", typeof(string));
+            exportToExcel.Columns.Add("Abbreviation", typeof(string));
+            exportToExcel.Columns.Add("Site", typeof(string));
+            exportToExcel.Columns.Add("Address", typeof(string));
+            exportToExcel.Columns.Add("Phone", typeof(string));
+            exportToExcel.Columns.Add("Email", typeof(string));
+            exportToExcel.Columns.Add("Description", typeof(string));
+            exportToExcel.Columns.Add("ImagePath", typeof(string));
+            exportToExcel.Columns.Add("Lat", typeof(float));
+            exportToExcel.Columns.Add("Lon", typeof(string));
+            exportToExcel.Columns.Add("Type", typeof(string));
+
+            return exportToExcel;
+        }
+
+        public async static void SeedSpecialtyDirectionURL(Uri htmlUrl, EFDbContext context)
+        {
+            HtmlWeb web = new HtmlWeb();
+            var htmlDoc = await web.LoadFromWebAsync(htmlUrl.AbsoluteUri);
+            var trNodes = htmlDoc.DocumentNode.SelectNodes("//*[@id=\"article\"]/div/span/em[3]/div/table/tr");
+
+            if (trNodes != null)
             {
-                var context = scope.ServiceProvider.GetRequiredService<EFDbContext>();
+                //in case of this htmlUrl. Header in first <tr>
+                trNodes.RemoveAt(0);
+                Direction direction = new Direction();
+                List<Specialty> directionSpecialties = new List<Specialty>();
 
-                var htmlUrl = @"https://zakon.rada.gov.ua/laws/show/266-2015-%D0%BF/print";
-
-                HtmlWeb web = new HtmlWeb();
-                var htmlDoc = await web.LoadFromWebAsync(htmlUrl);
-                var trNodes = htmlDoc.DocumentNode.SelectNodes("//*[@id=\"article\"]/div/span/em[3]/div/table/tr");
-
-                if (trNodes != null)
+                foreach (var trNode in trNodes)
                 {
-                    //in case of this htmlUrl. Header in first <tr>
-                    trNodes.RemoveAt(0);
-                    Direction direction = new Direction();
-                    List<Specialty> directionSpecialties = new List<Specialty>();
-
-                    foreach (var trNode in trNodes)
+                    var tdNodes = trNode.ChildNodes.Where(x => x.Name == "td").ToList();
+                    switch (tdNodes.Count)
                     {
-                        var tdNodes = trNode.ChildNodes.Where(x => x.Name == "td").ToList();
-                        switch (tdNodes.Count)
-                        {
-                            //with direction
-                            case 4:
-                                //Add previos data
-                                if (direction.Code != null)
-                                {
-                                    direction.Specialties = directionSpecialties;
-                                    context.Directions.Add(direction);
-                                    context.SaveChanges();
-                                }
+                        //with direction
+                        case 4:
+                            //Add previos data
+                            if (direction.Code != null)
+                            {
+                                direction.Specialties = directionSpecialties;
+                                context.Directions.Add(direction);
+                                context.SaveChanges();
+                            }
 
-                                //Add new direction
-                                direction = new Direction();
-                                direction.Code = tdNodes[0].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
-                                direction.Name = tdNodes[1].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                            //Add new direction
+                            direction = new Direction();
+                            direction.Code = tdNodes[0].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                            direction.Name = tdNodes[1].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
 
-                                //Add new specialties
-                                directionSpecialties = new List<Specialty>();
-                                Specialty specialty = new Specialty();
-                                specialty.Code = tdNodes[2].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
-                                specialty.Name = tdNodes[3].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
-                                specialty.Direction = direction;
-                                context.Specialties.Add(specialty);
+                            //Add new specialties
+                            directionSpecialties = new List<Specialty>();
+                            Specialty specialty = new Specialty();
+                            specialty.Code = tdNodes[2].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                            specialty.Name = tdNodes[3].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                            specialty.Direction = direction;
+                            context.Specialties.Add(specialty);
 
-                                directionSpecialties.Add(specialty);
-                                break;
+                            directionSpecialties.Add(specialty);
+                            break;
 
-                            //only specialty
-                            case 2:
-                                Specialty specialty1 = new Specialty();
-                                specialty1.Code = tdNodes[0].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
-                                specialty1.Name = tdNodes[1].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
-                                specialty1.Direction = direction;
-                                context.Specialties.Add(specialty1);
+                        //only specialty
+                        case 2:
+                            Specialty specialty1 = new Specialty();
+                            specialty1.Code = tdNodes[0].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                            specialty1.Name = tdNodes[1].ChildNodes.Where(x => x.Name == "p").FirstOrDefault().InnerText;
+                            specialty1.Direction = direction;
+                            context.Specialties.Add(specialty1);
 
-                                directionSpecialties.Add(specialty1);
-                                break;
-                            default:
-                                break;
-                        }
+                            directionSpecialties.Add(specialty1);
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
         }
 
-        public static void SeedInstitutionOfEducationURL(IServiceProvider services, string pathToXLS)
+        public async static Task<DataTable> SeedInstitutionOfEducationFromURLtoXLS(Uri htmlUrl, DataTable exportToExcel)
+        {
+            if(htmlUrl == null && String.IsNullOrEmpty(htmlUrl.AbsoluteUri) && exportToExcel == null)
+            {
+                return exportToExcel;
+            }
+
+            HtmlWeb web = new HtmlWeb();
+            var htmlDoc = await web.LoadFromWebAsync(htmlUrl.AbsoluteUri);
+            var aNodes = htmlDoc.DocumentNode.SelectNodes("//*[@id=\"search_result\"]/table/tbody/tr/td[2]/span[1]/a");
+
+            if (aNodes != null)
+            {
+                foreach(var aNode in aNodes)
+                {
+                    string hrefValue = aNode.GetAttributeValue("href", string.Empty);
+                    var htmlDoc1 = await web.LoadFromWebAsync(htmlUrl.Host + hrefValue);
+
+                    University university = new University();
+
+                    var name = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"center\"]/article[1]/h1").InnerText;
+                    int pFrom = name.IndexOf("(");
+                    int pTo = name.LastIndexOf(")");
+
+                    String result = name.Substring(pFrom + 1, pTo - pFrom);
+                    if (result.Length > 3 && result.Length < 7)
+                    {
+                        university.Name = name.Substring(0, pFrom);
+                        university.Abbreviation = result;
+                    }
+                    else
+                    {
+                        university.Name = name;
+                    }
+
+                    var phone = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"center\"]/article[1]/table/tr/td[2]/text()[1]").InnerText;
+                    university.Phone = Regex.Replace(phone, @"\s+", "").Split(',')[0];
+
+                    var address = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"center\"]/article[1]/table/tr/td[2]/text()[2]").InnerText;
+                    university.Address = Regex.Replace(address, @"<[^>]+>|&nbsp;", "").Trim();
+
+                    university.Site = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"center\"]/article[1]/table/tr/td[2]/a[2]").InnerText;
+                        
+                    var email = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"center\"]/article[1]/table/tr/td[2]/script").InnerText;
+                    university.Email = HttpUtility.UrlDecode(email).Split("\"")[1].Split(":")[1];
+
+                    var decription = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"desc_ext\"]").InnerText;
+                    university.Description = Regex.Replace(decription, @"&nbsp;", "").Trim();
+
+                    var typeNode = htmlDoc1.DocumentNode.SelectSingleNode("//*[@id=\"description\"]/table/tr[1]/td[2]");
+                    var type = typeNode == null? "college" : typeNode.InnerText;
+
+                    exportToExcel.Rows.Add(university.Name, university.Abbreviation, university.Site, university.Address,
+                        university.Phone, university.Email, university.Description, university.ImagePath, university.Lat,
+                        university.Lon, type);
+                }
+            }
+            return exportToExcel;
+        }
+
+        public static void TableToExcel(DataTable tbl, string excelFilePath = null)
+        {
+            if (tbl == null || tbl.Columns.Count == 0)
+            {
+                throw new Exception("ExportToExcel: Null or empty input table!\n");
+            }
+
+            if (File.Exists(excelFilePath))
+            {
+                File.Delete(excelFilePath);
+            }
+
+            try
+            {
+                // load excel, and create a new workbook
+                var excelApp = new Excel.Application();
+                excelApp.Workbooks.Add();
+
+                // single worksheet
+                Excel._Worksheet workSheet = excelApp.ActiveSheet;
+
+                // column headings
+                for (var i = 0; i < tbl.Columns.Count; i++)
+                {
+                    workSheet.Cells[1, i + 1] = tbl.Columns[i].ColumnName;
+                }
+
+                // rows
+                for (var i = 0; i < tbl.Rows.Count; i++)
+                {
+                    // to do: format datetime values before printing
+                    for (var j = 0; j < tbl.Columns.Count; j++)
+                    {
+                        workSheet.Cells[i + 2, j + 1] = tbl.Rows[i][j];
+                    }
+                }
+
+                // check file path
+                if (!string.IsNullOrEmpty(excelFilePath))
+                {
+                    try
+                    {
+                        workSheet.SaveAs(excelFilePath);
+                        excelApp.Quit();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("ExportToExcel: Excel file could not be saved! Check filepath.\n"
+                                            + ex.Message);
+                    }
+                }
+                else
+                { // no file path is given
+                    excelApp.Visible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("ExportToExcel: \n" + ex.Message);
+            }
+        }
+
+        public static void SeedInstitutionOfEducationFromXLStoDB(IServiceProvider services, string pathToXLS)
         {
             using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 //Create COM Objects. Create a COM object for everything that is referenced
                 Excel.Application xlApp = new Excel.Application();
-                Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(@"D:\repos\reestr-perelik1.xls");
+                Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(pathToXLS);
                 Excel._Worksheet xlWorksheet = (Excel._Worksheet)xlWorkbook.Sheets[1];
                 Excel.Range xlRange = xlWorksheet.UsedRange;
 
