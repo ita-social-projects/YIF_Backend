@@ -4,6 +4,7 @@ using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Entities
 {
+    //Where we use this table?
     public class Lecture
     {
         [Key, ForeignKey("User")]
@@ -12,10 +13,10 @@ namespace YIF.Core.Data.Entities
         public string InstitutionOfEducationId { get; set; }
 
         [ForeignKey("InstitutionOfEducationId")]
-        public InstitutionOfEducation InstitutionOfEducation { get; set; }
+        public virtual InstitutionOfEducation InstitutionOfEducation { get; set; }
         /// <summary>
         /// Link to Identity user
         /// </summary>
-        public DbUser User { get; set; }
+        public virtual DbUser User { get; set; }
     }
 }

@@ -21,7 +21,6 @@ namespace YIF.Core.Data
 
         #region Tables
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
-
         public DbSet<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
         public DbSet<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
         public DbSet<Lecture> Lectures { get; set; }
@@ -65,32 +64,83 @@ namespace YIF.Core.Data
         {
             base.OnModelCreating(builder);
 
+            #region User
+
             builder.Entity<SuperAdmin>()
-                .HasOne(x => x.User);
+                .HasOne(x => x.User)
+                .WithMany(x => x.SuperAdmins)
+                .HasForeignKey(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+
+            builder.Entity<BaseUser>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.BaseUsers)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Graduate>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Graduates)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+         
+            builder.Entity<InstitutionOfEducationAdmin>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.InstitutionOfEducationAdmins)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<InstitutionOfEducationModerator>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.InstitutionOfEducationModerators)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Lecture>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Lectures)
+                .HasForeignKey(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SchoolModerator>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.SchoolModerators)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Token>()
+                .HasOne(x => x.User)
+                .WithOne(x => x.Token)
+                .HasForeignKey<Token>(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserProfile>()
+                .HasOne(x => x.User)
+                .WithOne(x => x.UserProfile)
+                .HasForeignKey<UserProfile>(x => x.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            #endregion
 
             #region InstitutionOfEducation
+
+            builder.Entity<Lecture>()
+                .HasOne(x => x.InstitutionOfEducation)
+                .WithMany(x => x.Lectures)
+                .HasForeignKey(x => x.InstitutionOfEducationId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<InstitutionOfEducationAdmin>()
                 .HasOne(x => x.InstitutionOfEducation)
                 .WithMany(x => x.Admins)
                 .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
-            builder.Entity<InstitutionOfEducationModerator>()
-                .HasOne(x => x.Admin)
-                .WithMany(x => x.Moderators)
-                .HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<InstitutionOfEducationModerator>()
                 .HasOne(x => x.Admin)
                 .WithMany(x => x.Moderators)
                 .HasForeignKey(x => x.AdminId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Lecture>()
-                .HasOne(x => x.InstitutionOfEducation)
-                .WithMany(x => x.Lectures)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<InstitutionOfEducationToGraduate>()
@@ -105,18 +155,6 @@ namespace YIF.Core.Data
                 .HasOne(ug => ug.Graduate)
                 .WithMany(g => g.InstitutionOfEducationGraduates)
                 .HasForeignKey(ug => ug.GraduateId);
-
-            //builder.Entity<InstitutionOfEducation>()//потестить каскадку
-            //    .HasMany(x => x.Admins)
-            //    .WithOne(x => x.InstitutionOfEducation)
-            //    .HasForeignKey(x => x.InstitutionOfEducationId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<InstitutionOfEducation>()
-                .HasMany(x => x.Lectures)
-                .WithOne(x => x.InstitutionOfEducation)
-                .HasForeignKey(x => x.InstitutionOfEducationId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<InstitutionOfEducation>()
                 .Property(e => e.InstitutionOfEducationType)
@@ -220,17 +258,20 @@ namespace YIF.Core.Data
 
             builder.Entity<SchoolModerator>()
                 .HasOne(x => x.Admin)
-                .WithOne(x => x.Moderator)
+                .WithMany(x => x.SchoolModerators)
+                .HasForeignKey(x => x.AdminId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<SchoolModerator>()
                 .HasOne(x => x.School)
                 .WithMany(x => x.Moderators)
+                .HasForeignKey(x => x.SchoolId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Graduate>()
                 .HasOne(x => x.School)
                 .WithMany(x => x.Graduates)
+                .HasForeignKey(x => x.SchoolId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             #endregion

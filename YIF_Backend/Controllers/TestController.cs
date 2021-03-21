@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,18 @@ namespace YIF_Backend.Controllers
         private readonly IUserService<DbUser> _userService;
         private readonly ResourceManager _resourceManager;
         private readonly IApplicationDbContext _context;
+        private readonly UserManager<DbUser> _userManager;
 
         public TestController(
             IUserService<DbUser> userService, 
             ResourceManager resourceManager,
-            IApplicationDbContext context)
+            IApplicationDbContext context,
+            UserManager<DbUser> userManager)
         {
             _userService = userService;
             _resourceManager = resourceManager;
             _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -110,7 +114,7 @@ namespace YIF_Backend.Controllers
 
         /// <summary>
         /// Delete Institution of Education 
-        /// /// </summary>
+        /// </summary>
         /// <returns>Success delete</returns>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -120,7 +124,23 @@ namespace YIF_Backend.Controllers
         {
             var inst = _context.InstitutionOfEducations.Find(id);
             _context.InstitutionOfEducations.Remove(inst);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Delete user from database 
+        /// </summary>
+        /// <returns>Success delete</returns>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteUser/{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            await _userManager.DeleteAsync(user);
+            await _context.SaveChangesAsync();
             return Ok();
         }
     }
