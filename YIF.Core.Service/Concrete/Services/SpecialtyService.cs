@@ -210,5 +210,50 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _specialtyToInstitutionOfEducationRepository.RemoveFavorite(entity);
         }
+        public async Task AddSpecialtyToFavorite(string specialtyId, string userId)
+        {
+            var favorites = await _specialtyRepository.GetFavoritesByUserId(userId);
+            var specialty = await _specialtyRepository.Get(specialtyId);
+            var graduate = await _graduateRepository.GetByUserId(userId);
+
+            if (favorites.Where(f => f.Id == specialtyId).Count() > 0)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyIsAlreadyFavorite"));
+
+            if (specialty == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (graduate == null)
+                throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
+
+
+            await _specialtyRepository.AddFavorite(new SpecialtyToGraduate
+            {
+                SpecialtyId = specialty.Id,
+                GraduateId = graduate.Id
+            });
+        }
+
+        public async Task DeleteSpecialtyFromFavorite(string specialtyId, string userId)
+        {
+            var favorites = await _specialtyRepository.GetFavoritesByUserId(userId);
+            var specialty = await _specialtyRepository.Get(specialtyId);
+            var graduate = await _graduateRepository.GetByUserId(userId);
+
+            if (favorites.Where(f => f.Id == specialtyId).Count() == 0)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyIsNotFavorite"));
+
+            if (specialty == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (graduate == null)
+                throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
+
+
+            await _specialtyRepository.RemoveFavorite(new SpecialtyToGraduate
+            {
+                SpecialtyId = specialty.Id,
+                GraduateId = graduate.Id
+            });
+        }
     }
 }

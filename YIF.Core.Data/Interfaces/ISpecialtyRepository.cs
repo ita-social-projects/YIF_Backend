@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
@@ -7,5 +9,8 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task<bool> ContainsById(string id);
+        Task AddFavorite(SpecialtyToGraduate specialtyToGraduate);
+        Task RemoveFavorite(SpecialtyToGraduate specialtyToGraduate);
+        Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
     }
 }

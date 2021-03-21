@@ -70,7 +70,29 @@ namespace YIF.Core.Domain.Repositories
 
             return null;
         }
+        public async Task<IEnumerable<SpecialtyDTO>> GetFavoritesByUserId(string userId)
+        {
+            var specialties = from specialtyToGraduate in _context.SpecialtyToGraduates
+                join specialty in _context.Specialties on specialtyToGraduate.SpecialtyId equals specialty.Id
+                join graduate in _context.Graduates on specialtyToGraduate.GraduateId equals graduate.Id
+                where (graduate.UserId == userId)
+                select specialty;
 
+            var list = await specialties.ToListAsync();
+            return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
+        }
+
+        public async Task AddFavorite(SpecialtyToGraduate specialtyToGraduate)
+        {
+            await _context.SpecialtyToGraduates.AddAsync(specialtyToGraduate);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveFavorite(SpecialtyToGraduate specialtyToGraduate)
+        {
+            _context.SpecialtyToGraduates.Remove(specialtyToGraduate);
+            await _context.SaveChangesAsync();
+        }
         public async Task<bool> ContainsById(string id)
         {
             var result = await _context.Specialties
