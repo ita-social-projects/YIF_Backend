@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210320133302_init")]
+    [Migration("20210321211443_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -629,19 +629,13 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToGraduate", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("GraduateId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SpecialtyId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id", "GraduateId", "SpecialtyId");
-
-                    b.HasIndex("GraduateId");
+                    b.HasKey("GraduateId", "SpecialtyId");
 
                     b.HasIndex("SpecialtyId");
 
@@ -906,12 +900,12 @@ namespace YIF.Core.Data.Migrations
                 {
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", "Admin")
                         .WithMany("Moderators")
-                        .HasForeignKey("AdminId");
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
                         .WithMany("InstitutionOfEducationModerators")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationToGraduate", b =>
@@ -994,13 +988,13 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.SpecialtyToGraduate", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.Graduate", "Graduate")
-                        .WithMany()
+                        .WithMany("SpecialtyToGraduates")
                         .HasForeignKey("GraduateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
-                        .WithMany()
+                        .WithMany("SpecialtyToGraduates")
                         .HasForeignKey("SpecialtyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -269,25 +269,24 @@ namespace YIF.Core.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "SuperAdmins",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    UserId = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SuperAdmins", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SuperAdmins_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_SuperAdmins_AspNetUsers_Id",
+                        column: x => x.Id,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -401,7 +400,7 @@ namespace YIF.Core.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -450,7 +449,7 @@ namespace YIF.Core.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -713,7 +712,7 @@ namespace YIF.Core.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -848,9 +847,7 @@ namespace YIF.Core.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_SchoolModerators_AdminId",
                 table: "SchoolModerators",
-                column: "AdminId",
-                unique: true,
-                filter: "[AdminId] IS NOT NULL");
+                column: "AdminId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SchoolModerators_SchoolId",
@@ -896,11 +893,6 @@ namespace YIF.Core.Data.Migrations
                 name: "IX_SpecialtyToInstitutionOfEducationToGraduates_InstitutionOfEducationId",
                 table: "SpecialtyToInstitutionOfEducationToGraduates",
                 column: "InstitutionOfEducationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SuperAdmins_UserId",
-                table: "SuperAdmins",
-                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

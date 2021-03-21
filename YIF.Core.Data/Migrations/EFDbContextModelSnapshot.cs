@@ -591,9 +591,7 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId")
-                        .IsUnique()
-                        .HasFilter("[AdminId] IS NOT NULL");
+                    b.HasIndex("AdminId");
 
                     b.HasIndex("SchoolId");
 
@@ -711,12 +709,7 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("SuperAdmins");
                 });
@@ -825,8 +818,9 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.BaseUser", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("BaseUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.DirectionToInstitutionOfEducation", b =>
@@ -882,8 +876,9 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Graduates")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationAdmin", b =>
@@ -894,8 +889,9 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("InstitutionOfEducationAdmins")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.InstitutionOfEducationModerator", b =>
@@ -906,7 +902,7 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
+                        .WithMany("InstitutionOfEducationModerators")
                         .HasForeignKey("UserId");
                 });
 
@@ -928,7 +924,7 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
+                        .WithMany("Lectures")
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -964,8 +960,8 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.SchoolModerator", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.SchoolAdmin", "Admin")
-                        .WithOne("Moderator")
-                        .HasForeignKey("YIF.Core.Data.Entities.SchoolModerator", "AdminId")
+                        .WithMany("SchoolModerators")
+                        .HasForeignKey("AdminId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.School", "School")
@@ -974,8 +970,9 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("SchoolModerators")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Specialty", b =>
@@ -1044,8 +1041,10 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.SuperAdmin", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("SuperAdmins")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Token", b =>

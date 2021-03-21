@@ -91,11 +91,11 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<InstitutionOfEducationModerator>()
-                .HasOne(x => x.User)
-                .WithMany(x => x.InstitutionOfEducationModerators)
-                .HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.Entity<InstitutionOfEducationModerator>() //too many cascade deleting
+            //    .HasOne(x => x.User)
+            //    .WithMany(x => x.InstitutionOfEducationModerators)
+            //    .HasForeignKey(x => x.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Lecture>()
                 .HasOne(x => x.User)
