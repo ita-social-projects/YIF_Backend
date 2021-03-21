@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
@@ -56,10 +57,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly List<InstitutionOfEducationModerator> _databaseInstitutionOfEducationModerators = new List<InstitutionOfEducationModerator>();
         private readonly List<InstitutionOfEducationAdminResponseApiModel> _listViewModel;
 
+        private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
+
         public readonly InstitutionOfEducationAdminApiModel model = new InstitutionOfEducationAdminApiModel
         {
-            InstitutionOfEducationName = "Name",
-            Email = "Email",
+            InstitutionOfEducationId = "Name",
+            AdminEmail = "AdminEmail",
         };
         public SuperAdminServiceTests()
         {
@@ -152,18 +155,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.True(result.Success);
             Assert.Empty(users);
         }
-        [Fact]
-        public async Task AddUniAdmin_NoUniFound_returnsResult()
+
+        [Theory]
+        [InlineData("institutionId", "adminEmail")]
+        public async Task AddUniAdmin_NoUniFound_returnsResult(string institutionId, string adminEmail)
         {
             List<InstitutionOfEducationDTO> listNull = new List<InstitutionOfEducationDTO>();
             _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>())).ReturnsAsync(listNull);
 
             // Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddInstitutionOfEducationAdmin(model));
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object));
         }
 
-        [Fact]
-        public async Task AddUniAdmin_AdminAlreadyExists_returnsResult()
+        [Theory]
+        [InlineData("institutionId", "adminEmail")]
+        public async Task AddUniAdmin_AdminAlreadyExists_returnsResult(string institutionId, string adminEmail)
         {
             InstitutionOfEducationAdminDTO institutionOfEducationAdmin = new InstitutionOfEducationAdminDTO
             {
@@ -183,10 +189,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                                           .ReturnsAsync(institutionOfEducationAdmin);
 
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(model));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object));
         }
-        [Fact]
-        public async Task AddUniAdmin_UserAlreadyExists_returnsResult()
+
+        [Theory]
+        [InlineData("institutionId", "adminEmail")]
+        public async Task AddUniAdmin_UserAlreadyExists_returnsResult(string institutionId, string adminEmail)
         {
             DbUser user = new DbUser
             {
@@ -208,11 +216,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                                                                 .ReturnsAsync(list);
             _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationId("sdfs"))
                                                                           .ReturnsAsync(institutionOfEducationAdmin);
-            _userManager.Setup(p => p.FindByEmailAsync("Email")).
+            _userManager.Setup(p => p.FindByEmailAsync("AdminEmail")).
                                                             ReturnsAsync(user);
 
             // Assert
-            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(model));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object));
         }
 
         [Fact]

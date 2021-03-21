@@ -68,7 +68,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GET_EndpointsReturnInstitutionOfEducations_IfInstitutionOfEducationNameCorrect(string institutionOfEducationName)
         {
             // Act
-            var response = await _client.GetAsync($"?InstitutionOfEducationName={institutionOfEducationName}");
+            var response = await _client.GetAsync($"?InstitutionOfEducationId={institutionOfEducationName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());

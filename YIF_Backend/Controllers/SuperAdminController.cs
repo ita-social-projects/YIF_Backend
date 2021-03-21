@@ -28,13 +28,12 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds InstitutionOfEducation Admin and Moderator.
+        /// Adds Institution Of Education Admin.
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
         /// <response code="201">Returns object with tokens</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="404">If institutionOfEducation not found</response>
-        /// <response code="409">If email or password incorrect</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -43,10 +42,8 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddInstitutionOfEducationAdmin")]
         public async Task<IActionResult> AddInstitutionOfEducationAdmin([FromBody] InstitutionOfEducationAdminApiModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.AddInstitutionOfEducationAdmin(model);
-            return Created(string.Empty, result.Object);
+            var result = await _superAdminService.AddInstitutionOfEducationAdmin(model.InstitutionOfEducationId, model.AdminEmail, Request);
+            return Ok(result.Object);
         }
 
         /// <summary>

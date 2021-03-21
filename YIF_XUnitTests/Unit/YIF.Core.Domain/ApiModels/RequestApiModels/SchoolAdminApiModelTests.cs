@@ -10,7 +10,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.ApiModels.RequestApiModels
     public class SchoolAdminApiModelTests
     {
         [Theory]
-        [InlineData("SchoolName", "Email", "Password")]
+        [InlineData("SchoolName", "AdminEmail", "Password")]
         [InlineData(null, "Null", "0")]
         [InlineData("", "", "")]
         public void Ctor_ShouldImplementParameters(string SchoolName, string Email, string Password)

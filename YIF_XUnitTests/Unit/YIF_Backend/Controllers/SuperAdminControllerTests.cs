@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
@@ -32,39 +32,41 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         [Theory]
         [InlineData("UniName", "email@gmailcom")]
         [InlineData("", "email@gmailcom")]
-        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string uniName, string email)
+        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string institutionId, string adminEmail)
         {
             // Arrange
+            var httpRequest = new Mock<HttpRequest>();
             var requestModel = new InstitutionOfEducationAdminApiModel
             {
-                InstitutionOfEducationName = uniName,
-                Email = email
+                InstitutionOfEducationId = institutionId,
+                AdminEmail = adminEmail
             };
 
-            var responseModel = new ResponseApiModel<AuthenticateResponseApiModel> { Success = true, Object = GetTestJwt()[0] };
-            _superAdminService.Setup(x => x.AddInstitutionOfEducationAdmin(requestModel)).Returns(Task.FromResult(responseModel));
+            var responseModel = new ResponseApiModel<DescriptionResponseApiModel> { Success = true };
+            _superAdminService.Setup(x => x.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object)).Returns(Task.FromResult(responseModel));
 
             // Act
             var result = await superAdminController.AddInstitutionOfEducationAdmin(requestModel);
+
             // Assert
             var responseResult = Assert.IsType<CreatedResult>(result);
-            var model = (AuthenticateResponseApiModel)responseResult.Value;
-            Assert.Equal(responseModel.Object.Token, model.Token);
+            Assert.True(responseModel.Success);
         }
 
         [Theory]
         [InlineData("NotInDatabaseUniName", "email@gmailcom")]
-        public async Task AddUniAdmin_EndpointsReturnErrorNoInstitutionOfEducationWithSuchName_IfDataInСorrect(string uniName, string email)
+        public async Task AddUniAdmin_EndpointsReturnErrorNoInstitutionOfEducationWithSuchName_IfDataInСorrect(string institutionId, string adminEmail)
         {
             // Arrange
+            var httpRequest = new Mock<HttpRequest>();
             var requestModel = new InstitutionOfEducationAdminApiModel
             {
-                InstitutionOfEducationName = uniName,
-                Email = email
+                InstitutionOfEducationId = institutionId,
+                AdminEmail = adminEmail
             };
 
             var error = new NotFoundException("ExampleErrorMessage");
-            _superAdminService.Setup(x => x.AddInstitutionOfEducationAdmin(requestModel)).Throws(error);
+            _superAdminService.Setup(x => x.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object)).Throws(error);
 
             // Assert
             var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.AddInstitutionOfEducationAdmin(requestModel));
@@ -218,7 +220,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         //    var requestModel = new InstitutionOfEducationPostApiModel
         //    {
         //        Name = name,
-        //        Email = email,
+        //        AdminEmail = email,
         //        Description = description
         //    };
 
@@ -281,7 +283,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Success = true,
                 Object = new List<SchoolAdminResponseApiModel>
             {
-                new SchoolAdminResponseApiModel {Id="Id",SchoolId="Id",SchoolName="InstitutionOfEducationName"}
+                new SchoolAdminResponseApiModel {Id="Id",SchoolId="Id",SchoolName="InstitutionOfEducationId"}
             }
             };
             _superAdminService.Setup(x => x.GetAllSchoolAdmins()).Returns(Task.FromResult(responseModel));
