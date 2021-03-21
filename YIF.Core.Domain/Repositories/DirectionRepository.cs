@@ -11,7 +11,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class DirectionRepository : IRepository<Direction, DirectionDTO>
+    public class DirectionRepository : IDirectionRepository<Direction, DirectionDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -75,6 +75,21 @@ namespace YIF.Core.Domain.Repositories
             }
 
             return null;
+        }
+        public async Task<IEnumerable<DirectionDTO>> GetByIoEId(string InstitutionOfEducationId)
+        {
+            var directions = await (from d in _context.Directions.AsNoTracking()
+                                    join di in _context.DirectionsToInstitutionOfEducations.AsNoTracking() on d.Id equals di.DirectionId
+                                    where di.InstitutionOfEducationId == InstitutionOfEducationId
+                                    select new Direction
+                                    {
+                                        Id = d.Id,
+                                        Name = d.Name,
+                                        Code = d.Code,
+                                        Specialties = _context.Specialties.AsNoTracking().Where(x => x.DirectionId == d.Id).ToList()
+                                    }).ToListAsync();
+
+            return _mapper.Map<IEnumerable<DirectionDTO>>(directions);
         }
     }
 }

@@ -76,5 +76,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// List of graduates who liked the institution Of Education
         /// </summary>
         public virtual ICollection<InstitutionOfEducationToGraduateDTO> InstitutionOfEducationGraduates { get; set; }
+        public virtual ICollection<DirectionToInstitutionOfEducationDTO> DirectionToInstitutionOfEducation { get; set; }
     }
 }

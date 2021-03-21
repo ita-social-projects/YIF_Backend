@@ -21,7 +21,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     public class DirectionServiceTests
     {
         private readonly IDirectionService _directionService;
-        private readonly Mock<IRepository<Direction, DirectionDTO>> _repositoryDirection;
+        private readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _repositoryDirection;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionToInstitutionOfEducationRepository;
         private readonly Mock<IMapper> _mapper;
@@ -30,7 +30,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public DirectionServiceTests()
         {
-            _repositoryDirection = new Mock<IRepository<Direction, DirectionDTO>>();
+            _repositoryDirection = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
             _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
             _directionToInstitutionOfEducationRepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
             _mapper = new Mock<IMapper>();

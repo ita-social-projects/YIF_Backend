@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 
-namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+namespace YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse
 {
-    public class DirectionResponseApiModel
+    public class DirectionForIoEResponseApiModel
     {
         /// <summary>
         /// Get or set the primary key for this direction.

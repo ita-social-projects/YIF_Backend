@@ -37,12 +37,12 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<InstitutionOfEducationDTO> Get(string id)
         {
-            var institutionOfEducation = await _context.InstitutionOfEducations.FindAsync(id);
-            if (institutionOfEducation != null)
-            {
-                return _mapper.Map<InstitutionOfEducationDTO>(institutionOfEducation);
-            }
-            throw new KeyNotFoundException("User not found:  " + id);
+            var institutionOfEducation = await _context.InstitutionOfEducations
+                .Include(x => x.DirectionToInstitutionOfEducation)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<InstitutionOfEducationDTO>(institutionOfEducation);
         }
 
         public async Task<IEnumerable<InstitutionOfEducationDTO>> GetAll()
