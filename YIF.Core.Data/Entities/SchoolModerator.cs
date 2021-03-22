@@ -9,11 +9,11 @@ namespace YIF.Core.Data.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
-        public string SchoolId { get; set; }
+        public string SchoolId { get; set; } //not need
         public string AdminId { get; set; }
 
         [ForeignKey("SchoolId")]
-        public virtual School School { get; set; }
+        public virtual School School { get; set; } //not need
         [ForeignKey("AdminId")]
         public virtual SchoolAdmin Admin { get; set; }
         /// <summary>

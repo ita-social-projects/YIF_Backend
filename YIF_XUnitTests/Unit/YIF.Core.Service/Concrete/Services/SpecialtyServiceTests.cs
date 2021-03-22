@@ -177,7 +177,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             await Assert.ThrowsAnyAsync<NotFoundException>(() => _specialtyService.GetSpecialtyById(null));
         }
 
-        //not working
         [Fact]
         public async Task GetSpecialtyDescriptionsById_ShouldReturnSpecialtyDescriptions_ById()
         {

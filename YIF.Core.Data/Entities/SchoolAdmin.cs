@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YIF.Core.Data.Entities
@@ -15,6 +16,6 @@ namespace YIF.Core.Data.Entities
         /// <summary>
         /// Link to school moderator
         /// </summary>
-        public virtual SchoolModerator Moderator { get; set; }
+        public virtual ICollection<SchoolModerator> SchoolModerators { get; set; }
     }
 }
