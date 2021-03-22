@@ -81,7 +81,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 response.Content.Headers.ContentType.ToString());
             Assert.True(contentJsonObj.Count == 1);
         }
-        
+
         [Theory]
         [InlineData("Інформаційні технології", "Системний аналіз")]
         public async Task GET_EndpointsReturnInstitutionOfEducations_IfDirectionName_And_SpecialityNameCorrect(string directionName, string specialtyName)

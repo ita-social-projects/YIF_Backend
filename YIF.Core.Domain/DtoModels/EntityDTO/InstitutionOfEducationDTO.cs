@@ -28,7 +28,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// </summary>
         public string Phone { get; set; }
         /// <summary>
-        /// Email of institutionOfEducation
+        /// AdminEmail of institutionOfEducation
         /// </summary>
         public string Email { get; set; }
         /// <summary>

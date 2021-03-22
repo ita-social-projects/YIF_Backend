@@ -270,4 +270,10 @@
   <data name="YouMustLogInFirst" xml:space="preserve">
     <value>Спочатку потрібно авторизуватись</value>
   </data>
+  <data name="AdminAdded" xml:space="preserve">
+    <value>Адміністратора додано.</value>
+  </data>
+  <data name="InstitutionOfEducationAdminFailedUserAlreadyAdmin" xml:space="preserve">
+    <value>Користувач уже є адміністратором.</value>
+  </data>
 </root>

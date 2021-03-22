@@ -17,8 +17,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         [InlineData("/api/Direction/All?page=1")]
         [InlineData("/api/Direction/All?page=1&pageSize=10")]
         [InlineData("/api/Direction/All?DirectionName=Інформаційні технології")]
-        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ")]
-        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationName=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ&page=1&pageSize=10")]
+        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationId=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ")]
+        [InlineData("/api/Direction/All?DirectionName=Інформаційні технології&SpecialtyName=Кібербезпека&InstitutionOfEducationId=Київський політехнічний інститут імені Ігоря Сікорського&InstitutionOfEducationAbbreviation=КПІ&page=1&pageSize=10")]
         public async Task GetAll_EndpointsReturnSuccessAndCorrectContentObject(string endpoint)
         {
             // Act            
@@ -41,7 +41,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             string institutionOfEducationName, string institutionOfEducationAbbreviation)
         {
             // Act            
-            var response = await _client.GetAsync($"/api/Direction/Names?DirectionName={directionName}&SpecialtyName={specialtyName}&InstitutionOfEducationName={institutionOfEducationName}&InstitutionOfEducationAbbreviation={institutionOfEducationAbbreviation}");
+            var response = await _client.GetAsync($"/api/Direction/Names?DirectionName={directionName}&SpecialtyName={specialtyName}&InstitutionOfEducationId={institutionOfEducationName}&InstitutionOfEducationAbbreviation={institutionOfEducationAbbreviation}");
             // Assert
             response.EnsureSuccessStatusCode();
             var stringResponse = await response.Content.ReadAsStringAsync();
