@@ -29,7 +29,7 @@ namespace YIF_Backend.Controllers
         /// <returns>List of specialties</returns>
         /// <response code="200">Returns a list of specialties</response>
         /// <response code="404">If there are not specialties</response>
-        [HttpGet("All")]
+        [HttpGet("Anonymous")]
         [ProducesResponseType(typeof(IEnumerable<SpecialtyResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -52,6 +52,43 @@ namespace YIF_Backend.Controllers
             };
 
             var result = await _specialtyService.GetAllSpecialtiesByFilter(filterModel);
+            _logger.LogInformation("Getting all specialties");
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all specialties.
+        /// </summary>
+        /// <returns>List of specialties</returns>
+        /// <response code="200">Returns a list of specialties</response>
+        /// <response code="404">If there are not specialties</response>
+        [HttpGet("Authorized")]
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<SpecialtyResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllSpecialtiesAsyncForAuthorizedUser(
+            string DirectionName,
+            string SpecialtyName,
+            string InstitutionOfEducationName,
+            string InstitutionOfEducationAbbreviation,
+            string PaymentForm,
+            string EducationForm)
+        {
+
+            var userId = User.FindFirst("id").Value;
+
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialtyName = SpecialtyName,
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
+                PaymentForm = PaymentForm,
+                EducationForm = EducationForm
+            };
+
+            var result = await _specialtyService.GetAllSpecialtiesByFilterForUser(filterModel, userId);
             _logger.LogInformation("Getting all specialties");
             return Ok(result);
         }

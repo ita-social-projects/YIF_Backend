@@ -100,7 +100,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 response.Content.Headers.ContentType.ToString());
             Assert.True(contentJsonObj.Count >= 1);
         }
-
+        
         #endregion
 
         #region InCorrectTests

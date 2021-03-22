@@ -7,9 +7,10 @@ namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface IInstitutionOfEducationService<T> where T : class
     {
-        Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsByFilter(FilterApiModel filterModel);
+        Task<IEnumerable<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsByFilter(FilterApiModel filterModel);
         Task<InstitutionOfEducationResponseApiModel> GetInstitutionOfEducationById(string institutionOfEducationId, string userId = null);
-        Task<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsPage(FilterApiModel filterModel, PageApiModel pageModel, string userId = null);
+        Task<PageResponseApiModel<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsPage(FilterApiModel filterModel, PageApiModel pageModel);
+        Task<PageResponseApiModel<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsPageForUser(FilterApiModel filterModel, PageApiModel pageModel, string userId);
         Task<IEnumerable<InstitutionOfEducationResponseApiModel>> GetFavoriteInstitutionOfEducations(string userId);
         Task<IEnumerable<string>> GetInstitutionOfEducationAbbreviations(FilterApiModel filterModel);
         Task AddInstitutionOfEducationToFavorite(string institutionOfEducationId, string userId);
