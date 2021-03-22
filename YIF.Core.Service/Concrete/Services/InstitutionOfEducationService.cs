@@ -153,7 +153,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result;
         }
 
-        public async Task<PageResponseApiModel<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsPageForUser(
+        public async Task<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsPageForUser(
             FilterApiModel filterModel,
             PageApiModel pageModel,
             string userId)

@@ -53,17 +53,6 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
         }
 
-        public async Task<IEnumerable<SpecialtyDTO>> GetFavoritesByUserId(string userId)
-        {
-            var institutionOfEducations = _context.SpecialtyToGraduates
-                .Where(x => x.GraduateId == userId)
-                .Include(y => y.Specialty)
-                ;
-
-            var list = await institutionOfEducations.ToListAsync();
-            return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
-        }
-
         public void Dispose()
         {
             _context.Dispose();
