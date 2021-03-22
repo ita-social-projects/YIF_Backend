@@ -49,11 +49,11 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 PageSize = 10,
                 Url = "link"
             };
-            var _iOEs = new PageResponseApiModel<InstitutionOfEducationResponseApiModel>
+            var _iOEs = new PageResponseApiModel<InstitutionsOfEducationResponseApiModel>
             {
-                ResponseList = new List<InstitutionOfEducationResponseApiModel>
+                ResponseList = new List<InstitutionsOfEducationResponseApiModel>
                 {
-                    new InstitutionOfEducationResponseApiModel()
+                    new InstitutionsOfEducationResponseApiModel()
                     {
                         Id = "1"
                     }
@@ -96,11 +96,11 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 PageSize = 10,
                 Url = "link"
             };
-            var _iOEs = new PageResponseApiModel<InstitutionOfEducationResponseApiModel>
+            var _iOEs = new PageResponseApiModel<InstitutionsOfEducationResponseApiModel>
             {
-                ResponseList = new List<InstitutionOfEducationResponseApiModel>
+                ResponseList = new List<InstitutionsOfEducationResponseApiModel>
                 {
-                    new InstitutionOfEducationResponseApiModel()
+                    new InstitutionsOfEducationResponseApiModel()
                     {
                         Id = "1"
                     }
