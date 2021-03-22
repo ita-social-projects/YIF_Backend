@@ -158,10 +158,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         [Theory]
         [InlineData("institutionId", "adminEmail")]
-        public async Task AddUniAdmin_NoUniFound_returnsResult(string institutionId, string adminEmail)
+        public async Task AddInstitutionOfEducationAdmin_InstituionAlreadyExist(string institutionId, string adminEmail)
         {
-            List<InstitutionOfEducationDTO> listNull = new List<InstitutionOfEducationDTO>();
-            _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>())).ReturnsAsync(listNull);
+            // Act
+            _institutionOfEducationRepository.Setup(p => p.ContainsById(It.IsAny<string>())).ReturnsAsync(false);
 
             // Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object));
@@ -169,24 +169,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         [Theory]
         [InlineData("institutionId", "adminEmail")]
-        public async Task AddUniAdmin_AdminAlreadyExists_returnsResult(string institutionId, string adminEmail)
+        public async Task AddInstitutionOfEducationAdmin_ThisInstitutionAlreadyHaveAdmin(string institutionId, string adminEmail)
         {
-            InstitutionOfEducationAdminDTO institutionOfEducationAdmin = new InstitutionOfEducationAdminDTO
-            {
-                Id = "Id",
-                InstitutionOfEducationId = "SomeUniId"
-            };
-            List<InstitutionOfEducationDTO> list = new List<InstitutionOfEducationDTO>
-            {
-                new InstitutionOfEducationDTO
-                {
-                    Id = "id"
-                }
-            };
-            _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>()))
-                                                                                                .ReturnsAsync(list);
-            _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationId("id"))
-                                                                          .ReturnsAsync(institutionOfEducationAdmin);
+            //Arrange
+            var admin = new InstitutionOfEducationAdminDTO();
+
+            _institutionOfEducationRepository.Setup(p => p.ContainsById(It.IsAny<string>())).ReturnsAsync(true);
+            _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(It.IsAny<string>())).ReturnsAsync(admin);
 
             // Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object));
@@ -194,30 +183,20 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         [Theory]
         [InlineData("institutionId", "adminEmail")]
-        public async Task AddUniAdmin_UserAlreadyExists_returnsResult(string institutionId, string adminEmail)
-        {
-            DbUser user = new DbUser
+        public async Task AddInstitutionOfEducationAdmin_UserExistAndHaveAdminPermision(string institutionId, string adminEmail)
+        {            
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            IEnumerable<InstitutionOfEducationAdminDTO> institutionOfEducationAdmins = new List<InstitutionOfEducationAdminDTO>()
             {
-                Id = "Id"
+                new InstitutionOfEducationAdminDTO(){ Id = institutionId}
             };
-            InstitutionOfEducationAdminDTO institutionOfEducationAdmin = new InstitutionOfEducationAdminDTO
-            {
-                Id = "Id",
-                InstitutionOfEducationId = "SomeUniId"
-            };
-            List<InstitutionOfEducationDTO> list = new List<InstitutionOfEducationDTO>
-            {
-                new InstitutionOfEducationDTO
-                {
-                    Id = "id"
-                }
-            };
-            _institutionOfEducationRepository.Setup(p => p.Find(It.IsAny<Expression<Func<InstitutionOfEducation, bool>>>()))
-                                                                                                .ReturnsAsync(list);
-            _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationId("sdfs"))
-                                                                          .ReturnsAsync(institutionOfEducationAdmin);
-            _userManager.Setup(p => p.FindByEmailAsync("AdminEmail")).
-                                                            ReturnsAsync(user);
+
+            _institutionOfEducationRepository.Setup(p => p.ContainsById(It.IsAny<string>())).ReturnsAsync(true);
+            _institutionOfEducationAdminRepository.Setup(p => p.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _institutionOfEducationAdminRepository.Setup(p => p.GetAllUniAdmins()).ReturnsAsync(institutionOfEducationAdmins);
 
             // Assert
             await Assert.ThrowsAsync<InvalidOperationException>(() => superAdminService.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object));

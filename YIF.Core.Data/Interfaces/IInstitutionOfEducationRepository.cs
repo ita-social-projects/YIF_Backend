@@ -13,6 +13,12 @@ namespace YIF.Core.Data.Interfaces
         Task AddFavorite(InstitutionOfEducationToGraduate institutionOfEducationToGraduate);
         Task RemoveFavorite(InstitutionOfEducationToGraduate institutionOfEducationToGraduate);
         Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
+
+        /// <summary>
+        /// Check if object exist
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns> true if exist</returns>
         Task<bool> ContainsById(string id);
     }
 }

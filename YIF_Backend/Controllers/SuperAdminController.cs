@@ -132,9 +132,6 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddInstitutionOfEducationAndAdmin")]
         public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationPostApiModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-
             ImageBase64Validator validator = new ImageBase64Validator();
             var validResults = validator.Validate(model.ImageApiModel);
 

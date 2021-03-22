@@ -68,7 +68,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GET_EndpointsReturnInstitutionOfEducations_IfInstitutionOfEducationNameCorrect(string institutionOfEducationName)
         {
             // Act
-            var response = await _client.GetAsync($"?InstitutionOfEducationId={institutionOfEducationName}");
+            var response = await _client.GetAsync($"?InstitutionOfEducationName={institutionOfEducationName}");
             var content = response.Content.ReadAsStringAsync().Result;
 
             var contentJsonObj = JArray.Parse(JObject.Parse(content).GetValue("responseList").ToString());
@@ -81,7 +81,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 response.Content.Headers.ContentType.ToString());
             Assert.True(contentJsonObj.Count == 1);
         }
-        
+
         [Theory]
         [InlineData("Інформаційні технології", "Системний аналіз")]
         public async Task GET_EndpointsReturnInstitutionOfEducations_IfDirectionName_And_SpecialityNameCorrect(string directionName, string specialtyName)

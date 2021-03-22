@@ -94,13 +94,13 @@ namespace YIF.Core.Service.Concrete.Services
 
             #region Check
             var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(InstitutionOfEducationId);
-            if(institutionOfEducation)
+            if(!institutionOfEducation)
             {
                 throw new NotFoundException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
             }
 
             var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(InstitutionOfEducationId);
-            if (admin == null)
+            if (admin != null)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailed"));
             }
@@ -121,8 +121,14 @@ namespace YIF.Core.Service.Concrete.Services
                     throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
                 }
             }
-            else
+            else 
             {
+                var ifUserAlreadyAdmin = (await _institutionOfEducationAdminRepository.GetAllUniAdmins()).SingleOrDefault(x => x.UserId == searchUser.Result.Id);
+                if (ifUserAlreadyAdmin != null)
+                {
+                    throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailedUserAlreadyAdmin"));
+                }
+                
                 dbUser = searchUser.Result;
             }
 

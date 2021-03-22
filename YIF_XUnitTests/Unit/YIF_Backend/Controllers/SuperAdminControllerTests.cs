@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
@@ -17,12 +18,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     {
         private readonly Mock<ISuperAdminService> _superAdminService;
         private readonly Mock<ResourceManager> _resourceManager;
+        private readonly Mock<HttpRequest> _request;
 
         private readonly SuperAdminController superAdminController;
         public SuperAdminControllerTests()
         {
             _superAdminService = new Mock<ISuperAdminService>();
             _resourceManager = new Mock<ResourceManager>();
+            _request = new Mock<HttpRequest>();
 
             superAdminController = new SuperAdminController(
                 _superAdminService.Object,
@@ -30,59 +33,16 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("UniName", "email@gmailcom")]
-        [InlineData("", "email@gmailcom")]
-        public async Task AddUniAdmin_EndpointsReturnResponseApiModelWithJwt_IfDataСorrect(string institutionId, string adminEmail)
+        [InlineData(null, "sms")]
+        [InlineData("sms", null)]
+        public async Task AddInstitutionOfEducationAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid(string adminEmail, string institutionOfEducationId)
         {
             // Arrange
-            var httpRequest = new Mock<HttpRequest>();
-            var requestModel = new InstitutionOfEducationAdminApiModel
-            {
-                InstitutionOfEducationId = institutionId,
-                AdminEmail = adminEmail
-            };
-
-            var responseModel = new ResponseApiModel<DescriptionResponseApiModel> { Success = true };
-            _superAdminService.Setup(x => x.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object)).Returns(Task.FromResult(responseModel));
+            var inst = new InstitutionOfEducationAdminApiModel() { AdminEmail = adminEmail, InstitutionOfEducationId = institutionOfEducationId };
 
             // Act
-            var result = await superAdminController.AddInstitutionOfEducationAdmin(requestModel);
-
             // Assert
-            var responseResult = Assert.IsType<CreatedResult>(result);
-            Assert.True(responseModel.Success);
-        }
-
-        [Theory]
-        [InlineData("NotInDatabaseUniName", "email@gmailcom")]
-        public async Task AddUniAdmin_EndpointsReturnErrorNoInstitutionOfEducationWithSuchName_IfDataInСorrect(string institutionId, string adminEmail)
-        {
-            // Arrange
-            var httpRequest = new Mock<HttpRequest>();
-            var requestModel = new InstitutionOfEducationAdminApiModel
-            {
-                InstitutionOfEducationId = institutionId,
-                AdminEmail = adminEmail
-            };
-
-            var error = new NotFoundException("ExampleErrorMessage");
-            _superAdminService.Setup(x => x.AddInstitutionOfEducationAdmin(institutionId, adminEmail, httpRequest.Object)).Throws(error);
-
-            // Assert
-            var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.AddInstitutionOfEducationAdmin(requestModel));
-            Assert.Equal(error.Message, exeption.Message);
-        }
-
-        [Fact]
-        public async Task AddInstitutionOfEducationAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid()
-        {
-            // Arrange
-            superAdminController.ModelState.AddModelError("model", "error");
-            // Act
-            var result = await superAdminController.AddInstitutionOfEducationAdmin(null);
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
+            var exeption = await Assert.ThrowsAsync<NullReferenceException>(() => superAdminController.AddInstitutionOfEducationAdmin(inst));
         }
 
         [Theory]
