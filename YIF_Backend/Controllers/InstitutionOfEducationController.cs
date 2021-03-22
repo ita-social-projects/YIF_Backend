@@ -39,7 +39,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get all institutionOfEducations with pagination.
+        /// Get all institutionOfEducations with pagination for anonymous user, without checking of its favorites.
         /// </summary>
         /// <returns>Returns the page with institutionOfEducations</returns>
         /// <response code="200">Returns the page with institutionOfEducations</response>
@@ -48,8 +48,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet]
-        public async Task<IActionResult> GetInstitutionOfEducationsPage(
+        [HttpGet("Anonymous")]
+        public async Task<IActionResult> GetInstitutionOfEducationsPageForAnonym(
             string DirectionName, 
             string SpecialtyName, 
             string InstitutionOfEducationName,
@@ -59,7 +59,50 @@ namespace YIF_Backend.Controllers
             int page = 1, 
             int pageSize = 10)
         {
-            var userId = User.FindFirst("id")?.Value;
+            var filterModel = new FilterApiModel
+            {
+                DirectionName = DirectionName,
+                SpecialtyName = SpecialtyName,
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
+                PaymentForm = PaymentForm,
+                EducationForm = EducationForm
+            };
+
+            var pageModel = new PageApiModel
+            {
+                Page = page,
+                PageSize = pageSize,
+                Url = $"{Request?.Scheme}://{Request?.Host}{Request?.Path}"
+            };
+
+            var result = await _institutionOfEducationService.GetInstitutionOfEducationsPage(filterModel, pageModel);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all institutionOfEducations with pagination for authorized user with checking of its favorites.
+        /// </summary>
+        /// <returns>Returns the page with institutionOfEducations</returns>
+        /// <response code="200">Returns the page with institutionOfEducations</response>
+        /// <response code="400">If page size or page number is incorrect</response>
+        [ProducesResponseType(typeof(PageResponseApiModel<InstitutionOfEducationResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("Authorized")]
+        [Authorize]
+        public async Task<IActionResult> GetInstitutionOfEducationsPageForAuthorizedUser(
+            string DirectionName,
+            string SpecialtyName,
+            string InstitutionOfEducationName,
+            string InstitutionOfEducationAbbreviation,
+            string PaymentForm,
+            string EducationForm,
+            int page = 1,
+            int pageSize = 10)
+        {
+            var userId = User.FindFirst("id").Value;
 
             var filterModel = new FilterApiModel
             {
@@ -75,10 +118,10 @@ namespace YIF_Backend.Controllers
             {
                 Page = page,
                 PageSize = pageSize,
-                Url = $"{Request.Scheme}://{Request.Host}{Request.Path}"
+                Url = $"{Request?.Scheme}://{Request?.Host}{Request?.Path}"
             };
 
-            var result = await _institutionOfEducationService.GetInstitutionOfEducationsPage(filterModel, pageModel, userId);
+            var result = await _institutionOfEducationService.GetInstitutionOfEducationsPageForUser(filterModel, pageModel, userId);
             return Ok(result);
         }
 
@@ -99,7 +142,7 @@ namespace YIF_Backend.Controllers
             var result = await _institutionOfEducationService.GetFavoriteInstitutionOfEducations(userId);
             return Ok(result);
         }
-
+        
         /// <summary>
         /// Add institutionOfEducation to favorite.
         /// </summary>

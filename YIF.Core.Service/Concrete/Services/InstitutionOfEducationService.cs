@@ -133,8 +133,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsPage(
             FilterApiModel filterModel,
-            PageApiModel pageModel,
-            string userId = null)
+            PageApiModel pageModel)
         {
             var institutionOfEducations = await GetInstitutionOfEducationsByFilter(filterModel);
             var result = new PageResponseApiModel<InstitutionsOfEducationResponseApiModel>();
@@ -151,14 +150,24 @@ namespace YIF.Core.Service.Concrete.Services
                 throw;
             }
 
+            return result;
+        }
+
+        public async Task<PageResponseApiModel<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsPageForUser(
+            FilterApiModel filterModel,
+            PageApiModel pageModel,
+            string userId)
+        {
+            var result = GetInstitutionOfEducationsPage(filterModel, pageModel);
+
             // Set the value to favorites
             var favoriteInstitutionOfEducations = await _institutionOfEducationRepository.GetFavoritesByUserId(userId);
-            foreach (var institutionOfEducation in result.ResponseList)
+            foreach (var institutionOfEducation in result.Result.ResponseList)
             {
                 institutionOfEducation.IsFavorite = favoriteInstitutionOfEducations.Where(fu => fu.Id == institutionOfEducation.Id).Count() > 0;
             }
 
-            return result;
+            return result.Result;
         }
 
         public async Task<IEnumerable<InstitutionOfEducationResponseApiModel>> GetFavoriteInstitutionOfEducations(string userId)
