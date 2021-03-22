@@ -8,6 +8,7 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 
@@ -16,7 +17,8 @@ namespace YIF.Core.Service.Concrete.Services
     public class InstitutionOfEducationService : IInstitutionOfEducationService<InstitutionOfEducation>
     {
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
-        private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionRepository;
+        private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToIoERepository;
+        private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
         private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
         private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
@@ -27,7 +29,8 @@ namespace YIF.Core.Service.Concrete.Services
 
         public InstitutionOfEducationService(
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
-            IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionRepository,
+            IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToIoERepository,
+            IDirectionRepository<Direction, DirectionDTO> directionRepository,
             IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
             IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
@@ -37,6 +40,7 @@ namespace YIF.Core.Service.Concrete.Services
             ResourceManager resourceManager)
         {
             _institutionOfEducationRepository = institutionOfEducationRepository;
+            _directionToIoERepository = directionToIoERepository;
             _directionRepository = directionRepository;
             _graduateRepository = graduateRepository;
             _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
@@ -49,7 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public void Dispose() => _institutionOfEducationRepository.Dispose();
 
-        public async Task<IEnumerable<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsByFilter(FilterApiModel filterModel)
+        public async Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsByFilter(FilterApiModel filterModel)
         {
             // Filtered list of institutionOfEducations 
             var filteredInstitutionOfEducations = await _institutionOfEducationRepository.GetAll();
@@ -68,7 +72,7 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
             {
                 // Get all directions by name
-                var directions = await _directionRepository.Find(x => x.Direction.Name == filterModel.DirectionName);
+                var directions = await _directionToIoERepository.Find(x => x.Direction.Name == filterModel.DirectionName);
                 var institutionOfEducationId = directions.Select(d => d.InstitutionOfEducationId);
 
                 // Get institutionOfEducations by these directions
@@ -107,7 +111,7 @@ namespace YIF.Core.Service.Concrete.Services
                 filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
             }
 
-            return _mapper.Map<IEnumerable<InstitutionOfEducationResponseApiModel>>(filteredInstitutionOfEducations.Distinct().ToList());
+            return _mapper.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(filteredInstitutionOfEducations.Distinct().ToList());
         }
 
         public async Task<InstitutionOfEducationResponseApiModel> GetInstitutionOfEducationById(string institutionOfEducationId, string userId = null)
@@ -120,16 +124,20 @@ namespace YIF.Core.Service.Concrete.Services
             var favoriteInstitutionOfEducations = await _institutionOfEducationRepository.GetFavoritesByUserId(userId);
             institutionOfEducation.IsFavorite = favoriteInstitutionOfEducations.Where(fu => fu.Id == institutionOfEducation.Id).Count() > 0;
 
-            return _mapper.Map<InstitutionOfEducationResponseApiModel>(institutionOfEducation);
+            var response  = _mapper.Map<InstitutionOfEducationResponseApiModel>(institutionOfEducation);
+            var directions = _mapper.Map<IEnumerable<DirectionForIoEResponseApiModel>>(await _directionRepository.GetByIoEId(institutionOfEducationId));
+
+            response.Directions = directions;
+            return response;
         }
 
-        public async Task<PageResponseApiModel<InstitutionOfEducationResponseApiModel>> GetInstitutionOfEducationsPage(
+        public async Task<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsPage(
             FilterApiModel filterModel,
             PageApiModel pageModel,
             string userId = null)
         {
             var institutionOfEducations = await GetInstitutionOfEducationsByFilter(filterModel);
-            var result = new PageResponseApiModel<InstitutionOfEducationResponseApiModel>();
+            var result = new PageResponseApiModel<InstitutionsOfEducationResponseApiModel>();
 
             if (institutionOfEducations == null || institutionOfEducations.Count() == 0)
                 throw new NotFoundException(_resourceManager.GetString("InstitutionOfEducationsNotFound"));
