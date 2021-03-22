@@ -195,17 +195,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         //}
 
         [Fact]
-        public async Task AddInstitutionOfEducation_EndpointsReturnBadRequest_IfModelStateIsNotValid()
-        {
-            // Arrange
-            superAdminController.ModelState.AddModelError("model", "error");
-            // Act
-            var result = await superAdminController.AddInstitutionOfEducationAndAdmin(null);
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
-        }
-        [Fact]
         public async Task GetAllUniAdminUsersAsync_EndpointReturnAllUsers()
         {
             // Arrange

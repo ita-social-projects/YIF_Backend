@@ -14,9 +14,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
     public class SuperAdminControllerTest : TestServerFixture
     {
-        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)
-          : base(fixture)
+        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)          
         {
+            _client = getInstance(fixture);
             _client = fixture.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>

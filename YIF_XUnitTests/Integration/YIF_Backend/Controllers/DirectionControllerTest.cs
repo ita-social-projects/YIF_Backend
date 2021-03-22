@@ -10,7 +10,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class DirectionControllerTest : TestServerFixture
     {
         public DirectionControllerTest(ApiWebApplicationFactory fixture)
-          : base(fixture) { }
+        {
+            _client = getInstance(fixture);
+        }
 
         [Theory]
         [InlineData("/api/Direction/All")]

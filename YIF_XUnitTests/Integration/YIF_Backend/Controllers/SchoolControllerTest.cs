@@ -10,7 +10,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class SchoolControllerTest : TestServerFixture
     {
         public SchoolControllerTest(ApiWebApplicationFactory fixture)
-          : base(fixture) {  }
+        {
+            _client = getInstance(fixture);
+        }
 
 
         [Fact]
