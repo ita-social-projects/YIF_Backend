@@ -107,20 +107,12 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilterForUser(FilterApiModel filterModel, string id)
         {
             var specialties = GetAllSpecialtiesByFilter(filterModel);
-            // Set the value to favorites
-            /*
-            var favoriteInstitutionOfEducations = await _institutionOfEducationRepository.GetFavoritesByUserId(userId);
-            foreach (var institutionOfEducation in result.Result.ResponseList)
-            {
-                institutionOfEducation.IsFavorite = favoriteInstitutionOfEducations.Where(fu => fu.Id == institutionOfEducation.Id).Count() > 0;
-            }
-             */
             var favoriteSpecialties = await _specialtyRepository.GetFavoritesByUserId(id);
             foreach (var specialty in specialties.Result)
             {
                 specialty.IsFavorite = favoriteSpecialties.Where(x => x.Id == specialty.Id).Count() > 0;
             }
-            return new List<SpecialtyResponseApiModel>();
+            return specialties.Result;
         }
 
 
