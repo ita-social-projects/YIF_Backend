@@ -24,7 +24,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get all specialties.
+        /// Get all specialties for anonymous.
         /// </summary>
         /// <returns>List of specialties</returns>
         /// <response code="200">Returns a list of specialties</response>
@@ -57,7 +57,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get all specialties.
+        /// Get all specialties for authorized user with checking favorites.
         /// </summary>
         /// <returns>List of specialties</returns>
         /// <response code="200">Returns a list of specialties</response>
