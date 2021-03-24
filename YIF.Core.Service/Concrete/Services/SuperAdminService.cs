@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -42,6 +43,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ResourceManager _resourceManager;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        private readonly IPaginationService _paginationService;
 
         public SuperAdminService(
             IUserService<DbUser> userService,
@@ -59,7 +61,8 @@ namespace YIF.Core.Service.Concrete.Services
             ITokenRepository<TokenDTO> tokenRepository,
             ResourceManager resourceManager, 
             IWebHostEnvironment env,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IPaginationService paginationService)
         {
             _userService = userService;
             _userRepository = userRepository;
@@ -77,6 +80,7 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
+            _paginationService = paginationService;
         }
 
         ///<inheritdoc/>
@@ -288,12 +292,26 @@ namespace YIF.Core.Service.Concrete.Services
             }
         }
 
-        public async Task<ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>> GetAllInstitutionOfEducationAdmins()
-        {
-            var result = new ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>();
-            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
-            result.Object = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins);
-            return result.Set(true);
+        ///<inheritdoc/>
+        public async Task<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>> GetAllInstitutionOfEducationAdmins(
+            InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel,
+            PageApiModel pageModel)
+        {            
+            var admins = await GetAllInstitutionOfEducationAdminsSorted(institutionOfEducationAdminFilterModel);
+
+            var result = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>();
+            var mappedInstitution = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins);
+
+            try
+            {
+                result = _paginationService.GetPageFromCollection(mappedInstitution, pageModel);
+            }
+            catch
+            {
+                throw;
+            }
+
+            return result;
         }
         public async Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins()
         {
@@ -305,6 +323,55 @@ namespace YIF.Core.Service.Concrete.Services
             }
             result.Object = _mapper.Map<IEnumerable<SchoolAdminResponseApiModel>>(admins);
             return result.Set(true);
+        }
+
+        /// <summary>
+        /// Used only for InstitutionOfEducationAdminDTO
+        /// </summary>
+        /// <param name="institutionOfEducationAdminFilterModel"></param>
+        /// <returns>Ordered list</returns>
+        private async Task<IEnumerable<InstitutionOfEducationAdminDTO>> GetAllInstitutionOfEducationAdminsSorted(
+            InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel)
+        {
+            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
+
+            if (institutionOfEducationAdminFilterModel.UserName.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.User.UserName);
+            }
+            else if(institutionOfEducationAdminFilterModel.UserName != null)
+            {
+                admins = admins.OrderByDescending(x => x.User.UserName);
+            }
+            else
+            if (institutionOfEducationAdminFilterModel.Email.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.User.Email);
+            }
+            else if (institutionOfEducationAdminFilterModel.Email != null)
+            {
+                admins = admins.OrderByDescending(x => x.User.Email);
+            }
+            else
+            if (institutionOfEducationAdminFilterModel.InstitutionOfEducationName.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.InstitutionOfEducation.Name);
+            }
+            else if (institutionOfEducationAdminFilterModel.InstitutionOfEducationName != null)
+            {
+                admins = admins.OrderByDescending(x => x.InstitutionOfEducation.Name);
+            }
+            else
+            if (institutionOfEducationAdminFilterModel.IsBanned.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.IsBanned);
+            }
+            else if (institutionOfEducationAdminFilterModel.IsBanned != null)
+            {
+                admins = admins.OrderByDescending(x => x.IsBanned);
+            }
+
+            return admins.ToList();
         }
     }
 }

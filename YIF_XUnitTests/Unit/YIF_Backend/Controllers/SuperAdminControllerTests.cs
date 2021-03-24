@@ -11,6 +11,7 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF_Backend.Controllers;
+using YIF_XUnitTests.Unit.TestData;
 
 namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 {
@@ -18,18 +19,27 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     {
         private readonly Mock<ISuperAdminService> _superAdminService;
         private readonly Mock<ResourceManager> _resourceManager;
-        private readonly Mock<HttpRequest> _request;
+        private readonly HttpContext _httpContext;
 
         private readonly SuperAdminController superAdminController;
         public SuperAdminControllerTests()
         {
             _superAdminService = new Mock<ISuperAdminService>();
             _resourceManager = new Mock<ResourceManager>();
-            _request = new Mock<HttpRequest>();
+
+            _httpContext = new DefaultHttpContext();
+
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = _httpContext,
+            };
 
             superAdminController = new SuperAdminController(
                 _superAdminService.Object,
-                _resourceManager.Object);
+                _resourceManager.Object)
+            {
+                ControllerContext = controllerContext,
+            };
         }
 
         [Theory]
@@ -170,57 +180,42 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.IsType<DescriptionResponseApiModel>(badRequestResult.Value);
         }
 
-        //[Theory]
-        //[InlineData("UniName", "email@gmailcom", "good uni")]
-        //[InlineData("", "email@gmailcom", "best uni")]
-        //[InlineData("UniName", "", "")]
-        //public async Task AddInstitutionOfEducation_EndpointsReturnSuccessMessage_IfDataСorrect(string name, string email, string description)
-        //{
-        //    // Arrange
-        //    var requestModel = new InstitutionOfEducationPostApiModel
-        //    {
-        //        Name = name,
-        //        AdminEmail = email,
-        //        Description = description
-        //    };
-
-        //    var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(true, "success");
-        //    _superAdminService.Setup(x => x.AddInstitutionOfEducation(requestModel)).Returns(Task.FromResult(responseModel));
-
-        //    // Act
-        //    var result = await superAdminController.AddInstitutionOfEducation(requestModel);
-        //    // Assert
-        //    var responseResult = Assert.IsType<CreatedResult>(result);
-        //    var model = (DescriptionResponseApiModel)responseResult.Value;
-        //}
-
         [Fact]
         public async Task GetAllUniAdminUsersAsync_EndpointReturnAllUsers()
         {
             // Arrange
-            var responseModel = new ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>> { Success = true, 
-                Object = (IEnumerable<InstitutionOfEducationAdminResponseApiModel>)new List<InstitutionOfEducationAdminResponseApiModel>
-            {
-                new InstitutionOfEducationAdminResponseApiModel { Id= "Id" }
-            }
-        };
-            _superAdminService.Setup(x => x.GetAllInstitutionOfEducationAdmins()).Returns(Task.FromResult(responseModel));
+            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>() 
+                { ResponseList = InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels()};
+
+            _superAdminService.Setup(x => x.GetAllInstitutionOfEducationAdmins(It.IsAny<InstitutionOfEducationAdminSortingModel>(), It.IsAny<PageApiModel>()))
+                .Returns(Task.FromResult(responseApiModel));
+
             // Act
-            var result = await superAdminController.GetAllUniUsersAsync();
+            var result = await superAdminController.GetAllInstitutionOfEducationsAdmins(null, null, null, null, 1, 10);
+
             // Assert
             var responseResult = Assert.IsType<OkObjectResult>(result);
-            var model = (IEnumerable<InstitutionOfEducationAdminResponseApiModel>)responseResult.Value;
-            Assert.Equal(responseModel.Object, model);
+            var model = (PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>)responseResult.Value;
+            Assert.Equal(responseApiModel.ResponseList, model.ResponseList);
         }
 
-        [Theory]
-        [InlineData("Адмінів немає")]
-        public async Task GetAllUniAdminUsers_ReturnsNotFoundExeption(string message)
+        [Fact]
+        public async Task GetAllUniAdminUsersAsync_EndpointReturnNothing()
         {
-            var error = new NotFoundException(message);
-            _superAdminService.Setup(x => x.GetAllInstitutionOfEducationAdmins()).Throws(error);
-            var result = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.GetAllUniUsersAsync());
-            Assert.Equal(error.Message, result.Message);
+            // Arrange
+            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>()
+            { ResponseList = new List<InstitutionOfEducationAdminResponseApiModel>() };
+
+            _superAdminService.Setup(x => x.GetAllInstitutionOfEducationAdmins(It.IsAny<InstitutionOfEducationAdminSortingModel>(), It.IsAny<PageApiModel>()))
+                .Returns(Task.FromResult(responseApiModel));
+
+            // Act
+            var result = await superAdminController.GetAllInstitutionOfEducationsAdmins(null, null, null, null, 1, 10);
+
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            var model = (PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>)responseResult.Value;
+            Assert.Empty(model.ResponseList);
         }
 
         [Fact]

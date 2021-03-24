@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
+using System.Web.Http;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -143,19 +144,40 @@ namespace YIF_Backend.Controllers
 
 
         /// <summary>
-        /// Get all UniAdmins.
+        /// Get all admins.
         /// </summary>
-        /// <returns>List of users</returns>
+        /// <returns>List of users and institution to which he belon</returns>
         /// <response code="200">Returns a list of users</response>
         /// <response code="404">If there are no users</response>
-        [HttpGet("GetAllInstitutionOfEducations")]
+        [HttpGet("GetAllInstitutionOfEducationsAdmins")]
         [ProducesResponseType(typeof(IEnumerable<InstitutionOfEducationAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllUniUsersAsync()
+        public async Task<IActionResult> GetAllInstitutionOfEducationsAdmins(
+            bool? UserName = null,
+            bool? Email = null,
+            bool? InstitutionOfEducationName = null,
+            bool? IsBanned = null,
+            int page  = 1,
+            int pageSize = 10)
         {
-            var result = await _superAdminService.GetAllInstitutionOfEducationAdmins();
-            return Ok(result.Object);
+            var sortingModel = new InstitutionOfEducationAdminSortingModel
+            {
+                UserName = UserName,
+                Email = Email,
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                IsBanned = IsBanned
+            };
+
+            var pageModel = new PageApiModel
+            {
+                Page = page,
+                PageSize = pageSize,
+                Url = $"{Request.Scheme}://{Request.Host}{Request.Path}"
+            };
+
+            var result = await _superAdminService.GetAllInstitutionOfEducationAdmins(sortingModel, pageModel);
+            return Ok(result);
         }
 
         /// <summary>
