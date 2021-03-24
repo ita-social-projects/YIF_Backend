@@ -15,6 +15,9 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using System.Security.Principal;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 {
@@ -108,8 +111,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             };
             _institutionOfEducationService.Setup(x => x.GetInstitutionOfEducationsPageForUser(filterModel, pageModel, "1")).Returns(Task.FromResult(_iOEs));
 
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim("id", "1"),
+            }, "mock"));
+
+            var controller = new InstitutionOfEducationController(_institutionOfEducationService.Object);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+
+
             // Act
-            var result = await _testControl.GetInstitutionOfEducationsPageForAnonym(
+            var result = await controller.GetInstitutionOfEducationsPageForAuthorizedUser(
                 filterModel.DirectionName,
                 filterModel.SpecialtyName,
                 filterModel.InstitutionOfEducationName,

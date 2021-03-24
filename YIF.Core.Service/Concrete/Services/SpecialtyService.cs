@@ -106,13 +106,13 @@ namespace YIF.Core.Service.Concrete.Services
         
         public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilterForUser(FilterApiModel filterModel, string id)
         {
-            var specialties = GetAllSpecialtiesByFilter(filterModel);
+            var specialties = await GetAllSpecialtiesByFilter(filterModel);
             var favoriteSpecialties = await _specialtyRepository.GetFavoritesByUserId(id);
-            foreach (var specialty in specialties.Result)
+            foreach (var specialty in specialties)
             {
                 specialty.IsFavorite = favoriteSpecialties.Where(x => x.Id == specialty.Id).Count() > 0;
             }
-            return specialties.Result;
+            return specialties;
         }
 
 

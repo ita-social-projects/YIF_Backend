@@ -158,16 +158,16 @@ namespace YIF.Core.Service.Concrete.Services
             PageApiModel pageModel,
             string userId)
         {
-            var result = GetInstitutionOfEducationsPage(filterModel, pageModel);
+            var result = await GetInstitutionOfEducationsPage(filterModel, pageModel);
 
             // Set the value to favorites
             var favoriteInstitutionOfEducations = await _institutionOfEducationRepository.GetFavoritesByUserId(userId);
-            foreach (var institutionOfEducation in result.Result.ResponseList)
+            foreach (var institutionOfEducation in result.ResponseList)
             {
                 institutionOfEducation.IsFavorite = favoriteInstitutionOfEducations.Where(fu => fu.Id == institutionOfEducation.Id).Count() > 0;
             }
 
-            return result.Result;
+            return result;
         }
 
         public async Task<IEnumerable<InstitutionOfEducationResponseApiModel>> GetFavoriteInstitutionOfEducations(string userId)
