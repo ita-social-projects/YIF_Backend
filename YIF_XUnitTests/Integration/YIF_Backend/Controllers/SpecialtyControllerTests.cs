@@ -18,8 +18,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class SpecialtyControllerTests: TestServerFixture
     {
         private readonly SpecialtyInputAttribute _specialtyInputAttribute;
-        public SpecialtyControllerTests(ApiWebApplicationFactory fixture)
-       : base(fixture)
+        public SpecialtyControllerTests(ApiWebApplicationFactory fixture) : base(fixture)
         {
             _client = fixture.WithWebHostBuilder(builder =>
             {
