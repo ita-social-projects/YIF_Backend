@@ -76,9 +76,38 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpecialty);
             var response = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel { Name = specialty } }.AsEnumerable();
             _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(_listSpecialty)).Returns(response);
-
+            
             // Act
             var result = (await _specialtyService.GetAllSpecialtiesByFilter(request)).ToList();
+
+            // Assert
+            Assert.NotEmpty(result);
+            Assert.Equal(request.SpecialtyName, result[0].Name);
+        }
+
+        [Theory]
+        [InlineData("Specialty", "Direction", "InstitutionOfEducation", "Abbreviation")]
+        [InlineData("Specialty", null, "InstitutionOfEducation", null)]
+        [InlineData(null, "Direction", null, "Abbreviation")]
+        [InlineData(null, null, null, null)]
+        public async Task GetAllSpecialtiesByFilterForUser_ShouldReturnOk(string specialty, string direction, string uniName, string uniAbbr)
+        {
+            // Arrange
+            var request = new FilterApiModel
+            {
+                SpecialtyName = _specialtyDTO.Name = specialty,
+                DirectionName = _specialtyDTO.Direction.Name = direction,
+                InstitutionOfEducationName = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Name = uniName,
+                InstitutionOfEducationAbbreviation = _specialtyToInstitutionOfEducationDTO.InstitutionOfEducation.Abbreviation = uniAbbr
+            };
+
+            _specialtyRepository.Setup(x => x.GetAll()).ReturnsAsync(_listSpecialty);
+            var response = new List<SpecialtyResponseApiModel>() { new SpecialtyResponseApiModel { Name = specialty } }.AsEnumerable();
+            _mapper.Setup(s => s.Map<IEnumerable<SpecialtyResponseApiModel>>(_listSpecialty)).Returns(response);
+            _specialtyRepository.Setup(x => x.GetFavoritesByUserId(It.IsAny<string>())).ReturnsAsync(_listSpecialty);
+            
+            // Act
+            var result = (await _specialtyService.GetAllSpecialtiesByFilterForUser(request, "1")).ToList();
 
             // Assert
             Assert.NotEmpty(result);

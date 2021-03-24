@@ -37,7 +37,22 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GetAll_EndpointsReturnSuccessAndCorrectContentType()
         {
             // Act            
-            var response = await _client.GetAsync("/api/Specialty/All");
+            var response = await _client.GetAsync("/api/Specialty/Anonymous");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Fact]
+        public async Task GetAllAuthorized_EndpointsReturnSuccessAndCorrectContentType()
+        {
+            // Arrange
+            _specialtyInputAttribute.SetUserIdByGraduateUserIdForHttpContext();
+
+            // Act            
+            var response = await _client.GetAsync("/api/Specialty/Authorized");
 
             // Assert
             response.EnsureSuccessStatusCode();
