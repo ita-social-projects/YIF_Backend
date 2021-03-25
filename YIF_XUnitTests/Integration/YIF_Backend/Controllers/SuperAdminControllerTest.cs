@@ -1,12 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization.Policy;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
@@ -14,9 +21,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
     public class SuperAdminControllerTest : TestServerFixture
     {
-        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)
-          : base(fixture)
+        private readonly IMapper _mapper;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)          
         {
+            _client = getInstance(fixture);
             _client = fixture.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -24,6 +33,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                     services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
                 });
             }).CreateClient();
+
+            _mapper = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IMapper>();
+            _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
         }
 
         [Fact]
@@ -156,16 +168,36 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task GetAllInstitutionOfEducations()
+        public async Task GetAllInstitutionOfEducationsAdmins()
         {
             // Arrange
-            var request = "/api/SuperAdmin/GetAllInstitutionOfEducations";
+            var request = "/api/SuperAdmin/GetAllInstitutionOfEducationsAdmins";
 
             // Act
             var response = await _client.GetAsync(request);
 
             // Assert
             response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetAllInstitutionOfEducationsAdmins_withAllParams()
+        {
+            // Arrange
+            var compareDTO = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
+            compareDTO = compareDTO.OrderBy(x=> x.User.UserName).Take(2).ToList();
+            var compare = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(compareDTO);
+
+            // Act
+            var response = await _client.GetAsync("/api/SuperAdmin/GetAllInstitutionOfEducationsAdmins?UserName=true&Email=true&InstitutionOfEducationName=true&IsBanned=true&page=1&pageSize=2");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+
+            var stringResponse = await response.Content.ReadAsStringAsync();
+            var models = JsonConvert.DeserializeObject<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>>(stringResponse);
+
+            Assert.Equal(compare.FirstOrDefault().Id, models.ResponseList.FirstOrDefault().Id);
         }
 
         [Fact]

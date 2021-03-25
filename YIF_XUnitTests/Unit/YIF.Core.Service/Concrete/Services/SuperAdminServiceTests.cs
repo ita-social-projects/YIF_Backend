@@ -14,13 +14,16 @@ using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.EntityForResponse;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF_XUnitTests.Unit.TestData;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -44,6 +47,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly SuperAdminService superAdminService;
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<IPaginationService> _paginationService;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
         private readonly InstitutionOfEducationAdmin uniAdmin = new InstitutionOfEducationAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", InstitutionOfEducationId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
@@ -83,6 +87,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _resourceManager = new Mock<ResourceManager>();
             _env = new Mock<IWebHostEnvironment>();
             _configuration = new Mock<IConfiguration>();
+            _paginationService = new Mock<IPaginationService>();
 
             superAdminService = new SuperAdminService(
                                                     _userService.Object,
@@ -100,7 +105,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _tokenRepository.Object,
                                                     _resourceManager.Object,
                                                     _env.Object,
-                                                    _configuration.Object);
+                                                    _configuration.Object,
+                                                    _paginationService.Object);
 
             _dbContextMock.Setup(p => p.InstitutionOfEducationAdmins).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducationAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));
@@ -124,36 +130,52 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[0].Id,  },
                 new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[1].Id,  }
             };
-
         }
-        [Fact]
-        public async Task GetAllUniAdmins_ShouldReturnAllAdmins_IfThereAreMoreThanOneAdmin()
-        {
-            //Arrange
-            _institutionOfEducationAdminRepository.Setup(x => x.GetAllUniAdmins()).Returns(Task.FromResult(_institutionOfEducationAdminsDTO.AsEnumerable()));
-            _mapperMock.Setup(s => s.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(_institutionOfEducationAdminsDTO)).Returns(_listViewModel);
 
-            // Act
-            var result = await superAdminService.GetAllInstitutionOfEducationAdmins();
-            var users = result.Object.ToList();
-
-            //Assert
-            Assert.True(result.Success);
-            Assert.Equal(users[0].Id, _listViewModel[0].Id);
-            Assert.Equal(users[1].Id, _listViewModel[1].Id);
-        }
         [Fact]
         public async Task GetAllUniAdmins_ShouldReturnEmpty_IfThereAreNoAdmins()
         {
-            // Arrange
-            _institutionOfEducationAdminRepository.Setup(s => s.GetAllUniAdmins()).Returns(Task.FromResult(new List<InstitutionOfEducationAdminDTO>().AsEnumerable()));
+            //Arrange
+            var sortingModel = InstitutionOfEducationAdminTestData.GetEmptyInstitutionOfEducationAdminSortingModel();
+            var page = new PageApiModel();
+            IEnumerable<InstitutionOfEducationAdminDTO> admins = new List<InstitutionOfEducationAdminDTO>();
+            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>() { ResponseList = new List<InstitutionOfEducationAdminResponseApiModel>() };
+
+            _institutionOfEducationAdminRepository.Setup(s => s.GetAllUniAdmins()).Returns(Task.FromResult(admins));
+            _mapperMock.Setup(s => s.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins)).Returns(InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels());
+            _paginationService
+                .Setup(ps => ps.GetPageFromCollection(It.IsAny<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(), It.IsAny<PageApiModel>()))
+                .Returns(responseApiModel);
 
             // Act
-            var result = await superAdminService.GetAllInstitutionOfEducationAdmins();
-            var users = result.Object.ToList();
-            //Assert
-            Assert.True(result.Success);
-            Assert.Empty(users);
+            var result = await superAdminService.GetAllInstitutionOfEducationAdmins(sortingModel, page);
+
+            //Assert            
+            Assert.Empty(result.ResponseList);
+        }
+
+        [Fact]
+        public async Task GetAllUniAdmins_ShouldReturnAllAdmins_IfThereAreMoreThanOneAdmin()
+        {            
+            // Arrange
+            var sortingModel = InstitutionOfEducationAdminTestData.GetEmptyInstitutionOfEducationAdminSortingModel();
+            var page = new PageApiModel();
+            var admins = InstitutionOfEducationAdminTestData.GetIEnumerableInstitutionOfEducationAdminDTO();
+            var institutionAdminResponseApiModels = InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels();
+            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>() { ResponseList = institutionAdminResponseApiModels };
+
+            _institutionOfEducationAdminRepository.Setup(s => s.GetAllUniAdmins()).Returns(Task.FromResult(admins));
+            _mapperMock.Setup(s => s.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins)).Returns(institutionAdminResponseApiModels);
+            _paginationService
+                .Setup(ps => ps.GetPageFromCollection(It.IsAny<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(), It.IsAny<PageApiModel>()))
+                .Returns(responseApiModel);
+
+            // Act
+            var result = await superAdminService.GetAllInstitutionOfEducationAdmins(sortingModel, page);
+
+            //Assert            
+            Assert.IsType<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>>(result);
+            Assert.NotEmpty(result.ResponseList);
         }
 
         [Theory]
@@ -222,6 +244,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             Assert.Equal("User IsDeleted was updated", a.Object.Message);
         }
+
         [Fact]
         public async Task DeleteAdmin_NoAdminfound()
         {
@@ -235,6 +258,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id));
         }
+
         [Fact]
         public async Task DisableAdmin_ReturnsSuccessDisableMessage()
         {
@@ -256,6 +280,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             Assert.Equal("Admin IsBanned was set to true", a.Object.Message);
         }
+
         [Fact]
         public async Task DisableAdmin_ReturnsSuccessEnableMessage()
         {
@@ -278,6 +303,5 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             Assert.Equal("Admin IsBanned was set to false", a.Object.Message);
         }
-
     }
 }
