@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
+using System.Web.Http;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -28,13 +29,12 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds InstitutionOfEducation Admin and Moderator.
+        /// Adds Institution Of Education Admin.
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
         /// <response code="201">Returns object with tokens</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="404">If institutionOfEducation not found</response>
-        /// <response code="409">If email or password incorrect</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -43,10 +43,8 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddInstitutionOfEducationAdmin")]
         public async Task<IActionResult> AddInstitutionOfEducationAdmin([FromBody] InstitutionOfEducationAdminApiModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _superAdminService.AddInstitutionOfEducationAdmin(model);
-            return Created(string.Empty, result.Object);
+            var result = await _superAdminService.AddInstitutionOfEducationAdmin(model.InstitutionOfEducationId, model.AdminEmail, Request);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -135,9 +133,6 @@ namespace YIF_Backend.Controllers
         [HttpPost("AddInstitutionOfEducationAndAdmin")]
         public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationPostApiModel model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-
             ImageBase64Validator validator = new ImageBase64Validator();
             var validResults = validator.Validate(model.ImageApiModel);
 
@@ -149,19 +144,40 @@ namespace YIF_Backend.Controllers
 
 
         /// <summary>
-        /// Get all UniAdmins.
+        /// Get all admins.
         /// </summary>
-        /// <returns>List of users</returns>
+        /// <returns>List of users and institution to which he belon</returns>
         /// <response code="200">Returns a list of users</response>
         /// <response code="404">If there are no users</response>
-        [HttpGet("GetAllInstitutionOfEducations")]
+        [HttpGet("GetAllInstitutionOfEducationsAdmins")]
         [ProducesResponseType(typeof(IEnumerable<InstitutionOfEducationAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllUniUsersAsync()
+        public async Task<IActionResult> GetAllInstitutionOfEducationsAdmins(
+            bool? UserName = null,
+            bool? Email = null,
+            bool? InstitutionOfEducationName = null,
+            bool? IsBanned = null,
+            int page  = 1,
+            int pageSize = 10)
         {
-            var result = await _superAdminService.GetAllInstitutionOfEducationAdmins();
-            return Ok(result.Object);
+            var sortingModel = new InstitutionOfEducationAdminSortingModel
+            {
+                UserName = UserName,
+                Email = Email,
+                InstitutionOfEducationName = InstitutionOfEducationName,
+                IsBanned = IsBanned
+            };
+
+            var pageModel = new PageApiModel
+            {
+                Page = page,
+                PageSize = pageSize,
+                Url = $"{Request.Scheme}://{Request.Host}{Request.Path}"
+            };
+
+            var result = await _superAdminService.GetAllInstitutionOfEducationAdmins(sortingModel, pageModel);
+            return Ok(result);
         }
 
         /// <summary>

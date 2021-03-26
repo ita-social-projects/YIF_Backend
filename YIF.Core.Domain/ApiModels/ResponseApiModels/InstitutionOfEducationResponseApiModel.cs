@@ -45,7 +45,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         public string Phone { get; set; }
 
         /// <summary>
-        /// Email of institutionOfEducation
+        /// AdminEmail of institutionOfEducation
         /// </summary>
         /// <example>mail@nuwm.edu.ua</example>
         public string Email { get; set; }

@@ -6,8 +6,10 @@ using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -41,6 +43,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ResourceManager _resourceManager;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        private readonly IPaginationService _paginationService;
 
         public SuperAdminService(
             IUserService<DbUser> userService,
@@ -58,7 +61,8 @@ namespace YIF.Core.Service.Concrete.Services
             ITokenRepository<TokenDTO> tokenRepository,
             ResourceManager resourceManager, 
             IWebHostEnvironment env,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IPaginationService paginationService)
         {
             _userService = userService;
             _userRepository = userRepository;
@@ -76,76 +80,65 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
+            _paginationService = paginationService;
         }
-        public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddInstitutionOfEducationAdmin(InstitutionOfEducationAdminApiModel institutionOfEducationAdminModel)
+
+        ///<inheritdoc/>
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAdmin(
+            [NotNull] string InstitutionOfEducationId,
+            [NotNull] string AdminEmail,
+            [NotNull] HttpRequest request)
         {
-            var result = new ResponseApiModel<AuthenticateResponseApiModel>();
-
-            //take uni
-            var institutionOfEducations = await _institutionOfEducationRepository.Find(x => x.Name == institutionOfEducationAdminModel.InstitutionOfEducationName);
-            if (institutionOfEducations.Count() == 0)
-            {
-                throw new NotFoundException($"{_resourceManager.GetString("InstitutionOfEducationWithSuchNameNotFound")}: {institutionOfEducationAdminModel.InstitutionOfEducationName}");
-            }
-            var institutionOfEducation = institutionOfEducations.First();
-            var adminCheck = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(institutionOfEducation.Id);
-            if (adminCheck != null)
-            {
-                throw new InvalidOperationException(_resourceManager.GetString("AdministratorOfThisSchoolAlreadyExists"));
-            }
-
-            var searchUser = _userManager.FindByEmailAsync(institutionOfEducationAdminModel.Email);
-            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
-            {
-                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
-            }
-
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var dbUser = new DbUser
             {
-                Email = institutionOfEducationAdminModel.Email,
-                UserName = institutionOfEducationAdminModel.Email
+                Email = AdminEmail,
+                UserName = AdminEmail
             };
 
-            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationAdmin);
-            if (registerResult != string.Empty)
-            {                
-                throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+            #region Check
+            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(InstitutionOfEducationId);
+            if(!institutionOfEducation)
+            {
+                throw new NotFoundException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
             }
 
-            await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin { InstitutionOfEducationId = institutionOfEducation.Id });
-            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(institutionOfEducation.Id);
-
-            InstitutionOfEducationModerator toAdd = new InstitutionOfEducationModerator
+            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(InstitutionOfEducationId);
+            if (admin != null)
             {
-                //InstitutionOfEducationId = institutionOfEducation.Id,
-                UserId = dbUser.Id,
-                AdminId = admin.Id
-            };
-            await _institutionOfEducationModeratorRepository.AddUniModerator(toAdd);
+                throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailed"));
+            }
+            #endregion
 
-            return null;
-            ////to do change logic and response model
+            var searchUser = _userManager.FindByEmailAsync(AdminEmail);
+            if (searchUser.Result == null)
+            {
+                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationAdmin);
+                if (registerResult != string.Empty)
+                {
+                    throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+                }
 
+                var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(AdminEmail, request);
+                if (!resultResetPasswordByEmail.Success)
+                {
+                    throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+                }
+            }
+            else 
+            {
+                var ifUserAlreadyAdmin = (await _institutionOfEducationAdminRepository.GetAllUniAdmins()).SingleOrDefault(x => x.UserId == searchUser.Result.Id);
+                if (ifUserAlreadyAdmin != null)
+                {
+                    throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailedUserAlreadyAdmin"));
+                }
+                
+                dbUser = searchUser.Result;
+            }
 
-            //var token = _jwtService.CreateToken(_jwtService.SetClaims(dbUser));
-            //var refreshToken = _jwtService.CreateRefreshToken();
+            await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin { InstitutionOfEducationId = InstitutionOfEducationId, UserId = dbUser.Id });
 
-            //var tokenDb = await _tokenRepository.FindUserToken(dbUser.Id);
-            //if (tokenDb == null)
-            //{
-            //    tokenDb = new TokenDTO
-            //    {
-            //        Id = dbUser.Id,
-            //        RefreshToken = refreshToken,
-            //        RefreshTokenExpiryTime = DateTime.Now.AddDays(7)
-            //    };
-            //    await _tokenRepository.AddUserToken(tokenDb);
-            //}
-            //else await _tokenRepository.UpdateUserToken(dbUser.Id, refreshToken);
-
-            //await _signInManager.SignInAsync(dbUser, isPersistent: false);
-
-            //return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminAdded")), true);
         }
 
         public async Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel)
@@ -262,7 +255,9 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(ch), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel, HttpRequest request)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(
+            InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel, 
+            HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
@@ -270,12 +265,6 @@ namespace YIF.Core.Service.Concrete.Services
             if (ch != null)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationWithSuchNameAlreadyExists"));
-            }
-
-            var searchUser = _userManager.FindByEmailAsync(institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail);
-            if (searchUser.Result != null && searchUser.Result.IsDeleted == false)
-            {
-                throw new InvalidOperationException(_resourceManager.GetString("UserAlreadyExists"));
             }
 
             #region imageSaving
@@ -291,41 +280,38 @@ namespace YIF.Core.Service.Concrete.Services
 
             var institutionOfEducation = await _institutionOfEducationRepository.AddInstitutionOfEducation(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTO));
 
-            var dbUser = new DbUser
-            {
-                Email = institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail,
-                UserName = institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail
-            };
+            var addingAdmin = await AddInstitutionOfEducationAdmin(institutionOfEducation.Id, institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail, request);
 
-            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationAdmin);
-            if (registerResult != string.Empty)
+            if (addingAdmin.Success)
             {
-                throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InstitutionOfEducationAndAdminAdded")), true);
             }
-
-            await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin { InstitutionOfEducationId = institutionOfEducation.Id, UserId = dbUser.Id });
-
-            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationIdWithoutIsDeletedCheck(institutionOfEducation.Id);
-            if (admin == null)
+            else
             {
-                throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailed"));
+                return result.Set(addingAdmin.Object, true);
             }
-
-            //To check
-            var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail, request);
-            if (!resultResetPasswordByEmail.Success)
-            {
-                throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
-            }
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InstitutionOfEducationAndAdminAdded")), true);
         }
 
-        public async Task<ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>> GetAllInstitutionOfEducationAdmins()
-        {
-            var result = new ResponseApiModel<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>();
-            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
-            result.Object = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins);
-            return result.Set(true);
+        ///<inheritdoc/>
+        public async Task<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>> GetAllInstitutionOfEducationAdmins(
+            InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel,
+            PageApiModel pageModel)
+        {            
+            var admins = await GetAllInstitutionOfEducationAdminsSorted(institutionOfEducationAdminFilterModel);
+
+            var result = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>();
+            var mappedInstitution = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(admins);
+
+            try
+            {
+                result = _paginationService.GetPageFromCollection(mappedInstitution, pageModel);
+            }
+            catch
+            {
+                throw;
+            }
+
+            return result;
         }
         public async Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins()
         {
@@ -337,6 +323,55 @@ namespace YIF.Core.Service.Concrete.Services
             }
             result.Object = _mapper.Map<IEnumerable<SchoolAdminResponseApiModel>>(admins);
             return result.Set(true);
+        }
+
+        /// <summary>
+        /// Used only for InstitutionOfEducationAdminDTO
+        /// </summary>
+        /// <param name="institutionOfEducationAdminFilterModel"></param>
+        /// <returns>Ordered list</returns>
+        private async Task<IEnumerable<InstitutionOfEducationAdminDTO>> GetAllInstitutionOfEducationAdminsSorted(
+            InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel)
+        {
+            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
+
+            if (institutionOfEducationAdminFilterModel.UserName.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.User.UserName);
+            }
+            else if(institutionOfEducationAdminFilterModel.UserName != null)
+            {
+                admins = admins.OrderByDescending(x => x.User.UserName);
+            }
+            else
+            if (institutionOfEducationAdminFilterModel.Email.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.User.Email);
+            }
+            else if (institutionOfEducationAdminFilterModel.Email != null)
+            {
+                admins = admins.OrderByDescending(x => x.User.Email);
+            }
+            else
+            if (institutionOfEducationAdminFilterModel.InstitutionOfEducationName.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.InstitutionOfEducation.Name);
+            }
+            else if (institutionOfEducationAdminFilterModel.InstitutionOfEducationName != null)
+            {
+                admins = admins.OrderByDescending(x => x.InstitutionOfEducation.Name);
+            }
+            else
+            if (institutionOfEducationAdminFilterModel.IsBanned.GetValueOrDefault())
+            {
+                admins = admins.OrderBy(x => x.IsBanned);
+            }
+            else if (institutionOfEducationAdminFilterModel.IsBanned != null)
+            {
+                admins = admins.OrderByDescending(x => x.IsBanned);
+            }
+
+            return admins.ToList();
         }
     }
 }

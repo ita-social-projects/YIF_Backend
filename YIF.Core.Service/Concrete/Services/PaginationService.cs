@@ -31,13 +31,6 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(_resourceManager.GetString("IncorrectPageSize"));
 
             var itemsOnPage = list
-                .OrderBy(x =>
-                {
-                    var test = x.GetType().GetProperty("Id").GetValue(x).ToString();
-                    if (test != null)
-                        return test;
-                    return x.GetHashCode().ToString();
-                })
                 .Skip((pageModel.Page - 1) * pageModel.PageSize)
                 .Take(pageModel.PageSize);
 

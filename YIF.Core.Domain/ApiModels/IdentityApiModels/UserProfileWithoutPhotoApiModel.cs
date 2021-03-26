@@ -47,7 +47,7 @@ namespace YIF.Core.Domain.ApiModels.IdentityApiModels
         /// <summary>
         /// Get or set the school name to which this user belongs.
         /// </summary>        
-        [Required]
+        [StringLength(255)]
         public string SchoolName { get; set; }
     }
 }
