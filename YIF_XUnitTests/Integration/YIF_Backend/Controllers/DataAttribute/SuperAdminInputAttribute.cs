@@ -15,12 +15,12 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
-        public static InstitutionOfEducationPostApiModel GetCorrectData
+        public static InstitutionOfEducationCreatePostApiModel GetCorrectData
         {
             get
             {
                 var name = RandomString(10);
-                return new InstitutionOfEducationPostApiModel
+                return new InstitutionOfEducationCreatePostApiModel
                 {
                     Name = name,
                     Abbreviation = "string",
