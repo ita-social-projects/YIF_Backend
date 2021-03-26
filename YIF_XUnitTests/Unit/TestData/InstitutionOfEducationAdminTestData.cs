@@ -29,8 +29,10 @@ namespace YIF_XUnitTests.Unit.TestData
                 {
                     Id = "1",
                     IsBanned = false,
+                    UserId = "1",
                     User = new UserDTO()
                     {
+                        Id = "1",
                         UserName = "UserName1",
                         Email = "Email1"
                     },
@@ -43,8 +45,10 @@ namespace YIF_XUnitTests.Unit.TestData
                 {
                     Id = "2",
                     IsBanned = false,
+                    UserId = "2",
                     User = new UserDTO()
                     {
+                        Id = "2",
                         UserName = "UserName2",
                         Email = "Email2"
                     },
@@ -57,8 +61,10 @@ namespace YIF_XUnitTests.Unit.TestData
                 {
                     Id = "3",
                     IsBanned = false,
+                    UserId = "3",
                     User = new UserDTO()
                     {
+                        Id = "3",
                         UserName = "UserName3",
                         Email = "Email3"
                     },

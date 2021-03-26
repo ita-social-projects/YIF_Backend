@@ -42,9 +42,10 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var adminEntity = (await _institutionOfEducationAdminRepository.GetAllUniAdmins()).SingleOrDefault(x => x.UserId == userId);
+            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
+            var admin = admins.SingleOrDefault(x => x.UserId == userId);
 
-            if (adminEntity == null)
+            if (admin == null)
             {                
                 return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminWithSuchIdNotFound")), false);
             }
@@ -63,7 +64,7 @@ namespace YIF.Core.Service.Concrete.Services
             }
             #endregion
 
-            institutionOfEducationDTONew.Id = adminEntity.InstitutionOfEducationId;
+            institutionOfEducationDTONew.Id = admin.InstitutionOfEducationId;
 
             await _institutionOfEducationRepository.Update(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTONew));
 
