@@ -131,7 +131,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
         [HttpPost("AddInstitutionOfEducationAndAdmin")]
-        public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationPostApiModel model)
+        public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationCreatePostApiModel model)
         {
             ImageBase64Validator validator = new ImageBase64Validator();
             var validResults = validator.Validate(model.ImageApiModel);

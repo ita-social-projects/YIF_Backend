@@ -256,7 +256,7 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(
-            InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel, 
+            InstitutionOfEducationCreatePostApiModel institutionOfEducationPostApiModel, 
             HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();

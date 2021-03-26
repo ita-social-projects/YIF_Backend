@@ -77,6 +77,7 @@ namespace YIF_Backend
             services.AddTransient<ISpecialtyService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
+            services.AddTransient<IInstitutionAdminService, InstitutionAdminService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>, InstitutionOfEducationModeratorRepository>();
             services.AddTransient<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>, InstitutionOfEducationAdminRepository>();
