@@ -15,7 +15,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class InstitutionOfEducationControllerTests : TestServerFixture
     {
         private readonly InstitutionOfEducationInputAttribute _institutionOfEducationInputAttribute;
-        public InstitutionOfEducationControllerTests(ApiWebApplicationFactory fixture) : base (fixture)
+        public InstitutionOfEducationControllerTests(ApiWebApplicationFactory fixture)
         {
             _client = fixture.WithWebHostBuilder(builder =>
             {
