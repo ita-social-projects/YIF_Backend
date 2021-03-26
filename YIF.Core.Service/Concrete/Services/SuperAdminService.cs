@@ -267,6 +267,12 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationWithSuchNameAlreadyExists"));
             }
 
+            var ifUserAlreadyAdmin = (await _institutionOfEducationAdminRepository.GetAllUniAdmins()).SingleOrDefault(x => x.User.Email == institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail);
+            if (ifUserAlreadyAdmin != null)
+            {
+                throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailedUserAlreadyAdmin"));
+            }
+
             #region imageSaving
             var serverPath = _env.ContentRootPath;
             var folerName = _configuration.GetValue<string>("ImagesPath");

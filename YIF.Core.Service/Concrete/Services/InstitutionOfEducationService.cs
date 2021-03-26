@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +28,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
         private readonly ResourceManager _resourceManager;
+        private readonly IConfiguration _configuration;
 
         public InstitutionOfEducationService(
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
@@ -37,7 +40,8 @@ namespace YIF.Core.Service.Concrete.Services
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
-            ResourceManager resourceManager)
+            ResourceManager resourceManager,
+            IConfiguration configuration)
         {
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _directionToIoERepository = directionToIoERepository;
@@ -49,6 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
+            _configuration = configuration;
         }
 
         public void Dispose() => _institutionOfEducationRepository.Dispose();
@@ -114,7 +119,7 @@ namespace YIF.Core.Service.Concrete.Services
             return _mapper.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(filteredInstitutionOfEducations.Distinct().ToList());
         }
 
-        public async Task<InstitutionOfEducationResponseApiModel> GetInstitutionOfEducationById(string institutionOfEducationId, string userId = null)
+        public async Task<InstitutionOfEducationResponseApiModel> GetInstitutionOfEducationById(string institutionOfEducationId, HttpRequest request, string userId = null)
         {
             var institutionOfEducation = await _institutionOfEducationRepository.Get(institutionOfEducationId);
 
@@ -126,6 +131,9 @@ namespace YIF.Core.Service.Concrete.Services
 
             var response  = _mapper.Map<InstitutionOfEducationResponseApiModel>(institutionOfEducation);
             var directions = _mapper.Map<IEnumerable<DirectionForIoEResponseApiModel>>(await _directionRepository.GetByIoEId(institutionOfEducationId));
+
+            string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
+            response.ImagePath = response.ImagePath != null ? pathPhoto + response.ImagePath : null;
 
             response.Directions = directions;
             return response;
