@@ -34,7 +34,7 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetInstitutionOfEducationById(string id)
         {
             var userId = User.FindFirst("id")?.Value;
-            var result = await _institutionOfEducationService.GetInstitutionOfEducationById(id, userId);
+            var result = await _institutionOfEducationService.GetInstitutionOfEducationById(id, Request, userId);
             return Ok(result);
         }
 
