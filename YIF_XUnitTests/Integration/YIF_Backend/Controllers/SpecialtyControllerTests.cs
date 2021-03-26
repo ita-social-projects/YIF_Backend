@@ -21,7 +21,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public SpecialtyControllerTests(ApiWebApplicationFactory fixture)
         {
             _client = getInstance(fixture);
-
             _client = fixture.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>

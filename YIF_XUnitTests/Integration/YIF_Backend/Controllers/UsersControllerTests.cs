@@ -18,7 +18,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class UsersControllerTests : TestServerFixture
     {
         private static string _correctUserId;
-        public UsersControllerTests(ApiWebApplicationFactory fixture) : base(fixture)
+        public UsersControllerTests(ApiWebApplicationFactory fixture)
         {
             _client = fixture.WithWebHostBuilder(builder =>
             {
@@ -28,6 +28,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 });
             }).CreateClient();
 
+            _client = getInstance(fixture);
             _correctUserId = _context.Users.First().Id;
         }
 
