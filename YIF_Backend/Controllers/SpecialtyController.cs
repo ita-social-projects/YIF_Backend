@@ -199,5 +199,25 @@ namespace YIF_Backend.Controllers
             await _specialtyService.DeleteSpecialtyFromFavorite(specialtyId, userId);
             return NoContent();
         }
+
+        /// <summary>
+        /// Temporary delete specialty from institution of education.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if the specialty has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not institution of education admin or moderator.</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("InstitutionOfEducation/{specialtyId}")]
+        [Authorize(Roles = "InstitutionOfEducationAdmin,InstitutionOfEducationModerator")]
+        public async Task<IActionResult> DeleteSpecialtyFromInstitutionOfEducation(string specialtyId, string institutionOfEducationId)
+        {
+            await _specialtyService.DeleteSpecialtyFromInstitutionOfEducation(specialtyId, institutionOfEducationId);
+            return NoContent();
+        }
     }
 }

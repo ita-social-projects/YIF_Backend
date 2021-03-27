@@ -195,5 +195,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert
             Assert.IsType<NoContentResult>(result);
         }
+
+        [Fact]
+        public async Task DeleteSpecialtyFromInstitutionOfEducation_EndpointReturnsNoContentResult()
+        {
+            // Arrange
+            _mockContext.SetupGet(hc => hc.User).Returns(_principal);
+            _specialtyService.Setup(x => x.DeleteSpecialtyFromInstitutionOfEducation(It.IsAny<string>(), It.IsAny<string>()));
+
+            // Act
+            var result = await _testControl.DeleteSpecialtyFromInstitutionOfEducation(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+        }
     }
 }

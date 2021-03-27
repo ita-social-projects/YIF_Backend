@@ -255,5 +255,28 @@ namespace YIF.Core.Service.Concrete.Services
                 GraduateId = graduate.Id
             });
         }
+
+        public async Task DeleteSpecialtyFromInstitutionOfEducation(string specialtyId, string institutionOfEducationId)
+        {
+            var specialty = await _specialtyRepository.Get(specialtyId);
+            var institutionOfEducation = await _institutionOfEducationRepository.Get(institutionOfEducationId);
+            var specialtyToIoE = await _specialtyToInstitutionOfEducationRepository.Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == institutionOfEducationId);
+
+            if (institutionOfEducation == null)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (specialtyToIoE == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            await _specialtyToInstitutionOfEducationRepository.Update(new SpecialtyToInstitutionOfEducation
+            {
+                SpecialtyId = specialty.Id,
+                InstitutionOfEducationId = institutionOfEducation.Id,
+                IsDeleted = true
+            }); ;
+        }
     }
 }

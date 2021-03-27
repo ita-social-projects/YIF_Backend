@@ -17,5 +17,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId);
         Task AddSpecialtyToFavorite(string specialtyId, string userId);
         Task DeleteSpecialtyFromFavorite(string specialtyId, string userId);
+        Task DeleteSpecialtyFromInstitutionOfEducation(string specialtyId, string institutionOfEducationId);
     }
 }

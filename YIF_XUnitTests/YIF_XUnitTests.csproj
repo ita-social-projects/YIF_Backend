@@ -41,6 +41,7 @@
     <Folder Include="Integration\YIF.Core.Service\Mapping\" />
     <Folder Include="Unit\YIF.Core.Data\" />
     <Folder Include="Unit\YIF.Core.Service\Mapping\" />
+    <Folder Include="Unit\YIF_Backend\Controllers\Новая папка\" />
   </ItemGroup>
 
   <Import Project="..\YIF.Shared\YIF.Shared.projitems" Label="Shared" />

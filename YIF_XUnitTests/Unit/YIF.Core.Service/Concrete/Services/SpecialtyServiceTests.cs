@@ -802,6 +802,129 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
+        [Fact]
+        public async Task DeleteSpecialtyFromInstitutionOfEducation_ShouldDeleteSpecialtyFromInstitutionOfEducation_IfEverythingOk()
+        {
+            // Arrange  
+            var specialty = GetSpecialties().ToList()[0];
+            var institutionOfEducation = new InstitutionOfEducationDTO { Id = "IoEId" };
+            var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO> 
+            { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = institutionOfEducation.Id, SpecialtyId = specialty.Id } };
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => _specialtyService.DeleteSpecialtyFromInstitutionOfEducation(specialty.Id, It.IsAny<string>()));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
+        {
+            // Arrange  
+            var specialty = GetSpecialties().ToList()[0];
+            // InstitutionNotFound
+            InstitutionOfEducationDTO institutionOfEducation = null;
+            var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
+            { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = specialty.Id } };
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromInstitutionOfEducation(specialty.Id, It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyNotFound()
+        {
+            // Arrange  
+            //Specialty not found
+            SpecialtyDTO specialty = null;
+
+            var institutionOfEducation = new InstitutionOfEducationDTO { Id = "IoEId" };
+            var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
+            { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = institutionOfEducation.Id, SpecialtyId = "1" } };
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromInstitutionOfEducation(specialty.Id, It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+        [Fact]
+        public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyInInstitutionOfEducationNotFound()
+        {
+            // Arrange  
+            var specialty = GetSpecialties().ToList()[0];
+            var institutionOfEducation = new InstitutionOfEducationDTO { Id = "IoEId" };
+            //SpecialtyToInstitutionOfEducation not found
+            List<SpecialtyToInstitutionOfEducationDTO> specialtyToIoe = null;
+
+            _specialtyRepository.
+                Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.Get(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToInstitutionOfEducationRepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromInstitutionOfEducation(specialty.Id, It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
         private SpecialtyToInstitutionOfEducationToGraduate GetFavoriteSpecialtyAndInstitutionOfEducations()
         {
             return new SpecialtyToInstitutionOfEducationToGraduate

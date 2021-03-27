@@ -175,5 +175,22 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             response.EnsureSuccessStatusCode();
         }
 
+        [Fact]
+        public async Task DeleteSpecialtyFromInstitutionOfEducation_EndpointReturnNoContent()
+        {
+            //Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().FirstOrDefault();
+            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.Id == institutionOfEducation.Id).FirstOrDefault();
+
+            var model = institutionOfEducation.Id;
+
+            //Act
+            var response = await _client.PatchAsync(
+                $"/api/Specialty/InstitutionOfEducation/{specialty.Id}&institutionOfEducationId={institutionOfEducation.Id}", ContentHelper.GetStringContent(model));
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }

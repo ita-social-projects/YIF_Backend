@@ -6,6 +6,7 @@
         public string SpecialityId { get; set; }
         public string InstitutionOfEducationId { get; set; }
         public string SpecialtyToIoEDescriptionId { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual SpecialtyDTO Speciality { get; set; }
         public virtual InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
