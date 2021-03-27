@@ -134,7 +134,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("Favorites")]
         [Authorize(Roles = "Graduate")]
-        public async Task<IActionResult> AddSpecialtyAndInstitutionOfEducationToFavorite([FromBody] SpecialtyAndInstitutionOfEducationToFavoritePostApiModel request)
+        public async Task<IActionResult> AddSpecialtyAndInstitutionOfEducationToFavorite([FromBody] SpecialtyAndInstitutionOfEducationPostApiModel request)
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request.SpecialtyId, request.InstitutionOfEducationId, userId);

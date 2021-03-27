@@ -112,7 +112,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _context.SpecialtyToInstitutionOfEducationToGraduates.Remove(favorite);
             _context.SaveChanges();
 
-            var model = new SpecialtyAndInstitutionOfEducationToFavoritePostApiModel
+            var model = new SpecialtyAndInstitutionOfEducationPostApiModel
             {
                 SpecialtyId = favorite.SpecialtyId,
                 InstitutionOfEducationId = favorite.InstitutionOfEducationId

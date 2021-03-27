@@ -140,7 +140,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Act
             var result = await _testControl.AddSpecialtyAndInstitutionOfEducationToFavorite(
-                new SpecialtyAndInstitutionOfEducationToFavoritePostApiModel()
+                new SpecialtyAndInstitutionOfEducationPostApiModel()
                 {
                     SpecialtyId = It.IsAny<string>(),
                     InstitutionOfEducationId = It.IsAny<string>()
