@@ -13,15 +13,15 @@ using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
 {
-    public class IoEAdminServiceAdminService:IIoEAdminService
+    public class IoEModeratorService:IIoEModeratorService
     {
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ResourceManager _resourceManager;
 
-        public IoEAdminServiceAdminService(
-            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository, 
+        public IoEModeratorService(
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             ResourceManager resourceManager)
@@ -34,7 +34,7 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
-            SpecialtyAndInstitutionOfEducationPostApiModel specialtyToIoE)
+            SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
@@ -45,17 +45,13 @@ namespace YIF.Core.Service.Concrete.Services
                 SpecialtyId = specialtyToIoE.SpecialtyId,
                 InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId
             };
-            var specialtyExists = await _specialtyToIoERepository.IsSpecialtyToIoEAlreadyExists(entity);
 
-            if (specialtyExists == true)
-            {
-                throw new BadRequestException(_resourceManager.GetString("SpecialtyAndInstitutionOfEducationIsAlreadyExists"));
-            }
             if (institutionOfEducation == false)
                 throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
 
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
             await _specialtyToIoERepository.AddSpecialty(entity);
             return result.Set(new DescriptionResponseApiModel("Specialty was successfully added to the Institution of Education"), true);
         }

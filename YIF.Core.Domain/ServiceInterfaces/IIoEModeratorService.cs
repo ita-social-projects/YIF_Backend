@@ -7,7 +7,7 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF.Core.Domain.ServiceInterfaces
 {
-    public interface IIoEAdminService
+    public interface IIoEModeratorService
     {
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
     }

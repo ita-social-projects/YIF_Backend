@@ -13,6 +13,6 @@ namespace YIF.Core.Data.Interfaces
         Task RemoveFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate);
         Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate);
         Task AddSpecialty(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation);
-        Task<bool> IsSpecialtyToIoEAlreadyExists(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation);
+        //Task<bool> IsSpecialtyToIoEAlreadyExists(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation);
     }
 }
