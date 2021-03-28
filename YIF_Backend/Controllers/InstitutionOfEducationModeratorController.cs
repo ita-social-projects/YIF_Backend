@@ -32,10 +32,10 @@ namespace YIF_Backend.Controllers
         /// Adds Specialty to the Institution of Education.
         /// </summary>
         /// <returns>Object with user token and refresh token</returns>
-        /// <response code="201">Returns object with tokens</response>
+        /// <response code="200">Specialty successfully added to the Institution of Education</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="404">If specialty not found</response>
-        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
+        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
@@ -45,7 +45,7 @@ namespace YIF_Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             var result = await _ioEModeratorService.AddSpecialtyToIoe(model);
-            return Created(string.Empty, result.Object);
+            return Ok();
         }
     }
 }
