@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Resources;
+﻿using System.Resources;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
