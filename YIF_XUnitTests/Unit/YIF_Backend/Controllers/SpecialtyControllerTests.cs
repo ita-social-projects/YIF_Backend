@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Xunit;
@@ -68,6 +69,42 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.IsAssignableFrom<IEnumerable<SpecialtyResponseApiModel>>(responseResult.Value);
         }
 
+        [Fact]
+        public async Task GetAllSpecialtiesAsyncForAuthorizedUser_EndpointReturnsOk()
+        {
+            // Arrange
+            var response = new ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>
+            {
+                Object = new List<SpecialtyResponseApiModel>().AsEnumerable()
+            };
+            var apiModel = new FilterApiModel()
+            {
+                DirectionName = "",
+                SpecialtyName = "",
+                InstitutionOfEducationName = "",
+                InstitutionOfEducationAbbreviation = "",
+                PaymentForm = "",
+                EducationForm = ""
+            };
+            _specialtyService.Setup(x => x.GetAllSpecialtiesByFilterForUser(apiModel, It.IsAny<string>())).Returns(Task.FromResult(response.Object));
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+           {
+                new Claim("id", "1"),
+           }, "mock"));
+
+            var controller = new SpecialtyController(_specialtyService.Object, _logger.Object);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = user }
+            };
+            // Act
+            var result = await controller.GetAllSpecialtiesAsyncForAuthorizedUser(apiModel.DirectionName, apiModel.SpecialtyName,
+                apiModel.InstitutionOfEducationName,
+                apiModel.InstitutionOfEducationAbbreviation, apiModel.PaymentForm, apiModel.EducationForm);
+            // Assert
+            var responseResult = Assert.IsType<OkObjectResult>(result);
+            Assert.IsAssignableFrom<IEnumerable<SpecialtyResponseApiModel>>(responseResult.Value);
+        }
         [Theory]
         [InlineData("direction", "speciality", "institutionOfEducationName", "institutionOfEducationAbbreviation")]
         [InlineData("", "speciality", "", "institutionOfEducationAbbreviation")]

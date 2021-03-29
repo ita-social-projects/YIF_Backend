@@ -272,6 +272,40 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
+        public async Task GetInstitutionOfEducationsPageForUser_ShouldReturnInstitutionOfEducationPage_IfEverythingOk()
+        {
+            // Arrange  
+            var filterModel = new FilterApiModel();
+
+            var institutionOfEducationList = GetInstitutionOfEducations();
+            var favoriteInstitutionOfEducationList = GetFavoriteInstitutionOfEducations();
+            var institutionOfEducationResponseList = GetResponseInstitutionOfEducations();
+            var institutionOfEducationPage = GetInstitutionOfEducationPage();
+
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducationList))
+                .Returns(institutionOfEducationResponseList);
+
+            _paginationService
+                .Setup(ps => ps.GetPageFromCollection(institutionOfEducationResponseList, It.IsAny<PageApiModel>()))
+                .Returns(institutionOfEducationPage);
+
+            _institutionOfEducationRepository
+                .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteInstitutionOfEducationList);
+
+            _institutionOfEducationRepository
+                .Setup(ur => ur.GetAll())
+                .ReturnsAsync(institutionOfEducationList);
+
+            // Act
+            var result = await institutionOfEducationService.GetInstitutionOfEducationsPageForUser(filterModel, It.IsAny<PageApiModel>(), "1");
+
+            // Assert
+            Assert.IsType<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>>(result);
+        }
+
+        [Fact]
         public void GetInstitutionOfEducationsPage_ShouldReturnNotFoundException_IfInstitutionOfEducationNotFound()
         {
             // Arrange  
