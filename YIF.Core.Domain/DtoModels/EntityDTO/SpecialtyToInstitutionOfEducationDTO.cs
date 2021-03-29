@@ -2,6 +2,7 @@
 {
     public class SpecialtyToInstitutionOfEducationDTO
     {
+        public string Id { get; set; }
         public string SpecialtyId { get; set; }
         public string InstitutionOfEducationId { get; set; }
         public string SpecialtyToIoEDescriptionId { get; set; }

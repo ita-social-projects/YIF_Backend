@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Resources;
-using System.Text;
+﻿using System.Resources;
 using System.Threading.Tasks;
 using SendGrid.Helpers.Errors.Model;
 using YIF.Core.Data.Entities;

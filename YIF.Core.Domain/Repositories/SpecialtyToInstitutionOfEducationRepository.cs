@@ -132,17 +132,5 @@ namespace YIF.Core.Domain.Repositories
                 return true;
             return false;
         }
-
-        //public async Task<bool> IsSpecialtyToIoEAlreadyExists(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation)
-        //{
-        //    var result = await _context.SpecialtyToInstitutionOfEducations
-        //        .AsNoTracking()
-        //        .Where(s => s.SpecialtyId == specialtyToInstitutionOfEducation.SpecialtyId)
-        //        .Where(i => i.InstitutionOfEducationId == specialtyToInstitutionOfEducation.InstitutionOfEducationId)
-        //        .FirstOrDefaultAsync();
-        //    if (result != null)
-        //        return true;
-        //    return false;
-        //}
     }
 }
