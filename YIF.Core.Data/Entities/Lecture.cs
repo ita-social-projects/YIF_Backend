@@ -4,7 +4,6 @@ using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Entities
 {
-    //Where we use this table?
     public class Lecture
     {
         [Key, ForeignKey("User")]
