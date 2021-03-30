@@ -59,4 +59,6 @@
 
   <Import Project="..\YIF.Shared\YIF.Shared.projitems" Label="Shared" />
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>
