@@ -78,6 +78,7 @@ namespace YIF_Backend
             services.AddTransient<ISpecialtyService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
+            services.AddTransient<IInstitutionAdminService, InstitutionAdminService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>, InstitutionOfEducationModeratorRepository>();
             services.AddTransient<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>, InstitutionOfEducationAdminRepository>();
@@ -92,6 +93,9 @@ namespace YIF_Backend
             services.AddTransient<IExamRepository<Exam, ExamDTO>, ExamRepository>();
             services.AddTransient<IPaymentFormRepository<PaymentForm, PaymentFormDTO>, PaymentFormRepository>();
             services.AddTransient<IEducationFormRepository<EducationForm, EducationFormDTO>, EducationFormRepository>();
+            services.AddTransient<IIoEAdminService, IoEAdminService>();
+            services.AddTransient<IIoEModeratorService, IoEModeratorService>();
+
             #endregion
 
             #region FluentValidation

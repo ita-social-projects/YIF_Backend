@@ -115,6 +115,18 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
         }
+        
+        public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilterForUser(FilterApiModel filterModel, string id)
+        {
+            var specialties = await GetAllSpecialtiesByFilter(filterModel);
+            var favoriteSpecialties = await _specialtyRepository.GetFavoritesByUserId(id);
+            foreach (var specialty in specialties)
+            {
+                specialty.IsFavorite = favoriteSpecialties.Where(x => x.Id == specialty.Id).Count() > 0;
+            }
+            return specialties;
+        }
+
 
         public async Task<ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>> GetAllSpecialties()
         {
@@ -148,7 +160,7 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<SpecialtyResponseApiModel>();
             var specialty = await _specialtyRepository.Get(id);
             if (specialty == null)
-            {                
+            {
                 throw new NotFoundException($"{_resourceManager.GetString("SpecialtyWithSuchIdNotFound")}: {id}");
             }
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
@@ -202,7 +214,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _specialtyToInstitutionOfEducationRepository.AddFavorite(entity);
         }
-        public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId ,string institutionOfEducationId, string userId)
+        public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
 

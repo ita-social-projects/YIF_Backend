@@ -94,7 +94,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("DisableInstitutionOfEducationAdmin/{id}")]
+        [HttpPatch("DisableInstitutionOfEducationAdmin/{id}")]
         public async Task<IActionResult> DisableInstitutionOfEducationAdmin(string id)
         {
             var result = await _superAdminService.DisableInstitutionOfEducationAdmin(id);
@@ -131,7 +131,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(500)]
         [HttpPost("AddInstitutionOfEducationAndAdmin")]
-        public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationPostApiModel model)
+        public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationCreatePostApiModel model)
         {
             ImageBase64Validator validator = new ImageBase64Validator();
             var validResults = validator.Validate(model.ImageApiModel);

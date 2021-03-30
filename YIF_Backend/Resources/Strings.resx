@@ -276,4 +276,10 @@
   <data name="InstitutionOfEducationAdminFailedUserAlreadyAdmin" xml:space="preserve">
     <value>Користувач уже є адміністратором.</value>
   </data>
+  <data name="AdminWithSuchIdNotFound" xml:space="preserve">
+    <value>Не знайдено адміністратора з таким ідентифікатором</value>
+  </data>
+  <data name="InformationChanged" xml:space="preserve">
+    <value>Інформацію змінено.</value>
+  </data>
 </root>

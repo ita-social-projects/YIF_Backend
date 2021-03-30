@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -31,6 +33,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
         private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
+        private static readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();
+
+        private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
 
         private static readonly InstitutionOfEducationService institutionOfEducationService = new InstitutionOfEducationService(
             _institutionOfEducationRepository.Object,
@@ -42,7 +47,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _graduateRepository.Object,
             _mapperMock.Object,
             _paginationService.Object,
-            _resourceManager.Object);
+            _resourceManager.Object,
+            _configuration.Object);
+
+        public InstitutionOfEducationServiceTests()
+        {
+            httpRequest.Setup(x => x.Scheme).Returns("");
+            httpRequest.Setup(x => x.Host).Returns(new HostString(""));
+        }
 
         // Tests for institutionOfEducation filter
         [Fact]
@@ -217,8 +229,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(x => x.Map<DirectionForIoEResponseApiModel>(It.IsAny<DirectionDTO>()))
                 .Returns(new DirectionForIoEResponseApiModel());
 
+            _configuration.Setup(x => x.GetSection(It.IsAny<string>())).Returns(new Mock<IConfigurationSection>().Object);
+
             // Act
-            var result = await institutionOfEducationService.GetInstitutionOfEducationById(It.IsAny<string>(), It.IsAny<string>());
+            var result = await institutionOfEducationService.GetInstitutionOfEducationById(It.IsAny<string>(), httpRequest.Object, It.IsAny<string>());
 
             // Assert
             Assert.IsType<InstitutionOfEducationResponseApiModel>(result);
@@ -231,7 +245,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository.Setup(ur => ur.Get(It.IsAny<string>())).ReturnsAsync((InstitutionOfEducationDTO)null);
 
             // Act
-            Func<Task<InstitutionOfEducationResponseApiModel>> act = () => institutionOfEducationService.GetInstitutionOfEducationById(It.IsAny<string>());
+            Func<Task<InstitutionOfEducationResponseApiModel>> act = () => institutionOfEducationService.GetInstitutionOfEducationById(It.IsAny<string>(), httpRequest.Object);
 
             // Assert
             Assert.ThrowsAsync<NotFoundException>(act);
@@ -266,6 +280,40 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             var result = await institutionOfEducationService.GetInstitutionOfEducationsPage(filterModel, It.IsAny<PageApiModel>());
+
+            // Assert
+            Assert.IsType<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>>(result);
+        }
+
+        [Fact]
+        public async Task GetInstitutionOfEducationsPageForUser_ShouldReturnInstitutionOfEducationPage_IfEverythingOk()
+        {
+            // Arrange  
+            var filterModel = new FilterApiModel();
+
+            var institutionOfEducationList = GetInstitutionOfEducations();
+            var favoriteInstitutionOfEducationList = GetFavoriteInstitutionOfEducations();
+            var institutionOfEducationResponseList = GetResponseInstitutionOfEducations();
+            var institutionOfEducationPage = GetInstitutionOfEducationPage();
+
+            _mapperMock
+                .Setup(m => m.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducationList))
+                .Returns(institutionOfEducationResponseList);
+
+            _paginationService
+                .Setup(ps => ps.GetPageFromCollection(institutionOfEducationResponseList, It.IsAny<PageApiModel>()))
+                .Returns(institutionOfEducationPage);
+
+            _institutionOfEducationRepository
+                .Setup(ur => ur.GetFavoritesByUserId(It.IsAny<string>()))
+                .ReturnsAsync(favoriteInstitutionOfEducationList);
+
+            _institutionOfEducationRepository
+                .Setup(ur => ur.GetAll())
+                .ReturnsAsync(institutionOfEducationList);
+
+            // Act
+            var result = await institutionOfEducationService.GetInstitutionOfEducationsPageForUser(filterModel, It.IsAny<PageApiModel>(), "1");
 
             // Assert
             Assert.IsType<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>>(result);

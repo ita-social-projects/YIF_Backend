@@ -256,7 +256,7 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(
-            InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel, 
+            InstitutionOfEducationCreatePostApiModel institutionOfEducationPostApiModel, 
             HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
@@ -265,6 +265,12 @@ namespace YIF.Core.Service.Concrete.Services
             if (ch != null)
             {
                 throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationWithSuchNameAlreadyExists"));
+            }
+
+            var ifUserAlreadyAdmin = (await _institutionOfEducationAdminRepository.GetAllUniAdmins()).SingleOrDefault(x => x.User.Email == institutionOfEducationPostApiModel.InstitutionOfEducationAdminEmail);
+            if (ifUserAlreadyAdmin != null)
+            {
+                throw new InvalidOperationException(_resourceManager.GetString("InstitutionOfEducationAdminFailedUserAlreadyAdmin"));
             }
 
             #region imageSaving

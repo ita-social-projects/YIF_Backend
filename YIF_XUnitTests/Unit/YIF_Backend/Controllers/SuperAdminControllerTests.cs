@@ -142,6 +142,35 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         [Theory]
         [InlineData(true, "succes")]
         [InlineData(false, "wrong")]
+        public async Task DisableInstitutionOfEducationAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
+        {
+            // Arrange
+            var requestModel = new SchoolUniAdminDeleteApiModel { Id = "id" };
+            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
+            var error = new NotFoundException(message);
+
+            if (success)
+            {
+                _superAdminService.Setup(x => x.DisableInstitutionOfEducationAdmin(requestModel.Id)).Returns(Task.FromResult(responseModel));
+                // Act
+                var result = await superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id);
+                // Assert
+                var responseResult = Assert.IsType<OkObjectResult>(result);
+                var model = (DescriptionResponseApiModel)responseResult.Value;
+                Assert.Equal(responseModel.Object.Message, model.Message);
+            }
+            else
+            {
+                _superAdminService.Setup(x => x.DisableInstitutionOfEducationAdmin(requestModel.Id)).Throws(error);
+                // Assert
+                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id));
+                Assert.Equal(error.Message, exeption.Message);
+            }
+        }
+
+        [Theory]
+        [InlineData(true, "succes")]
+        [InlineData(false, "wrong")]
         public async Task DeleteSchoolAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
         {
             // Arrange

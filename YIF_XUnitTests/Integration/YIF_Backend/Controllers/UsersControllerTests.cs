@@ -1,37 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Authorization.Policy;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_Backend;
+using YIF_XUnitTests.Integration.Fixture;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    public class UsersControllerTests 
-        : IClassFixture<WebApplicationFactory<Startup>>
+    public class UsersControllerTests : TestServerFixture
     {
-        private readonly HttpClient _client;
-        public UsersControllerTests()
+        private static string _correctUserId;
+        public UsersControllerTests(ApiWebApplicationFactory fixture)
         {
-            var clientOptions = new WebApplicationFactoryClientOptions
+            _client = fixture.WithWebHostBuilder(builder =>
             {
-                BaseAddress = new Uri("https://localhost:44324/api/Users/")
-            };
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
+                });
+            }).CreateClient();
 
-            var appFactory = new WebApplicationFactory<Startup>();
-            _client = appFactory.CreateClient(clientOptions);
+            _client = getInstance(fixture);
+            _correctUserId = _context.Users.First().Id;
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("1d2e6e25-423a-4e82-b979-de01fcb7577a")]
-        public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
+        [Fact]
+        public async Task Get_EndpointsReturnSuccessAndCorrectContentType()
         {
+            // Arrange
+            var id = _correctUserId;
+
             // Act            
-            var response = await _client.GetAsync(url);
+            var response = await _client.GetAsync($"api/Users/{id}");
             
             // Assert
             response.EnsureSuccessStatusCode();
@@ -41,36 +49,23 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Theory]
         [InlineData("00f5e3b3-fa90-4e74-856f-cbd41f178520")]
-        public async Task Get_EndpointReturnNotFound(string url)
+        public async Task Get_EndpointReturnNotFound(string id)
         {
             // Act            
-            var response = await _client.GetAsync(url);
+            var response = await _client.GetAsync($"api/Users/{id}");
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
         }
 
-        [Theory]
-        [InlineData("d")]
-        public async Task Get_EndpointReturnBadRequest(string url)
+        [Fact]
+        public async Task Send_ResetPassword_IfEmail_Correct()
         {
-            // Act            
-            var response = await _client.GetAsync(url);
+            // Arrange
+            var email = _context.Users.First().Email;
 
-            // Assert
-            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
-        }
-
-        [Theory]
-        [InlineData("intelIdea@gmail.com")]
-        public async Task Send_ResetPassword_IfEmail_Correct(string email)
-        {
             // Act
-            var response = await _client.PostAsync($"Reset?userEmail={email}", null);
+            var response = await _client.PostAsync($"api/Users/Reset?userEmail={email}", null);
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
@@ -87,7 +82,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             {
                 UserEmail = email
             }), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("Reset", content);
+            var response = await _client.PostAsync("api/Users/Reset", content);
 
 
             // Assert
@@ -97,11 +92,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("8d2893eb-90f8-49aa-895e-3bf8e9545f63", "QWerty-1","QWerty-12","QWerty-12",
+        [InlineData("QWerty-1","QWerty-12","QWerty-12",
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        [InlineData("8d2893eb-90f8-49aa-895e-3bf8e9545f63", "QWerty-12", "QWerty-1", "QWerty-1",
+        [InlineData("QWerty-12", "QWerty-1", "QWerty-1",
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        public async Task ChangePassword_With_CurrentParameters(string id,
+        public async Task ChangePassword_With_CurrentParameters(
             string oldPassword,
             string newPassword,
             string confirmPassword,
@@ -110,13 +105,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Act
             var content = new StringContent(JsonConvert.SerializeObject(new ChangePasswordApiModel
             {
-                UserId = id,
+                UserId = _correctUserId,
                 OldPassword = oldPassword,
                 NewPassword = newPassword,
                 ConfirmNewPassword = confirmPassword,
                 RecaptchaToken = recaptcha
             }), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync("ChangePassword", content);
+            var response = await _client.PutAsync("api/Users/ChangePassword", content);
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
@@ -125,17 +120,40 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a5", "QWerty-1", "QWerty-12", "QWerty-12", // ID incorrect
+        [InlineData("QWerty-1222", "QWerty-1", "QWerty-1", // OldPassword incorrect
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3", "QWerty-1222", "QWerty-1", "QWerty-1", // OldPassword incorrect
+        [InlineData("QWerty-1", "Q", "QWerty-1", // NewPassword incorrect
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3", "QWerty-1", "Q", "QWerty-1", // NewPassword incorrect
+        [InlineData("QWerty-1", "QWerty-12", "QWerty-122", // Confirm password incorrect
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3", "QWerty-1", "QWerty-12", "QWerty-122", // Confirm password incorrect
-            "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        [InlineData("0a8404ae-53ff-4ed4-bf76-994d915123a3", "QWerty-1", "QWerty-12", "QWerty-12", // Recaptcha incorrect
+        [InlineData("QWerty-1", "QWerty-12", "QWerty-12", // Recaptcha incorrect
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRowkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        public async Task ChangePassword_With_InCurrentParameters(string id,
+        public async Task ChangePassword_With_InCurrentParameters(
+            string oldPassword,
+            string newPassword,
+            string confirmPassword,
+            string recaptcha)
+        {
+            // Act
+            var content = new StringContent(JsonConvert.SerializeObject(new ChangePasswordApiModel
+            {
+                UserId = _correctUserId,
+                OldPassword = oldPassword,
+                NewPassword = newPassword,
+                ConfirmNewPassword = confirmPassword,
+                RecaptchaToken = recaptcha
+            }), Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync("api/Users/ChangePassword", content);
+
+            // Assert
+            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal("application/json; charset=utf-8",
+              response.Content.Headers.ContentType.ToString());
+        }
+        [Theory]
+        [InlineData("WrongId", "QWerty-1", "QWerty-1", "QWerty-1", // ID is incorrect
+            "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
+        public async Task ChangePassword_With_WrongId(string id,
             string oldPassword,
             string newPassword,
             string confirmPassword,
@@ -150,7 +168,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 ConfirmNewPassword = confirmPassword,
                 RecaptchaToken = recaptcha
             }), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync("ChangePassword", content);
+            var response = await _client.PutAsync("api/Users/ChangePassword", content);
 
             // Assert
             Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);

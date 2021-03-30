@@ -18,6 +18,10 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<InstitutionOfEducationDTO, InstitutionOfEducationPostApiModel>()
                 .ForMember(post => post.ImageApiModel, un => un.Ignore())
+                .ReverseMap();
+
+            CreateMap<InstitutionOfEducationDTO, InstitutionOfEducationCreatePostApiModel>()
+                .ForMember(post => post.ImageApiModel, un => un.Ignore())
                 .ForMember(post => post.InstitutionOfEducationAdminEmail, un => un.Ignore())
                 .ReverseMap();
 
