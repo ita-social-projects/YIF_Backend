@@ -897,11 +897,11 @@ namespace YIF.Core.Data.Seaders
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Соціальні та поведінкові науки
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Соціологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Соціологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Політологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion
                     #region Математика та статистика
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false }
                     #endregion
                 });
                 #endregion
@@ -918,16 +918,16 @@ namespace YIF.Core.Data.Seaders
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Інформаційні технології
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion
                     #region Математика та статистика
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion
                     #region Електрична інженерія
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false }
                     #endregion
                 });
                 #endregion
@@ -944,16 +944,16 @@ namespace YIF.Core.Data.Seaders
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Інформаційні технології
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion
                     #region Автоматизація та приладобудування
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Автоматизація та комп’ютерно-інтегровані технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Автоматизація та комп’ютерно-інтегровані технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion
                     #region Електрична інженерія
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Енергетичне машинобудування").Id,InstitutionOfEducationId = currentInstitutionOfEducationId }
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Гідроенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Енергетичне машинобудування").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false }
                     #endregion
                 });
                 #endregion
@@ -968,8 +968,8 @@ namespace YIF.Core.Data.Seaders
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Математика та статистика
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion                 
                 });
                 #endregion
@@ -987,26 +987,26 @@ namespace YIF.Core.Data.Seaders
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Електрична інженерія
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Електроенергетика, електротехніка та електромеханіка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Електроенергетика, електротехніка та електромеханіка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion  
                     #region Математика та статистика
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion 
                     #region Інформаційні технології
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інформаційні системи та технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп’ютерна інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп'ютерні науки").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Інформаційні системи та технології").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп’ютерна інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Комп'ютерні науки").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Системний аналіз").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion 
                     #region Автоматизація та приладобудування
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Мікро- та наносистемна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Метрологія та інформаційно-вимірювальна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Мікро- та наносистемна техніка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion 
 
                 });
@@ -1023,13 +1023,13 @@ namespace YIF.Core.Data.Seaders
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
                     #region Електрична інженерія
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion  
                     #region Математика та статистика
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
-                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Прикладна математика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     #endregion                   
                 });
                 #endregion
