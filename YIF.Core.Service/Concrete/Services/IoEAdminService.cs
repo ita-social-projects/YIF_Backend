@@ -1,6 +1,11 @@
 ﻿using System.Resources;
+using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using SendGrid.Helpers.Errors.Model;
+using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -16,16 +21,26 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ResourceManager _resourceManager;
+        private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
 
         public IoEAdminService(
-            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository, 
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
+            IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
+            IMapper mapper,
+            IWebHostEnvironment env,
+            IConfiguration configuration,
             ResourceManager resourceManager)
         {
             _specialtyRepository = specialtyRepository;
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
+            _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
+            _mapper = mapper;
             _resourceManager = resourceManager;
 
         }
@@ -74,6 +89,38 @@ namespace YIF.Core.Service.Concrete.Services
                 InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
                 IsDeleted = true
             }); ;
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
+            var admin = admins.SingleOrDefault(x => x.UserId == userId);
+
+            if (admin == null)
+            {
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminWithSuchIdNotFound")), false);
+            }
+
+            var institutionOfEducationDTONew = _mapper.Map<InstitutionOfEducationDTO>(institutionOfEducationPostApiModel);
+
+            #region imageSaving
+            if (institutionOfEducationPostApiModel.ImageApiModel != null)
+            {
+                var serverPath = _env.ContentRootPath;
+                var folerName = _configuration.GetValue<string>("ImagesPath");
+                var path = Path.Combine(serverPath, folerName);
+
+                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(institutionOfEducationPostApiModel.ImageApiModel.Photo, path);
+                institutionOfEducationDTONew.ImagePath = fileName;
+            }
+            #endregion
+
+            institutionOfEducationDTONew.Id = admin.InstitutionOfEducationId;
+
+            await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTONew));
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }
     }
 }
