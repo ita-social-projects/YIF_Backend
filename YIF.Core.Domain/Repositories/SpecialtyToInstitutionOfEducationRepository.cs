@@ -77,7 +77,6 @@ namespace YIF.Core.Domain.Repositories
         {
             var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations
               .Where(su => su.SpecialtyId == id)
-              .Where(sdi => sdi.SpecialtyToIoEDescriptionId != null)
               .Include(u => u.InstitutionOfEducation)
               .Include(s => s.Specialty)
               .Include(sd => sd.SpecialtyToIoEDescription)
@@ -124,6 +123,28 @@ namespace YIF.Core.Domain.Repositories
             if (result != null)
                 return true;
             return false;
+        }
+
+        public async Task<SpecialtyToInstitutionOfEducationDTO> GetFullSpecialtyDescriptionById(string specialtyId, string IoEId)
+        {
+            var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations
+              .Where(i => i.InstitutionOfEducationId == IoEId)
+              .Where(su => su.SpecialtyId == specialtyId)
+              .Include(u => u.InstitutionOfEducation)
+              .Include(s => s.Specialty)
+              .Include(sd => sd.SpecialtyToIoEDescription)
+              .ThenInclude(e => e.ExamRequirements)
+                  .ThenInclude(e => e.Exam)
+              .Include(sd => sd.SpecialtyToIoEDescription)
+                  .ThenInclude(e => e.PaymentFormToDescriptions)
+                      .ThenInclude(e => e.PaymentForm)
+              .Include(sd => sd.SpecialtyToIoEDescription)
+                  .ThenInclude(e => e.EducationFormToDescriptions)
+                      .ThenInclude(e => e.EducationForm)
+              .AsNoTracking()
+              .FirstOrDefaultAsync();
+
+            return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToInstitutionOfEducation);
         }
     }
 }

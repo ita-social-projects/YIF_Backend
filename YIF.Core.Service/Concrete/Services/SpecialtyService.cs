@@ -16,30 +16,42 @@ namespace YIF.Core.Service.Concrete.Services
     public class SpecialtyService : ISpecialtyService
     {
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
-        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
-        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
+        private readonly IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
+        private readonly IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
+        private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
+        private readonly IExamRepository<Exam, ExamDTO> _examRepository;
+        private readonly IPaymentFormRepository<PaymentForm, PaymentFormDTO> _paymentFormRepository;
+        private readonly IEducationFormRepository<EducationForm, EducationFormDTO> _educationFormRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
         public SpecialtyService(
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
-            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
-            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
+            IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
+            IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
+            IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
+            IExamRepository<Exam, ExamDTO> examRepository,
+            IPaymentFormRepository<PaymentForm, PaymentFormDTO> paymentFormRepository,
+            IEducationFormRepository<EducationForm, EducationFormDTO> educationFormRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
             _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
             _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
+            _examRequirementRepository = examRequirementRepository;
             _specialtyRepository = specialtyRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _graduateRepository = graduateRepository;
+            _examRepository = examRepository;
+            _educationFormRepository = educationFormRepository;
+            _paymentFormRepository = paymentFormRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
         }
@@ -152,6 +164,15 @@ namespace YIF.Core.Service.Concrete.Services
             var result = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(specialtyDescriptions);
             return result;
         }
+
+        public async Task<SpecialtyDescriptionForEditPageResponseApiModel> GetFullSpecialtyDescriptionById(string specialtyId, string IoEId)
+        {
+            var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetFullSpecialtyDescriptionById(specialtyId, IoEId);
+            //checks??
+            var result = _mapper.Map<SpecialtyDescriptionForEditPageResponseApiModel>(specialtyDescriptions);
+            return result;
+        }
+
         public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId,string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
@@ -254,6 +275,21 @@ namespace YIF.Core.Service.Concrete.Services
                 SpecialtyId = specialty.Id,
                 GraduateId = graduate.Id
             });
+        }
+
+        public async Task<IEnumerable<ExamsResponseApiModel>> GetExamsNames()
+        {
+            return _mapper.Map<IEnumerable<ExamsResponseApiModel>>(await _examRepository.GetAll());
+        }
+
+        public async Task<IEnumerable<EducationFormsResponseApiModel>> GetEducationFormsNames()
+        {
+            return _mapper.Map<IEnumerable<EducationFormsResponseApiModel>>(await _educationFormRepository.GetAll());
+        }
+
+        public async Task<IEnumerable<PaymentFormsResponseApiModel>> GetPaymentFormsNames()
+        {
+            return _mapper.Map<IEnumerable<PaymentFormsResponseApiModel>>(await _paymentFormRepository.GetAll());
         }
     }
 }

@@ -11,7 +11,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class PaymentFormToDescriptionRepository : IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>
+    public class PaymentFormToDescriptionRepository : IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -66,6 +66,21 @@ namespace YIF.Core.Domain.Repositories
         public Task<IEnumerable<PaymentFormToDescriptionDTO>> GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task DeleteRangeByDescriptionId(string id)
+        {
+            _context.PaymentFormToDescriptions
+                           .RemoveRange(await _context.PaymentFormToDescriptions
+                           .Where(x => x.SpecialtyToIoEDescriptionId == id)
+                           .ToListAsync());
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task AddRange(params PaymentFormToDescription[] items)
+        {
+            await _context.PaymentFormToDescriptions.AddRangeAsync(items);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -70,8 +70,9 @@ namespace YIF_Backend
             services.AddTransient<IDirectionRepository<Direction, DirectionDTO>, DirectionRepository>();
             services.AddTransient<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>, DirectionToInstitutionOfEducationRepository>();
             services.AddTransient<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>, SpecialtyToInstitutionOfEducationRepository>();
-            services.AddTransient<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>, EducationFormToDescriptionRepository>();
-            services.AddTransient<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>, PaymentFormToDescriptionRepository>();
+            services.AddTransient<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>, ExamRequirementRepository>();
+            services.AddTransient<IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO>, EducationFormToDescriptionRepository>();
+            services.AddTransient<IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>, PaymentFormToDescriptionRepository>();
             services.AddTransient<ITokenRepository<TokenDTO>, TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<ISpecialtyService, SpecialtyService>();
@@ -88,6 +89,9 @@ namespace YIF_Backend
             services.AddTransient<ISchoolService, SchoolService>();
             services.AddTransient<IPaginationService, PaginationService>();
             services.AddTransient<IGraduateRepository<Graduate, GraduateDTO>, GraduateRepository>();
+            services.AddTransient<IExamRepository<Exam, ExamDTO>, ExamRepository>();
+            services.AddTransient<IPaymentFormRepository<PaymentForm, PaymentFormDTO>, PaymentFormRepository>();
+            services.AddTransient<IEducationFormRepository<EducationForm, EducationFormDTO>, EducationFormRepository>();
             #endregion
 
             #region FluentValidation

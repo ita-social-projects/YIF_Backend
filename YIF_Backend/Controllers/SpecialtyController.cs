@@ -122,6 +122,26 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Get specialty descriptions by id.
+        /// </summary>
+        /// <returns>A specialty descriptions</returns>
+        /// <response code="200">Returns a specialty descriptions</response>
+        /// <response code="404">If specialty descriptions not found</response>
+        /// <param name="specialtyId" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Specialty Id</param>
+        /// <param name="institutionOfEducationId" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Institution of Education Id</param>
+
+        [HttpGet("Descriptions/Full")]
+        [ProducesResponseType(typeof(SpecialtyDescriptionForEditPageResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetFullSpecialtyDescriptionsAsync(string specialtyId, string institutionOfEducationId)
+        {
+            var result = await _specialtyService.GetFullSpecialtyDescriptionById(specialtyId, institutionOfEducationId);
+            _logger.LogInformation("Getting a specialty descriptions");
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Add specialty with institution of education to favorite.
         /// </summary>
         /// <returns>None</returns>
@@ -173,6 +193,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("Favorites/{specialtyId}")]
         [Authorize(Roles = "Graduate")]
+
         public async Task<IActionResult> AddSpecialtyToFavorite(string specialtyId)
         {
             var userId = User.FindFirst("id")?.Value;
@@ -198,6 +219,54 @@ namespace YIF_Backend.Controllers
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyFromFavorite(specialtyId, userId);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Get all exams names.
+        /// </summary>
+        /// <returns>List of exams names</returns>
+        /// <response code="200">Returns a list of exams names</response>
+        /// <response code="404">If there are not exams</response>
+        [HttpGet("Exams")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllExamsNamesAsync()
+        {
+            var result = await _specialtyService.GetExamsNames();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all education forms names.
+        /// </summary>
+        /// <returns>List of education forms names</returns>
+        /// <response code="200">Returns a list of education forms names</response>
+        /// <response code="404">If there are not education forms</response>
+        [HttpGet("EducationForms")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllEducationFormsNamesAsync()
+        {
+            var result = await _specialtyService.GetEducationFormsNames();
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all payment forms names.
+        /// </summary>
+        /// <returns>List of payment forms names</returns>
+        /// <response code="200">Returns a list of payment forms names</response>
+        /// <response code="404">If there are not payment forms</response>
+        [HttpGet("PaymentForms")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllPaymentFormsNamesAsync()
+        {
+            var result = await _specialtyService.GetPaymentFormsNames();
+            return Ok(result);
         }
     }
 }

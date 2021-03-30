@@ -1,7 +1,11 @@
-﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse
 {
-    public class ExamRequirementsResponseApiModel
+    public class ExamRequirementForEditPageResponseApiModel
     {
+        /// <summary>
+        /// Get the exam id to which this exam requirement belongs.
+        /// </summary>
+        public string ExamId { get; set; }
         /// <summary>
         /// Get the exam name to which this exam requirement belongs.
         /// </summary>

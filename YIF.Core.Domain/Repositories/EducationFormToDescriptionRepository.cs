@@ -11,7 +11,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class EducationFormToDescriptionRepository : IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>
+    public class EducationFormToDescriptionRepository : IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -66,6 +66,21 @@ namespace YIF.Core.Domain.Repositories
         public Task<IEnumerable<EducationFormToDescriptionDTO>> GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task DeleteRangeByDescriptionId(string id)
+        {
+            _context.EducationFormToDescriptions
+                .RemoveRange(await _context.EducationFormToDescriptions
+                .Where(x => x.SpecialtyToIoEDescriptionId == id)
+                .ToListAsync());
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task AddRange(params EducationFormToDescription[] items)
+        {
+            await _context.EducationFormToDescriptions.AddRangeAsync(items);
+            await _context.SaveChangesAsync();
         }
     }
 }

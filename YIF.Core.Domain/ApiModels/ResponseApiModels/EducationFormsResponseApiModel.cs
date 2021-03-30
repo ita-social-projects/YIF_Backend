@@ -1,7 +1,11 @@
 ﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class EducationFormResponseApiModel
+    public class EducationFormsResponseApiModel
     {
+        /// <summary>
+        /// Unique id
+        /// </summary>
+        public string Id { get; set; }
         /// <summary>
         /// Get the education form name for this  education form.
         /// </summary>

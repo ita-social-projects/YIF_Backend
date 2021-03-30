@@ -19,8 +19,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToIoERepository;
         private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
-        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
-        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
+        private readonly IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
+        private readonly IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
@@ -31,8 +31,8 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToIoERepository,
             IDirectionRepository<Direction, DirectionDTO> directionRepository,
-            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
-            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
+            IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
+            IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
