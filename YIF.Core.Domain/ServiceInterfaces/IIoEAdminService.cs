@@ -7,5 +7,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
     public interface IIoEAdminService
     {
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
+        Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Resources;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using Xunit;
@@ -14,7 +16,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class IoEModeratorServiceTests
     {
-        private readonly IoEAdminService _ioEAdminService;
+        private readonly IoEModeratorService _ioEModeratorService;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>
             _specialtyToIoERepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
@@ -24,7 +26,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public IoEModeratorServiceTests()
         {
-            _ioEAdminService = new IoEAdminService(
+            _ioEModeratorService = new IoEModeratorService(
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
@@ -48,7 +50,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
             var exception = await Record
-                .ExceptionAsync(() => _ioEAdminService.AddSpecialtyToIoe(entity));
+                .ExceptionAsync(() => _ioEModeratorService.AddSpecialtyToIoe(entity));
 
             // Assert
             Assert.Null(exception);
@@ -68,7 +70,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
-            Func<Task> act = () => _ioEAdminService.AddSpecialtyToIoe(entity);
+            Func<Task> act = () => _ioEModeratorService.AddSpecialtyToIoe(entity);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -89,7 +91,146 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
-            Func<Task> act = () => _ioEAdminService.AddSpecialtyToIoe(entity);
+            Func<Task> act = () => _ioEModeratorService.AddSpecialtyToIoe(entity);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteSpecialtyFromInstitutionOfEducation_ShouldDeleteSpecialtyFromInstitutionOfEducation_IfEverythingOk()
+        {
+            // Arrange  
+            var specialty = true;
+            var institutionOfEducation = true;
+            var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
+            { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
+
+            _specialtyRepository.
+                Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToIoERepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+                {
+                    InstitutionOfEducationId = "IoEId",
+                    SpecialtyId = "SpecialtyId"
+                }));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
+        {
+            // Arrange  
+            var specialty = true;
+            // InstitutionNotFound
+            var institutionOfEducation = false;
+            var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
+            { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
+
+            _specialtyRepository.
+                Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToIoERepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            {
+                InstitutionOfEducationId = "IoEId",
+                SpecialtyId = "SpecialtyId"
+            });
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyNotFound()
+        {
+            // Arrange  
+            //Specialty not found
+            var specialty = false;
+
+            var institutionOfEducation = true;
+            var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
+            { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
+
+            _specialtyRepository.
+                Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToIoERepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            {
+                InstitutionOfEducationId = "IoEId",
+                SpecialtyId = "SpecialtyId"
+            });
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+        [Fact]
+        public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyInInstitutionOfEducationNotFound()
+        {
+            // Arrange  
+            var specialty = true;
+            var institutionOfEducation = true;
+            //SpecialtyToInstitutionOfEducation not found
+            List<SpecialtyToInstitutionOfEducationDTO> specialtyToIoe = null;
+
+            _specialtyRepository.
+                Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _specialtyToIoERepository
+                .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
+                .ReturnsAsync(specialtyToIoe);
+
+            _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
+
+            // Act
+            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            {
+                InstitutionOfEducationId = "IoEId",
+                SpecialtyId = "SpecialtyId"
+            });
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
