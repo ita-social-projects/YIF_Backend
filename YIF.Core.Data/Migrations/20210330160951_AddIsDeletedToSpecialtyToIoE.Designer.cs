@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210330160951_AddIsDeletedToSpecialtyToIoE")]
+    partial class AddIsDeletedToSpecialtyToIoE
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -829,13 +831,13 @@ namespace YIF.Core.Data.Migrations
             modelBuilder.Entity("YIF.Core.Data.Entities.DirectionToInstitutionOfEducation", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.Direction", "Direction")
-                        .WithMany()
+                        .WithMany("DirectionToInstitutionOfEducations")
                         .HasForeignKey("DirectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
-                        .WithMany()
+                        .WithMany("DirectionToInstitutionOfEducation")
                         .HasForeignKey("InstitutionOfEducationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

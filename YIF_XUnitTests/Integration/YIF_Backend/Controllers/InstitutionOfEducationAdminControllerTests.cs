@@ -11,7 +11,7 @@ using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    public class InstitutionOfEducationAdminControllerTests:TestServerFixture
+    public class InstitutionOfEducationAdminControllerTests : TestServerFixture
     {
         private IoEAdminInputAttribute _adminInputAttribute;
         public InstitutionOfEducationAdminControllerTests(ApiWebApplicationFactory fixture)
@@ -49,6 +49,27 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddSpecialtyToInstitutionOfEducation", ContentHelper.GetStringContent(model));
 
             // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task DeleteSpecialtyFromIoE_EndpointReturnNoContent()
+        {
+            //Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().FirstOrDefault();
+            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.Id == institutionOfEducation.Id).FirstOrDefault();
+
+            var model = new SpecialtyToInstitutionOfEducationPostApiModel()
+            {
+                SpecialtyId = specialty.SpecialtyId,
+                InstitutionOfEducationId = institutionOfEducation.Id
+            };
+
+            //Act
+            var response = await _client.PatchAsync(
+                $"/api/Specialty/InstitutionOfEducationAdmin/DeleteSpecialtyFromInstitutionOfEducation", ContentHelper.GetStringContent(model));
+
+            //Assert
             response.EnsureSuccessStatusCode();
         }
     }

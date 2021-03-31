@@ -46,5 +46,24 @@ namespace YIF_Backend.Controllers
             var result = await _ioEModeratorService.AddSpecialtyToIoe(model);
             return Ok();
         }
+
+        /// <summary>
+        /// Temporary delete specialty from institution of education.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if the specialty has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not institution of education admin or moderator.</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("DeleteSpecialtyFromInstitutionOfEducation")]
+        public async Task<IActionResult> DeleteSpecialtyFromIoE([FromBody] SpecialtyToInstitutionOfEducationPostApiModel model)
+        {
+            await _ioEModeratorService.DeleteSpecialtyToIoe(model);
+            return NoContent();
+        }
     }
 }

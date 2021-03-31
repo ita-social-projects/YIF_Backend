@@ -52,5 +52,28 @@ namespace YIF.Core.Service.Concrete.Services
             await _specialtyToIoERepository.AddSpecialty(entity);
             return result.Set(new DescriptionResponseApiModel("Specialty was successfully added to the Institution of Education"), true);
         }
+
+        public async Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
+            var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
+            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyToIoE.SpecialtyId && s.InstitutionOfEducationId == specialtyToIoE.InstitutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (entity == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            await _specialtyToIoERepository.Update(new SpecialtyToInstitutionOfEducation
+            {
+                SpecialtyId = specialtyToIoE.SpecialtyId,
+                InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                IsDeleted = true
+            }); ;
+        }
     }
 }
