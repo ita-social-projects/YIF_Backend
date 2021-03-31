@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 
 namespace YIF.Core.Domain.ApiModels.ResponseApiModels
@@ -22,6 +24,17 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string SpecialtyCode { get; set; }
         /// <summary>
+        /// Type of education form
+        /// </summary>  
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public EducationForm EducationForm { get; set; }
+
+        /// <summary>
+        /// Type of payment form
+        /// </summary>
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public PaymentForm PaymentForm { get; set; }
+        /// <summary>
         /// Gets or sets the specialty description id to which this specialty to institutionOfEducation belongs.
         /// </summary>
         public string SpecialtyToIoEDescriptionId { get; set; }
@@ -38,13 +51,5 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// Navigation property for the exam requirements this specialty to institutionOfEducation belongs to.
         /// </summary>
         public virtual IEnumerable<ExamRequirementForEditPageResponseApiModel> ExamRequirements { get; set; }
-        /// <summary>
-        /// Navigation property for the education forms this specialty to institutionOfEducation belongs to.
-        /// </summary>
-        public virtual IEnumerable<EducationFormToDescriptionForEditPageResponseApiModel> EducationFormsToDescription { get; set; }
-        /// <summary>
-        /// Navigation property for the payment forms this specialty to institutionOfEducation belongs to.
-        /// </summary>
-        public virtual IEnumerable<PaymentFormToDescriptionForEditPageResponseApiModel> PaymentFormsToDescription { get; set; }
     }
 }

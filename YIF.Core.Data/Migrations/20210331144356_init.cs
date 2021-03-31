@@ -62,18 +62,6 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EducationForms",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EducationForms", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Exams",
                 columns: table => new
                 {
@@ -110,18 +98,6 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PaymentForms",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentForms", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Schools",
                 columns: table => new
                 {
@@ -133,19 +109,6 @@ namespace YIF.Core.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schools", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SpecialtyToIoEDescriptions",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    EducationalProgramLink = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SpecialtyToIoEDescriptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -471,94 +434,15 @@ namespace YIF.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EducationFormToDescriptions",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    EducationFormId = table.Column<string>(nullable: false),
-                    SpecialtyToIoEDescriptionId = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EducationFormToDescriptions", x => new { x.Id, x.EducationFormId, x.SpecialtyToIoEDescriptionId });
-                    table.ForeignKey(
-                        name: "FK_EducationFormToDescriptions_EducationForms_EducationFormId",
-                        column: x => x.EducationFormId,
-                        principalTable: "EducationForms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EducationFormToDescriptions_SpecialtyToIoEDescriptions_SpecialtyToIoEDescriptionId",
-                        column: x => x.SpecialtyToIoEDescriptionId,
-                        principalTable: "SpecialtyToIoEDescriptions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ExamRequirements",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    ExamId = table.Column<string>(nullable: false),
-                    SpecialtyToIoEDescriptionId = table.Column<string>(nullable: false),
-                    MinimumScore = table.Column<double>(nullable: false),
-                    Coefficient = table.Column<double>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExamRequirements", x => new { x.Id, x.ExamId, x.SpecialtyToIoEDescriptionId });
-                    table.ForeignKey(
-                        name: "FK_ExamRequirements_Exams_ExamId",
-                        column: x => x.ExamId,
-                        principalTable: "Exams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ExamRequirements_SpecialtyToIoEDescriptions_SpecialtyToIoEDescriptionId",
-                        column: x => x.SpecialtyToIoEDescriptionId,
-                        principalTable: "SpecialtyToIoEDescriptions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PaymentFormToDescriptions",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    PaymentFormId = table.Column<string>(nullable: false),
-                    SpecialtyToIoEDescriptionId = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentFormToDescriptions", x => new { x.Id, x.PaymentFormId, x.SpecialtyToIoEDescriptionId });
-                    table.ForeignKey(
-                        name: "FK_PaymentFormToDescriptions_PaymentForms_PaymentFormId",
-                        column: x => x.PaymentFormId,
-                        principalTable: "PaymentForms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PaymentFormToDescriptions_SpecialtyToIoEDescriptions_SpecialtyToIoEDescriptionId",
-                        column: x => x.SpecialtyToIoEDescriptionId,
-                        principalTable: "SpecialtyToIoEDescriptions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SpecialtyToInstitutionOfEducations",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
                     SpecialtyId = table.Column<string>(nullable: false),
-                    InstitutionOfEducationId = table.Column<string>(nullable: false),
-                    SpecialtyToIoEDescriptionId = table.Column<string>(nullable: true)
+                    InstitutionOfEducationId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpecialtyToInstitutionOfEducations", x => new { x.Id, x.InstitutionOfEducationId, x.SpecialtyId });
+                    table.PrimaryKey("PK_SpecialtyToInstitutionOfEducations", x => new { x.InstitutionOfEducationId, x.SpecialtyId });
                     table.ForeignKey(
                         name: "FK_SpecialtyToInstitutionOfEducations_InstitutionOfEducations_InstitutionOfEducationId",
                         column: x => x.InstitutionOfEducationId,
@@ -571,12 +455,35 @@ namespace YIF.Core.Data.Migrations
                         principalTable: "Specialties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SpecialtyToIoEDescriptions",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    SpecialtyId = table.Column<string>(nullable: true),
+                    InstitutionOfEducationId = table.Column<string>(nullable: true),
+                    PaymentForm = table.Column<string>(nullable: false),
+                    EducationForm = table.Column<string>(nullable: false),
+                    EducationalProgramLink = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecialtyToIoEDescriptions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SpecialtyToInstitutionOfEducations_SpecialtyToIoEDescriptions_SpecialtyToIoEDescriptionId",
-                        column: x => x.SpecialtyToIoEDescriptionId,
-                        principalTable: "SpecialtyToIoEDescriptions",
+                        name: "FK_SpecialtyToIoEDescriptions_InstitutionOfEducations_InstitutionOfEducationId",
+                        column: x => x.InstitutionOfEducationId,
+                        principalTable: "InstitutionOfEducations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SpecialtyToIoEDescriptions_Specialties_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalTable: "Specialties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -715,6 +622,33 @@ namespace YIF.Core.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ExamRequirements",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    ExamId = table.Column<string>(nullable: false),
+                    SpecialtyToIoEDescriptionId = table.Column<string>(nullable: false),
+                    MinimumScore = table.Column<double>(nullable: false),
+                    Coefficient = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExamRequirements", x => new { x.Id, x.ExamId, x.SpecialtyToIoEDescriptionId });
+                    table.ForeignKey(
+                        name: "FK_ExamRequirements_Exams_ExamId",
+                        column: x => x.ExamId,
+                        principalTable: "Exams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExamRequirements_SpecialtyToIoEDescriptions_SpecialtyToIoEDescriptionId",
+                        column: x => x.SpecialtyToIoEDescriptionId,
+                        principalTable: "SpecialtyToIoEDescriptions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -770,16 +704,6 @@ namespace YIF.Core.Data.Migrations
                 column: "InstitutionOfEducationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EducationFormToDescriptions_EducationFormId",
-                table: "EducationFormToDescriptions",
-                column: "EducationFormId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EducationFormToDescriptions_SpecialtyToIoEDescriptionId",
-                table: "EducationFormToDescriptions",
-                column: "SpecialtyToIoEDescriptionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ExamRequirements_ExamId",
                 table: "ExamRequirements",
                 column: "ExamId");
@@ -830,16 +754,6 @@ namespace YIF.Core.Data.Migrations
                 column: "InstitutionOfEducationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentFormToDescriptions_PaymentFormId",
-                table: "PaymentFormToDescriptions",
-                column: "PaymentFormId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentFormToDescriptions_SpecialtyToIoEDescriptionId",
-                table: "PaymentFormToDescriptions",
-                column: "SpecialtyToIoEDescriptionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SchoolAdmins_SchoolId",
                 table: "SchoolAdmins",
                 column: "SchoolId");
@@ -870,19 +784,9 @@ namespace YIF.Core.Data.Migrations
                 column: "SpecialtyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SpecialtyToInstitutionOfEducations_InstitutionOfEducationId",
-                table: "SpecialtyToInstitutionOfEducations",
-                column: "InstitutionOfEducationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SpecialtyToInstitutionOfEducations_SpecialtyId",
                 table: "SpecialtyToInstitutionOfEducations",
                 column: "SpecialtyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SpecialtyToInstitutionOfEducations_SpecialtyToIoEDescriptionId",
-                table: "SpecialtyToInstitutionOfEducations",
-                column: "SpecialtyToIoEDescriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SpecialtyToInstitutionOfEducationToGraduates_GraduateId",
@@ -893,6 +797,16 @@ namespace YIF.Core.Data.Migrations
                 name: "IX_SpecialtyToInstitutionOfEducationToGraduates_InstitutionOfEducationId",
                 table: "SpecialtyToInstitutionOfEducationToGraduates",
                 column: "InstitutionOfEducationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialtyToIoEDescriptions_InstitutionOfEducationId",
+                table: "SpecialtyToIoEDescriptions",
+                column: "InstitutionOfEducationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialtyToIoEDescriptions_SpecialtyId",
+                table: "SpecialtyToIoEDescriptions",
+                column: "SpecialtyId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -919,9 +833,6 @@ namespace YIF.Core.Data.Migrations
                 name: "DirectionsToInstitutionOfEducations");
 
             migrationBuilder.DropTable(
-                name: "EducationFormToDescriptions");
-
-            migrationBuilder.DropTable(
                 name: "ExamRequirements");
 
             migrationBuilder.DropTable(
@@ -932,9 +843,6 @@ namespace YIF.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Lectures");
-
-            migrationBuilder.DropTable(
-                name: "PaymentFormToDescriptions");
 
             migrationBuilder.DropTable(
                 name: "SchoolModerators");
@@ -961,22 +869,16 @@ namespace YIF.Core.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "EducationForms");
+                name: "Exams");
 
             migrationBuilder.DropTable(
-                name: "Exams");
+                name: "SpecialtyToIoEDescriptions");
 
             migrationBuilder.DropTable(
                 name: "InstitutionOfEducationAdmins");
 
             migrationBuilder.DropTable(
-                name: "PaymentForms");
-
-            migrationBuilder.DropTable(
                 name: "SchoolAdmins");
-
-            migrationBuilder.DropTable(
-                name: "SpecialtyToIoEDescriptions");
 
             migrationBuilder.DropTable(
                 name: "Graduates");

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -18,45 +19,26 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dto => dto.Direction, opt => opt.Ignore());
 
             CreateMap<Exam, ExamDTO>().ReverseMap();
-            CreateMap<EducationForm, EducationFormDTO>().ReverseMap();
-            CreateMap<PaymentForm, PaymentFormDTO>().ReverseMap();
 
             CreateMap<ExamDTO, ExamResponseApiModel>();
-            CreateMap<EducationFormDTO, EducationFormResponseApiModel>();
-            CreateMap<PaymentFormDTO, PaymentFormResponseApiModel>();
-
             CreateMap<ExamDTO, ExamsResponseApiModel>();
-            CreateMap<EducationFormDTO, EducationFormsResponseApiModel>();
-            CreateMap<PaymentFormDTO, PaymentFormsResponseApiModel>();
-
-            //
-            CreateMap<EducationFormDTO, EducationFormForEditPageResponseApiModel>();
-            CreateMap<PaymentFormDTO, PaymentFormForEditPageResponseApiModel>();
-            //
 
             CreateMap<ExamRequirement, ExamRequirementDTO>().ReverseMap();
-            CreateMap<EducationFormToDescription, EducationFormToDescriptionDTO>().ReverseMap();
-            CreateMap<PaymentFormToDescription, PaymentFormToDescriptionDTO>().ReverseMap();
 
             CreateMap<ExamRequirementDTO, ExamRequirementsResponseApiModel>()
                 .ForMember(dst => dst.ExamName, opt => opt.MapFrom(src => src.Exam.Name));
-            CreateMap<EducationFormToDescriptionDTO, EducationFormToDescriptionResponseApiModel>()
-                .ForMember(dst => dst.EducationFormName, opt => opt.MapFrom(src => src.EducationForm.Name));
-            CreateMap<PaymentFormToDescriptionDTO, PaymentFormToDescriptionResponseApiModel>()
-                .ForMember(dst => dst.PaymentFormName, opt => opt.MapFrom(src => src.PaymentForm.Name));
 
             CreateMap<ExamRequirementDTO, ExamRequirementForEditPageResponseApiModel>()
                 .ForMember(dst => dst.ExamId, opt => opt.MapFrom(scr => scr.ExamId))
                 .ForMember(dst => dst.ExamName, opt => opt.MapFrom(src => src.Exam.Name));
-            CreateMap<EducationFormToDescriptionDTO, EducationFormToDescriptionForEditPageResponseApiModel>()
-                .ForMember(dst => dst.EducationFormId, opt => opt.MapFrom(scr => scr.EducationFormId))
-              .ForMember(dst => dst.EducationFormName, opt => opt.MapFrom(src => src.EducationForm.Name));
-            CreateMap<PaymentFormToDescriptionDTO, PaymentFormToDescriptionForEditPageResponseApiModel>()
-                .ForMember(dst => dst.PaymentFormId, opt => opt.MapFrom(scr => scr.PaymentFormId))
-                .ForMember(dst => dst.PaymentFormName, opt => opt.MapFrom(src => src.PaymentForm.Name));
 
             CreateMap<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>().ReverseMap();
-            CreateMap<SpecialtyToIoEDescriptionDTO, SpecialtyToIoEDescriptionResponseApiModel>();
+            CreateMap<SpecialtyToIoEDescriptionDTO, SpecialtyToIoEDescriptionResponseApiModel>()
+                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.EducationalProgramLink))
+                .ForMember(dst => dst.EducationForm, opt => opt.MapFrom(src => src.EducationForm))
+                .ForMember(dst => dst.PaymentForm, opt => opt.MapFrom(src => src.PaymentForm))
+                .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.ExamRequirements));
 
             CreateMap<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>().ReverseMap();
             CreateMap<SpecialtyToInstitutionOfEducationPostApiModel, SpecialtyToInstitutionOfEducationDTO>();
@@ -65,11 +47,7 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.InstitutionOfEducationAbbreviation, opt => opt.MapFrom(src => src.InstitutionOfEducation.Abbreviation))
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
-                .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationalProgramLink))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.Description))
-                .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.ExamRequirements))
-                .ForMember(dst => dst.EducationFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationFormToDescriptions))
-                .ForMember(dst => dst.PaymentFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.PaymentFormToDescriptions));
+                .ForMember(dst => dst.Descriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription));
 
             CreateMap<SpecialtyToInstitutionOfEducationDTO, SpecialtyDescriptionForEditPageResponseApiModel>()
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
@@ -77,11 +55,8 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationalProgramLink))
                 .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.Description))
                 .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.ExamRequirements))
-                .ForMember(dst => dst.EducationFormsToDescription, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationFormToDescriptions))
-                .ForMember(dst => dst.PaymentFormsToDescription, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.PaymentFormToDescriptions));
-
-            //SpecialtyToIoEDescription
-
+                .ForMember(dst => dst.EducationForm, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationForm))
+                .ForMember(dst => dst.PaymentForm, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.PaymentForm));
         }
     }
 }

@@ -29,11 +29,7 @@ namespace YIF.Core.Data.Interfaces
         DbSet<InstitutionOfEducationToGraduate> InstitutionOfEducationsToGraduates { get; set; }
         DbSet<Exam> Exams { get; set; }
         DbSet<ExamRequirement> ExamRequirements { get; set; }
-        DbSet<EducationForm> EducationForms { get; set; }
-        DbSet<PaymentForm> PaymentForms { get; set; }
         DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
-        DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
-        DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
         DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
 
 

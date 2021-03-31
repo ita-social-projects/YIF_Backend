@@ -71,8 +71,6 @@ namespace YIF_Backend
             services.AddTransient<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>, DirectionToInstitutionOfEducationRepository>();
             services.AddTransient<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>, SpecialtyToInstitutionOfEducationRepository>();
             services.AddTransient<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>, ExamRequirementRepository>();
-            services.AddTransient<IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO>, EducationFormToDescriptionRepository>();
-            services.AddTransient<IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>, PaymentFormToDescriptionRepository>();
             services.AddTransient<ITokenRepository<TokenDTO>, TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<ISpecialtyService, SpecialtyService>();
@@ -91,8 +89,7 @@ namespace YIF_Backend
             services.AddTransient<IPaginationService, PaginationService>();
             services.AddTransient<IGraduateRepository<Graduate, GraduateDTO>, GraduateRepository>();
             services.AddTransient<IExamRepository<Exam, ExamDTO>, ExamRepository>();
-            services.AddTransient<IPaymentFormRepository<PaymentForm, PaymentFormDTO>, PaymentFormRepository>();
-            services.AddTransient<IEducationFormRepository<EducationForm, EducationFormDTO>, EducationFormRepository>();
+            services.AddTransient<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>, SpecialtyToIoEDescriptionRepository>();
             services.AddTransient<IIoEAdminService, IoEAdminService>();
             services.AddTransient<IIoEModeratorService, IoEModeratorService>();
 
@@ -223,7 +220,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             if (_currentEnvironment.IsEnvironment("Testing"))
             {
                 SeederDB.SeedData(app.ApplicationServices);

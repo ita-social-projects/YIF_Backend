@@ -14,5 +14,6 @@ namespace YIF.Core.Data.Entities
         public virtual Direction Direction { get; set; }
         public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
         public virtual ICollection<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
+        public virtual ICollection<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace YIF.Core.Domain.Repositories
             var list = _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                .Include(x => x.SpecialtyToIoEDescription)
+                //.Include(x => x.SpecialtyToIoEDescription)
                 .Where(predicate)
                 .ToList();
 
@@ -59,8 +59,9 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SpecialtyToInstitutionOfEducationDTO> Get(string id)
         {
-            var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations.FirstOrDefaultAsync(x => x.Id == id);
-            return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToInstitutionOfEducation);
+            throw new NotImplementedException();
+            //var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations.FirstOrDefaultAsync(x => x.Id == id);
+            //return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToInstitutionOfEducation);
         }
 
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> GetAll()
@@ -68,7 +69,7 @@ namespace YIF.Core.Domain.Repositories
             var list = await _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                .Include(x => x.SpecialtyToIoEDescription)
+                //.Include(x => x.SpecialtyToIoEDescription)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list);
@@ -86,25 +87,25 @@ namespace YIF.Core.Domain.Repositories
               .Where(su => su.SpecialtyId == id)
               .Include(u => u.InstitutionOfEducation)
               .Include(s => s.Specialty)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-              .ThenInclude(e => e.ExamRequirements)
-                  .ThenInclude(e => e.Exam)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-                  .ThenInclude(e => e.PaymentFormToDescriptions)
-                      .ThenInclude(e => e.PaymentForm)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-                  .ThenInclude(e => e.EducationFormToDescriptions)
-                      .ThenInclude(e => e.EducationForm)
+              //.Include(sd => sd.SpecialtyToIoEDescription)
+              //.ThenInclude(e => e.ExamRequirements)
+                  //.ThenInclude(e => e.Exam)
               .AsNoTracking()
               .ToListAsync();
+            //var entity = from si in _context.SpecialtyToInstitutionOfEducations
+                         //join desc in _context.SpecialtyToIoEDescriptions on si.SpecialtyToIoEDescriptionId equals desc.Id
+                         //join er in _context.ExamRequirements on desc.Id equals er.SpecialtyToIoEDescriptionId
+                         //join e in _context.Exams on er.ExamId equals e.Id
+                         //select si;
 
-            foreach (var item in specialtyToInstitutionOfEducation)
-            {
-                if(item.SpecialtyToIoEDescription.Description == null)
-                {
-                    item.SpecialtyToIoEDescription.Description = item.Specialty.Description;
-                }
-            }
+
+            //foreach (var item in specialtyToInstitutionOfEducation)
+            //{
+            //    if(item.SpecialtyToIoEDescription.Description == null)
+            //    {
+            //        item.SpecialtyToIoEDescription.Description = item.Specialty.Description;
+            //    }
+            //}
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
@@ -139,15 +140,9 @@ namespace YIF.Core.Domain.Repositories
               .Where(su => su.SpecialtyId == specialtyId)
               .Include(u => u.InstitutionOfEducation)
               .Include(s => s.Specialty)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-              .ThenInclude(e => e.ExamRequirements)
-                  .ThenInclude(e => e.Exam)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-                  .ThenInclude(e => e.PaymentFormToDescriptions)
-                      .ThenInclude(e => e.PaymentForm)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-                  .ThenInclude(e => e.EducationFormToDescriptions)
-                      .ThenInclude(e => e.EducationForm)
+              //.Include(sd => sd.SpecialtyToIoEDescription)
+              //.ThenInclude(e => e.ExamRequirements)
+                  //.ThenInclude(e => e.Exam)
               .AsNoTracking()
               .FirstOrDefaultAsync();
 

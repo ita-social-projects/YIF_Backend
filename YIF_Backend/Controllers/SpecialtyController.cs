@@ -270,7 +270,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllExamsNamesAsync()
         {
-            var result = await _specialtyService.GetExamsNames();
+            var result = await _specialtyService.GetExams();
             return Ok(result);
         }
 
@@ -286,7 +286,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllEducationFormsNamesAsync()
         {
-            var result = await _specialtyService.GetEducationFormsNames();
+            var result = await _specialtyService.GetEducationForms();
             return Ok(result);
         }
 
@@ -302,7 +302,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllPaymentFormsNamesAsync()
         {
-            var result = await _specialtyService.GetPaymentFormsNames();
+            var result = await _specialtyService.GetPaymentForms();
             return Ok(result);
         }
     }

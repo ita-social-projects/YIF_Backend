@@ -25,8 +25,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private static readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private static readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
-        private static readonly Mock<IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO>> _educationFormToDescriptionRepository = new Mock<IEducationFormToDescriptionRepository<EducationFormToDescription, EducationFormToDescriptionDTO>>();
-        private static readonly Mock<IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>> _paymentFormToDescriptionRepository = new Mock<IPaymentFormToDescriptionRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>>();
         private static readonly Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>> _specialtyToInstitutionOfEducationRepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
@@ -41,8 +39,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository.Object,
             _directionToIoERepository.Object,
             _directionRepository.Object,
-            _educationFormToDescriptionRepository.Object,
-            _paymentFormToDescriptionRepository.Object,
             _specialtyToInstitutionOfEducationRepository.Object,
             _graduateRepository.Object,
             _mapperMock.Object,
