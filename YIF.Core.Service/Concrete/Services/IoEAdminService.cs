@@ -15,7 +15,7 @@ using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
 {
-    public class IoEAdminService:IIoEAdminService
+    public class IoEAdminService : IIoEAdminService
     {
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
@@ -42,7 +42,8 @@ namespace YIF.Core.Service.Concrete.Services
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
-
+            _env = env;
+            _configuration = configuration;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
