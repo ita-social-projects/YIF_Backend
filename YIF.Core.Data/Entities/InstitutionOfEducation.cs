@@ -29,7 +29,8 @@ namespace YIF.Core.Data.Entities
         public virtual ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
         public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
         public virtual ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducation { get; set; }
-        public virtual ICollection<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
+        public virtual ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
+
 
 
     }

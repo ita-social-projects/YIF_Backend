@@ -82,29 +82,29 @@ namespace YIF.Core.Service.Concrete.Services
                 specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
             }
 
-            //if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
-            //{
-            //    //Filtering for educationFormToDescription that has such EducationForm
-            //    var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+            if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
+            {
+                //Filtering for educationFormToDescription that has such EducationForm
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.EducationForm == (EducationForm)Enum.Parse(typeof(EducationForm), filterModel.EducationForm));
 
-            //    //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
-            //    var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
-            //    var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-            //        .Where(x => educationFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
+                var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
+                var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-            //    specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
-            //}
+                specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
+            }
 
-            //if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
-            //{
-            //    var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+            if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
+            {
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.PaymentForm == (PaymentForm)Enum.Parse(typeof(PaymentForm), filterModel.PaymentForm));
 
-            //    var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
-            //    var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-            //        .Where(x => paymentFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
+                var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-            //    specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
-            //}
+                specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
+            }
             return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
         }
         
@@ -166,14 +166,6 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyDescriptionsNotFound"));
             }
             var result = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(specialtyDescriptions);
-            return result;
-        }
-
-        public async Task<SpecialtyDescriptionForEditPageResponseApiModel> GetFullSpecialtyDescriptionById(string specialtyId, string IoEId)
-        {
-            var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetFullSpecialtyDescriptionById(specialtyId, IoEId);
-            //checks??
-            var result = _mapper.Map<SpecialtyDescriptionForEditPageResponseApiModel>(specialtyDescriptions);
             return result;
         }
 

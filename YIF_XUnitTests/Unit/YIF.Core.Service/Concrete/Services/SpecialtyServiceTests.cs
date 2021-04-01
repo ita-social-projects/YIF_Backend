@@ -32,7 +32,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
 
         private readonly SpecialtyDTO _specialtyDTO = new SpecialtyDTO { Id = "id", Direction = new DirectionDTO() };
-        private readonly SpecialtyToInstitutionOfEducationDTO _specialtyToInstitutionOfEducationDTO = new SpecialtyToInstitutionOfEducationDTO { SpecialtyId = "id", InstitutionOfEducation = new InstitutionOfEducationDTO(), SpecialtyToIoEDescription = new SpecialtyToIoEDescriptionDTO() };
+        private readonly SpecialtyToInstitutionOfEducationDTO _specialtyToInstitutionOfEducationDTO = new SpecialtyToInstitutionOfEducationDTO { SpecialtyId = "id", InstitutionOfEducation = new InstitutionOfEducationDTO()};
         private readonly IEnumerable<SpecialtyDTO> _listSpecialty;
         private readonly IEnumerable<SpecialtyToInstitutionOfEducationDTO> _listSpecialityToInstitutionOfEducationDTO;
         private readonly IEnumerable<SpecialtyDTO> _blankListSpecialty = new List<SpecialtyDTO>().AsEnumerable();

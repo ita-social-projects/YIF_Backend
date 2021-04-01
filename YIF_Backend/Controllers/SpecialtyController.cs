@@ -159,26 +159,6 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get specialty descriptions by id.
-        /// </summary>
-        /// <returns>A specialty descriptions</returns>
-        /// <response code="200">Returns a specialty descriptions</response>
-        /// <response code="404">If specialty descriptions not found</response>
-        /// <param name="specialtyId" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Specialty Id</param>
-        /// <param name="institutionOfEducationId" example="28bf4f2e-6c43-42c0-8391-cbbaba6b5a5a">Institution of Education Id</param>
-
-        [HttpGet("Descriptions/Full")]
-        [ProducesResponseType(typeof(SpecialtyDescriptionForEditPageResponseApiModel), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetFullSpecialtyDescriptionsAsync(string specialtyId, string institutionOfEducationId)
-        {
-            var result = await _specialtyService.GetFullSpecialtyDescriptionById(specialtyId, institutionOfEducationId);
-            _logger.LogInformation("Getting a specialty descriptions");
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Add specialty with institution of education to favorite.
         /// </summary>
         /// <returns>None</returns>
@@ -230,7 +210,6 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("Favorites/{specialtyId}")]
         [Authorize(Roles = "Graduate")]
-
         public async Task<IActionResult> AddSpecialtyToFavorite(string specialtyId)
         {
             var userId = User.FindFirst("id")?.Value;

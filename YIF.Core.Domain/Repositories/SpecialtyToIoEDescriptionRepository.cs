@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,9 +40,19 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<SpecialtyToIoEDescriptionDTO>> Find(Expression<Func<SpecialtyToIoEDescription, bool>> predicate)
+        public async Task<IEnumerable<SpecialtyToIoEDescriptionDTO>> Find(Expression<Func<SpecialtyToIoEDescription, bool>> predicate)
         {
-            throw new NotImplementedException();
+            var list = await _context.SpecialtyToIoEDescriptions
+                .Where(predicate)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (list != null || list.Count > 0)
+            {
+                return await Task.FromResult(_mapper.Map<IEnumerable<SpecialtyToIoEDescriptionDTO>>(list));
+            }
+
+            return null;
         }
 
         public Task<SpecialtyToIoEDescriptionDTO> Get(string id)

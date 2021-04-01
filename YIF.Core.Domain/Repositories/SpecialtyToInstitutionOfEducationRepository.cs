@@ -69,7 +69,7 @@ namespace YIF.Core.Domain.Repositories
             var list = await _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                //.Include(x => x.SpecialtyToIoEDescription)
+                .Include(x => x.SpecialtyToIoEDescriptions)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list);
@@ -87,25 +87,24 @@ namespace YIF.Core.Domain.Repositories
               .Where(su => su.SpecialtyId == id)
               .Include(u => u.InstitutionOfEducation)
               .Include(s => s.Specialty)
-              //.Include(sd => sd.SpecialtyToIoEDescription)
-              //.ThenInclude(e => e.ExamRequirements)
-                  //.ThenInclude(e => e.Exam)
+              .Include(sd => sd.SpecialtyToIoEDescriptions)
+              .ThenInclude(e => e.ExamRequirements)
+              .ThenInclude(e => e.Exam)
               .AsNoTracking()
               .ToListAsync();
-            //var entity = from si in _context.SpecialtyToInstitutionOfEducations
-                         //join desc in _context.SpecialtyToIoEDescriptions on si.SpecialtyToIoEDescriptionId equals desc.Id
-                         //join er in _context.ExamRequirements on desc.Id equals er.SpecialtyToIoEDescriptionId
-                         //join e in _context.Exams on er.ExamId equals e.Id
-                         //select si;
 
-
-            //foreach (var item in specialtyToInstitutionOfEducation)
-            //{
-            //    if(item.SpecialtyToIoEDescription.Description == null)
-            //    {
-            //        item.SpecialtyToIoEDescription.Description = item.Specialty.Description;
-            //    }
-            //}
+            //good, but big count of operations
+            foreach (var item in specialtyToInstitutionOfEducation)
+            {
+                foreach (var item1 in item.SpecialtyToIoEDescriptions)
+                {
+                    if (item1.Description == null)
+                    {
+                        item1.Description = item.Specialty.Description;
+                    }
+                }
+              
+            }
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
@@ -131,22 +130,6 @@ namespace YIF.Core.Domain.Repositories
             if (result != null)
                 return true;
             return false;
-        }
-
-        public async Task<SpecialtyToInstitutionOfEducationDTO> GetFullSpecialtyDescriptionById(string specialtyId, string IoEId)
-        {
-            var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations
-              .Where(i => i.InstitutionOfEducationId == IoEId)
-              .Where(su => su.SpecialtyId == specialtyId)
-              .Include(u => u.InstitutionOfEducation)
-              .Include(s => s.Specialty)
-              //.Include(sd => sd.SpecialtyToIoEDescription)
-              //.ThenInclude(e => e.ExamRequirements)
-                  //.ThenInclude(e => e.Exam)
-              .AsNoTracking()
-              .FirstOrDefaultAsync();
-
-            return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToInstitutionOfEducation);
         }
     }
 }

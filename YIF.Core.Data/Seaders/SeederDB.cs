@@ -1207,17 +1207,16 @@ namespace YIF.Core.Data.Seaders
                 var institutionOfEducations = context.InstitutionOfEducations.ToList();
 
                 var currentInstitutionOfEducationId = string.Empty;
-                var specialtyToIoE = new SpecialtyToInstitutionOfEducation();
+                string specialtyToIoEId = "";
 
                 #region Академія внутрішніх військ МВС України
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
                 #region Соціологія
-                specialtyToIoE =  context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId =  context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
@@ -1232,12 +1231,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Політологія   
-                specialtyToIoE =  context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId =  context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
@@ -1252,12 +1250,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Статистика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
@@ -1277,12 +1274,11 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Національний університет \"Острозька академія\"").Id;
 
                 #region Системний аналіз
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
@@ -1297,12 +1293,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Інженерія програмного забезпечення
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1315,12 +1310,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Кібербезпека
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1333,12 +1327,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1351,12 +1344,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Прикладна математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1369,12 +1361,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Гідроенергетика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1392,12 +1383,11 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Національний університет водного господарства та природокористування").Id;
 
                 #region Системний аналіз
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1410,12 +1400,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Інженерія програмного забезпечення
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1428,12 +1417,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Метрологія та інформаційно-вимірювальна техніка
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1446,12 +1434,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Автоматизація та комп’ютерно-інтегровані технології
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Автоматизація та комп’ютерно-інтегровані технології" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Автоматизація та комп’ютерно-інтегровані технології" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1464,12 +1451,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Гідроенергетика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Гідроенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1482,12 +1468,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Енергетичне машинобудування
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Енергетичне машинобудування" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Енергетичне машинобудування" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1505,12 +1490,11 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука").Id;
 
                 #region Математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1523,12 +1507,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Статистика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1546,12 +1529,11 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Київський політехнічний інститут імені Ігоря Сікорського").Id;
 
                 #region Атомна енергетика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         Description = "Це кастонмий опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
@@ -1566,12 +1548,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Теплоенергетика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1584,12 +1565,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Електроенергетика, електротехніка та електромеханіка
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Електроенергетика, електротехніка та електромеханіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Електроенергетика, електротехніка та електромеханіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1602,12 +1582,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1620,12 +1599,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Прикладна математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1638,12 +1616,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Статистика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1656,12 +1633,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Інженерія програмного забезпечення
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інженерія програмного забезпечення" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1674,13 +1650,26 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Інформаційні системи та технології
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інформаційні системи та технології" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Інформаційні системи та технології" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
+                        PaymentForm = PaymentForm.Day,
+                        EducationalProgramLink = "example.com",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.5},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.2}
+                        }
+                    });
+                context.SpecialtyToIoEDescriptions.Add(
+                    new SpecialtyToIoEDescription
+                    {
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                        EducationForm = EducationForm.Contract,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
@@ -1692,12 +1681,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Кібербезпека
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Кібербезпека" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1710,12 +1698,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Комп’ютерна інженерія
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Комп’ютерна інженерія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Комп’ютерна інженерія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1728,12 +1715,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Комп'ютерні науки
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Комп'ютерні науки" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Комп'ютерні науки" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1746,12 +1732,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Системний аналіз
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Системний аналіз" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1764,12 +1749,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Метрологія та інформаційно-вимірювальна техніка
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Метрологія та інформаційно-вимірювальна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1782,12 +1766,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Мікро- та наносистемна техніка
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Мікро- та наносистемна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Мікро- та наносистемна техніка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1805,12 +1788,11 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
 
                 #region Атомна енергетика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Атомна енергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1823,12 +1805,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Теплоенергетика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Теплоенергетика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1841,12 +1822,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1859,12 +1839,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Прикладна математика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Прикладна математика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",
@@ -1877,12 +1856,11 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Статистика
-                specialtyToIoE = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId);
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Статистика" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
-                        SpecialtyId = specialtyToIoE.SpecialtyId,
-                        InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Budget,
                         PaymentForm = PaymentForm.Day,
                         EducationalProgramLink = "example.com",

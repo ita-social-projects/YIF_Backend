@@ -179,6 +179,18 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.DirectionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<SpecialtyToInstitutionOfEducation>()
+                .HasOne(x => x.Specialty)
+                .WithMany(x => x.SpecialtyToInstitutionOfEducations)
+                .HasForeignKey(x => x.SpecialtyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SpecialtyToInstitutionOfEducation>()
+                .HasOne(x => x.InstitutionOfEducation)
+                .WithMany(x => x.SpecialtyToInstitutionOfEducations)
+                .HasForeignKey(x => x.InstitutionOfEducationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<SpecialtyToIoEDescription>()
                 .Property(e => e.EducationForm)
                 .HasConversion(
@@ -192,25 +204,16 @@ namespace YIF.Core.Data
                 v => (PaymentForm)Enum.Parse(typeof(PaymentForm), v));
 
             builder.Entity<SpecialtyToIoEDescription>()
-                .HasOne(x => x.Specialty)
+                .HasOne(x => x.SpecialtyToInstitutionOfEducation)
                 .WithMany(x => x.SpecialtyToIoEDescriptions)
-                .HasForeignKey(x => x.SpecialtyId)
+                .HasForeignKey(x => x.SpecialtyToInstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<SpecialtyToIoEDescription>()
-               .HasOne(x => x.InstitutionOfEducation)
-               .WithMany(x => x.SpecialtyToIoEDescriptions)
-               .HasForeignKey(x => x.InstitutionOfEducationId)
-               .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<DirectionToInstitutionOfEducation>()
                 .HasOne(x => x.InstitutionOfEducation)
                 .WithMany(x => x.DirectionToInstitutionOfEducation)
                 .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<SpecialtyToInstitutionOfEducation>()
-                .HasKey(c => new {c.InstitutionOfEducationId, c.SpecialtyId});
 
             builder.Entity<ExamRequirement>()
                 .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyToIoEDescriptionId});
