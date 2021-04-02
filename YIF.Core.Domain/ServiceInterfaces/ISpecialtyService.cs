@@ -22,5 +22,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<IEnumerable<ExamsResponseApiModel>> GetExams();
         Task<IEnumerable<string>> GetEducationForms();
         Task<IEnumerable<string>> GetPaymentForms();
+        Task<string> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel);
     }
 }

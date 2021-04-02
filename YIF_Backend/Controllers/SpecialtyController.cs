@@ -284,5 +284,22 @@ namespace YIF_Backend.Controllers
             var result = await _specialtyService.GetPaymentForms();
             return Ok(result);
         }
+
+        /// <summary>
+        /// Update specialty description in IoE.
+        /// </summary>
+        /// <returns>Message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Not Found Message</response>
+        [HttpPut("Description/Update")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [Authorize(Roles = "")]
+        public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            var result = await _specialtyService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
+            return Ok(result);
+        }
     }
 }

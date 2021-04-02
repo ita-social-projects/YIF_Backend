@@ -600,8 +600,8 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     SpecialtyToInstitutionOfEducationId = table.Column<string>(nullable: true),
-                    PaymentForm = table.Column<string>(nullable: false),
-                    EducationForm = table.Column<string>(nullable: false),
+                    PaymentForm = table.Column<string>(nullable: true),
+                    EducationForm = table.Column<string>(nullable: true),
                     EducationalProgramLink = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },

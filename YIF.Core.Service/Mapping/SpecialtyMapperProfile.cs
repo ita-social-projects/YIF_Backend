@@ -28,9 +28,7 @@ namespace YIF.Core.Service.Mapping
             CreateMap<ExamRequirementDTO, ExamRequirementsResponseApiModel>()
                 .ForMember(dst => dst.ExamName, opt => opt.MapFrom(src => src.Exam.Name));
 
-            CreateMap<ExamRequirementDTO, ExamRequirementForEditPageResponseApiModel>()
-                .ForMember(dst => dst.ExamId, opt => opt.MapFrom(scr => scr.ExamId))
-                .ForMember(dst => dst.ExamName, opt => opt.MapFrom(src => src.Exam.Name));
+            CreateMap<ExamRequirementUpdateApiModel, ExamRequirementDTO>();
 
             CreateMap<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>().ReverseMap();
             CreateMap<SpecialtyToIoEDescriptionDTO, SpecialtyToIoEDescriptionResponseApiModel>()
@@ -40,6 +38,8 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.PaymentForm, opt => opt.MapFrom(src => src.PaymentForm))
                 .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.ExamRequirements));
 
+            CreateMap<SpecialtyDescriptionUpdateApiModel, SpecialtyToIoEDescriptionDTO>();
+
             CreateMap<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>().ReverseMap();
             CreateMap<SpecialtyToInstitutionOfEducationPostApiModel, SpecialtyToInstitutionOfEducationDTO>();
 
@@ -48,12 +48,6 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
                 .ForMember(dst => dst.Descriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescriptions));
-
-            //CreateMap<SpecialtyToInstitutionOfEducationDTO, SpecialtyDescriptionForEditPageResponseApiModel>()
-            //    .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
-            //    .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
-            //    .ForMember(dst => dst.spec, opt => opt.MapFrom(src => src.))
-
         }
     }
 }

@@ -9,6 +9,7 @@ namespace YIF.Core.Data.Interfaces
         Task<K> GetEducationForms();
         Task<K> GetPaymentForms();
         Task<string> Add(T specialtyToIoEDescription);
+        Task<bool> Contains(string Id);
 
     }
 }

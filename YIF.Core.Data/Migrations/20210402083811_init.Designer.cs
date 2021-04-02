@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210401200926_init")]
+    [Migration("20210402083811_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -623,14 +623,12 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationForm")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationalProgramLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentForm")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SpecialtyToInstitutionOfEducationId")

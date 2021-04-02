@@ -40,18 +40,18 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> Find(Expression<Func<SpecialtyToInstitutionOfEducation, bool>> predicate)
+        public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> Find(Expression<Func<SpecialtyToInstitutionOfEducation, bool>> predicate)
         {
-            var list = _context.SpecialtyToInstitutionOfEducations
+            var list = await _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                //.Include(x => x.SpecialtyToIoEDescription)
+                .Include(x => x.SpecialtyToIoEDescriptions)
                 .Where(predicate)
-                .ToList();
+                .ToListAsync();
 
             if (list != null || list.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list));
+                return await Task.FromResult(_mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list));
             }
 
             return null;
@@ -108,6 +108,8 @@ namespace YIF.Core.Domain.Repositories
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
+
+        //Move to specialtyToIoEToGraduate
         public async Task AddFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
             await _context.SpecialtyToInstitutionOfEducationToGraduates.AddAsync(specialtyToInstitutionOfEducationToGraduate);
@@ -118,6 +120,8 @@ namespace YIF.Core.Domain.Repositories
             _context.SpecialtyToInstitutionOfEducationToGraduates.Remove(specialtyToInstitutionOfEducationToGraduate);
             await _context.SaveChangesAsync();
         }
+
+        //Move to specialtyToIoEToGraduate
         public async Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
             var result = await _context.SpecialtyToInstitutionOfEducationToGraduates
@@ -125,6 +129,18 @@ namespace YIF.Core.Domain.Repositories
                 .Where(x => x.SpecialtyId == specialtyToInstitutionOfEducationToGraduate.SpecialtyId)
                 .Where(x => x.InstitutionOfEducationId == specialtyToInstitutionOfEducationToGraduate.InstitutionOfEducationId)
                 .Where(x => x.GraduateId == specialtyToInstitutionOfEducationToGraduate.GraduateId)
+                .FirstOrDefaultAsync();
+
+            if (result != null)
+                return true;
+            return false;
+        }
+
+        public async Task<bool> Contains(string Id)
+        {
+            var result = await _context.SpecialtyToInstitutionOfEducations
+                .AsNoTracking()
+                .Where(x => x.Id == Id)
                 .FirstOrDefaultAsync();
 
             if (result != null)

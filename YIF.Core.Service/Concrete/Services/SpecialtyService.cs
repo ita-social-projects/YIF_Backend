@@ -280,12 +280,35 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<IEnumerable<string>> GetEducationForms()
         {
-            return Enum.GetNames(typeof(EducationForm)).ToList(); ;
+            return await Task.Run(() =>
+            {
+                return Enum.GetNames(typeof(EducationForm)).ToList();
+            });
         }
 
         public async Task<IEnumerable<string>> GetPaymentForms()
         {
-            return Enum.GetNames(typeof(PaymentForm)).ToList(); ;
+            return await Task.Run(() =>
+            {
+                return Enum.GetNames(typeof(PaymentForm)).ToList();
+            }); 
+        }
+
+        public async Task<string> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            bool specialtyToIoE = await _specialtyToInstitutionOfEducationRepository.Contains(specialtyDescriptionUpdateApiModel.SpecialtyToInstitutionOfEducationId);
+            //bool specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Contains(specialtyDescriptionUpdateApiModel.Id);
+
+            if (!specialtyToIoE)
+                throw new BadRequestException(_resourceManager.GetString("TheIoEDoesNotHaveSuchSpecialty"));
+
+            //if (!specialtyToIoEDescription)
+                //throw new BadRequestException(_resourceManager.GetString("SpecialtyInIoEDoesNotHaveDescription"));
+
+            var specialtyToIoEDescriptionDTO = _mapper.Map<SpecialtyToIoEDescriptionDTO>(specialtyDescriptionUpdateApiModel);
+            await _examRequirementRepository.DeleteRangeByDescriptionId(specialtyDescriptionUpdateApiModel.Id);
+            await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO));
+            return "Specialty description was updated";
         }
     }
 }

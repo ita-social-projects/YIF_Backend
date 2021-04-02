@@ -30,6 +30,18 @@ namespace YIF.Core.Domain.Repositories
             return specialtyToIoEDescription.Id;
         }
 
+        public async Task<bool> Contains(string Id)
+        {
+            var result = await _context.SpecialtyToIoEDescriptions
+                          .AsNoTracking()
+                          .Where(x => x.Id == Id)
+                          .FirstOrDefaultAsync();
+
+            if (result != null)
+                return true;
+            return false;
+        }
+
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
@@ -75,9 +87,10 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<SpecialtyToIoEDescriptionDTO>(new SpecialtyToIoEDescription());
         }
 
-        public Task<bool> Update(SpecialtyToIoEDescription item)
+        public async Task<bool> Update(SpecialtyToIoEDescription item)
         {
-            throw new NotImplementedException();
+            _context.SpecialtyToIoEDescriptions.Update(item);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

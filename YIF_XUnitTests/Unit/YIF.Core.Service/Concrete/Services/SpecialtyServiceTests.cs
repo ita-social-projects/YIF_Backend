@@ -832,6 +832,73 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+        [Fact]
+        public async Task GetExams_ShouldReturnListOfExamsResponseApiModel_IfEverythingIsOk()
+        {
+            //Arrange
+            var listOfExamDTO = new List<ExamDTO>();
+            _examRepository.Setup(sr => sr.GetAll()).ReturnsAsync(listOfExamDTO);
+
+            var examsResponseApiModel = new ExamsResponseApiModel();
+            var listOfExamsResponseApiModel = new List<ExamsResponseApiModel>() { examsResponseApiModel };
+            _mapper.Setup(sr => sr.Map<IEnumerable<ExamsResponseApiModel>>(listOfExamDTO)).Returns(listOfExamsResponseApiModel);
+
+            //Act
+            var result = await _specialtyService.GetExams();
+
+            //Assert
+            Assert.NotEmpty(result);
+        }
+        [Fact]
+        public async Task GetEducationForms_ShouldReturnListOfString_IfEverythingIsOk()
+        {
+            //Act
+            var result = await _specialtyService.GetEducationForms();
+
+            //Assert
+            Assert.NotEmpty(result);
+        }
+        [Fact]
+        public async Task GetPaymentForms_ShouldReturnListOfString_IfEverythingIsOk()
+        {
+            //Act
+            var result = await _specialtyService.GetPaymentForms();
+
+            //Assert
+            Assert.NotEmpty(result);
+        }
+        [Fact]
+        public async Task UpdateSpecialtyDescription_ShouldUpdateDescriptionAndReturnCorrectMessage_IfEverythingIsOk()
+        {
+            //Arrange
+            var specialtyDescriptionUpdateApiModel = new SpecialtyDescriptionUpdateApiModel();
+            var specialtyToIoEDescriptionDTO = new SpecialtyToIoEDescriptionDTO();
+            var specialtyToIoEDescription = new SpecialtyToIoEDescription();
+
+            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Contains(It.IsAny<string>())).ReturnsAsync(true);
+            //_specialtyToIoEDescriptionRepository.Setup(sr => sr.Contains(It.IsAny<string>())).ReturnsAsync(true);
+            _mapper.Setup(sr => sr.Map<SpecialtyToIoEDescriptionDTO>(specialtyDescriptionUpdateApiModel)).Returns(specialtyToIoEDescriptionDTO);
+            _examRequirementRepository.Setup(sr => sr.DeleteRangeByDescriptionId(It.IsAny<string>()));
+            _mapper.Setup(sr => sr.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)).Returns(specialtyToIoEDescription);
+            _specialtyToIoEDescriptionRepository.Setup(sr => sr.Update(specialtyToIoEDescription)).ReturnsAsync(true);
+
+            //Act
+            var result = await _specialtyService.UpdateSpecialtyDescription(new SpecialtyDescriptionUpdateApiModel());
+
+            //Assert
+            Assert.Equal("Specialty description was updated", result);
+        }
+        [Fact]
+        public async Task UpdateSpecialtyDescription_ShouldReturnBadRequest_IfIoEDoesNotHaveSuchSpecialty()
+        {
+            //Arrange
+            var specialtyDescriptionUpdateApiModel = new SpecialtyDescriptionUpdateApiModel();
+
+            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Contains(It.IsAny<string>())).ReturnsAsync(false);
+        
+            //Act / Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => _specialtyService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel));
+        }
 
         private SpecialtyToInstitutionOfEducationToGraduate GetFavoriteSpecialtyAndInstitutionOfEducations()
         {

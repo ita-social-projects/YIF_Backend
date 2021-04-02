@@ -621,14 +621,12 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationForm")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationalProgramLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentForm")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SpecialtyToInstitutionOfEducationId")

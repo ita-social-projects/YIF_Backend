@@ -51,9 +51,18 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<ExamRequirementDTO>> Find(Expression<Func<ExamRequirement, bool>> predicate)
+        public async Task<IEnumerable<ExamRequirementDTO>> Find(Expression<Func<ExamRequirement, bool>> predicate)
         {
-            throw new NotImplementedException();
+            var list = await _context.ExamRequirements
+               .Where(predicate)
+               .ToListAsync();
+
+            if (list != null || list.Count > 0)
+            {
+                return await Task.FromResult(_mapper.Map<IEnumerable<ExamRequirementDTO>>(list));
+            }
+
+            return null;
         }
 
         public Task<ExamRequirementDTO> Get(string id)
