@@ -100,7 +100,6 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [Authorize(Roles = "InstitutionOfEducationAdmin")]
         public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {
             var result = await _ioEAdminService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);

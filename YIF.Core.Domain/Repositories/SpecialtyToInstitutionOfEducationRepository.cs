@@ -29,7 +29,6 @@ namespace YIF.Core.Domain.Repositories
             return res > 0;
         }
 
-        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
@@ -92,7 +91,6 @@ namespace YIF.Core.Domain.Repositories
               .AsNoTracking()
               .ToListAsync();
 
-            //good, but big count of operations
             foreach (var item in specialtyToInstitutionOfEducation)
             {
                 foreach (var item1 in item.SpecialtyToIoEDescriptions)
@@ -108,7 +106,6 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
 
-        //Move to specialtyToIoEToGraduate
         public async Task AddFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
             await _context.SpecialtyToInstitutionOfEducationToGraduates.AddAsync(specialtyToInstitutionOfEducationToGraduate);
@@ -120,7 +117,6 @@ namespace YIF.Core.Domain.Repositories
             await _context.SaveChangesAsync();
         }
 
-        //Move to specialtyToIoEToGraduate
         public async Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
             var result = await _context.SpecialtyToInstitutionOfEducationToGraduates
@@ -128,18 +124,6 @@ namespace YIF.Core.Domain.Repositories
                 .Where(x => x.SpecialtyId == specialtyToInstitutionOfEducationToGraduate.SpecialtyId)
                 .Where(x => x.InstitutionOfEducationId == specialtyToInstitutionOfEducationToGraduate.InstitutionOfEducationId)
                 .Where(x => x.GraduateId == specialtyToInstitutionOfEducationToGraduate.GraduateId)
-                .FirstOrDefaultAsync();
-
-            if (result != null)
-                return true;
-            return false;
-        }
-
-        public async Task<bool> Contains(string Id)
-        {
-            var result = await _context.SpecialtyToInstitutionOfEducations
-                .AsNoTracking()
-                .Where(x => x.Id == Id)
                 .FirstOrDefaultAsync();
 
             if (result != null)

@@ -19,7 +19,6 @@ namespace YIF.Core.Domain.ApiModels.Validators
                 .NotEmpty()
                 .NotNull();
 
-
             RuleFor(x => x.SpecialtyToIoEDescriptionId)
                 .NotEmpty()
                 .NotNull().WithName("Specialty to IoE description id");

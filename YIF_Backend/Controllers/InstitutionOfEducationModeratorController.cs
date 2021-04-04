@@ -14,7 +14,7 @@ namespace YIF_Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    //[Authorize(Roles = "InstitutionOfEducationModerator")]
+    [Authorize(Roles = "InstitutionOfEducationModerator")]
     public class InstitutionOfEducationModeratorController : Controller
     {
         private readonly IIoEModeratorService _ioEModeratorService;

@@ -1,6 +1,4 @@
-﻿using YIF.Core.Data.Entities;
-
-namespace YIF.Core.Domain.ApiModels.RequestApiModels
+﻿namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
     public class FilterApiModel
     {
