@@ -288,4 +288,7 @@
   <data name="SpecialtyInIoEDoesNotHaveDescription" xml:space="preserve">
     <value>Спеціальність в закладі освіти немає опису</value>
   </data>
+  <data name="SpecialtyDescriptionUpdated" xml:space="preserve">
+    <value>Опис спеціальності оновлено</value>
+  </data>
 </root>

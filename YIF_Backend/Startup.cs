@@ -28,6 +28,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Domain.Validators;
 using YIF.Core.Service.Concrete.Services;
 using YIF_Backend.Infrastructure;
 using YIF_Backend.Infrastructure.Middleware;
@@ -95,7 +96,11 @@ namespace YIF_Backend
             #endregion
 
             #region FluentValidation
-            services.AddMvc().AddFluentValidation();
+            services.AddMvc()
+                .AddFluentValidation(s =>
+                {
+                    s.RegisterValidatorsFromAssemblyContaining<SpecialtyDescriptionUpdateApiModelValidator>();
+                });
             #endregion
 
             #region Swagger

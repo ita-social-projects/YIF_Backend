@@ -242,15 +242,13 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of exams names</returns>
         /// <response code="200">Returns a list of exams names</response>
-        /// <response code="404">If there are not exams</response>
         [HttpGet("Exams")]
-        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(IEnumerable<ExamsResponseApiModel>), 200)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllExamsNamesAsync()
+        public async Task<IActionResult> GetAllExamsNames()
         {
             var result = await _specialtyService.GetExams();
-            return Ok(result);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -258,15 +256,13 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of education forms names</returns>
         /// <response code="200">Returns a list of education forms names</response>
-        /// <response code="404">If there are not education forms</response>
         [HttpGet("EducationForms")]
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllEducationFormsNamesAsync()
+        public async Task<IActionResult> GetAllEducationFormsNames()
         {
             var result = await _specialtyService.GetEducationForms();
-            return Ok(result);
+            return Ok(result.Object);
         }
 
         /// <summary>
@@ -274,32 +270,13 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of payment forms names</returns>
         /// <response code="200">Returns a list of payment forms names</response>
-        /// <response code="404">If there are not payment forms</response>
         [HttpGet("PaymentForms")]
         [ProducesResponseType(typeof(IEnumerable<string>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllPaymentFormsNamesAsync()
+        public async Task<IActionResult> GetAllPaymentFormsNames()
         {
             var result = await _specialtyService.GetPaymentForms();
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Update specialty description in IoE.
-        /// </summary>
-        /// <returns>Message</returns>
-        /// <response code="200">Success message</response>
-        /// <response code="404">Not Found Message</response>
-        [HttpPut("Description/Update")]
-        [ProducesResponseType(typeof(string), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [Authorize(Roles = "")]
-        public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
-        {
-            var result = await _specialtyService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
-            return Ok(result);
+            return Ok(result.Object);
         }
     }
 }

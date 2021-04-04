@@ -77,16 +77,6 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<SpecialtyToIoEDescriptionDTO> GetEducationForms()
-        {
-            return _mapper.Map<SpecialtyToIoEDescriptionDTO>(new SpecialtyToIoEDescription());
-        }
-
-        public async Task<SpecialtyToIoEDescriptionDTO> GetPaymentForms()
-        {
-            return _mapper.Map<SpecialtyToIoEDescriptionDTO>(new SpecialtyToIoEDescription());
-        }
-
         public async Task<bool> Update(SpecialtyToIoEDescription item)
         {
             _context.SpecialtyToIoEDescriptions.Update(item);

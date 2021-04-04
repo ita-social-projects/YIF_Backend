@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
@@ -22,6 +23,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToIoERepository;
         private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
+        private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -33,6 +35,7 @@ namespace YIF.Core.Service.Concrete.Services
             IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToIoERepository,
             IDirectionRepository<Direction, DirectionDTO> directionRepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
+            ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
@@ -44,6 +47,7 @@ namespace YIF.Core.Service.Concrete.Services
             _directionRepository = directionRepository;
             _graduateRepository = graduateRepository;
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
+            _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -86,28 +90,29 @@ namespace YIF.Core.Service.Concrete.Services
                 filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialties.Any(y => y.InstitutionOfEducationId == x.Id));
             }
 
-            //if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
-            //{
-            //    //Filtering for educationFormToDescription that has such EducationForm
+            if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
+            {
+                //Filtering for educationFormToDescription that has such EducationForm
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.EducationForm == (EducationForm)Enum.Parse(typeof(EducationForm), filterModel.EducationForm));
 
-            //    //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
-            //    var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
-            //    var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-            //        .Where(x => educationFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
+                var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
+                var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-            //    filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
-            //}
+                filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
+            }
 
-            //if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
-            //{
-            //    var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+            if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
+            {
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.PaymentForm == (PaymentForm)Enum.Parse(typeof(PaymentForm), filterModel.PaymentForm));
 
-            //    var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
-            //    var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-            //        .Where(x => paymentFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
+                var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-            //    filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
-            //}
+                filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
+            }
 
             return _mapper.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(filteredInstitutionOfEducations.Distinct().ToList());
         }

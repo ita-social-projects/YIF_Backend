@@ -11,11 +11,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string Id { get; set; }
 
-        ///// <summary>
-        ///// Get the specialty to institution of education id to which this specialty description belongs.
-        ///// </summary>
-        //public string SpecialtyToInstitutionOfEducationId { get; set; }
-
         /// <summary>
         /// Type of education form
         /// </summary>  

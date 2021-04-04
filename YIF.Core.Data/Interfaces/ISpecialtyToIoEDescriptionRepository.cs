@@ -6,10 +6,6 @@ namespace YIF.Core.Data.Interfaces
         where T: class
         where K: class
     {
-        Task<K> GetEducationForms();
-        Task<K> GetPaymentForms();
         Task<string> Add(T specialtyToIoEDescription);
-        Task<bool> Contains(string Id);
-
     }
 }

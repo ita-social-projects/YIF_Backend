@@ -439,7 +439,8 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     SpecialtyId = table.Column<string>(nullable: true),
-                    InstitutionOfEducationId = table.Column<string>(nullable: true)
+                    InstitutionOfEducationId = table.Column<string>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -600,8 +601,8 @@ namespace YIF.Core.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     SpecialtyToInstitutionOfEducationId = table.Column<string>(nullable: true),
-                    PaymentForm = table.Column<string>(nullable: true),
-                    EducationForm = table.Column<string>(nullable: true),
+                    PaymentForm = table.Column<string>(nullable: false),
+                    EducationForm = table.Column<string>(nullable: false),
                     EducationalProgramLink = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },

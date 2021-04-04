@@ -190,5 +190,38 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             response.EnsureSuccessStatusCode();
         }
 
+        [Fact]
+        public async Task GetAllExamsNames_ShouldReturnOk()
+        {
+            //Act
+            var response = await _client.GetAsync($"/api/Specialty/Exams");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+
+        }
+
+        [Fact]
+        public async Task GetAllEducationFormsNames_ShouldReturnOk()
+        {
+            //Act
+            var response = await _client.GetAsync($"/api/Specialty/EducationForms");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+
+        }
+
+        [Fact]
+        public async Task GetAllPaymentFormsNames_ShouldReturnOk()
+        {
+            //Act
+            var response = await _client.GetAsync($"/api/Specialty/PaymentForms");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+
+        }
+
     }
 }

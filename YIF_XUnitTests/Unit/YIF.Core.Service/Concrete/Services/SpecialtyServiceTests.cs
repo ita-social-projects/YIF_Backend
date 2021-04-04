@@ -299,7 +299,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                  .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -335,7 +335,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                  .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -371,7 +371,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                  .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -407,7 +407,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -478,7 +478,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -514,7 +514,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -550,7 +550,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -586,7 +586,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                .Setup(ur => ur.RemoveFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
+            Task act() => _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(entity.SpecialtyId, entity.InstitutionOfEducationId, entity.GraduateId);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -648,7 +648,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -678,7 +678,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -708,7 +708,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
 
             // Act
-            Func<Task> act = () => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => _specialtyService.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -768,7 +768,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
+            Task act() => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -798,7 +798,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
+            Task act() => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -827,7 +827,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyRepository.Setup(sr => sr.RemoveFavorite(It.IsAny<SpecialtyToGraduate>()));
 
             // Act
-            Func<Task> act = () => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
+            Task act() => _specialtyService.DeleteSpecialtyFromFavorite(specialty.Id, It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -836,18 +836,18 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task GetExams_ShouldReturnListOfExamsResponseApiModel_IfEverythingIsOk()
         {
             //Arrange
-            var listOfExamDTO = new List<ExamDTO>();
-            _examRepository.Setup(sr => sr.GetAll()).ReturnsAsync(listOfExamDTO);
+            _examRepository.Setup(sr => sr.GetAll()).ReturnsAsync(It.IsAny<IEnumerable<ExamDTO>>);
 
-            var examsResponseApiModel = new ExamsResponseApiModel();
-            var listOfExamsResponseApiModel = new List<ExamsResponseApiModel>() { examsResponseApiModel };
-            _mapper.Setup(sr => sr.Map<IEnumerable<ExamsResponseApiModel>>(listOfExamDTO)).Returns(listOfExamsResponseApiModel);
+            var listOfExamsResponseApiModel = new List<ExamsResponseApiModel>() { new ExamsResponseApiModel() };
+            _mapper.Setup(sr => sr.Map<IEnumerable<ExamsResponseApiModel>>(It.IsAny<IEnumerable<ExamDTO>>())).Returns(listOfExamsResponseApiModel);
 
             //Act
-            var result = await _specialtyService.GetExams();
+             var result = await _specialtyService.GetExams();
 
             //Assert
-            Assert.NotEmpty(result);
+            Assert.IsType<ResponseApiModel<IEnumerable<ExamsResponseApiModel>>>(result);
+            Assert.True(result.Success);
+            Assert.NotEmpty(result.Object);
         }
         [Fact]
         public async Task GetEducationForms_ShouldReturnListOfString_IfEverythingIsOk()
@@ -856,7 +856,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await _specialtyService.GetEducationForms();
 
             //Assert
-            Assert.NotEmpty(result);
+            Assert.IsType<ResponseApiModel<IEnumerable<string>>>(result);
+            Assert.True(result.Success);
+            Assert.NotEmpty(result.Object);
         }
         [Fact]
         public async Task GetPaymentForms_ShouldReturnListOfString_IfEverythingIsOk()
@@ -865,39 +867,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await _specialtyService.GetPaymentForms();
 
             //Assert
-            Assert.NotEmpty(result);
-        }
-        [Fact]
-        public async Task UpdateSpecialtyDescription_ShouldUpdateDescriptionAndReturnCorrectMessage_IfEverythingIsOk()
-        {
-            //Arrange
-            var specialtyDescriptionUpdateApiModel = new SpecialtyDescriptionUpdateApiModel();
-            var specialtyToIoEDescriptionDTO = new SpecialtyToIoEDescriptionDTO();
-            var specialtyToIoEDescription = new SpecialtyToIoEDescription();
-
-            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Contains(It.IsAny<string>())).ReturnsAsync(true);
-            //_specialtyToIoEDescriptionRepository.Setup(sr => sr.Contains(It.IsAny<string>())).ReturnsAsync(true);
-            _mapper.Setup(sr => sr.Map<SpecialtyToIoEDescriptionDTO>(specialtyDescriptionUpdateApiModel)).Returns(specialtyToIoEDescriptionDTO);
-            _examRequirementRepository.Setup(sr => sr.DeleteRangeByDescriptionId(It.IsAny<string>()));
-            _mapper.Setup(sr => sr.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)).Returns(specialtyToIoEDescription);
-            _specialtyToIoEDescriptionRepository.Setup(sr => sr.Update(specialtyToIoEDescription)).ReturnsAsync(true);
-
-            //Act
-            var result = await _specialtyService.UpdateSpecialtyDescription(new SpecialtyDescriptionUpdateApiModel());
-
-            //Assert
-            Assert.Equal("Specialty description was updated", result);
-        }
-        [Fact]
-        public async Task UpdateSpecialtyDescription_ShouldReturnBadRequest_IfIoEDoesNotHaveSuchSpecialty()
-        {
-            //Arrange
-            var specialtyDescriptionUpdateApiModel = new SpecialtyDescriptionUpdateApiModel();
-
-            _specialtyToInstitutionOfEducationRepository.Setup(sr => sr.Contains(It.IsAny<string>())).ReturnsAsync(false);
-        
-            //Act / Assert
-            await Assert.ThrowsAsync<BadRequestException>(() => _specialtyService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel));
+            Assert.IsType<ResponseApiModel<IEnumerable<string>>>(result);
+            Assert.True(result.Success);
+            Assert.NotEmpty(result.Object);
         }
 
         private SpecialtyToInstitutionOfEducationToGraduate GetFavoriteSpecialtyAndInstitutionOfEducations()

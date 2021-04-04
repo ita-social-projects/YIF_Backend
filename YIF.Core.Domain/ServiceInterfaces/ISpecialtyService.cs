@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
@@ -19,9 +18,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId);
         Task AddSpecialtyToFavorite(string specialtyId, string userId);
         Task DeleteSpecialtyFromFavorite(string specialtyId, string userId);
-        Task<IEnumerable<ExamsResponseApiModel>> GetExams();
-        Task<IEnumerable<string>> GetEducationForms();
-        Task<IEnumerable<string>> GetPaymentForms();
-        Task<string> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel);
+        Task<ResponseApiModel<IEnumerable<ExamsResponseApiModel>>> GetExams();
+        Task<ResponseApiModel<IEnumerable<string>>> GetEducationForms();
+        Task<ResponseApiModel<IEnumerable<string>>> GetPaymentForms();
     }
 }

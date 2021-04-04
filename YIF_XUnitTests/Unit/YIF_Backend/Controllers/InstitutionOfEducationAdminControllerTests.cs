@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF_Backend.Controllers;
 
@@ -14,7 +15,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class InstitutionOfEducationAdminControllerTests
     {
         private readonly Mock<ResourceManager> _resourceManager;
-        private readonly Mock<IIoEAdminService> _ioeService;
+        private readonly Mock<IIoEAdminService> _ioEAdminService;
         private readonly Mock<HttpContext> _httpContext;
         private readonly InstitutionOfEducationAdminController _testControl;
         private readonly GenericIdentity _fakeIdentity;
@@ -23,9 +24,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
         public InstitutionOfEducationAdminControllerTests()
         {
-            _ioeService = new Mock<IIoEAdminService>();
+            _ioEAdminService = new Mock<IIoEAdminService>();
             _resourceManager = new Mock<ResourceManager>();
-            _testControl = new InstitutionOfEducationAdminController(_ioeService.Object, _resourceManager.Object);
+            _testControl = new InstitutionOfEducationAdminController(_ioEAdminService.Object, _resourceManager.Object);
             _httpContext = new Mock<HttpContext>();
             _fakeIdentity = new GenericIdentity("User");
             _roles = new string[] { "InstitutionOfEducationAdmin" };
@@ -40,12 +41,25 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             //Arrange
             _httpContext.SetupGet(x => x.User).Returns(_principal);
-            _ioeService.Setup(x => x.AddSpecialtyToIoe(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()));
+            _ioEAdminService.Setup(x => x.AddSpecialtyToIoe(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()));
             //Act
             var result = await _testControl.AddSpecialtyToIoE(new SpecialtyToInstitutionOfEducationPostApiModel());
             //Assert
             Assert.IsType<OkResult>(result);
         }
 
+        [Fact]
+        public async Task UpdateSpecialtyDescription_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _ioEAdminService.Setup(x => x.UpdateSpecialtyDescription(It.IsAny<SpecialtyDescriptionUpdateApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.UpdateSpecialtyDescription(It.IsAny<SpecialtyDescriptionUpdateApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

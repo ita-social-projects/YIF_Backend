@@ -59,9 +59,8 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SpecialtyToInstitutionOfEducationDTO> Get(string id)
         {
-            throw new NotImplementedException();
-            //var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations.FirstOrDefaultAsync(x => x.Id == id);
-            //return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToInstitutionOfEducation);
+            var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations.FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToInstitutionOfEducation);
         }
 
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> GetAll()

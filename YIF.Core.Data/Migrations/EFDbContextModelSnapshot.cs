@@ -579,16 +579,13 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("InstitutionOfEducationId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("SpecialtyId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("SpecialtyToIoEDescriptionId")
+                    b.Property<string>("SpecialtyId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id", "InstitutionOfEducationId", "SpecialtyId");
+                    b.HasKey("Id");
 
                     b.HasIndex("InstitutionOfEducationId");
 
@@ -627,12 +624,14 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationForm")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EducationalProgramLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentForm")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SpecialtyToInstitutionOfEducationId")
