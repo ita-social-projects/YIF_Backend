@@ -23,24 +23,15 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        //remove return id 
         public async Task Add(SpecialtyToIoEDescription specialtyToIoEDescription)
         {
             await _context.SpecialtyToIoEDescriptions.AddAsync(specialtyToIoEDescription);
             await _context.SaveChangesAsync();
         }
 
-        //delete
-        public async Task<bool> Contains(string Id)
+        public Task<bool> Contains(string Id)
         {
-            var result = await _context.SpecialtyToIoEDescriptions
-                          .AsNoTracking()
-                          .Where(x => x.Id == Id)
-                          .FirstOrDefaultAsync();
-
-            if (result != null)
-                return true;
-            return false;
+            throw new NotImplementedException();
         }
 
         public Task<bool> Delete(string id)
