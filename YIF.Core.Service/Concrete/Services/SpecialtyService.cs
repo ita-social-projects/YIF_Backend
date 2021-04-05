@@ -179,6 +179,7 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
             var specialtyToIoEToGraduateDTO = _mapper.Map<SpecialtyToInstitutionOfEducationToGraduateDTO>(specialtyAndInstitutionOfEducationToFavoritePostApiModel);
+            specialtyToIoEToGraduateDTO.GraduateId = graduate.Id;
             var specialtyToIoEToGraduate = _mapper.Map<SpecialtyToInstitutionOfEducationToGraduate>(specialtyToIoEToGraduateDTO);
 
             var favorites = await _specialtyToIoEToGraduateRepository.FavoriteContains(specialtyToIoEToGraduate);

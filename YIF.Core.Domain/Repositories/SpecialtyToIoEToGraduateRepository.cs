@@ -65,16 +65,11 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
-            var result = await _context.SpecialtyToInstitutionOfEducationToGraduates
-                .AsNoTracking()
-                .Where(x => x.SpecialtyId == specialtyToInstitutionOfEducationToGraduate.SpecialtyId)
-                .Where(x => x.InstitutionOfEducationId == specialtyToInstitutionOfEducationToGraduate.InstitutionOfEducationId)
-                .Where(x => x.GraduateId == specialtyToInstitutionOfEducationToGraduate.GraduateId)
-                .FirstOrDefaultAsync();
+            return await _context.SpecialtyToInstitutionOfEducationToGraduates
+                .AnyAsync(x=> x.GraduateId == specialtyToInstitutionOfEducationToGraduate.GraduateId 
+                && x.InstitutionOfEducationId == specialtyToInstitutionOfEducationToGraduate.InstitutionOfEducationId 
+                && x.SpecialtyId == specialtyToInstitutionOfEducationToGraduate.SpecialtyId);
 
-            if (result != null)
-                return true;
-            return false;
         }
     }
 }
