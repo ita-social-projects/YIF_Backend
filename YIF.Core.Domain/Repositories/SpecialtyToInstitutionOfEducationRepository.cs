@@ -104,30 +104,5 @@ namespace YIF.Core.Domain.Repositories
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
-
-        public async Task AddFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
-        {
-            await _context.SpecialtyToInstitutionOfEducationToGraduates.AddAsync(specialtyToInstitutionOfEducationToGraduate);
-            await _context.SaveChangesAsync();
-        }
-        public async Task RemoveFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
-        {
-            _context.SpecialtyToInstitutionOfEducationToGraduates.Remove(specialtyToInstitutionOfEducationToGraduate);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
-        {
-            var result = await _context.SpecialtyToInstitutionOfEducationToGraduates
-                .AsNoTracking()
-                .Where(x => x.SpecialtyId == specialtyToInstitutionOfEducationToGraduate.SpecialtyId)
-                .Where(x => x.InstitutionOfEducationId == specialtyToInstitutionOfEducationToGraduate.InstitutionOfEducationId)
-                .Where(x => x.GraduateId == specialtyToInstitutionOfEducationToGraduate.GraduateId)
-                .FirstOrDefaultAsync();
-
-            if (result != null)
-                return true;
-            return false;
-        }
     }
 }

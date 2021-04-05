@@ -171,7 +171,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Arrange
             _mockContext.SetupGet(hc => hc.User).Returns(_principal);
             _specialtyService.Setup(x =>
-                x.AddSpecialtyAndInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>(),
+                x.AddSpecialtyAndInstitutionOfEducationToFavorite(It.IsAny<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel>(),
                     It.IsAny<string>()));
 
             // Act

@@ -21,7 +21,9 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
+        private readonly ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO> _specialtyToIoEToGraduateRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
+        private readonly ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO> _specialtyToGraduateRepository;
         private readonly IExamRepository<Exam, ExamDTO> _examRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
@@ -32,7 +34,9 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
+            ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO> specialtyToIoEToGraduateRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
+            ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO> specialtyToGraduateRepository,
             IExamRepository<Exam, ExamDTO> examRepository,
             IMapper mapper,
             ResourceManager resourceManager)
@@ -42,7 +46,9 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyRepository = specialtyRepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
+            _specialtyToIoEToGraduateRepository = specialtyToIoEToGraduateRepository;
             _graduateRepository = graduateRepository;
+            _specialtyToGraduateRepository = specialtyToGraduateRepository;
             _examRepository = examRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
@@ -169,20 +175,15 @@ namespace YIF.Core.Service.Concrete.Services
             return result;
         }
 
-        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId, string userId)
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(SpecialtyAndInstitutionOfEducationToFavoritePostApiModel specialtyAndInstitutionOfEducationToFavoritePostApiModel, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
+            var specialtyToIoEToGraduateDTO = _mapper.Map<SpecialtyToInstitutionOfEducationToGraduateDTO>(specialtyAndInstitutionOfEducationToFavoritePostApiModel);
+            var specialtyToIoEToGraduate = _mapper.Map<SpecialtyToInstitutionOfEducationToGraduate>(specialtyToIoEToGraduateDTO);
 
-            var entity = new SpecialtyToInstitutionOfEducationToGraduate()
-            {
-                SpecialtyId = specialtyId,
-                InstitutionOfEducationId = institutionOfEducationId,
-                GraduateId = graduate.Id
-            };
-
-            var favorites = await _specialtyToInstitutionOfEducationRepository.FavoriteContains(entity);
-            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(institutionOfEducationId);
-            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var favorites = await _specialtyToIoEToGraduateRepository.FavoriteContains(specialtyToIoEToGraduate);
+            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(specialtyAndInstitutionOfEducationToFavoritePostApiModel.InstitutionOfEducationId);
+            var specialty = await _specialtyRepository.ContainsById(specialtyAndInstitutionOfEducationToFavoritePostApiModel.SpecialtyId);
 
             if (favorites == true)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyAndInstitutionOfEducationIsAlreadyFavorite"));
@@ -195,8 +196,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
-
-            await _specialtyToInstitutionOfEducationRepository.AddFavorite(entity);
+            
+            await _specialtyToIoEToGraduateRepository.AddFavorite(specialtyToIoEToGraduate);
         }
 
         public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId)
@@ -210,7 +211,7 @@ namespace YIF.Core.Service.Concrete.Services
                 GraduateId = graduate.Id
             };
 
-            var favorites = await _specialtyToInstitutionOfEducationRepository.FavoriteContains(entity);
+            var favorites = await _specialtyToIoEToGraduateRepository.FavoriteContains(entity);
             var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(institutionOfEducationId);
             var specialty = await _specialtyRepository.ContainsById(specialtyId);
 
@@ -226,7 +227,7 @@ namespace YIF.Core.Service.Concrete.Services
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            await _specialtyToInstitutionOfEducationRepository.RemoveFavorite(entity);
+            await _specialtyToIoEToGraduateRepository.RemoveFavorite(entity);
         }
 
         public async Task AddSpecialtyToFavorite(string specialtyId, string userId)
@@ -243,9 +244,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (graduate == null)
                 throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
-
-
-            await _specialtyRepository.AddFavorite(new SpecialtyToGraduate
+            
+            await _specialtyToGraduateRepository.AddFavorite(new SpecialtyToGraduate
             {
                 SpecialtyId = specialty.Id,
                 GraduateId = graduate.Id
@@ -268,7 +268,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
 
 
-            await _specialtyRepository.RemoveFavorite(new SpecialtyToGraduate
+            await _specialtyToGraduateRepository.RemoveFavorite(new SpecialtyToGraduate
             {
                 SpecialtyId = specialty.Id,
                 GraduateId = graduate.Id

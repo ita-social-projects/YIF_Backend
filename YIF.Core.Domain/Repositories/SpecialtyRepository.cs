@@ -82,23 +82,12 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
         }
 
-        public async Task AddFavorite(SpecialtyToGraduate specialtyToGraduate)
-        {
-            await _context.SpecialtyToGraduates.AddAsync(specialtyToGraduate);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveFavorite(SpecialtyToGraduate specialtyToGraduate)
-        {
-            _context.SpecialtyToGraduates.Remove(specialtyToGraduate);
-            await _context.SaveChangesAsync();
-        }
         public async Task<bool> ContainsById(string id)
         {
             var result = await _context.Specialties
-                          .AsNoTracking()
-                          .Where(x => x.Id == id)
-                          .FirstOrDefaultAsync();
+                .AsNoTracking()
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
 
             if (result != null)
                 return true;
