@@ -13,20 +13,14 @@ namespace YIF.Core.Data.Entities
         public string SchoolId { get; set; }
 
         [ForeignKey("SchoolId")]
-        public virtual School School { get; set; }
-        /// <summary>
-        /// Link to Identity user
-        /// </summary>
+        public School School { get; set; }
         [ForeignKey("UserId")]
         public string UserId { get; set; }
-        public virtual DbUser User { get; set; }
+        public DbUser User { get; set; }
 
-        /// <summary>
-        /// List of favorite institutionOfEducations
-        /// </summary>
-        public virtual ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
-        public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
-        public virtual ICollection<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
+        public ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
+        public ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
+        public ICollection<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
 
     }
 }

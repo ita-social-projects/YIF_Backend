@@ -47,6 +47,6 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         /// <summary>
         /// List of exams for specialty
         /// </summary>     
-        public virtual ICollection<ExamRequirementUpdateApiModel> ExamRequirements { get; set; }
+        public ICollection<ExamRequirementUpdateApiModel> ExamRequirements { get; set; }
     }
 }

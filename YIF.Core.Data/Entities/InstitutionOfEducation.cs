@@ -24,14 +24,11 @@ namespace YIF.Core.Data.Entities
         public DateTime StartOfCampaign { get; set; }
         public DateTime EndOfCampaign { get; set; }
 
-        public virtual ICollection<InstitutionOfEducationAdmin> Admins { get; set; }
-        public virtual ICollection<Lecture> Lectures { get; set; }
-        public virtual ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
-        public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
-        public virtual ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducation { get; set; }
-        public virtual ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
-
-
-
+        public ICollection<InstitutionOfEducationAdmin> Admins { get; set; }
+        public ICollection<Lecture> Lectures { get; set; }
+        public ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
+        public ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
+        public ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducation { get; set; }
+        public ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
     }
 }

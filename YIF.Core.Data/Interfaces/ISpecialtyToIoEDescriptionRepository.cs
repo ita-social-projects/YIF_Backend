@@ -6,6 +6,6 @@ namespace YIF.Core.Data.Interfaces
         where T: class
         where K: class
     {
-        Task<string> Add(T specialtyToIoEDescription);
+        Task Add(T specialtyToIoEDescription);
     }
 }

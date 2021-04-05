@@ -31,7 +31,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Navigation property for the specialty descriptions this specialty to institutionOfEducation belongs to.
         /// </summary>
-        public virtual IEnumerable<SpecialtyToIoEDescriptionResponseApiModel> Descriptions { get; set; }
+        public IEnumerable<SpecialtyToIoEDescriptionResponseApiModel> Descriptions { get; set; }
     }
 }
 

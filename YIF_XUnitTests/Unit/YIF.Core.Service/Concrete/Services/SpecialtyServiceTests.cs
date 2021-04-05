@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;

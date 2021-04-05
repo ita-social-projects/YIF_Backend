@@ -99,8 +99,7 @@ namespace YIF.Core.Domain.Repositories
                     {
                         item1.Description = item.Specialty.Description;
                     }
-                }
-              
+                } 
             }
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);

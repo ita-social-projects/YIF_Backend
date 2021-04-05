@@ -12,10 +12,7 @@ namespace YIF.Core.Data.Entities
         public string SchoolId { get; set; }
 
         [ForeignKey("SchoolId")]
-        public virtual School School { get; set; }
-        /// <summary>
-        /// Link to school moderator
-        /// </summary>
-        public virtual ICollection<SchoolModerator> SchoolModerators { get; set; }
+        public School School { get; set; }
+        public ICollection<SchoolModerator> SchoolModerators { get; set; }
     }
 }

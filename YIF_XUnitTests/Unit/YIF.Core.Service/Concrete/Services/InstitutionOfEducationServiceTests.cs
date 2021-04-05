@@ -374,7 +374,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(favoriteInstitutionOfEducationDTOList);
 
             // Act
-            static Task<IEnumerable<InstitutionOfEducationResponseApiModel>> act() => institutionOfEducationService.GetFavoriteInstitutionOfEducations(It.IsAny<string>());
+            Task<IEnumerable<InstitutionOfEducationResponseApiModel>> act() => institutionOfEducationService.GetFavoriteInstitutionOfEducations(It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<NotFoundException>(act);
@@ -481,7 +481,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(graduate);
 
             // Act
-            static Task act() => institutionOfEducationService.AddInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => institutionOfEducationService.AddInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -509,7 +509,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(graduate);
 
             // Act
-            static Task act() => institutionOfEducationService.AddInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => institutionOfEducationService.AddInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -537,7 +537,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(graduate);
 
             // Act
-            static Task act() => institutionOfEducationService.AddInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => institutionOfEducationService.AddInstitutionOfEducationToFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -596,7 +596,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(graduate);
 
             // Act
-            static Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -624,7 +624,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(graduate);
 
             // Act
-            static Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -652,7 +652,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(graduate);
 
             // Act
-            static Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
+            Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);

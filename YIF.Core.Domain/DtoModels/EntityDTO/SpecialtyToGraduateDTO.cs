@@ -9,7 +9,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string SpecialtyId { get; set; }
         public string GraduateId { get; set; }
 
-        public virtual SpecialtyDTO Specialty { get; set; }
-        public virtual GraduateDTO Graduate { get; set; }
+        public SpecialtyDTO Specialty { get; set; }
+        public GraduateDTO Graduate { get; set; }
     }
 }

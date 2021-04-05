@@ -119,7 +119,6 @@ namespace YIF.Core.Service.Concrete.Services
             return specialties;
         }
 
-
         public async Task<ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>> GetAllSpecialties()
         {
             var result = new ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>();
@@ -158,6 +157,7 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
+
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
         {
             var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyToIoEDescriptionsById(id);
@@ -169,7 +169,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result;
         }
 
-        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId,string institutionOfEducationId, string userId)
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
 
@@ -198,6 +198,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _specialtyToInstitutionOfEducationRepository.AddFavorite(entity);
         }
+
         public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
@@ -227,6 +228,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _specialtyToInstitutionOfEducationRepository.RemoveFavorite(entity);
         }
+
         public async Task AddSpecialtyToFavorite(string specialtyId, string userId)
         {
             var favorites = await _specialtyRepository.GetFavoritesByUserId(userId);

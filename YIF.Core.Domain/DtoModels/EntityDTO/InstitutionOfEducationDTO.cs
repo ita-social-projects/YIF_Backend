@@ -67,15 +67,15 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// <summary>
         /// List of institution Of Education admins
         /// </summary>
-        public virtual IEnumerable<InstitutionOfEducationAdminDTO> Admins { get; set; }
+        public IEnumerable<InstitutionOfEducationAdminDTO> Admins { get; set; }
         /// <summary>
         /// List of institution Of Education lectures
         /// </summary>
-        public virtual IEnumerable<LectureDTO> Lectures { get; set; }
+        public IEnumerable<LectureDTO> Lectures { get; set; }
         /// <summary>
         /// List of graduates who liked the institution Of Education
         /// </summary>
-        public virtual ICollection<InstitutionOfEducationToGraduateDTO> InstitutionOfEducationGraduates { get; set; }
-        public virtual ICollection<DirectionToInstitutionOfEducationDTO> DirectionToInstitutionOfEducation { get; set; }
+        public ICollection<InstitutionOfEducationToGraduateDTO> InstitutionOfEducationGraduates { get; set; }
+        public ICollection<DirectionToInstitutionOfEducationDTO> DirectionToInstitutionOfEducation { get; set; }
     }
 }

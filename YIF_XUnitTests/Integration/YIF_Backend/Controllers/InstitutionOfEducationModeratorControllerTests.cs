@@ -2,7 +2,6 @@
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,9 +12,9 @@ using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    public class InstitutionOfEducationModeratorControllerTests:TestServerFixture
+    public class InstitutionOfEducationModeratorControllerTests : TestServerFixture
     {
-        private IoEModeratorInputAttribute _IoEmoderatorInputAttribute;
+        private readonly IoEModeratorInputAttribute _IoEmoderatorInputAttribute;
         public InstitutionOfEducationModeratorControllerTests(ApiWebApplicationFactory fixture)
         {
             _client = getInstance(fixture);

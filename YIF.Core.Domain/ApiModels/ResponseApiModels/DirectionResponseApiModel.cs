@@ -20,6 +20,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Navigation property for the specialties this direction belongs to.
         /// </summary>
-        public virtual IEnumerable<SpecialtyForDirectionResponseModel> Specialties { get; set; }
+        public IEnumerable<SpecialtyForDirectionResponseModel> Specialties { get; set; }
     }
 }

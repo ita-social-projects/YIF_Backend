@@ -8,9 +8,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string InstitutionOfEducationId { get; set; }
 
         public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
-        /// <summary>
-        /// Link to Identity user
-        /// </summary>
         public UserDTO User { get; set; }
     }
 }

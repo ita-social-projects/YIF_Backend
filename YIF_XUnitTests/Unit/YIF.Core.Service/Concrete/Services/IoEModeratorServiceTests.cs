@@ -29,7 +29,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
 
-
         public IoEModeratorServiceTests()
         {
             _ioEModeratorService = new IoEModeratorService(
@@ -64,6 +63,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.Null(exception);
         }
+
         [Fact]
         public void AddSpecialtyToIoE_ShouldReturnBadRequestException_IfSpecialtyNotFound()
         {
@@ -79,7 +79,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
-            Func<Task> act = () => _ioEModeratorService.AddSpecialtyToIoe(entity);
+            Task act() => _ioEModeratorService.AddSpecialtyToIoe(entity);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -100,7 +100,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
-            Func<Task> act = () => _ioEModeratorService.AddSpecialtyToIoe(entity);
+            Task act() => _ioEModeratorService.AddSpecialtyToIoe(entity);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -166,7 +166,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            Task act() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
             {
                 InstitutionOfEducationId = "IoEId",
                 SpecialtyId = "SpecialtyId"
@@ -202,7 +202,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            Task act() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
             {
                 InstitutionOfEducationId = "IoEId",
                 SpecialtyId = "SpecialtyId"
@@ -211,6 +211,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
         [Fact]
         public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyInInstitutionOfEducationNotFound()
         {
@@ -235,7 +236,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            Task act() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
             {
                 InstitutionOfEducationId = "IoEId",
                 SpecialtyId = "SpecialtyId"
@@ -244,6 +245,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
         [Fact]
         public async Task UpdateSpecialtyDescription_ShouldUpdateDescriptionAndReturnCorrectMessage_IfEverythingIsOk()
         {

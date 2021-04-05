@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
-using YIF_Backend;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
@@ -198,7 +194,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             //Assert
             response.EnsureSuccessStatusCode();
-
         }
 
         [Fact]
@@ -209,7 +204,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             //Assert
             response.EnsureSuccessStatusCode();
-
         }
 
         [Fact]
@@ -220,8 +214,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             //Assert
             response.EnsureSuccessStatusCode();
-
         }
-
     }
 }

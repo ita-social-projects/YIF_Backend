@@ -25,6 +25,6 @@
         /// <summary>
         /// Navigation property for the direction to which this specialty belongs.
         /// </summary>
-        public virtual DirectionDTO Direction { get; set; }
+        public DirectionDTO Direction { get; set; }
     }
 }

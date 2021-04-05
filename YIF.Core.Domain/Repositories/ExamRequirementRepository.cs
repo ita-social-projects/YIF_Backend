@@ -24,12 +24,6 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
         }
 
-        public async Task AddRange(params ExamRequirement[] items)
-        {
-            await _context.ExamRequirements.AddRangeAsync(items);
-            await _context.SaveChangesAsync();
-        }
-
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();

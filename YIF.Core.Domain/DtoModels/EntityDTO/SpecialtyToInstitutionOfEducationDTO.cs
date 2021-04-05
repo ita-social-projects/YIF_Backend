@@ -9,9 +9,8 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string InstitutionOfEducationId { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual SpecialtyDTO Specialty { get; set; }
-        public virtual InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
-        public virtual ICollection<SpecialtyToIoEDescriptionDTO> SpecialtyToIoEDescriptions { get; set; }
-
+        public SpecialtyDTO Specialty { get; set; }
+        public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
+        public ICollection<SpecialtyToIoEDescriptionDTO> SpecialtyToIoEDescriptions { get; set; }
     }
 }

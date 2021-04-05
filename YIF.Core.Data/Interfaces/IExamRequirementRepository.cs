@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
@@ -7,7 +6,6 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task AddRange(params T[] items);
         Task DeleteRangeByDescriptionId(string id);
     }
 }

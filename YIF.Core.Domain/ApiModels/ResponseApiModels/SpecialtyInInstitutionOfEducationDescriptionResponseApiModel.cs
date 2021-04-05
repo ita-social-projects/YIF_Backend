@@ -36,6 +36,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Navigation property for the exam requirement this description belongs to.
         /// </summary>
-        public virtual IEnumerable<ExamRequirementsResponseApiModel> ExamRequirements { get; set; }
+        public IEnumerable<ExamRequirementsResponseApiModel> ExamRequirements { get; set; }
     }
 }
