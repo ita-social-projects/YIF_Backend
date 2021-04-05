@@ -7,7 +7,7 @@ namespace YIF.Core.Data.Entities
         public string Name { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
-        public virtual List<Specialty> Specialties { get; set; }
-        public virtual ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducations { get; set; }
+        public ICollection<Specialty> Specialties { get; set; }
+        public ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducations { get; set; }
     }
 }

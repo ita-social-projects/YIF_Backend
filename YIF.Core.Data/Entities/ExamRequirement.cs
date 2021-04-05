@@ -7,7 +7,7 @@
         public double MinimumScore { get; set; }
         public double Coefficient { get; set; }
 
-        public virtual Exam Exam { get; set; }
-        public virtual SpecialtyToIoEDescription SpecialtyToIoEDescription { get; set; }
+        public Exam Exam { get; set; }
+        public SpecialtyToIoEDescription SpecialtyToIoEDescription { get; set; }
     }
 }

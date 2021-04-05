@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
@@ -16,30 +17,33 @@ namespace YIF.Core.Service.Concrete.Services
     public class SpecialtyService : ISpecialtyService
     {
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
-        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
-        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
+        private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
+        private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
+        private readonly IExamRepository<Exam, ExamDTO> _examRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
         public SpecialtyService(
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
-            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
-            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
+            IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
+            ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
+            IExamRepository<Exam, ExamDTO> examRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
-            _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
-            _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
+            _examRequirementRepository = examRequirementRepository;
             _specialtyRepository = specialtyRepository;
+            _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _graduateRepository = graduateRepository;
+            _examRepository = examRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
         }
@@ -81,23 +85,23 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
             {
                 //Filtering for educationFormToDescription that has such EducationForm
-                var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.EducationForm == (EducationForm)Enum.Parse(typeof(EducationForm), filterModel.EducationForm));
 
                 //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
                 specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
             {
-                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.PaymentForm == (PaymentForm)Enum.Parse(typeof(PaymentForm), filterModel.PaymentForm));
 
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
                 specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
@@ -114,7 +118,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return specialties;
         }
-
 
         public async Task<ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>> GetAllSpecialties()
         {
@@ -154,6 +157,7 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
+
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
         {
             var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyToIoEDescriptionsById(id);
@@ -164,6 +168,7 @@ namespace YIF.Core.Service.Concrete.Services
             var result = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(specialtyDescriptions);
             return result;
         }
+
         public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
@@ -193,6 +198,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _specialtyToInstitutionOfEducationRepository.AddFavorite(entity);
         }
+
         public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
@@ -222,6 +228,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             await _specialtyToInstitutionOfEducationRepository.RemoveFavorite(entity);
         }
+
         public async Task AddSpecialtyToFavorite(string specialtyId, string userId)
         {
             var favorites = await _specialtyRepository.GetFavoritesByUserId(userId);
@@ -265,6 +272,35 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 SpecialtyId = specialty.Id,
                 GraduateId = graduate.Id
+            });
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<ExamsResponseApiModel>>> GetExams()
+        {
+            var result = new ResponseApiModel<IEnumerable<ExamsResponseApiModel>>
+            {
+                Object = _mapper.Map<IEnumerable<ExamsResponseApiModel>>(await _examRepository.GetAll())
+            };
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<string>>> GetEducationForms()
+        {
+            var result = new ResponseApiModel<IEnumerable<string>>();
+            return await Task.Run(() =>
+            {
+                result.Object = Enum.GetNames(typeof(EducationForm)).ToList();
+                return result.Set(true);
+            });
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<string>>> GetPaymentForms()
+        {
+            var result = new ResponseApiModel<IEnumerable<string>>();
+            return await Task.Run(() =>
+            {
+                result.Object = Enum.GetNames(typeof(PaymentForm)).ToList();
+                return result.Set(true);
             });
         }
     }

@@ -8,7 +8,7 @@
         public double MinimumScore { get; set; }
         public double Coefficient { get; set; }
 
-        public virtual ExamDTO Exam { get; set; }
-        public virtual SpecialtyToIoEDescriptionDTO SpecialtyToIoEDescription { get; set; }
+        public ExamDTO Exam { get; set; }
+        public SpecialtyToIoEDescriptionDTO SpecialtyToIoEDescription { get; set; }
     }
 }

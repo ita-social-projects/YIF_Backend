@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -11,9 +12,9 @@ using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
-    public class InstitutionOfEducationModeratorControllerTests:TestServerFixture
+    public class InstitutionOfEducationModeratorControllerTests : TestServerFixture
     {
-        private IoEModeratorInputAttribute _moderatorInputAttribute;
+        private readonly IoEModeratorInputAttribute _IoEmoderatorInputAttribute;
         public InstitutionOfEducationModeratorControllerTests(ApiWebApplicationFactory fixture)
         {
             _client = getInstance(fixture);
@@ -26,14 +27,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 });
             }).CreateClient();
 
-            _moderatorInputAttribute = new IoEModeratorInputAttribute(_context);
+            _IoEmoderatorInputAttribute = new IoEModeratorInputAttribute(_context);
         }
 
         [Fact]
         public async Task AddSpecialtyToIoE_ShouldReturnOk()
         {
             //Arrange
-            _moderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
             var chosen = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().FirstOrDefault();
 
             _context.SpecialtyToInstitutionOfEducations.Remove(chosen);
@@ -70,6 +71,43 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 $"/api/Specialty/InstitutionOfEducationModerator/DeleteSpecialtyFromInstitutionOfEducation", ContentHelper.GetStringContent(model));
 
             //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task UpdateSpecialtyDescription_EndpointReturnOk()
+        {
+            //Arrange
+            var description = _context.SpecialtyToIoEDescriptions.Where(x => x.Description != null).AsNoTracking().FirstOrDefault();
+            var examRequirements = _context.ExamRequirements.AsNoTracking().Where(x => x.SpecialtyToIoEDescriptionId == description.Id).ToList();
+
+            var examRequirementsUpdateApiModel = new List<ExamRequirementUpdateApiModel>();
+            foreach (var item in examRequirements)
+            {
+                examRequirementsUpdateApiModel.Add(new ExamRequirementUpdateApiModel
+                {
+                    ExamId = item.ExamId,
+                    SpecialtyToIoEDescriptionId = item.SpecialtyToIoEDescriptionId,
+                    Coefficient = item.Coefficient,
+                    MinimumScore = item.MinimumScore
+                });
+            }
+
+            var model = new SpecialtyDescriptionUpdateApiModel
+            {
+                Id = description.Id,
+                SpecialtyToInstitutionOfEducationId = description.SpecialtyToInstitutionOfEducationId,
+                PaymentForm = description.PaymentForm,
+                EducationForm = description.EducationForm,
+                EducationalProgramLink = description.EducationalProgramLink,
+                Description = description.Description,
+                ExamRequirements = examRequirementsUpdateApiModel
+            };
+
+            // Act            
+            var response = await _client.PutAsync($"/api/InstitutionOfEducationModerator/Specialty/Description/Update", ContentHelper.GetStringContent(model));
+
+            // Assert
             response.EnsureSuccessStatusCode();
         }
     }

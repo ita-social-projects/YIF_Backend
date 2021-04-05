@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -43,7 +40,7 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _ioEModeratorService.AddSpecialtyToIoe(model);
+            await _ioEModeratorService.AddSpecialtyToIoe(model);
             return Ok();
         }
 
@@ -64,6 +61,22 @@ namespace YIF_Backend.Controllers
         {
             await _ioEModeratorService.DeleteSpecialtyToIoe(model);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Update specialty description in IoE.
+        /// </summary>
+        /// <returns>Message</returns>
+        /// <response code="200">If specialty description successfully updated</response>
+        /// <response code="400">If request model isn't valid </response>
+        [HttpPut("Specialty/Description/Update")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            var result = await _ioEModeratorService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
+            return Ok(result.Object);
         }
     }
 }

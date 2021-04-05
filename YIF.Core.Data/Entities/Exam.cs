@@ -6,6 +6,6 @@ namespace YIF.Core.Data.Entities
     {
         public string Name { get; set; }
 
-        public virtual ICollection<ExamRequirement> ExamRequirements { get; set; }
+        public ICollection<ExamRequirement> ExamRequirements { get; set; }
     }
 }

@@ -14,12 +14,12 @@ namespace YIF.Core.Data.Entities
 
         [ForeignKey("InstitutionOfEducationId")]
         public string InstitutionOfEducationId { get; set; }
-        public virtual InstitutionOfEducation InstitutionOfEducation { get; set; }
+        public InstitutionOfEducation InstitutionOfEducation { get; set; }
 
         [ForeignKey("UserId")]
         public string UserId { get; set; }
-        public virtual DbUser User { get; set; }
+        public DbUser User { get; set; }
 
-        public virtual ICollection<InstitutionOfEducationModerator> Moderators { get; set; }
+        public ICollection<InstitutionOfEducationModerator> Moderators { get; set; }
     }
 }

@@ -11,8 +11,9 @@ namespace YIF.Core.Data.Entities
         public string Code { get; set; }
 
         [ForeignKey("DirectionId")]
-        public virtual Direction Direction { get; set; }
-        public virtual ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
-        public virtual ICollection<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
+        public Direction Direction { get; set; }
+        public ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
+        public ICollection<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
+        public ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
     }
 }

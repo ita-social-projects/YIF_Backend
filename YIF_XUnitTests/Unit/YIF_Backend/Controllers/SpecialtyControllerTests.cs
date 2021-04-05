@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -231,6 +230,48 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async Task GetAllExamsNames_EndpointReturnsOk()
+        {
+            // Arrange
+            var response = new ResponseApiModel<IEnumerable<ExamsResponseApiModel>>(new List<ExamsResponseApiModel>(), true);
+            _specialtyService.Setup(x => x.GetExams()).ReturnsAsync(response);
+
+            // Act
+            var result = await _testControl.GetAllExamsNames();
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetAllEducationFormsNames_EndpointReturnsOk()
+        {
+            // Arrange
+            var response = new ResponseApiModel<IEnumerable<string>>(new List<string>(), true);
+            _specialtyService.Setup(x => x.GetEducationForms()).ReturnsAsync(response);
+
+            // Act
+            var result = await _testControl.GetAllEducationFormsNames();
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetAllPaymentFormsNames_EndpointReturnsOk()
+        {
+            // Arrange
+            var response = new ResponseApiModel<IEnumerable<string>>(new List<string>(), true);
+            _specialtyService.Setup(x => x.GetPaymentForms()).ReturnsAsync(response);
+
+            // Act
+            var result = await _testControl.GetAllPaymentFormsNames();
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

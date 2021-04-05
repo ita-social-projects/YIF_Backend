@@ -29,7 +29,6 @@ namespace YIF.Core.Domain.Repositories
             return res > 0;
         }
 
-        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
@@ -40,18 +39,18 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> Find(Expression<Func<SpecialtyToInstitutionOfEducation, bool>> predicate)
+        public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> Find(Expression<Func<SpecialtyToInstitutionOfEducation, bool>> predicate)
         {
-            var list = _context.SpecialtyToInstitutionOfEducations
+            var list = await _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                .Include(x => x.SpecialtyToIoEDescription)
+                .Include(x => x.SpecialtyToIoEDescriptions)
                 .Where(predicate)
-                .ToList();
+                .ToListAsync();
 
             if (list != null || list.Count > 0)
             {
-                return Task.FromResult(_mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list));
+                return await Task.FromResult(_mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list));
             }
 
             return null;
@@ -68,7 +67,7 @@ namespace YIF.Core.Domain.Repositories
             var list = await _context.SpecialtyToInstitutionOfEducations
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
-                .Include(x => x.SpecialtyToIoEDescription)
+                .Include(x => x.SpecialtyToIoEDescriptions)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list);
@@ -84,31 +83,28 @@ namespace YIF.Core.Domain.Repositories
         {
             var specialtyToInstitutionOfEducation = await _context.SpecialtyToInstitutionOfEducations
               .Where(su => su.SpecialtyId == id)
-              .Where(sdi => sdi.SpecialtyToIoEDescriptionId != null)
               .Include(u => u.InstitutionOfEducation)
               .Include(s => s.Specialty)
-              .Include(sd => sd.SpecialtyToIoEDescription)
+              .Include(sd => sd.SpecialtyToIoEDescriptions)
               .ThenInclude(e => e.ExamRequirements)
-                  .ThenInclude(e => e.Exam)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-                  .ThenInclude(e => e.PaymentFormToDescriptions)
-                      .ThenInclude(e => e.PaymentForm)
-              .Include(sd => sd.SpecialtyToIoEDescription)
-                  .ThenInclude(e => e.EducationFormToDescriptions)
-                      .ThenInclude(e => e.EducationForm)
+              .ThenInclude(e => e.Exam)
               .AsNoTracking()
               .ToListAsync();
 
             foreach (var item in specialtyToInstitutionOfEducation)
             {
-                if(item.SpecialtyToIoEDescription.Description == null)
+                foreach (var item1 in item.SpecialtyToIoEDescriptions)
                 {
-                    item.SpecialtyToIoEDescription.Description = item.Specialty.Description;
-                }
+                    if (item1.Description == null)
+                    {
+                        item1.Description = item.Specialty.Description;
+                    }
+                } 
             }
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
+
         public async Task AddFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
             await _context.SpecialtyToInstitutionOfEducationToGraduates.AddAsync(specialtyToInstitutionOfEducationToGraduate);
@@ -119,6 +115,7 @@ namespace YIF.Core.Domain.Repositories
             _context.SpecialtyToInstitutionOfEducationToGraduates.Remove(specialtyToInstitutionOfEducationToGraduate);
             await _context.SaveChangesAsync();
         }
+
         public async Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate)
         {
             var result = await _context.SpecialtyToInstitutionOfEducationToGraduates

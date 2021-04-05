@@ -12,11 +12,11 @@ namespace YIF.Core.Data.Entities
         
         [ForeignKey("AdminId")]
         public string AdminId { get; set; }
-        public virtual InstitutionOfEducationAdmin Admin { get; set; }
+        public InstitutionOfEducationAdmin Admin { get; set; }
 
         [ForeignKey("UserId")]
         public string UserId { get; set; }
-        public virtual DbUser User { get; set; }
+        public DbUser User { get; set; }
 
     }
 }

@@ -40,11 +40,7 @@ namespace YIF.Core.Data
         public DbSet<BaseUser> BaseUsers { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<ExamRequirement> ExamRequirements { get; set; }
-        public DbSet<EducationForm> EducationForms { get; set; }
-        public DbSet<PaymentForm> PaymentForms { get; set; }
-        public  DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
-        public DbSet<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
-        public DbSet<EducationFormToDescription> EducationFormToDescriptions { get; set; }
+        public DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
         public DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
 
         #endregion
@@ -183,45 +179,41 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.DirectionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<SpecialtyToInstitutionOfEducation>()
+                .HasOne(x => x.Specialty)
+                .WithMany(x => x.SpecialtyToInstitutionOfEducations)
+                .HasForeignKey(x => x.SpecialtyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SpecialtyToInstitutionOfEducation>()
+                .HasOne(x => x.InstitutionOfEducation)
+                .WithMany(x => x.SpecialtyToInstitutionOfEducations)
+                .HasForeignKey(x => x.InstitutionOfEducationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<SpecialtyToIoEDescription>()
+                .Property(e => e.EducationForm)
+                .HasConversion(
+                v => v.ToString(),
+                v => (EducationForm)Enum.Parse(typeof(EducationForm), v));
+
+            builder.Entity<SpecialtyToIoEDescription>()
+                .Property(e => e.PaymentForm)
+                .HasConversion(
+                v => v.ToString(),
+                v => (PaymentForm)Enum.Parse(typeof(PaymentForm), v));
+
+            builder.Entity<SpecialtyToIoEDescription>()
+                .HasOne(x => x.SpecialtyToInstitutionOfEducation)
+                .WithMany(x => x.SpecialtyToIoEDescriptions)
+                .HasForeignKey(x => x.SpecialtyToInstitutionOfEducationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<DirectionToInstitutionOfEducation>()
                 .HasOne(x => x.InstitutionOfEducation)
                 .WithMany(x => x.DirectionToInstitutionOfEducation)
                 .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<SpecialtyToInstitutionOfEducation>()
-                .HasKey(c => new {c.Id, c.InstitutionOfEducationId, c.SpecialtyId});
-
-            builder.Entity<SpecialtyToInstitutionOfEducation>()
-                .HasOne(x => x.SpecialtyToIoEDescription)
-                .WithMany(x => x.SpecialtyToInstitutionOfEducations)
-                .HasForeignKey(x => x.SpecialtyToIoEDescriptionId);
-            
-            builder.Entity<PaymentFormToDescription>()
-                .HasKey(k => new {k.Id, k.PaymentFormId, k.SpecialtyToIoEDescriptionId});
-
-            builder.Entity<PaymentFormToDescription>()
-                .HasOne(x => x.SpecialtyToIoEDescription)
-                .WithMany(x => x.PaymentFormToDescriptions)
-                .HasForeignKey(k => k.SpecialtyToIoEDescriptionId);
-
-            builder.Entity<PaymentFormToDescription>()
-                .HasOne(x => x.PaymentForm)
-                .WithMany(x => x.PaymentFormToDescriptions)
-                .HasForeignKey(k => k.PaymentFormId);
-
-            builder.Entity<EducationFormToDescription>()
-                .HasKey(k => new {k.Id, k.EducationFormId, k.SpecialtyToIoEDescriptionId});
-
-            builder.Entity<EducationFormToDescription>()
-                .HasOne(x => x.EducationForm)
-                .WithMany(x => x.EducationFormToDescriptions)
-                .HasForeignKey(k => k.EducationFormId);
-
-            builder.Entity<EducationFormToDescription>()
-                .HasOne(x => x.SpecialtyToIoEDescription)
-                .WithMany(x => x.EducationFormToDescriptions)
-                .HasForeignKey(k => k.SpecialtyToIoEDescriptionId);
 
             builder.Entity<ExamRequirement>()
                 .HasKey(k => new {k.Id, k.ExamId, k.SpecialtyToIoEDescriptionId});

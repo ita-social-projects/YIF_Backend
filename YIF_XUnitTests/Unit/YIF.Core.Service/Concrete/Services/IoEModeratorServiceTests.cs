@@ -11,6 +11,8 @@ using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Service.Concrete.Services;
+using AutoMapper;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -22,7 +24,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>
             _ioERepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
+        private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
+        private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
+        private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
 
         public IoEModeratorServiceTests()
         {
@@ -30,6 +35,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
+                _specialtyToIoEDescriptionRepository.Object,
+                _examRequirementRepository.Object,
+                _mapper.Object,
                 _resourceManager.Object
             );
         }
@@ -55,6 +63,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.Null(exception);
         }
+
         [Fact]
         public void AddSpecialtyToIoE_ShouldReturnBadRequestException_IfSpecialtyNotFound()
         {
@@ -70,7 +79,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
-            Func<Task> act = () => _ioEModeratorService.AddSpecialtyToIoe(entity);
+            Task act() => _ioEModeratorService.AddSpecialtyToIoe(entity);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -91,7 +100,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
             // Act
-            Func<Task> act = () => _ioEModeratorService.AddSpecialtyToIoe(entity);
+            Task act() => _ioEModeratorService.AddSpecialtyToIoe(entity);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -157,7 +166,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            Task act() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
             {
                 InstitutionOfEducationId = "IoEId",
                 SpecialtyId = "SpecialtyId"
@@ -193,7 +202,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            Task act() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
             {
                 InstitutionOfEducationId = "IoEId",
                 SpecialtyId = "SpecialtyId"
@@ -202,6 +211,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
         [Fact]
         public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyInInstitutionOfEducationNotFound()
         {
@@ -226,7 +236,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
+            Task act() => _ioEModeratorService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
             {
                 InstitutionOfEducationId = "IoEId",
                 SpecialtyId = "SpecialtyId"
@@ -234,6 +244,23 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task UpdateSpecialtyDescription_ShouldUpdateDescriptionAndReturnCorrectMessage_IfEverythingIsOk()
+        {
+            //Arrange
+            _mapper.Setup(sr => sr.Map<SpecialtyToIoEDescriptionDTO>(It.IsAny<SpecialtyDescriptionUpdateApiModel>())).Returns(It.IsAny<SpecialtyToIoEDescriptionDTO>());
+            _examRequirementRepository.Setup(sr => sr.DeleteRangeByDescriptionId(It.IsAny<string>()));
+            _mapper.Setup(sr => sr.Map<SpecialtyToIoEDescription>(It.IsAny<SpecialtyToIoEDescriptionDTO>())).Returns(It.IsAny<SpecialtyToIoEDescription>());
+            _specialtyToIoEDescriptionRepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToIoEDescription>())).ReturnsAsync(true);
+
+            //Act
+            var result = await _ioEModeratorService.UpdateSpecialtyDescription(new SpecialtyDescriptionUpdateApiModel());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
     }
 }

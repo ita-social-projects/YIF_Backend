@@ -7,6 +7,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<ExamRequirementDTO> ExamRequirements { get; set; }
+        public ICollection<ExamRequirementDTO> ExamRequirements { get; set; }
     }
 }

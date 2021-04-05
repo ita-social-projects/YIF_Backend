@@ -45,6 +45,6 @@ namespace YIF.Core.Data.Entities
         /// </summary>
         public DateTime RegistrationDate { get; set; }
 
-        public virtual DbUser User { get; set; }
+        public DbUser User { get; set; }
     }
 }

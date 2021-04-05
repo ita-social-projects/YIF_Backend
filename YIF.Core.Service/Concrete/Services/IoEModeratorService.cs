@@ -1,5 +1,6 @@
 ﻿using System.Resources;
 using System.Threading.Tasks;
+using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -15,17 +16,26 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
+        private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
+        private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
+        private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
         public IoEModeratorService(
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
+            ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
+            IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
+            IMapper mapper,
             ResourceManager resourceManager)
         {
             _specialtyRepository = specialtyRepository;
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
+            _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
+            _examRequirementRepository = examRequirementRepository;
+            _mapper = mapper;
             _resourceManager = resourceManager;
 
         }
@@ -73,7 +83,18 @@ namespace YIF.Core.Service.Concrete.Services
                 SpecialtyId = specialtyToIoE.SpecialtyId,
                 InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
                 IsDeleted = true
-            }); ;
+            });
+        }
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialtyToIoEDescriptionDTO = _mapper.Map<SpecialtyToIoEDescriptionDTO>(specialtyDescriptionUpdateApiModel);
+
+            await _examRequirementRepository.DeleteRangeByDescriptionId(specialtyDescriptionUpdateApiModel.Id);
+
+            return result.Set(
+                new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
+                await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
         }
     }
 }

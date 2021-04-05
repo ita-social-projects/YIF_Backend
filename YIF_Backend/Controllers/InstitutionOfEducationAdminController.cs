@@ -89,5 +89,21 @@ namespace YIF_Backend.Controllers
             await _ioEAdminService.DeleteSpecialtyToIoe(model);
             return NoContent();
         }
+
+        /// <summary>
+        /// Update specialty description in IoE.
+        /// </summary>
+        /// <returns>Message</returns>
+        /// <response code="200">If specialty description successfully updated</response>
+        /// <response code="400">If request model isn't valid </response>
+        [HttpPut("Specialty/Description/Update")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            var result = await _ioEAdminService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
+            return Ok(result.Object);
+        }
     }
 }

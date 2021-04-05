@@ -21,6 +21,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ResourceManager _resourceManager;
+        private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
+        private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
@@ -31,6 +33,8 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
+            ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
+            IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
@@ -40,6 +44,8 @@ namespace YIF.Core.Service.Concrete.Services
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
+            _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
+            _examRequirementRepository = examRequirementRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
@@ -122,6 +128,18 @@ namespace YIF.Core.Service.Concrete.Services
             await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTONew));
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialtyToIoEDescriptionDTO = _mapper.Map<SpecialtyToIoEDescriptionDTO>(specialtyDescriptionUpdateApiModel);
+
+            await _examRequirementRepository.DeleteRangeByDescriptionId(specialtyDescriptionUpdateApiModel.Id);
+
+            return result.Set(
+                new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
+                await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
         }
     }
 }

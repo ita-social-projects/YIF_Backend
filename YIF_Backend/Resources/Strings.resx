@@ -282,4 +282,13 @@
   <data name="InformationChanged" xml:space="preserve">
     <value>Інформацію змінено.</value>
   </data>
+  <data name="TheIoEDoesNotHaveSuchSpecialty" xml:space="preserve">
+    <value>Заклад освіти немає такої спеціальності</value>
+  </data>
+  <data name="SpecialtyInIoEDoesNotHaveDescription" xml:space="preserve">
+    <value>Спеціальність в закладі освіти немає опису</value>
+  </data>
+  <data name="SpecialtyDescriptionUpdated" xml:space="preserve">
+    <value>Опис спеціальності оновлено</value>
+  </data>
 </root>
