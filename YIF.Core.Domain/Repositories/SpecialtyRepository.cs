@@ -35,7 +35,6 @@ namespace YIF.Core.Domain.Repositories
             return false;
         }
 
-        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
@@ -82,27 +81,9 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
         }
 
-        public async Task AddFavorite(SpecialtyToGraduate specialtyToGraduate)
-        {
-            await _context.SpecialtyToGraduates.AddAsync(specialtyToGraduate);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveFavorite(SpecialtyToGraduate specialtyToGraduate)
-        {
-            _context.SpecialtyToGraduates.Remove(specialtyToGraduate);
-            await _context.SaveChangesAsync();
-        }
         public async Task<bool> ContainsById(string id)
         {
-            var result = await _context.Specialties
-                          .AsNoTracking()
-                          .Where(x => x.Id == id)
-                          .FirstOrDefaultAsync();
-
-            if (result != null)
-                return true;
-            return false;
+            return await _context.Specialties.AnyAsync(x => x.Id == id);
         }
     }
 }

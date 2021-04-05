@@ -41,6 +41,10 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
                 .ForMember(dst => dst.Descriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescriptions));
+
+            CreateMap<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>().ReverseMap();
+            CreateMap<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel, SpecialtyToInstitutionOfEducationToGraduateDTO>();
+            CreateMap<SpecialtyToInstitutionOfEducationPostApiModel, SpecialtyToInstitutionOfEducationToGraduateDTO>();
         }
     }
 }

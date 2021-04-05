@@ -92,6 +92,8 @@ namespace YIF_Backend
             services.AddTransient<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>, SpecialtyToIoEDescriptionRepository>();
             services.AddTransient<IIoEAdminService, IoEAdminService>();
             services.AddTransient<IIoEModeratorService, IoEModeratorService>();
+            services.AddTransient<ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO>, SpecialtyToGraduateRepository>();
+            services.AddTransient<ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>, SpecialtyToIoEToGraduateRepository>();
 
             #endregion
 

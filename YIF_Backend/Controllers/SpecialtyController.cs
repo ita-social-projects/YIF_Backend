@@ -174,7 +174,7 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> AddSpecialtyAndInstitutionOfEducationToFavorite([FromBody] SpecialtyAndInstitutionOfEducationToFavoritePostApiModel request)
         {
             var userId = User.FindFirst("id")?.Value;
-            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request.SpecialtyId, request.InstitutionOfEducationId, userId);
+            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request, userId);
             return Ok();
         }
 

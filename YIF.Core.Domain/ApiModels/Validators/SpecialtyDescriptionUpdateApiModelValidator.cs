@@ -43,7 +43,7 @@ namespace YIF.Core.Domain.Validators
                 .Must(x => _context.SpecialtyToIoEDescriptions.Any(y => y.Id == x)).WithMessage(NotExistInDbMessage);
 
             RuleFor(x => x.SpecialtyToInstitutionOfEducationId)
-                .Must(x => _context.SpecialtyToInstitutionOfEducations.Any(y => y.Id == x)).WithMessage(NotExistInDbMessage).WithName("Specialty to IoE description id"); ;
+                .Must(x => _context.SpecialtyToInstitutionOfEducations.Any(y => y.Id == x)).WithMessage(NotExistInDbMessage).WithName("Specialty to IoE description id");
 
             RuleForEach(x => x.ExamRequirements).SetValidator(new ExamRequirementUpdateApiModelValidator(_context));
         }

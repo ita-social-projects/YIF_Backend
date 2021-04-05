@@ -59,11 +59,9 @@ namespace YIF.Core.Service.Concrete.Services
 
             var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
             var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
-            var entity = new SpecialtyToInstitutionOfEducation()
-            {
-                SpecialtyId = specialtyToIoE.SpecialtyId,
-                InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId
-            };
+
+            var specialtyToInstitutionOfEducationDTO = _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToIoE);
+            var specialtyToInstitutionOfEducation = _mapper.Map<SpecialtyToInstitutionOfEducation>(specialtyToInstitutionOfEducationDTO);
 
             if (institutionOfEducation == false)
                 throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
@@ -71,7 +69,7 @@ namespace YIF.Core.Service.Concrete.Services
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            await _specialtyToIoERepository.AddSpecialty(entity);
+            await _specialtyToIoERepository.AddSpecialty(specialtyToInstitutionOfEducation);
             return result.Set(new DescriptionResponseApiModel("Specialty was successfully added to the Institution of Education"), true);
         }
 
@@ -90,12 +88,11 @@ namespace YIF.Core.Service.Concrete.Services
             if (entity == null)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
 
-            await _specialtyToIoERepository.Update(new SpecialtyToInstitutionOfEducation
-            {
-                SpecialtyId = specialtyToIoE.SpecialtyId,
-                InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId,
-                IsDeleted = true
-            }); ;
+            var specialtyToInstitutionOfEducationDTO = _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialtyToIoE);
+            var specialtyToInstitutionOfEducation = _mapper.Map<SpecialtyToInstitutionOfEducation>(specialtyToInstitutionOfEducationDTO);
+            specialtyToInstitutionOfEducation.IsDeleted = true;
+
+            await _specialtyToIoERepository.Update(specialtyToInstitutionOfEducation);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
