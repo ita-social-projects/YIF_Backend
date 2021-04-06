@@ -51,6 +51,7 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.EducationFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationFormToDescriptions))
                 .ForMember(dst => dst.PaymentFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.PaymentFormToDescriptions));
 
+            CreateMap<SpecialityPostApiModel, SpecialtyDTO>();
         }
     }
 }

@@ -48,6 +48,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<IPaginationService> _paginationService;
+        private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialty;
 
         private readonly DbUser _user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" };
         private readonly InstitutionOfEducationAdmin uniAdmin = new InstitutionOfEducationAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", InstitutionOfEducationId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
@@ -88,6 +89,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _env = new Mock<IWebHostEnvironment>();
             _configuration = new Mock<IConfiguration>();
             _paginationService = new Mock<IPaginationService>();
+            _specialty = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
 
             superAdminService = new SuperAdminService(
                                                     _userService.Object,
@@ -106,7 +108,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _resourceManager.Object,
                                                     _env.Object,
                                                     _configuration.Object,
-                                                    _paginationService.Object);
+                                                    _paginationService.Object,
+                                                    _specialty.Object);
 
             _dbContextMock.Setup(p => p.InstitutionOfEducationAdmins).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducationAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));

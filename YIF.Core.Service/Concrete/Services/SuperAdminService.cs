@@ -44,6 +44,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IPaginationService _paginationService;
+        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
 
         public SuperAdminService(
             IUserService<DbUser> userService,
@@ -62,7 +63,8 @@ namespace YIF.Core.Service.Concrete.Services
             ResourceManager resourceManager, 
             IWebHostEnvironment env,
             IConfiguration configuration,
-            IPaginationService paginationService)
+            IPaginationService paginationService,
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository)
         {
             _userService = userService;
             _userRepository = userRepository;
@@ -81,6 +83,7 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
             _paginationService = paginationService;
+            _specialtyRepository = specialtyRepository;
         }
 
         ///<inheritdoc/>
@@ -378,6 +381,12 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             return admins.ToList();
+        }
+
+        public async Task AddSpecialtyToTheListOfAllSpecialties(SpecialityPostApiModel specialityPostApiModel)
+        {
+            var specialityDTO = _mapper.Map<SpecialtyDTO>(specialityPostApiModel);
+            await _specialtyRepository.Add(_mapper.Map<Specialty>(specialityDTO));
         }
     }
 }

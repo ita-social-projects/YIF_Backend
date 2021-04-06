@@ -104,5 +104,11 @@ namespace YIF.Core.Domain.Repositories
                 return true;
             return false;
         }
+
+        public async Task Add(Specialty specialty)
+        {
+            await _context.Specialties.AddAsync(specialty);
+            await _context.SaveChangesAsync();
+        }
     }
 }

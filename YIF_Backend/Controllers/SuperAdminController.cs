@@ -195,5 +195,22 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.GetAllSchoolAdmins();
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get all SchoolAdmins.
+        /// </summary>
+        /// <returns>List of users</returns>
+        /// <response code="200">Returns a list of users</response>
+        /// <response code="404">If there are no users</response>
+        [HttpPost("AddSpecialty")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialityPostApiModel specialityPostApiModel)
+        {
+            await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
+            return Ok();
+        }
     }
 }

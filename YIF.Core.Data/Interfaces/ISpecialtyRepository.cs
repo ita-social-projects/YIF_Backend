@@ -8,9 +8,10 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<bool> ContainsById(string id);
+        Task<bool> ContainsById(string id); 
         Task AddFavorite(SpecialtyToGraduate specialtyToGraduate);
         Task RemoveFavorite(SpecialtyToGraduate specialtyToGraduate);
         Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
+        Task Add(T specialty);
     }
 }
