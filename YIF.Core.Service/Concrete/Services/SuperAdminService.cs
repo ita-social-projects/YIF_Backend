@@ -37,6 +37,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
+        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository<TokenDTO> _tokenRepository;
@@ -378,6 +379,31 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             return admins.ToList();
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyById(SpecialtyPutApiModel model)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialty = await _specialtyRepository.Get(model.Id);
+            if (specialty == null) 
+            { 
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyNotFound")), false);
+            }
+            if (model.Name != null && model.Code != null && model.Description != null && model.DirectionId != null)
+            {
+                specialty.Name = model.Name;
+                specialty.Code = model.Code;
+                specialty.Description = model.Description;
+                specialty.DirectionId = model.DirectionId;
+                result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecieltyWasSuccessefullyChanged")), true);
+            }
+            else {
+                result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SomeFieldIsNull")), false);
+            }
+
+            await _specialtyRepository.Update(_mapper.Map<Specialty>(specialty));
+
+            return result;
         }
     }
 }

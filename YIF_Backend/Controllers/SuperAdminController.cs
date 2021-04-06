@@ -195,5 +195,22 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.GetAllSchoolAdmins();
             return Ok(result.Object);
         }
+
+
+        [HttpPut("UpdateSpecialty")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> UpdateSpecialtyById(SpecialtyPutApiModel model) 
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _superAdminService.UpdateSpecialtyById(model);
+                return Ok(result);
+            }
+            else {
+                return BadRequest("InvalidModel");
+            }
+        }
     }
 }
