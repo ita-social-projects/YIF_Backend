@@ -39,6 +39,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository;
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>> _institutionOfEducationModeratorRepository;
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
+        private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
@@ -80,6 +81,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
             _institutionOfEducationModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
+            _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
             _dbContextMock = new Mock<IApplicationDbContext>();
@@ -100,6 +102,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _institutionOfEducationAdminRepository.Object,
                                                     _institutionOfEducationModeratorRepository.Object,
                                                     _schoolRepository.Object,
+                                                    _specialtyRepository.Object,
                                                     _schoolAdminRepository.Object,
                                                     _schoolModeratorRepository.Object,
                                                     _tokenRepository.Object,
@@ -302,6 +305,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             //Assert
             Assert.Equal("Admin IsBanned was set to false", a.Object.Message);
+        }
+
+        [Fact]
+        public async Task UpdateSpecialtyById_ShouldUpdateSpecialtyByIdAndReturnCorrectMessage_IfEverythingIsOk()
+        {
+            //Arrange
+            _mapperMock.Setup(sr => sr.Map<SpecialtyDTO>(It.IsAny<SpecialtyDescriptionUpdateApiModel>())).Returns(It.IsAny<SpecialtyDTO>());
+            _mapperMock.Setup(sr => sr.Map<Specialty>(It.IsAny<SpecialtyDTO>())).Returns(It.IsAny<Specialty>());
+            _specialtyRepository.Setup(sr => sr.Update(It.IsAny<Specialty>())).ReturnsAsync(true);
+
+            //Act
+            var result = await superAdminService.UpdateSpecialtyById(new SpecialtyPutApiModel());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
     }
 }

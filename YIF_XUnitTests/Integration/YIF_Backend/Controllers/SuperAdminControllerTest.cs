@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -220,6 +221,27 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task UpdateSpecialtyDescription_EndpointReturnOk()
+        {
+            //Arrange
+            var specialty = _context.Specialties.Where(x => x.DirectionId != null).AsNoTracking().FirstOrDefault();
+            var model = new SpecialtyPutApiModel
+            {
+                Id = specialty.Id,
+                Description = specialty.Description,
+                Name = specialty.Name,
+                DirectionId = specialty.DirectionId,
+                Code = specialty.Code
+            };
+
+            // Act            
+            var response = await _client.PutAsync($"/api/SuperAdmin/UpdateSpecialty", ContentHelper.GetStringContent(model));
 
             // Assert
             response.EnsureSuccessStatusCode();

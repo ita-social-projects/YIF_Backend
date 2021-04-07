@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
@@ -198,19 +199,13 @@ namespace YIF_Backend.Controllers
 
 
         [HttpPut("UpdateSpecialty")]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> UpdateSpecialtyById(SpecialtyPutApiModel model) 
+        public async Task<IActionResult> UpdateSpecialtyById([FromBody] SpecialtyPutApiModel model) 
         {
-            if (ModelState.IsValid)
-            {
                 var result = await _superAdminService.UpdateSpecialtyById(model);
-                return Ok(result);
-            }
-            else {
-                return BadRequest("InvalidModel");
-            }
+                return Ok(result.Object);
         }
     }
 }

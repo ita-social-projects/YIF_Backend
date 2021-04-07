@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -57,6 +56,7 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
             ITokenRepository<TokenDTO> tokenRepository,
@@ -75,6 +75,7 @@ namespace YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _schoolRepository = schoolRepository;
+            _specialtyRepository = specialtyRepository;
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
@@ -384,26 +385,10 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyById(SpecialtyPutApiModel model)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var specialty = await _specialtyRepository.Get(model.Id);
-            if (specialty == null) 
-            { 
-                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyNotFound")), false);
-            }
-            if (model.Name != null && model.Code != null && model.Description != null && model.DirectionId != null)
-            {
-                specialty.Name = model.Name;
-                specialty.Code = model.Code;
-                specialty.Description = model.Description;
-                specialty.DirectionId = model.DirectionId;
-                result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecieltyWasSuccessefullyChanged")), true);
-            }
-            else {
-                result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SomeFieldIsNull")), false);
-            }
+            var specialtyDTO = _mapper.Map<SpecialtyDTO>(model);
 
-            await _specialtyRepository.Update(_mapper.Map<Specialty>(specialty));
-
-            return result;
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasSuccessefullyChanged")),
+                await _specialtyRepository.Update(_mapper.Map<Specialty>(specialtyDTO)));
         }
     }
 }
