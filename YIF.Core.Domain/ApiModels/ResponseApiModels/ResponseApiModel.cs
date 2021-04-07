@@ -10,20 +10,21 @@
         /// Gets the value of whether the result is successful.
         /// </summary>
         public bool Success { get; set; }
+
         /// <summary>
         /// Gets or sets the description model for the response.
         /// </summary>
         public DescriptionResponseApiModel Description { get; set; } = new DescriptionResponseApiModel();
+
         /// <summary>
         /// Gets or sets the message for the <see cref="DescriptionResponseApiModel"/> for the response.
         /// </summary>
         public string Message { get => Description.Message; set => Description.Message = value; }
+
         /// <summary>
         /// A class used in case of a response with returning an object.
         /// </summary>
         public T Object { get; set; }
-
-
 
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
@@ -35,6 +36,7 @@
             Success = isSuccess;
             Message = message;
         }
+
         /// <summary>
         /// Initializes a new instance of 'ResponseApiModel'.
         /// </summary>
@@ -47,9 +49,7 @@
             Success = isSuccess;
             Message = message;
         }
-
-
-
+        
         /// <summary>
         /// Sets properties of the class and returns itself.
         /// </summary>
@@ -62,6 +62,7 @@
             if (message != null) Message = message;
             return this;
         }
+
         /// <summary>
         /// Sets properties of the class and returns itself.
         /// </summary>

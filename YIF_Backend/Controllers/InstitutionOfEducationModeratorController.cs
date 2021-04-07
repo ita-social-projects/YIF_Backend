@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -43,8 +40,43 @@ namespace YIF_Backend.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            var result = await _ioEModeratorService.AddSpecialtyToIoe(model);
+            await _ioEModeratorService.AddSpecialtyToIoe(model);
             return Ok();
+        }
+
+        /// <summary>
+        /// Temporary delete specialty from institution of education.
+        /// </summary>
+        /// <returns>None</returns>
+        /// <response code="204">Returns if the specialty has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not institution of education admin or moderator.</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("DeleteSpecialtyFromInstitutionOfEducation")]
+        public async Task<IActionResult> DeleteSpecialtyFromIoE([FromBody] SpecialtyToInstitutionOfEducationPostApiModel model)
+        {
+            await _ioEModeratorService.DeleteSpecialtyToIoe(model);
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Update specialty description in IoE.
+        /// </summary>
+        /// <returns>Message</returns>
+        /// <response code="200">If specialty description successfully updated</response>
+        /// <response code="400">If request model isn't valid </response>
+        [HttpPut("Specialty/Description/Update")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
+        {
+            var result = await _ioEModeratorService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
+            return Ok(result.Object);
         }
     }
 }

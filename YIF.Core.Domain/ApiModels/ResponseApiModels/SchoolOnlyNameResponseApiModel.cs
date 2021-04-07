@@ -2,6 +2,9 @@
 {
     public class SchoolOnlyNameResponseApiModel
     {
+        /// <summary>
+        /// School name
+        /// </summary>
         public string Name { get; set; }
     }
 }

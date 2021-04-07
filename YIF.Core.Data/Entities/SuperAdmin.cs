@@ -10,9 +10,6 @@ namespace YIF.Core.Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
 
-        /// <summary>
-        /// Link to Identity user
-        /// </summary>      
-        public virtual DbUser User { get; set; }
+        public DbUser User { get; set; }
     }
 }

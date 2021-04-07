@@ -10,17 +10,10 @@ namespace YIF.Core.Data.Entities
     {
         [Key, ForeignKey("User")]
         public string Id { get; set; }
-        public virtual DbUser User { get; set; }
+        public DbUser User { get; set; }
 
-        /// <summary>
-        /// Get or set refresh token
-        /// </summary>
         [Required, StringLength(100)]
         public string RefreshToken { get; set; }
-
-        /// <summary>
-        /// Get or set refresh token expiry time
-        /// </summary>
         public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }

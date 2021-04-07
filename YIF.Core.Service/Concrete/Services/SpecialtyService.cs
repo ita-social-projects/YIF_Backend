@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
@@ -16,30 +17,39 @@ namespace YIF.Core.Service.Concrete.Services
     public class SpecialtyService : ISpecialtyService
     {
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
-        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
-        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
+        private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
+        private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
+        private readonly ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO> _specialtyToIoEToGraduateRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
+        private readonly ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO> _specialtyToGraduateRepository;
+        private readonly IExamRepository<Exam, ExamDTO> _examRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
         public SpecialtyService(
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
-            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
-            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
+            IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
+            ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
+            ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO> specialtyToIoEToGraduateRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
+            ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO> specialtyToGraduateRepository,
+            IExamRepository<Exam, ExamDTO> examRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
-            _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
-            _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
+            _examRequirementRepository = examRequirementRepository;
             _specialtyRepository = specialtyRepository;
+            _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
+            _specialtyToIoEToGraduateRepository = specialtyToIoEToGraduateRepository;
             _graduateRepository = graduateRepository;
+            _specialtyToGraduateRepository = specialtyToGraduateRepository;
+            _examRepository = examRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
         }
@@ -81,23 +91,23 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
             {
                 //Filtering for educationFormToDescription that has such EducationForm
-                var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.EducationForm == (EducationForm)Enum.Parse(typeof(EducationForm), filterModel.EducationForm));
 
                 //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
                 specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
             {
-                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.PaymentForm == (PaymentForm)Enum.Parse(typeof(PaymentForm), filterModel.PaymentForm));
 
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
                 specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
@@ -114,7 +124,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return specialties;
         }
-
 
         public async Task<ResponseApiModel<IEnumerable<SpecialtyResponseApiModel>>> GetAllSpecialties()
         {
@@ -154,6 +163,7 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<SpecialtyResponseApiModel>(specialty);
             return result.Set(true);
         }
+
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id)
         {
             var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyToIoEDescriptionsById(id);
@@ -164,20 +174,17 @@ namespace YIF.Core.Service.Concrete.Services
             var result = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(specialtyDescriptions);
             return result;
         }
-        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId, string userId)
+
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite(SpecialtyAndInstitutionOfEducationToFavoritePostApiModel specialtyAndInstitutionOfEducationToFavoritePostApiModel, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
+            var specialtyToIoEToGraduateDTO = _mapper.Map<SpecialtyToInstitutionOfEducationToGraduateDTO>(specialtyAndInstitutionOfEducationToFavoritePostApiModel);
+            specialtyToIoEToGraduateDTO.GraduateId = graduate.Id;
+            var specialtyToIoEToGraduate = _mapper.Map<SpecialtyToInstitutionOfEducationToGraduate>(specialtyToIoEToGraduateDTO);
 
-            var entity = new SpecialtyToInstitutionOfEducationToGraduate()
-            {
-                SpecialtyId = specialtyId,
-                InstitutionOfEducationId = institutionOfEducationId,
-                GraduateId = graduate.Id
-            };
-
-            var favorites = await _specialtyToInstitutionOfEducationRepository.FavoriteContains(entity);
-            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(institutionOfEducationId);
-            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var favorites = await _specialtyToIoEToGraduateRepository.FavoriteContains(specialtyToIoEToGraduate);
+            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(specialtyAndInstitutionOfEducationToFavoritePostApiModel.InstitutionOfEducationId);
+            var specialty = await _specialtyRepository.ContainsById(specialtyAndInstitutionOfEducationToFavoritePostApiModel.SpecialtyId);
 
             if (favorites == true)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyAndInstitutionOfEducationIsAlreadyFavorite"));
@@ -190,9 +197,10 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
-
-            await _specialtyToInstitutionOfEducationRepository.AddFavorite(entity);
+            
+            await _specialtyToIoEToGraduateRepository.AddFavorite(specialtyToIoEToGraduate);
         }
+
         public async Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId)
         {
             var graduate = await _graduateRepository.GetByUserId(userId);
@@ -204,7 +212,7 @@ namespace YIF.Core.Service.Concrete.Services
                 GraduateId = graduate.Id
             };
 
-            var favorites = await _specialtyToInstitutionOfEducationRepository.FavoriteContains(entity);
+            var favorites = await _specialtyToIoEToGraduateRepository.FavoriteContains(entity);
             var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(institutionOfEducationId);
             var specialty = await _specialtyRepository.ContainsById(specialtyId);
 
@@ -220,8 +228,9 @@ namespace YIF.Core.Service.Concrete.Services
             if (specialty == false)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            await _specialtyToInstitutionOfEducationRepository.RemoveFavorite(entity);
+            await _specialtyToIoEToGraduateRepository.RemoveFavorite(entity);
         }
+
         public async Task AddSpecialtyToFavorite(string specialtyId, string userId)
         {
             var favorites = await _specialtyRepository.GetFavoritesByUserId(userId);
@@ -236,9 +245,8 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (graduate == null)
                 throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
-
-
-            await _specialtyRepository.AddFavorite(new SpecialtyToGraduate
+            
+            await _specialtyToGraduateRepository.AddFavorite(new SpecialtyToGraduate
             {
                 SpecialtyId = specialty.Id,
                 GraduateId = graduate.Id
@@ -261,10 +269,39 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(_resourceManager.GetString("GraduateNotFound"));
 
 
-            await _specialtyRepository.RemoveFavorite(new SpecialtyToGraduate
+            await _specialtyToGraduateRepository.RemoveFavorite(new SpecialtyToGraduate
             {
                 SpecialtyId = specialty.Id,
                 GraduateId = graduate.Id
+            });
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<ExamsResponseApiModel>>> GetExams()
+        {
+            var result = new ResponseApiModel<IEnumerable<ExamsResponseApiModel>>
+            {
+                Object = _mapper.Map<IEnumerable<ExamsResponseApiModel>>(await _examRepository.GetAll())
+            };
+            return result.Set(true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<string>>> GetEducationForms()
+        {
+            var result = new ResponseApiModel<IEnumerable<string>>();
+            return await Task.Run(() =>
+            {
+                result.Object = Enum.GetNames(typeof(EducationForm)).ToList();
+                return result.Set(true);
+            });
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<string>>> GetPaymentForms()
+        {
+            var result = new ResponseApiModel<IEnumerable<string>>();
+            return await Task.Run(() =>
+            {
+                result.Object = Enum.GetNames(typeof(PaymentForm)).ToList();
+                return result.Set(true);
             });
         }
     }

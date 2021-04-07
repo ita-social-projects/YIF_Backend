@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
-using YIF_Backend;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
@@ -190,5 +186,34 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             response.EnsureSuccessStatusCode();
         }
 
+        [Fact]
+        public async Task GetAllExamsNames_ShouldReturnOk()
+        {
+            //Act
+            var response = await _client.GetAsync($"/api/Specialty/Exams");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetAllEducationFormsNames_ShouldReturnOk()
+        {
+            //Act
+            var response = await _client.GetAsync($"/api/Specialty/EducationForms");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetAllPaymentFormsNames_ShouldReturnOk()
+        {
+            //Act
+            var response = await _client.GetAsync($"/api/Specialty/PaymentForms");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

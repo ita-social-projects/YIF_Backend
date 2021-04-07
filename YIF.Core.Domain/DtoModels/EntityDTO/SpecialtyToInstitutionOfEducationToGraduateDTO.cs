@@ -6,8 +6,8 @@
         public string InstitutionOfEducationId { get; set; }
         public string GraduateId { get; set; }
 
-        public virtual SpecialtyDTO Specialty { get; set; }
-        public virtual InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
-        public virtual GraduateDTO Graduate { get; set; }
+        public SpecialtyDTO Specialty { get; set; }
+        public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
+        public GraduateDTO Graduate { get; set; }
     }
 }

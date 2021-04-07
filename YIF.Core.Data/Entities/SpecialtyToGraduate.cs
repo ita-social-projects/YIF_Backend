@@ -8,8 +8,8 @@ namespace YIF.Core.Data.Entities
         public string GraduateId { get; set; }
 
         [ForeignKey("SpecialtyId")]
-        public virtual Specialty Specialty { get; set; }
+        public Specialty Specialty { get; set; }
         [ForeignKey("GraduateId")]
-        public virtual Graduate Graduate { get; set; }
+        public Graduate Graduate { get; set; }
     }
 }

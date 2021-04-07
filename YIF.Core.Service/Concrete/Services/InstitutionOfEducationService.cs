@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
@@ -21,9 +22,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToIoERepository;
         private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
-        private readonly IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> _educationFormToDescriptionRepository;
-        private readonly IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> _paymentFormToDescriptionRepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
+        private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -34,9 +34,8 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToIoERepository,
             IDirectionRepository<Direction, DirectionDTO> directionRepository,
-            IRepository<EducationFormToDescription, EducationFormToDescriptionDTO> educationFormToDescriptionRepository,
-            IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO> paymentFormToDescriptionRepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
+            ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
@@ -47,9 +46,8 @@ namespace YIF.Core.Service.Concrete.Services
             _directionToIoERepository = directionToIoERepository;
             _directionRepository = directionRepository;
             _graduateRepository = graduateRepository;
-            _educationFormToDescriptionRepository = educationFormToDescriptionRepository;
-            _paymentFormToDescriptionRepository = paymentFormToDescriptionRepository;
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
+            _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -95,23 +93,23 @@ namespace YIF.Core.Service.Concrete.Services
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
             {
                 //Filtering for educationFormToDescription that has such EducationForm
-                var educationFormToDescription = await _educationFormToDescriptionRepository.Find(x => x.EducationForm.Name == filterModel.EducationForm);
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.EducationForm == (EducationForm)Enum.Parse(typeof(EducationForm), filterModel.EducationForm));
 
                 //From all specialtyToInstitutionOfEducation set which contains educationFormToDescription
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => educationFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
                 filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
             {
-                var paymentFormToDescription = await _paymentFormToDescriptionRepository.Find(x => x.PaymentForm.Name == filterModel.PaymentForm);
+                var specialtyToIoEDescription = await _specialtyToIoEDescriptionRepository.Find(x => x.PaymentForm == (PaymentForm)Enum.Parse(typeof(PaymentForm), filterModel.PaymentForm));
 
                 var specialtyToInstitutionOfEducationAll = await _specialtyToInstitutionOfEducationRepository.GetAll();
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
-                    .Where(x => paymentFormToDescription.Any(y => y.SpecialtyToIoEDescriptionId == x.SpecialtyToIoEDescriptionId));
+                    .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
                 filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
             }

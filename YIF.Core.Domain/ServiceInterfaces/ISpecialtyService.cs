@@ -14,9 +14,12 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilterForUser(FilterApiModel filterModel, string id);
         Task<IEnumerable<string>> GetSpecialtiesNamesByFilter(FilterApiModel filterModel);
         Task<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>> GetAllSpecialtyDescriptionsById(string id);
-        Task AddSpecialtyAndInstitutionOfEducationToFavorite(string specialtyId, string institutionOfEducationId, string userId);
+        Task AddSpecialtyAndInstitutionOfEducationToFavorite(SpecialtyAndInstitutionOfEducationToFavoritePostApiModel specialtyAndInstitutionOfEducationToFavoritePostApiModel, string userId);
         Task DeleteSpecialtyAndInstitutionOfEducationFromFavorite(string specialtyId, string institutionOfEducationId, string userId);
         Task AddSpecialtyToFavorite(string specialtyId, string userId);
         Task DeleteSpecialtyFromFavorite(string specialtyId, string userId);
+        Task<ResponseApiModel<IEnumerable<ExamsResponseApiModel>>> GetExams();
+        Task<ResponseApiModel<IEnumerable<string>>> GetEducationForms();
+        Task<ResponseApiModel<IEnumerable<string>>> GetPaymentForms();
     }
 }

@@ -16,27 +16,22 @@ namespace YIF.Core.Service.Mapping
             CreateMap<SpecialtyResponseApiModel, SpecialtyDTO>()
                 .ForMember(dto => dto.Direction, opt => opt.Ignore());
 
-            CreateMap<Exam, ExamDTO>();
-            CreateMap<EducationForm, EducationFormDTO>();
-            CreateMap<PaymentForm, PaymentFormDTO>();
+            CreateMap<Exam, ExamDTO>().ReverseMap();
 
             CreateMap<ExamDTO, ExamResponseApiModel>();
-            CreateMap<EducationFormDTO, EducationFormResponseApiModel>();
-            CreateMap<PaymentFormDTO, PaymentFormResponseApiModel>();
+            CreateMap<ExamDTO, ExamsResponseApiModel>();
 
-            CreateMap<ExamRequirement, ExamRequirementDTO>();
-            CreateMap<EducationFormToDescription, EducationFormToDescriptionDTO>();
-            CreateMap<PaymentFormToDescription, PaymentFormToDescriptionDTO>();
+            CreateMap<ExamRequirement, ExamRequirementDTO>().ReverseMap();
 
             CreateMap<ExamRequirementDTO, ExamRequirementsResponseApiModel>()
                 .ForMember(dst => dst.ExamName, opt => opt.MapFrom(src => src.Exam.Name));
-            CreateMap<EducationFormToDescriptionDTO, EducationFormToDescriptionResponseApiModel>()
-                .ForMember(dst => dst.EducationFormName, opt => opt.MapFrom(src => src.EducationForm.Name));
-            CreateMap<PaymentFormToDescriptionDTO, PaymentFormToDescriptionResponseApiModel>()
-                .ForMember(dst => dst.PaymentFormName, opt => opt.MapFrom(src => src.PaymentForm.Name));
 
-            CreateMap<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>();
+            CreateMap<ExamRequirementUpdateApiModel, ExamRequirementDTO>();
+
+            CreateMap<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>().ReverseMap();
             CreateMap<SpecialtyToIoEDescriptionDTO, SpecialtyToIoEDescriptionResponseApiModel>();
+
+            CreateMap<SpecialtyDescriptionUpdateApiModel, SpecialtyToIoEDescriptionDTO>();
 
             CreateMap<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>().ReverseMap();
             CreateMap<SpecialtyToInstitutionOfEducationPostApiModel, SpecialtyToInstitutionOfEducationDTO>();
@@ -45,13 +40,12 @@ namespace YIF.Core.Service.Mapping
                 .ForMember(dst => dst.InstitutionOfEducationAbbreviation, opt => opt.MapFrom(src => src.InstitutionOfEducation.Abbreviation))
                 .ForMember(dst => dst.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.Name))
                 .ForMember(dst => dst.SpecialtyCode, opt => opt.MapFrom(src => src.Specialty.Code))
-                .ForMember(dst => dst.EducationalProgramLink, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationalProgramLink))
-                .ForMember(dst => dst.Description, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.Description))
-                .ForMember(dst => dst.ExamRequirements, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.ExamRequirements))
-                .ForMember(dst => dst.EducationFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.EducationFormToDescriptions))
-                .ForMember(dst => dst.PaymentFormToDescriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescription.PaymentFormToDescriptions));
+                .ForMember(dst => dst.Descriptions, opt => opt.MapFrom(src => src.SpecialtyToIoEDescriptions));
 
             CreateMap<SpecialityPostApiModel, SpecialtyDTO>();
+            CreateMap<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>().ReverseMap();
+            CreateMap<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel, SpecialtyToInstitutionOfEducationToGraduateDTO>();
+            CreateMap<SpecialtyToInstitutionOfEducationPostApiModel, SpecialtyToInstitutionOfEducationToGraduateDTO>();
         }
     }
 }

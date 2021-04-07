@@ -8,8 +8,8 @@ namespace YIF.Core.Data.Entities
         public string InstitutionOfEducationId { get; set; }
 
         [ForeignKey("DirectionId")]
-        public virtual Direction Direction { get; set; }
+        public Direction Direction { get; set; }
         [ForeignKey("InstitutionOfEducationId")]
-        public virtual InstitutionOfEducation InstitutionOfEducation { get; set; }
+        public InstitutionOfEducation InstitutionOfEducation { get; set; }
     }
 }

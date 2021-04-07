@@ -2,14 +2,25 @@
 
 namespace YIF.Core.Data.Entities
 {
+    public enum PaymentForm
+    {
+        Govermental,
+        Contract 
+    }
+    public enum EducationForm
+    {
+        Daily,
+        Remote
+    }
     public class SpecialtyToIoEDescription : BaseEntity
     {
+        public string SpecialtyToInstitutionOfEducationId { get; set; }
+        public PaymentForm PaymentForm { get; set; }
+        public EducationForm EducationForm { get; set; }
         public string EducationalProgramLink { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
-        public virtual ICollection<ExamRequirement> ExamRequirements { get; set; }
-        public virtual ICollection<PaymentFormToDescription> PaymentFormToDescriptions { get; set; }
-        public virtual ICollection<EducationFormToDescription> EducationFormToDescriptions { get; set; }
+        public SpecialtyToInstitutionOfEducation SpecialtyToInstitutionOfEducation { get; set; }
+        public ICollection<ExamRequirement> ExamRequirements { get; set; }
     }
 }

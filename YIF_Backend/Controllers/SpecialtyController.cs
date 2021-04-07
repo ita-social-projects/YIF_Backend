@@ -174,7 +174,7 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> AddSpecialtyAndInstitutionOfEducationToFavorite([FromBody] SpecialtyAndInstitutionOfEducationToFavoritePostApiModel request)
         {
             var userId = User.FindFirst("id")?.Value;
-            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request.SpecialtyId, request.InstitutionOfEducationId, userId);
+            await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request, userId);
             return Ok();
         }
 
@@ -235,6 +235,48 @@ namespace YIF_Backend.Controllers
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyFromFavorite(specialtyId, userId);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Get all exams names.
+        /// </summary>
+        /// <returns>List of exams names</returns>
+        /// <response code="200">Returns a list of exams names</response>
+        [HttpGet("Exams")]
+        [ProducesResponseType(typeof(IEnumerable<ExamsResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllExamsNames()
+        {
+            var result = await _specialtyService.GetExams();
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get all education forms names.
+        /// </summary>
+        /// <returns>List of education forms names</returns>
+        /// <response code="200">Returns a list of education forms names</response>
+        [HttpGet("EducationForms")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllEducationFormsNames()
+        {
+            var result = await _specialtyService.GetEducationForms();
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get all payment forms names.
+        /// </summary>
+        /// <returns>List of payment forms names</returns>
+        /// <response code="200">Returns a list of payment forms names</response>
+        [HttpGet("PaymentForms")]
+        [ProducesResponseType(typeof(IEnumerable<string>), 200)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllPaymentFormsNames()
+        {
+            var result = await _specialtyService.GetPaymentForms();
+            return Ok(result.Object);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string Id { get; set; }
         
         public string AdminId { get; set; }
-        public virtual InstitutionOfEducationAdminDTO Admin { get; set; }
+        public InstitutionOfEducationAdminDTO Admin { get; set; }
 
         public string UserId { get; set; }
         public UserDTO User { get; set; }

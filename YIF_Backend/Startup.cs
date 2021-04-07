@@ -28,6 +28,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.Repositories;
 using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Core.Domain.Validators;
 using YIF.Core.Service.Concrete.Services;
 using YIF_Backend.Infrastructure;
 using YIF_Backend.Infrastructure.Middleware;
@@ -70,14 +71,12 @@ namespace YIF_Backend
             services.AddTransient<IDirectionRepository<Direction, DirectionDTO>, DirectionRepository>();
             services.AddTransient<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>, DirectionToInstitutionOfEducationRepository>();
             services.AddTransient<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>, SpecialtyToInstitutionOfEducationRepository>();
-            services.AddTransient<IRepository<EducationFormToDescription, EducationFormToDescriptionDTO>, EducationFormToDescriptionRepository>();
-            services.AddTransient<IRepository<PaymentFormToDescription, PaymentFormToDescriptionDTO>, PaymentFormToDescriptionRepository>();
+            services.AddTransient<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>, ExamRequirementRepository>();
             services.AddTransient<ITokenRepository<TokenDTO>, TokenRepository>();
             services.AddTransient<IUserService<DbUser>, UserService>();
             services.AddTransient<ISpecialtyService, SpecialtyService>();
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
-            services.AddTransient<IInstitutionAdminService, InstitutionAdminService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
             services.AddTransient<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>, InstitutionOfEducationModeratorRepository>();
             services.AddTransient<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>, InstitutionOfEducationAdminRepository>();
@@ -89,13 +88,21 @@ namespace YIF_Backend
             services.AddTransient<ISchoolService, SchoolService>();
             services.AddTransient<IPaginationService, PaginationService>();
             services.AddTransient<IGraduateRepository<Graduate, GraduateDTO>, GraduateRepository>();
+            services.AddTransient<IExamRepository<Exam, ExamDTO>, ExamRepository>();
+            services.AddTransient<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>, SpecialtyToIoEDescriptionRepository>();
             services.AddTransient<IIoEAdminService, IoEAdminService>();
             services.AddTransient<IIoEModeratorService, IoEModeratorService>();
+            services.AddTransient<ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO>, SpecialtyToGraduateRepository>();
+            services.AddTransient<ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>, SpecialtyToIoEToGraduateRepository>();
 
             #endregion
 
             #region FluentValidation
-            services.AddMvc().AddFluentValidation();
+            services.AddMvc()
+                .AddFluentValidation(s =>
+                {
+                    s.RegisterValidatorsFromAssemblyContaining<SpecialtyDescriptionUpdateApiModelValidator>();
+                });
             #endregion
 
             #region Swagger
