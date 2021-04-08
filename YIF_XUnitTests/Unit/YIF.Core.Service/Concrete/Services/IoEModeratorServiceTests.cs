@@ -22,8 +22,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>
             _specialtyToIoERepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
+        private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>>
+            _institutionOfEducationModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>
             _ioERepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
+        private readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>
+            _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
         private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
@@ -37,6 +41,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _specialtyToIoERepository.Object,
                 _specialtyToIoEDescriptionRepository.Object,
                 _examRequirementRepository.Object,
+                _institutionOfEducationModeratorRepository.Object,
+                _directionToIoERepository.Object,
                 _mapper.Object,
                 _resourceManager.Object
             );
@@ -261,6 +267,83 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
             Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task GetAllDirectionsAndSpecialitiesOfModerator_IfEverythingOk()
+        {
+            // Arrange  
+            var institutionOfEducation = true;
+            var moderator = new InstitutionOfEducationModeratorDTO
+            {
+                Id = "ModerId",
+                Admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" }
+            };
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _institutionOfEducationModeratorRepository
+                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => _ioEModeratorService.GetAllDirectionsAndSpecialitiesOfModerator(moderator.Admin.InstitutionOfEducationId));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void GetAllDirectionsAndSpecialitiesOfModerator_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
+        {
+            // Arrange
+            // InstitutionNotFound
+            var institutionOfEducation = false;
+            var moderator = new InstitutionOfEducationModeratorDTO
+            {
+                Id = "ModerId",
+                Admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" }
+            };
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _institutionOfEducationModeratorRepository
+                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEModeratorService.GetAllDirectionsAndSpecialitiesOfModerator(moderator.Admin.InstitutionOfEducationId);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public void GetAllDirectionsAndSpecialitiesOfModerator_ShouldThrowBadRequestException_IfAdminNotFound()
+        {
+            // Arrange  
+            var institutionOfEducation = true;
+            //Admin not found
+            InstitutionOfEducationModeratorDTO moderator = null;
+
+            _ioERepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _institutionOfEducationModeratorRepository
+                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEModeratorService.GetAllDirectionsAndSpecialitiesOfModerator(moderator.Admin.InstitutionOfEducationId);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
         }
     }
 }

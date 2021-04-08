@@ -29,6 +29,10 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public bool IsFavorite { get; set; }
         /// <summary>
+        /// Field to determine if specialty is deleted in this institutionOfEducation
+        /// </summary>
+        public bool IsDeleted { get; set; }
+        /// <summary>
         /// Navigation property for the specialty descriptions this specialty to institutionOfEducation belongs to.
         /// </summary>
         public IEnumerable<SpecialtyToIoEDescriptionResponseApiModel> Descriptions { get; set; }

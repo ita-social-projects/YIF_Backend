@@ -53,9 +53,10 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<InstitutionOfEducationModeratorDTO>>(moderators.AsEnumerable());
         }
 
-        public Task<InstitutionOfEducationModeratorDTO> GetById(string id)
+        public async Task<InstitutionOfEducationModeratorDTO> GetById(string id)
         {
-            throw new NotImplementedException();
+            var moderator = await _dbContext.InstitutionOfEducationModerators.Include(x => x.Admin).AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
     }
 }

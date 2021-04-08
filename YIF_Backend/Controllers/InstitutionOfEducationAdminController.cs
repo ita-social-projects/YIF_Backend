@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Resources;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -104,6 +105,23 @@ namespace YIF_Backend.Controllers
         {
             var result = await _ioEAdminService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
             return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get all directions and specialties by admin id
+        /// </summary>
+        /// <response code="200">Get all directions and specialties in institution of education</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not institution of education admin or moderator.</response>
+        [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("GetAllDirectionsAndSpecialtiesInIoE")]
+        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE(string adminId)
+        {
+            var result = await _ioEAdminService.GetAllDirectionsAndSpecialitiesOfAdmin(adminId);
+            return Ok(result);
         }
     }
 }

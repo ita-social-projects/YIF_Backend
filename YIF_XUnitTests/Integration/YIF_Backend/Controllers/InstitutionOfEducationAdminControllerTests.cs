@@ -57,22 +57,22 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task DeleteSpecialtyFromIoE_EndpointReturnNoContent()
         {
             //Arrange
-            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().FirstOrDefault();
-            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.Id == institutionOfEducation.Id).FirstOrDefault();
+            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().FirstOrDefault();
 
             var model = new SpecialtyToInstitutionOfEducationPostApiModel()
             {
                 SpecialtyId = specialty.SpecialtyId,
-                InstitutionOfEducationId = institutionOfEducation.Id
+                InstitutionOfEducationId = specialty.InstitutionOfEducationId
             };
 
             //Act
             var response = await _client.PatchAsync(
-                $"/api/Specialty/InstitutionOfEducationAdmin/DeleteSpecialtyFromInstitutionOfEducation", ContentHelper.GetStringContent(model));
+                $"/api/InstitutionOfEducationAdmin/DeleteSpecialtyFromInstitutionOfEducation", ContentHelper.GetStringContent(model));
 
             //Assert
             response.EnsureSuccessStatusCode();
         }
+
         [Fact]
         public async Task UpdateSpecialtyDescription_EndpointReturnOk()
         {
@@ -108,6 +108,22 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Assert
             response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetAllDirectionsAndSpecialtiesInIoE_EndpointsReturnSuccessAndCorrectContentType()
+        {
+            //Arrange
+            var admin = _context.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefault();
+
+            //Act
+            var response = await _client.GetAsync(
+                $"/api/InstitutionOfEducationAdmin/GetAllDirectionsAndSpecialtiesInIoE?adminId={admin.Id}");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
         }
     }
 }
