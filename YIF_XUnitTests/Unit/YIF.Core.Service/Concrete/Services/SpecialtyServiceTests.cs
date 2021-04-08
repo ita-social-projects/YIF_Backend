@@ -244,7 +244,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
            
-
             _specialtyToIoEToGraduateRepository
                 .Setup(su => su.FavoriteContains(entity))
                 .ReturnsAsync(favorite);
@@ -269,7 +268,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ExceptionAsync(() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(It.IsAny<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel>(), graduate.Id));
 
             // Assert
-            Assert.Null(exception);
+            Assert.NotNull(exception);
         }
 
         [Fact]
