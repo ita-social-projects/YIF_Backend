@@ -5,7 +5,7 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 
 namespace YIF.Core.Domain.ApiModels.Validators
 {
-    class SpecialtyPutApiModelValidator : AbstractValidator<SpecialtyPutApiModel>
+    public class SpecialtyPutApiModelValidator : AbstractValidator<SpecialtyPutApiModel>
     {
         private readonly EFDbContext _context;
         private readonly string NotFoundInDbMessage = "Such {PropertyName} wasn't found in the database";
