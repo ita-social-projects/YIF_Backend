@@ -113,7 +113,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_EndpointsReturnOk()
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_EndpointsReturnCreated()
         {
             //Arrange
             _specialtyInputAttribute.SetUserIdByGraduateUserIdForHttpContext();

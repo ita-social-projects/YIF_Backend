@@ -241,11 +241,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             bool institutionOfEducation = true;
             bool specialty = true;
             var graduate = new GraduateDTO { Id = "GraduateId" };
+            var specialtyToInstitutionOfEducationToGraduateDTO = new SpecialtyToInstitutionOfEducationToGraduateDTO() { SpecialtyId = "id", InstitutionOfEducationId = "id"  };
 
-            var entity = GetFavoriteSpecialtyAndInstitutionOfEducations();
-           
+            _graduateRepository
+                .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(graduate);
+
             _specialtyToIoEToGraduateRepository
-                .Setup(su => su.FavoriteContains(entity))
+                .Setup(su => su.FavoriteContains(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()))
                 .ReturnsAsync(favorite);
 
             _institutionOfEducationRepository
@@ -256,19 +259,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(sr => sr.ContainsById(It.IsAny<string>()))
                 .ReturnsAsync(specialty);
 
-            _graduateRepository
-                .Setup(gr => gr.GetByUserId(It.IsAny<string>()))
-                .ReturnsAsync(graduate);
-
             _specialtyToIoEToGraduateRepository
                 .Setup(ur => ur.AddFavorite(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>()));
 
+            _mapper.
+                Setup(x => x.Map<SpecialtyToInstitutionOfEducationToGraduateDTO>(It.IsAny<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel>()))
+                .Returns(specialtyToInstitutionOfEducationToGraduateDTO);
+
+            _mapper.Setup(x => x.Map<SpecialtyToInstitutionOfEducationToGraduate>(It.IsAny<SpecialtyToInstitutionOfEducationToGraduateDTO>())).Returns(It.IsAny<SpecialtyToInstitutionOfEducationToGraduate>());
+
             // Act
             var exception = await Record
-                .ExceptionAsync(() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(It.IsAny<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel>(), graduate.Id));
+                .ExceptionAsync(() => _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(new SpecialtyAndInstitutionOfEducationToFavoritePostApiModel(), It.IsAny<string>()));
 
             // Assert
-            Assert.NotNull(exception);
+            Assert.Null(exception);
         }
 
         [Fact]
