@@ -1,5 +1,4 @@
-﻿using FluentValidation.Results;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
@@ -197,7 +196,12 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
-
+        /// <summary>
+        /// Update specialty.
+        /// </summary>
+        /// <returns>Message</returns>
+        /// <response code="200">If specialty description successfully updated</response>
+        /// <response code="400">If request model isn't valid </response>
         [HttpPut("UpdateSpecialty")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]

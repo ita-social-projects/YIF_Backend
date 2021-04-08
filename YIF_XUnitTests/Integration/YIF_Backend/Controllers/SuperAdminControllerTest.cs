@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -230,7 +229,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task UpdateSpecialtyDescription_EndpointReturnOk()
         {
             //Arrange
-            var specialty = _context.Specialties.Where(x => x.DirectionId != null).AsNoTracking().FirstOrDefault();
+            var specialty = _context.Specialties.AsNoTracking().FirstOrDefault();
             var model = new SpecialtyPutApiModel
             {
                 Id = specialty.Id,

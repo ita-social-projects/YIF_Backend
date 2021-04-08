@@ -21,6 +21,7 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<bool> Update(Specialty specialty)
         {
              _context.Specialties.Update(specialty);
@@ -61,6 +62,7 @@ namespace YIF.Core.Domain.Repositories
 
             return null;
         }
+
         public async Task<IEnumerable<SpecialtyDTO>> GetFavoritesByUserId(string userId)
         {
             var specialties = from specialtyToGraduate in _context.SpecialtyToGraduates
