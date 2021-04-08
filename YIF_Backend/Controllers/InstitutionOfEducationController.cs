@@ -160,7 +160,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _institutionOfEducationService.AddInstitutionOfEducationToFavorite(institutionOfEducationId, userId);
-            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", null);
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", institutionOfEducationId);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(institutionOfEducationId, userId);
-            return NoContent();
+            return Ok(value: institutionOfEducationId);
         }
 
 

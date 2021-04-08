@@ -175,7 +175,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request, userId);
-            return Ok();
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", new { request.SpecialtyId, request.InstitutionOfEducationId });
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(specialtyId, institutionOfEducationId, userId);
-            return NoContent();
+            return Ok(value: new { specialtyId, institutionOfEducationId });
         }
         /// <summary>
         /// Add specialty to favorite.
@@ -214,7 +214,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.AddSpecialtyToFavorite(specialtyId, userId);
-            return Ok();
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", specialtyId);
         }
 
         /// <summary>
@@ -234,7 +234,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyFromFavorite(specialtyId, userId);
-            return NoContent();
+            return Ok(value: specialtyId);
         }
 
         /// <summary>
