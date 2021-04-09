@@ -209,8 +209,8 @@ namespace YIF_Backend.Controllers
         [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialityPostApiModel specialityPostApiModel)
         {
-            await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
-            return Ok();
+            var result = await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
+            return Ok(result.Object);
         }
     }
 }

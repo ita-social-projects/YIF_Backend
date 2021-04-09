@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -220,6 +220,26 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData("Економіка", "166a5f21-628c-4c6c-bad8-e6826c3333af", "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі. Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.", "228")]
+        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string directionId, string description, string code)
+        {
+            //Arrange
+            var model = new SpecialityPostApiModel()
+            {
+                Name = name,
+                DirectionId = directionId,
+                Description = description,
+                Code = code
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/SuperAdmin/AddSpecialty", ContentHelper.GetStringContent(model));
 
             // Assert
             response.EnsureSuccessStatusCode();

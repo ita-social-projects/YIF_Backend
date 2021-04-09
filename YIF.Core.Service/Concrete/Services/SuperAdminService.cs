@@ -383,10 +383,14 @@ namespace YIF.Core.Service.Concrete.Services
             return admins.ToList();
         }
 
-        public async Task AddSpecialtyToTheListOfAllSpecialties(SpecialityPostApiModel specialityPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialityPostApiModel specialityPostApiModel)
         {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var specialityDTO = _mapper.Map<SpecialtyDTO>(specialityPostApiModel);
             await _specialtyRepository.Add(_mapper.Map<Specialty>(specialityDTO));
+
+            return result.Set(
+                   new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasAdded")), true);
         }
     }
 }
