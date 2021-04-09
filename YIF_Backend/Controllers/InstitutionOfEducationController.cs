@@ -167,7 +167,7 @@ namespace YIF_Backend.Controllers
         /// Delete institutionOfEducation from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the institutionOfEducation has been successfully deleted from the favorites list</response>
+        /// <response code="200">Returns if the institutionOfEducation has been successfully deleted from the favorites list</response>
         /// <response code="400">If id is not valid or institutionOfEducation has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>

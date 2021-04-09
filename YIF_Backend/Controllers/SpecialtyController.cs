@@ -162,7 +162,7 @@ namespace YIF_Backend.Controllers
         /// Add specialty with institution of education to favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="200">Returns if the specialty with institution of education has been successfully added to the favorites list</response>
+        /// <response code="201">Returns if the specialty with institution of education has been successfully added to the favorites list</response>
         /// <response code="400">If id is not valid or specialty with institution of education has already been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -182,7 +182,7 @@ namespace YIF_Backend.Controllers
         /// Delete specialty with institution of education from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the specialty with institution of education has been successfully deleted from the favorites list</response>
+        /// <response code="200">Returns if the specialty with institution of education has been successfully deleted from the favorites list</response>
         /// <response code="400">If id is not valid or specialty with institution of education has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -201,7 +201,7 @@ namespace YIF_Backend.Controllers
         /// Add specialty to favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="200">Returns if the specialty has been successfully added to the favorites list</response>
+        /// <response code="201">Returns if the specialty has been successfully added to the favorites list</response>
         /// <response code="400">If id is not valid or specialty has already been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -221,7 +221,7 @@ namespace YIF_Backend.Controllers
         /// Delete specialty from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the specialty has been successfully deleted from the favorites list</response>
+        /// <response code="200">Returns if the specialty has been successfully deleted from the favorites list</response>
         /// <response code="400">If id is not valid or specialty has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
