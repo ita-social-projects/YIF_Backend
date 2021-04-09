@@ -306,10 +306,10 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             //Arrange
             var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
-            _superAdminService.Setup(x => x.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialityPostApiModel>())).ReturnsAsync(response);
+            _superAdminService.Setup(x => x.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialtyPostApiModel>())).ReturnsAsync(response);
 
             //Act
-            var result = await superAdminController.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialityPostApiModel>());
+            var result = await superAdminController.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialtyPostApiModel>());
 
             //Assert
             Assert.IsType<OkObjectResult>(result);

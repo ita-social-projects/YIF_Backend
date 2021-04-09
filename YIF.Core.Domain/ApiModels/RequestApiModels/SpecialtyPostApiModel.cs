@@ -2,15 +2,11 @@
 
 namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
-    public class SpecialityPostApiModel
+    public class SpecialtyPostApiModel
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
         public string DirectionId { get; set; }
-        [Required]
         public string Description { get; set; }
-        [Required]
         public string Code { get; set; }
     }
 }

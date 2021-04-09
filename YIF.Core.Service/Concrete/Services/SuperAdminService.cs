@@ -392,7 +392,7 @@ namespace YIF.Core.Service.Concrete.Services
                 await _specialtyRepository.Update(_mapper.Map<Specialty>(specialtyDTO)));
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialityPostApiModel specialityPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialityPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var specialityDTO = _mapper.Map<SpecialtyDTO>(specialityPostApiModel);

@@ -230,7 +230,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string directionId, string description, string code)
         {
             //Arrange
-            var model = new SpecialityPostApiModel()
+            var model = new SpecialtyPostApiModel()
             {
                 Name = name,
                 DirectionId = directionId,

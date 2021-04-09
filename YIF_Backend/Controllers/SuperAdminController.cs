@@ -185,7 +185,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of users</returns>
         /// <response code="200">Returns a list of users</response>
-        /// <response code="404">If there are no users</response>
+        /// <response code="400">If model state is not valid</response>
         [HttpGet("GetAllSchools")]
         [ProducesResponseType(typeof(IEnumerable<InstitutionOfEducationAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -197,17 +197,17 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get all SchoolAdmins.
+        /// Add new specialty.
         /// </summary>
-        /// <returns>List of users</returns>
-        /// <response code="200">Returns a list of users</response>
+        /// <returns></returns>
+        /// <response code="200">Specialty added</response>
         /// <response code="404">If there are no users</response>
         [HttpPost("AddSpecialty")]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [Authorize(Roles = "SuperAdmin")]
-        public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialityPostApiModel specialityPostApiModel)
+        public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialtyPostApiModel specialityPostApiModel)
         {
             var result = await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
             return Ok(result.Object);
