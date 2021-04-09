@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -37,6 +36,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
+        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
         private readonly ITokenRepository<TokenDTO> _tokenRepository;
@@ -44,7 +44,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IPaginationService _paginationService;
-        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
 
         public SuperAdminService(
             IUserService<DbUser> userService,
@@ -57,6 +56,7 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
             ITokenRepository<TokenDTO> tokenRepository,
@@ -76,6 +76,7 @@ namespace YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _schoolRepository = schoolRepository;
+            _specialtyRepository = specialtyRepository;
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
             _tokenRepository = tokenRepository;
@@ -381,6 +382,15 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             return admins.ToList();
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyById(SpecialtyPutApiModel model)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialtyDTO = _mapper.Map<SpecialtyDTO>(model);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasSuccessefullyChanged")),
+                await _specialtyRepository.Update(_mapper.Map<Specialty>(specialtyDTO)));
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialityPostApiModel specialityPostApiModel)

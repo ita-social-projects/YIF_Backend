@@ -291,6 +291,9 @@
   <data name="SpecialtyDescriptionUpdated" xml:space="preserve">
     <value>Опис спеціальності оновлено</value>
   </data>
+  <data name="SpecialtyWasSuccessefullyChanged" xml:space="preserve">
+    <value>Спеціальність була успішно змінена</value>
+  </data>
   <data name="SpecialtyWasAdded" xml:space="preserve">
     <value>Спеціальність була додана</value>
   </data>

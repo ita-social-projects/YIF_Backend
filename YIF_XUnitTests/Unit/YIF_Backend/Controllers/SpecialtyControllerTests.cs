@@ -170,6 +170,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             _mockContext.SetupGet(hc => hc.User).Returns(_principal);
+            _mockContext.SetupGet(x => x.Request.Scheme).Returns(It.IsAny<string>());
+            _mockContext.SetupGet(x => x.Request.Host).Returns(It.IsAny<HostString>());
+            _mockContext.SetupGet(x => x.Request.Path).Returns(It.IsAny<string>());
             _specialtyService.Setup(x =>
                 x.AddSpecialtyAndInstitutionOfEducationToFavorite(It.IsAny<SpecialtyAndInstitutionOfEducationToFavoritePostApiModel>(),
                     It.IsAny<string>()));
@@ -183,7 +186,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 });
 
             // Assert
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<CreatedResult>(result);
         }
 
         [Fact]
@@ -201,7 +204,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                     It.IsAny<string>());
 
             // Assert
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]
@@ -209,13 +212,16 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             _mockContext.SetupGet(hc => hc.User).Returns(_principal);
+            _mockContext.SetupGet(x => x.Request.Scheme).Returns(It.IsAny<string>());
+            _mockContext.SetupGet(x => x.Request.Host).Returns(It.IsAny<HostString>());
+            _mockContext.SetupGet(x => x.Request.Path).Returns(It.IsAny<string>());
             _specialtyService.Setup(x => x.AddSpecialtyToFavorite(It.IsAny<string>(), It.IsAny<string>()));
 
             // Act
-            var result = await _testControl.AddSpecialtyToFavorite(It.IsAny<string>());
+            var result = await _testControl.AddSpecialtyToFavorite("Id");
 
             // Assert
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<CreatedResult>(result);
         }
 
         [Fact]
@@ -229,7 +235,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var result = await _testControl.DeleteSpecialtyFromFavorite(It.IsAny<string>());
 
             // Assert
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]

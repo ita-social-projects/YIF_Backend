@@ -278,6 +278,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(error.Message, result.Message);
         }
 
+        [Fact]
+        public async Task UpdateSpecialtyById_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.UpdateSpecialtyById(It.IsAny<SpecialtyPutApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.UpdateSpecialtyById(It.IsAny<SpecialtyPutApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
         private List<AuthenticateResponseApiModel> GetTestJwt()
         {
             return new List<AuthenticateResponseApiModel>

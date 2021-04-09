@@ -162,7 +162,7 @@ namespace YIF_Backend.Controllers
         /// Add specialty with institution of education to favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="200">Returns if the specialty with institution of education has been successfully added to the favorites list</response>
+        /// <response code="201">Returns if the specialty with institution of education has been successfully added to the favorites list</response>
         /// <response code="400">If id is not valid or specialty with institution of education has already been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -175,14 +175,14 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.AddSpecialtyAndInstitutionOfEducationToFavorite(request, userId);
-            return Ok();
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", new { request.SpecialtyId, request.InstitutionOfEducationId });
         }
 
         /// <summary>
         /// Delete specialty with institution of education from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the specialty with institution of education has been successfully deleted from the favorites list</response>
+        /// <response code="200">Returns if the specialty with institution of education has been successfully deleted from the favorites list</response>
         /// <response code="400">If id is not valid or specialty with institution of education has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -195,13 +195,13 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(specialtyId, institutionOfEducationId, userId);
-            return NoContent();
+            return Ok(value: new { specialtyId, institutionOfEducationId });
         }
         /// <summary>
         /// Add specialty to favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="200">Returns if the specialty has been successfully added to the favorites list</response>
+        /// <response code="201">Returns if the specialty has been successfully added to the favorites list</response>
         /// <response code="400">If id is not valid or specialty has already been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -214,14 +214,14 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.AddSpecialtyToFavorite(specialtyId, userId);
-            return Ok();
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", specialtyId);
         }
 
         /// <summary>
         /// Delete specialty from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the specialty has been successfully deleted from the favorites list</response>
+        /// <response code="200">Returns if the specialty has been successfully deleted from the favorites list</response>
         /// <response code="400">If id is not valid or specialty has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -234,7 +234,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _specialtyService.DeleteSpecialtyFromFavorite(specialtyId, userId);
-            return NoContent();
+            return Ok(value: specialtyId);
         }
 
         /// <summary>

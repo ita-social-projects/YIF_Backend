@@ -12,6 +12,7 @@ namespace YIF.Core.Service.Mapping
         {
             AllowNullCollections = true;
             CreateMap<Specialty, SpecialtyDTO>().ReverseMap();
+            CreateMap<SpecialtyPutApiModel, SpecialtyDTO>();
             CreateMap<SpecialtyDTO, SpecialtyResponseApiModel>();
             CreateMap<SpecialtyResponseApiModel, SpecialtyDTO>()
                 .ForMember(dto => dto.Direction, opt => opt.Ignore());
