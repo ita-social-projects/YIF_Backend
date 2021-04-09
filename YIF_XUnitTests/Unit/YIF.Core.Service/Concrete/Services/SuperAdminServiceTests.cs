@@ -105,8 +105,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _resourceManager.Object,
                                                     _env.Object,
                                                     _configuration.Object,
-                                                    _paginationService.Object,
-                                                    _specialtyRepository.Object);
+                                                    _paginationService.Object);
 
             _dbContextMock.Setup(p => p.InstitutionOfEducationAdmins).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducationAdmin>(_databaseUniAdmins));
             _dbContextMock.Setup(p => p.Users).Returns(DbContextMock.GetQueryableMockDbSet<DbUser>(_databaseDbUsers));

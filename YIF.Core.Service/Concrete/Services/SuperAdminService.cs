@@ -63,8 +63,7 @@ namespace YIF.Core.Service.Concrete.Services
             ResourceManager resourceManager, 
             IWebHostEnvironment env,
             IConfiguration configuration,
-            IPaginationService paginationService,
-            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository)
+            IPaginationService paginationService)
         {
             _userService = userService;
             _userRepository = userRepository;
