@@ -6,21 +6,17 @@ using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
-using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Domain.EntityForResponse;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 using YIF_XUnitTests.Unit.TestData;
@@ -309,6 +305,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         [Fact]
         public async Task AddSpecialtyToListOfSpecialties_ShouldAddSpecialty()
         {
+            //Arrange
             _mapperMock.Setup(sr => sr.Map<SpecialtyDTO>(It.IsAny<SpecialityPostApiModel>())).Returns(It.IsAny<SpecialtyDTO>());
             _mapperMock.Setup(sr => sr.Map<Specialty>(It.IsAny<SpecialtyDTO>())).Returns(It.IsAny<Specialty>());
             _specialtyRepository.Setup(sr => sr.Add(It.IsAny<Specialty>()));
