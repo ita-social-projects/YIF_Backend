@@ -8,7 +8,6 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
 
-
 namespace YIF_Backend.Controllers
 {
     [Route("api/[controller]")]
@@ -111,9 +110,7 @@ namespace YIF_Backend.Controllers
         /// Get all directions and specialties by admin id
         /// </summary>
         /// <response code="200">Get all directions and specialties in institution of education</response>
-        /// <response code="400">If id is not valid.</response>
-        /// <response code="401">If user is unauthorized, token is bad/expired</response>
-        /// <response code="403">If user is not institution of education admin or moderator.</response>
+        /// <response code="404">If there are no directions</response>
         [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]

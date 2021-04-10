@@ -84,13 +84,11 @@ namespace YIF_Backend.Controllers
         /// Get all directions and specialties by admin id
         /// </summary>
         /// <response code="200">Get all directions and specialties in institution of education</response>
-        /// <response code="400">If id is not valid.</response>
-        /// <response code="401">If user is unauthorized, token is bad/expired</response>
-        /// <response code="403">If user is not institution of education admin or moderator.</response>
+        /// <response code="400">If there are no specialities</response>
         [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("GetAllDirectionsAndSpecialtiesInIoE")]
+        [HttpGet("GetAllDirectionsAndSpecialtiesInIoE")]
         public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE(string moderatorId)
         {
             var result = await _ioEModeratorService.GetAllDirectionsAndSpecialitiesOfModerator(moderatorId);
