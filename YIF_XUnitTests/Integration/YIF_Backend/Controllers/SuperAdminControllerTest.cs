@@ -212,6 +212,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
         [Fact]
         public async Task DisableInstitutionOfEducationAdmin()
         {
@@ -225,17 +226,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             response.EnsureSuccessStatusCode();
         }
 
-        [Theory]
-        [InlineData("Економіка", "166a5f21-628c-4c6c-bad8-e6826c3333af", "Це базовий опис спеціальності. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі. Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.", "228")]
-        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string directionId, string description, string code)
+        [Fact]
+        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk()
         {
             //Arrange
+            var specialty = _context.Specialties.AsNoTracking().FirstOrDefault();
+
             var model = new SpecialtyPostApiModel()
             {
-                Name = name,
-                DirectionId = directionId,
-                Description = description,
-                Code = code
+                Name = specialty.Name,
+                DirectionId = specialty.DirectionId,
+                Description = specialty.Description,
+                Code = specialty.Code
             };
 
             // Act            

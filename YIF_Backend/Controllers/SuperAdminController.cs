@@ -119,18 +119,17 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
-        /// <summary>
-        /// Adds Institution Of Education Admin.
+        // <summary>
+        /// Adds InstitutionOfEducation and email for admin.
         /// </summary>
-        /// <returns>Object with user token and refresh token</returns>
-        /// <response code="201">Returns object with tokens</response>
+        /// <returns></returns>
+        /// <response code="201"></response>
         /// <response code="400">If model state is not valid</response>
-        /// <response code="404">If institutionOfEducation not found</response>
-        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
+        /// <response code="409">InstitutionOfEducation Already exists</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 201)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [ProducesResponseType(500)]
         [HttpPost("AddInstitutionOfEducationAndAdmin")]
         public async Task<IActionResult> AddInstitutionOfEducationAndAdmin([FromBody] InstitutionOfEducationCreatePostApiModel model)
         {
@@ -202,14 +201,13 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Specialty added</response>
+        /// <response code="400">If request model isn't valid </response>
         /// <response code="403">If user is not super admin</response>
-        /// <response code="404">If there are no users</response>
         [HttpPost("AddSpecialty")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialtyPostApiModel specialityPostApiModel)
         {
             var result = await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
@@ -228,8 +226,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> UpdateSpecialtyById([FromBody] SpecialtyPutApiModel model) 
         {
-                var result = await _superAdminService.UpdateSpecialtyById(model);
-                return Ok(result.Object);
+            var result = await _superAdminService.UpdateSpecialtyById(model);
+            return Ok(result.Object);
         }
     }
 }

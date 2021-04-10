@@ -18,27 +18,27 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .NotNull();
-
+            
             RuleFor(x => x.Description)
                 .NotEmpty()
                 .NotNull();
-
+            
             RuleFor(x => x.Code)
                 .NotEmpty()
                 .NotNull();
-
+            
             RuleFor(x => x.DirectionId)
                 .NotEmpty()
                 .NotNull();
-
+            
             RuleFor(x => x.DirectionId)
                 .Must(x => _context.Directions.Any(y => y.Id == x))
                 .WithMessage(NotFoundInDbMessage);
-
+            
             RuleFor(x => x.Name)
                 .Must(x => _context.Specialties.Any(y => y.Name == x))
                 .WithMessage(AlreadyExistsInDbMessage);
-
+            
             RuleFor(x => x.Code)
                 .Must(x => _context.Specialties.Any(y => y.Code == x))
                 .WithMessage(AlreadyExistsInDbMessage);
