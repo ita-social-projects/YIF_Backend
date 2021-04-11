@@ -158,12 +158,12 @@ namespace YIF.Core.Service.Concrete.Services
             if (institutionOfEducation == false)
                 throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
 
-            var ioEdirections = _directionToIoERepository.Find(x => x.InstitutionOfEducationId == admin.InstitutionOfEducationId);
+            var ioEdirections = await _directionToIoERepository.Find(x => x.InstitutionOfEducationId == admin.InstitutionOfEducationId);
             var response = _mapper.Map<IEnumerable<DirectionToIoEResponseApiModel>>(ioEdirections);
             foreach (DirectionToIoEResponseApiModel responseApiModel in response)
             {
                 responseApiModel.Specialties = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>
-                    (_specialtyToIoERepository.Find(s => s.SpecialtyId == responseApiModel.Id && s.InstitutionOfEducationId == admin.InstitutionOfEducationId));
+                    (await _specialtyToIoERepository.Find(s => s.Specialty.DirectionId == responseApiModel.Id && s.InstitutionOfEducationId == admin.InstitutionOfEducationId));
             }
             return response;
         }

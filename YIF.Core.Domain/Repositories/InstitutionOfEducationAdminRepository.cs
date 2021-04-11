@@ -103,7 +103,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<InstitutionOfEducationAdminDTO> GetById(string id)
         {
-            var admin = await _dbContext.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+            var admin = await _dbContext.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == id);
             return _mapper.Map<InstitutionOfEducationAdminDTO>(admin);
         }
 

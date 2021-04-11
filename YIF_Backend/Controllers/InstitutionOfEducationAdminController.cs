@@ -107,7 +107,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Get all directions and specialties by admin id
+        /// Get all directions and specialties of admin
         /// </summary>
         /// <response code="200">Get all directions and specialties in institution of education</response>
         /// <response code="404">If there are no directions</response>

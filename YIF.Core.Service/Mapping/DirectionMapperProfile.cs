@@ -11,7 +11,10 @@ namespace YIF.Core.Service.Mapping
         public DirectionMapperProfile()
         {
             AllowNullCollections = true;
-            CreateMap<DirectionToInstitutionOfEducationDTO, DirectionToIoEResponseApiModel>();
+            CreateMap<DirectionToInstitutionOfEducationDTO, DirectionToIoEResponseApiModel>()
+                .ForMember(dti => dti.Id, opt => opt.MapFrom(src => src.Direction.Id))
+                .ForMember(dti => dti.Name, opt => opt.MapFrom(src => src.Direction.Name))
+                .ForMember(dti => dti.Code, opt => opt.MapFrom(src => src.Direction.Code));
             CreateMap<SpecialtyDTO, SpecialtyForDirectionResponseModel>();
             CreateMap<Direction, DirectionDTO>().ReverseMap();
             CreateMap<DirectionDTO, DirectionResponseApiModel>().ReverseMap();
