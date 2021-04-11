@@ -231,12 +231,12 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string description, string code)
         {
             //Arrange
-            var specialty = _context.Specialties.AsNoTracking().FirstOrDefault();
+            var directionId = _context.Directions.AsNoTracking().FirstOrDefault().Id;
 
             var model = new SpecialtyPostApiModel()
             {
                 Name = name,
-                DirectionId = specialty.DirectionId,
+                DirectionId = directionId,
                 Description = description,
                 Code = code
             };
