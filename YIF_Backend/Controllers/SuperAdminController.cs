@@ -142,7 +142,6 @@ namespace YIF_Backend.Controllers
             return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
 
-
         /// <summary>
         /// Get all admins.
         /// </summary>
@@ -197,6 +196,24 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Add new specialty.
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Specialty added</response>
+        /// <response code="400">If request model isn't valid </response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpPost("AddSpecialty")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialtyPostApiModel specialityPostApiModel)
+        {
+            var result = await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
         /// Update specialty.
         /// </summary>
         /// <returns>Message</returns>
@@ -208,8 +225,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> UpdateSpecialtyById([FromBody] SpecialtyPutApiModel model) 
         {
-                var result = await _superAdminService.UpdateSpecialtyById(model);
-                return Ok(result.Object);
+            var result = await _superAdminService.UpdateSpecialtyById(model);
+            return Ok(result.Object);
         }
     }
 }

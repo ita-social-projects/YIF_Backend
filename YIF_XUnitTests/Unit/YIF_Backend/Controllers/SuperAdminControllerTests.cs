@@ -300,5 +300,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 new AuthenticateResponseApiModel { Token = null },
             };
         }
+
+        [Fact]
+        public async Task AddSpecialtyToListOfSpecialties_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialtyPostApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialtyPostApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

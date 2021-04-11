@@ -79,5 +79,11 @@ namespace YIF.Core.Domain.Repositories
         {
             return await _context.Specialties.AnyAsync(x => x.Id == id);
         }
+
+        public async Task Add(Specialty specialty)
+        {
+            await _context.Specialties.AddAsync(specialty);
+            await _context.SaveChangesAsync();
+        }
     }
 }

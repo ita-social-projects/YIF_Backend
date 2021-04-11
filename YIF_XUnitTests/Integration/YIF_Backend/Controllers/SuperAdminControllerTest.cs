@@ -212,6 +212,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
         [Fact]
         public async Task DisableInstitutionOfEducationAdmin()
         {
@@ -220,6 +221,28 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData("Інформація", "Системний аналіз", "66")]
+        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string description, string code)
+        {
+            //Arrange
+            var directionId = _context.Directions.AsNoTracking().FirstOrDefault().Id;
+
+            var model = new SpecialtyPostApiModel()
+            {
+                Name = name,
+                DirectionId = directionId,
+                Description = description,
+                Code = code
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/SuperAdmin/AddSpecialty", ContentHelper.GetStringContent(model));
 
             // Assert
             response.EnsureSuccessStatusCode();

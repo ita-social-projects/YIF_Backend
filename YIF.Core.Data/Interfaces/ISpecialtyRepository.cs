@@ -9,5 +9,6 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<bool> ContainsById(string id);
         Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
+        Task Add(T specialty);
     }
 }
