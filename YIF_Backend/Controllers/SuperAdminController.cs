@@ -184,7 +184,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of users</returns>
         /// <response code="200">Returns a list of users</response>
-        /// <response code="400">If model state is not valid</response>
+        /// <response code="404">If there are no users</response>
         [HttpGet("GetAllSchools")]
         [ProducesResponseType(typeof(IEnumerable<InstitutionOfEducationAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
