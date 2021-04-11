@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using YIF_Backend;
 using YIF_XUnitTests.Integration.Fixture;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
@@ -183,6 +180,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
             Assert.True(contentJsonObj.Count >= 1);
+        }
+
+        [Fact]
+        public async void GetModeratorsByIoEId_EndpointReturnsListOfModeratorsWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            var ioEId = _context.InstitutionOfEducations.FirstOrDefault().Id;
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducation/GetModeratorsById?ioEId={ioEId}");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
         }
         #endregion
 

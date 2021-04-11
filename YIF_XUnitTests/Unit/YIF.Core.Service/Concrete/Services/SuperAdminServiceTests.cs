@@ -33,7 +33,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>> _institutionOfEducationAdminRepository;
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository;
-        private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>> _institutionOfEducationModeratorRepository;
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
@@ -75,7 +74,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock = new Mock<IMapper>();
             _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
             _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
-            _institutionOfEducationModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
             _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
@@ -96,7 +94,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _mapperMock.Object,
                                                     _institutionOfEducationRepository.Object,
                                                     _institutionOfEducationAdminRepository.Object,
-                                                    _institutionOfEducationModeratorRepository.Object,
                                                     _schoolRepository.Object,
                                                     _specialtyRepository.Object,
                                                     _schoolAdminRepository.Object,

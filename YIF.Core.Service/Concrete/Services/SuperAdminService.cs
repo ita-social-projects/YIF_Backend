@@ -34,7 +34,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IMapper _mapper;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
-        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
@@ -54,7 +53,6 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
-            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
@@ -73,7 +71,6 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
-            _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _schoolRepository = schoolRepository;
             _specialtyRepository = specialtyRepository;
             _schoolAdminRepository = schoolAdminRepository;

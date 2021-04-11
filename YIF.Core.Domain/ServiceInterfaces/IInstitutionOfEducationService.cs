@@ -16,5 +16,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<IEnumerable<string>> GetInstitutionOfEducationAbbreviations(FilterApiModel filterModel);
         Task AddInstitutionOfEducationToFavorite(string institutionOfEducationId, string userId);
         Task DeleteInstitutionOfEducationFromFavorite(string institutionOfEducationId, string userId);
+        Task<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId);
+
     }
 }

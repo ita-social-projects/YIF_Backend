@@ -1,21 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF_Backend.Controllers;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Resources;
-using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.ApiModels.IdentityApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -137,6 +130,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var responseResult = Assert.IsType<OkObjectResult>(result);
             var model = (InstitutionOfEducationResponseApiModel)responseResult.Value;
             Assert.Equal(200, responseResult.StatusCode);
+        }
+
+        [Fact]
+        public async void GetModeratorsByIoEId_ShouldReturnOk_IfEverythingIsOk()
+        {
+            // Arrange  
+            _institutionOfEducationService.Setup(x => x.GetIoEModeratorsByIoEId(It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>());
+
+            // Act
+            var result = await _testControl.GetModeratorsByIoEId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

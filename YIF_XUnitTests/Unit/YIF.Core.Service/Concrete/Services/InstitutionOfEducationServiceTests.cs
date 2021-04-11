@@ -30,6 +30,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
         private static readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
+        private static readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>
+         _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
         private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private static readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();
@@ -43,6 +45,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToInstitutionOfEducationRepository.Object,
             _specialtyToIoEDescriptionRepository.Object,
             _graduateRepository.Object,
+            _ioEModeratorRepository.Object,
             _mapperMock.Object,
             _paginationService.Object,
             _resourceManager.Object,
@@ -656,6 +659,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async void GetIoEModeratorsByIoEId_ShouldReturnListOfModerators_IfEverythingIsOk()
+        {
+            // Arrange  
+            _ioEModeratorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>);
+            _mapperMock.Setup(x => x.Map<IEnumerable<IoEModeratorsResponseApiModel>>(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>()));
+
+            // Act
+            var result = await institutionOfEducationService.GetIoEModeratorsByIoEId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>>(result);
+            Assert.True(result.Success);
         }
 
         private IEnumerable<InstitutionOfEducationDTO> GetInstitutionOfEducations()
