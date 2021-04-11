@@ -114,11 +114,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GetAllDirectionsAndSpecialtiesInIoE_EndpointsReturnSuccessAndCorrectContentType()
         {
             //Arrange
-            var moderator = _context.InstitutionOfEducationModerators.AsNoTracking().FirstOrDefault();
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
 
             //Act
             var response = await _client.GetAsync(
-                $"/api/InstitutionOfEducationModerator/GetAllDirectionsAndSpecialtiesInIoE?moderatorId={moderator.Id}");
+                $"/api/InstitutionOfEducationModerator/GetAllDirectionsAndSpecialtiesInIoE");
 
             //Assert
             response.EnsureSuccessStatusCode();

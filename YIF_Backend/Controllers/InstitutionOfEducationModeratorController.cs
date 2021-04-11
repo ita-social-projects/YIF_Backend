@@ -84,13 +84,14 @@ namespace YIF_Backend.Controllers
         /// Get all directions and specialties by admin id
         /// </summary>
         /// <response code="200">Get all directions and specialties in institution of education</response>
-        /// <response code="400">If there are no specialities</response>
+        /// <response code="404">If there are no specialities</response>
         [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("GetAllDirectionsAndSpecialtiesInIoE")]
-        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE(string moderatorId)
+        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE()
         {
+            var moderatorId = User.FindFirst("id")?.Value;
             var result = await _ioEModeratorService.GetAllDirectionsAndSpecialitiesOfModerator(moderatorId);
             return Ok(result);
         }

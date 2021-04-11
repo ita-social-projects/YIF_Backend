@@ -115,8 +115,9 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("GetAllDirectionsAndSpecialtiesInIoE")]
-        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE(string adminId)
+        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE()
         {
+            var adminId = User.FindFirst("id")?.Value;
             var result = await _ioEAdminService.GetAllDirectionsAndSpecialitiesOfAdmin(adminId);
             return Ok(result);
         }
