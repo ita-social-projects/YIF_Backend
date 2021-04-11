@@ -119,7 +119,7 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
-        // <summary>
+        /// <summary>
         /// Adds InstitutionOfEducation and email for admin.
         /// </summary>
         /// <returns></returns>
@@ -141,7 +141,6 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.AddInstitutionOfEducationAndAdmin(model, Request);
             return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
-
 
         /// <summary>
         /// Get all admins.

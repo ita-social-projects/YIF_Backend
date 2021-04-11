@@ -226,18 +226,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             response.EnsureSuccessStatusCode();
         }
 
-        [Fact]
-        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk()
+        [Theory]
+        [InlineData("Інформація", "Системний аналіз", "66")]
+        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string description, string code)
         {
             //Arrange
             var specialty = _context.Specialties.AsNoTracking().FirstOrDefault();
 
             var model = new SpecialtyPostApiModel()
             {
-                Name = specialty.Name,
+                Name = name,
                 DirectionId = specialty.DirectionId,
-                Description = specialty.Description,
-                Code = specialty.Code
+                Description = description,
+                Code = code
             };
 
             // Act            
