@@ -30,8 +30,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> 
             _ioERepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
-        private readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> 
-            _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
         private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> 
             _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> 
@@ -47,7 +45,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
-                _directionToIoERepository.Object,
                 _ioEAdminRepository.Object,
                 _specialtyToIoEDescriptionRepository.Object,
                 _examRequirementRepository.Object,
@@ -317,75 +314,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
             Assert.True(result.Success);
-        }
-
-        [Fact]
-        public async Task GetAllDirectionsAndSpecialitiesOfAdmin_IfEverythingOk()
-        {
-            // Arrange  
-            var institutionOfEducation = true;
-            var admin = new InstitutionOfEducationAdminDTO{ Id = "AdminId", InstitutionOfEducationId = "IoEId"};
-
-            _ioERepository
-                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(institutionOfEducation);
-
-            _ioEAdminRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
-                .ReturnsAsync(admin);
-
-            // Act
-            var exception = await Record
-                .ExceptionAsync(() => _ioEAdminService.GetAllDirectionsAndSpecialitiesOfAdmin(admin.Id));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
-        public void GetAllDirectionsAndSpecialitiesOfAdmin_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
-        {
-            // Arrange
-            // InstitutionNotFound
-            var institutionOfEducation = false;
-            var admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" };
-
-            _ioERepository
-                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(institutionOfEducation);
-
-            _ioEAdminRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
-                .ReturnsAsync(admin);
-
-            // Act
-            Func<Task> act = () => _ioEAdminService.GetAllDirectionsAndSpecialitiesOfAdmin(admin.Id);
-
-            // Assert
-            Assert.ThrowsAsync<BadRequestException>(act);
-        }
-
-        [Fact]
-        public void GetAllDirectionsAndSpecialitiesOfAdmin_ShouldThrowBadRequestException_IfAdminNotFound()
-        {
-            // Arrange  
-            var institutionOfEducation = true;
-            //Admin not found
-            InstitutionOfEducationAdminDTO admin = null;
-
-            _ioERepository
-                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
-                .ReturnsAsync(institutionOfEducation);
-
-            _ioEAdminRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
-                .ReturnsAsync(admin);
-
-            // Act
-            Func<Task> act = () => _ioEAdminService.GetAllDirectionsAndSpecialitiesOfAdmin("AdminId");
-
-            // Assert
-            Assert.ThrowsAsync<BadRequestException>(act);
         }
     }
 }

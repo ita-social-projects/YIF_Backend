@@ -109,21 +109,5 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
-
-        [Fact]
-        public async Task GetAllDirectionsAndSpecialtiesInIoE_EndpointsReturnSuccessAndCorrectContentType()
-        {
-            //Arrange
-            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
-
-            //Act
-            var response = await _client.GetAsync(
-                $"/api/InstitutionOfEducationAdmin/GetAllDirectionsAndSpecialtiesInIoE");
-
-            //Assert
-            response.EnsureSuccessStatusCode();
-            Assert.Equal("application/json; charset=utf-8",
-                response.Content.Headers.ContentType.ToString());
-        }
     }
 }

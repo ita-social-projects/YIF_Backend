@@ -1,6 +1,5 @@
 ﻿using System.Resources;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
 using YIF.Core.Data.Entities;
@@ -19,8 +18,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
-        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
-        private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToIoERepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
@@ -30,8 +27,6 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
-            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
-            IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToIoERepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
@@ -40,8 +35,6 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository = specialtyToIoERepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _examRequirementRepository = examRequirementRepository;
-            _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
-            _directionToIoERepository = directionToIoERepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
 
@@ -102,28 +95,6 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(
                 new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
                 await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
-        }
-
-        public async Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialitiesOfModerator(string moderatorId)
-        {
-            var moderator = await _institutionOfEducationModeratorRepository.GetById(moderatorId);
-
-            if (moderator == null)
-                throw new BadRequestException(_resourceManager.GetString("IoEModeratorNotFound"));
-
-            var institutionOfEducation = await _ioERepository.ContainsById(moderator.Admin.InstitutionOfEducationId);
-
-            if (institutionOfEducation == false)
-                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
-
-            var ioEdirections = await _directionToIoERepository.Find(x => x.InstitutionOfEducationId == moderator.Admin.InstitutionOfEducationId);
-            var response = _mapper.Map<IEnumerable<DirectionToIoEResponseApiModel>>(ioEdirections);
-            foreach (DirectionToIoEResponseApiModel responseApiModel in response)
-            {
-                responseApiModel.Specialties = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>
-                    (await _specialtyToIoERepository.Find(s => s.Specialty.DirectionId == responseApiModel.Id && s.InstitutionOfEducationId == moderator.Admin.InstitutionOfEducationId));
-            }
-            return response;
         }
     }
 }

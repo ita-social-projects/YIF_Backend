@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Resources;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -104,22 +103,6 @@ namespace YIF_Backend.Controllers
         {
             var result = await _ioEAdminService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
             return Ok(result.Object);
-        }
-
-        /// <summary>
-        /// Get all directions and specialties of admin
-        /// </summary>
-        /// <response code="200">Get all directions and specialties in institution of education</response>
-        /// <response code="404">If there are no directions</response>
-        [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet("GetAllDirectionsAndSpecialtiesInIoE")]
-        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE()
-        {
-            var adminId = User.FindFirst("id")?.Value;
-            var result = await _ioEAdminService.GetAllDirectionsAndSpecialitiesOfAdmin(adminId);
-            return Ok(result);
         }
     }
 }

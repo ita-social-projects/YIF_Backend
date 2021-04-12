@@ -24,6 +24,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -36,6 +38,8 @@ namespace YIF.Core.Service.Concrete.Services
             IDirectionRepository<Direction, DirectionDTO> directionRepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
+            IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
@@ -48,6 +52,8 @@ namespace YIF.Core.Service.Concrete.Services
             _graduateRepository = graduateRepository;
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
+            _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
+            _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -247,6 +253,44 @@ namespace YIF.Core.Service.Concrete.Services
                 InstitutionOfEducationId = institutionOfEducation.Id,
                 GraduateId = graduate.Id
             });
+        }
+
+        public async Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialitiesInIoE(string userId)
+        {
+            var admin = await _institutionOfEducationAdminRepository.GetById(userId);
+
+            string ioeId;
+
+            if (admin == null)
+            {
+                var moderator = await _institutionOfEducationModeratorRepository.GetById(userId);
+
+                if (moderator == null)
+                {
+                    throw new BadRequestException(_resourceManager.GetString("IoEAdminOrModeratorNotFound"));
+                }
+
+                ioeId = moderator.Admin.InstitutionOfEducationId;
+            }
+            else
+            {
+                ioeId = admin.InstitutionOfEducationId;
+            }
+
+            var institutionOfEducation = await _institutionOfEducationRepository.ContainsById(ioeId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            var ioEdirections = await _directionToIoERepository.Find(x => x.InstitutionOfEducationId == ioeId);
+            var response = _mapper.Map<IEnumerable<DirectionToIoEResponseApiModel>>(ioEdirections);
+            foreach (DirectionToIoEResponseApiModel responseApiModel in response)
+            {
+                responseApiModel.Specialties = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>
+                    (await _specialtyToInstitutionOfEducationRepository
+                    .Find(s => s.Specialty.DirectionId == responseApiModel.Id && s.InstitutionOfEducationId == ioeId));
+            }
+            return response;
         }
     }
 }

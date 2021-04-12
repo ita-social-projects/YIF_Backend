@@ -1,7 +1,6 @@
 ﻿using System.Resources;
 using System.Linq;
 using System.IO;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using SendGrid.Helpers.Errors.Model;
 using AutoMapper;
@@ -23,7 +22,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ResourceManager _resourceManager;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
-        private readonly IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> _directionToIoERepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
@@ -34,7 +32,6 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
-            IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO> directionToIoERepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
@@ -47,7 +44,6 @@ namespace YIF.Core.Service.Concrete.Services
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
-            _directionToIoERepository = directionToIoERepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _examRequirementRepository = examRequirementRepository;
             _mapper = mapper;
@@ -144,28 +140,6 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(
                 new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
                 await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
-        }
-
-        public async Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialitiesOfAdmin(string adminId)
-        {
-            var admin = await _institutionOfEducationAdminRepository.GetById(adminId);
-
-            if (admin == null)
-                throw new BadRequestException(_resourceManager.GetString("IoEAdminNotFound"));
-
-            var institutionOfEducation = await _ioERepository.ContainsById(admin.InstitutionOfEducationId);
-
-            if (institutionOfEducation == false)
-                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
-
-            var ioEdirections = await _directionToIoERepository.Find(x => x.InstitutionOfEducationId == admin.InstitutionOfEducationId);
-            var response = _mapper.Map<IEnumerable<DirectionToIoEResponseApiModel>>(ioEdirections);
-            foreach (DirectionToIoEResponseApiModel responseApiModel in response)
-            {
-                responseApiModel.Specialties = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>
-                    (await _specialtyToIoERepository.Find(s => s.Specialty.DirectionId == responseApiModel.Id && s.InstitutionOfEducationId == admin.InstitutionOfEducationId));
-            }
-            return response;
         }
     }
 }
