@@ -292,6 +292,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.IsType<OkObjectResult>(result);
         }
 
+        [Fact]
+        public async void GetModeratorsByIoEId_ShouldReturnOk_IfEverythingIsOk()
+        {
+            // Arrange  
+            _superAdminService.Setup(x => x.GetIoEModeratorsByIoEId(It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>());
+
+            // Act
+            var result = await superAdminController.GetModeratorsByIoEId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<OkObjectResult>(result);
+        }
+
         private List<AuthenticateResponseApiModel> GetTestJwt()
         {
             return new List<AuthenticateResponseApiModel>

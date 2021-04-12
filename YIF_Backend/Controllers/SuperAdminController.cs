@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
-using System.Web.Http;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -157,7 +156,7 @@ namespace YIF_Backend.Controllers
             bool? Email = null,
             bool? InstitutionOfEducationName = null,
             bool? IsBanned = null,
-            int page  = 1,
+            int page = 1,
             int pageSize = 10)
         {
             var sortingModel = new InstitutionOfEducationAdminSortingModel
@@ -223,9 +222,25 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> UpdateSpecialtyById([FromBody] SpecialtyPutApiModel model) 
+        public async Task<IActionResult> UpdateSpecialtyById([FromBody] SpecialtyPutApiModel model)
         {
             var result = await _superAdminService.UpdateSpecialtyById(model);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get Institution of Education moderators by Institution of Education id.
+        /// </summary>
+        /// <returns>List of moderators</returns>
+        /// <response code="200">Returns a list of moderators</response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpGet("GetIoEModeratorsById")]
+        [ProducesResponseType(typeof(IEnumerable<IoEModeratorsResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetModeratorsByIoEId(string ioEId)
+        {
+            var result = await _superAdminService.GetIoEModeratorsByIoEId(ioEId);
             return Ok(result.Object);
         }
     }

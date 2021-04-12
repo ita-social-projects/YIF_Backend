@@ -73,6 +73,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             //Assert
             response.EnsureSuccessStatusCode();
         }
+
         [Fact]
         public async Task UpdateSpecialtyDescription_EndpointReturnOk()
         {

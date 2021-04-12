@@ -34,11 +34,11 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IMapper _mapper;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
-        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly ISchoolAdminRepository<SchoolAdminDTO> _schoolAdminRepository;
         private readonly ISchoolModeratorRepository<SchoolModeratorDTO> _schoolModeratorRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly ITokenRepository<TokenDTO> _tokenRepository;
         private readonly ResourceManager _resourceManager;
         private readonly IWebHostEnvironment _env;
@@ -54,11 +54,11 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
-            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
             ISchoolModeratorRepository<SchoolModeratorDTO> schoolModeratorRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             ITokenRepository<TokenDTO> tokenRepository,
             ResourceManager resourceManager, 
             IWebHostEnvironment env,
@@ -73,11 +73,11 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
-            _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _schoolRepository = schoolRepository;
             _specialtyRepository = specialtyRepository;
             _schoolAdminRepository = schoolAdminRepository;
             _schoolModeratorRepository = schoolModeratorRepository;
+            _ioEModeratorRepository = ioEModeratorRepository;
             _tokenRepository = tokenRepository;
             _resourceManager = resourceManager;
             _env = env;
@@ -301,7 +301,6 @@ namespace YIF.Core.Service.Concrete.Services
             }
         }
 
-        ///<inheritdoc/>
         public async Task<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>> GetAllInstitutionOfEducationAdmins(
             InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel,
             PageApiModel pageModel)
@@ -322,6 +321,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result;
         }
+
         public async Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins()
         {
             var result = new ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>();
@@ -334,11 +334,6 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(true);
         }
 
-        /// <summary>
-        /// Used only for InstitutionOfEducationAdminDTO
-        /// </summary>
-        /// <param name="institutionOfEducationAdminFilterModel"></param>
-        /// <returns>Ordered list</returns>
         private async Task<IEnumerable<InstitutionOfEducationAdminDTO>> GetAllInstitutionOfEducationAdminsSorted(
             InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel)
         {
@@ -400,6 +395,15 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(
                    new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasAdded")), true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)
+        {
+            return new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>
+            {
+                Object = _mapper.Map<IEnumerable<IoEModeratorsResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
+                Success = true
+            };
         }
     }
 }

@@ -8,7 +8,6 @@ using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
@@ -83,11 +82,11 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<InstitutionOfEducationAdminDTO>> GetAllUniAdmins()
         {
-            var institutionOfEducationAdmin = _dbContext.InstitutionOfEducationAdmins
+            var institutionOfEducationAdmin = await _dbContext.InstitutionOfEducationAdmins
                 .Where(admin => admin.User.IsDeleted == false)
                 .Include(x => x.InstitutionOfEducation)
                 .Include(y => y.User)
-                .ToList();
+                .ToListAsync();
 
             return _mapper.Map<IEnumerable<InstitutionOfEducationAdminDTO>>(institutionOfEducationAdmin);
         }
@@ -107,7 +106,7 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<InstitutionOfEducationAdminDTO>(admin);
         }
 
-        public  void Dispose()
+        public void Dispose()
         {
             _dbContext.Dispose();
         }

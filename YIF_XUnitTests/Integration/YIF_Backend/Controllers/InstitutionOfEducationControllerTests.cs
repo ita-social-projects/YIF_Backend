@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
-using YIF_Backend;
 using YIF_XUnitTests.Integration.Fixture;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
