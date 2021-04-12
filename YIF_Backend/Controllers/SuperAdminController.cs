@@ -211,5 +211,21 @@ namespace YIF_Backend.Controllers
                 var result = await _superAdminService.UpdateSpecialtyById(model);
                 return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get Institution of Education moderators by Institution of Education id.
+        /// </summary>
+        /// <returns>List of moderators</returns>
+        /// <response code="200">Returns a list of moderators</response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpGet("GetIoEModeratorsById")]
+        [ProducesResponseType(typeof(IEnumerable<IoEModeratorsResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetModeratorsByIoEId(string ioEId)
+        {
+            var result = await _superAdminService.GetIoEModeratorsByIoEId(ioEId);
+            return Ok(result.Object);
+        }
     }
 }

@@ -211,22 +211,5 @@ namespace YIF_Backend.Controllers
             var result = await _institutionOfEducationService.GetInstitutionOfEducationAbbreviations(filterModel);
             return Ok(result);
         }
-
-        /// <summary>
-        /// Get moderators by Institution of Education id.
-        /// </summary>
-        /// <returns>List of moderators</returns>
-        /// <response code="200">Returns a list of moderators</response>
-        /// <response code="403">If user is not super admin</response>
-        [HttpGet("GetModeratorsById")]
-        [ProducesResponseType(typeof(IEnumerable<IoEModeratorsResponseApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [Authorize(Roles = "SuperAdmin")]
-        public async Task<IActionResult> GetModeratorsByIoEId(string ioEId)
-        {
-            var result = await _institutionOfEducationService.GetIoEModeratorsByIoEId(ioEId);
-            return Ok(result.Object);
-        }
     }
 }

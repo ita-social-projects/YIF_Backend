@@ -25,7 +25,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToInstitutionOfEducationRepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
-        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
         private readonly ResourceManager _resourceManager;
@@ -38,7 +37,6 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToInstitutionOfEducationRepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
-            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             IMapper mapper,
             IPaginationService paginationService,
             ResourceManager resourceManager,
@@ -50,7 +48,6 @@ namespace YIF.Core.Service.Concrete.Services
             _graduateRepository = graduateRepository;
             _specialtyToInstitutionOfEducationRepository = specialtyToInstitutionOfEducationRepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
-            _ioEModeratorRepository = ioEModeratorRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -250,15 +247,6 @@ namespace YIF.Core.Service.Concrete.Services
                 InstitutionOfEducationId = institutionOfEducation.Id,
                 GraduateId = graduate.Id
             });
-        }
-
-        public async Task<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)
-        {
-            return new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>
-            {
-                Object = _mapper.Map<IEnumerable<IoEModeratorsResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
-                Success = true
-            };
         }
     }
 }

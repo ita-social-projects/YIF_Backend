@@ -245,5 +245,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async void GetModeratorsByIoEId_EndpointReturnsListOfModeratorsWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            var ioEId = _context.InstitutionOfEducations.FirstOrDefault().Id;
+
+            // Act
+            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById?ioEId={ioEId}");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

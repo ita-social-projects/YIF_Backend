@@ -131,19 +131,5 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var model = (InstitutionOfEducationResponseApiModel)responseResult.Value;
             Assert.Equal(200, responseResult.StatusCode);
         }
-
-        [Fact]
-        public async void GetModeratorsByIoEId_ShouldReturnOk_IfEverythingIsOk()
-        {
-            // Arrange  
-            _institutionOfEducationService.Setup(x => x.GetIoEModeratorsByIoEId(It.IsAny<string>()))
-                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>());
-
-            // Act
-            var result = await _testControl.GetModeratorsByIoEId(It.IsAny<string>());
-
-            // Assert  
-            Assert.IsType<OkObjectResult>(result);
-        }
     }
 }

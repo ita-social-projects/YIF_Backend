@@ -37,6 +37,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
         private readonly Mock<ISchoolAdminRepository<SchoolAdminDTO>> _schoolAdminRepository;
         private readonly Mock<ISchoolModeratorRepository<SchoolModeratorDTO>> _schoolModeratorRepository;
+        private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository;
         private readonly Mock<IApplicationDbContext> _dbContextMock;
         private readonly Mock<ITokenRepository<TokenDTO>> _tokenRepository;
         private readonly Mock<ResourceManager> _resourceManager;
@@ -78,6 +79,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
             _schoolAdminRepository = new Mock<ISchoolAdminRepository<SchoolAdminDTO>>();
             _schoolModeratorRepository = new Mock<ISchoolModeratorRepository<SchoolModeratorDTO>>();
+            _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
             _dbContextMock = new Mock<IApplicationDbContext>();
             _tokenRepository = new Mock<ITokenRepository<TokenDTO>>();
             _resourceManager = new Mock<ResourceManager>();
@@ -98,6 +100,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _specialtyRepository.Object,
                                                     _schoolAdminRepository.Object,
                                                     _schoolModeratorRepository.Object,
+                                                    _ioEModeratorRepository.Object,
                                                     _tokenRepository.Object,
                                                     _resourceManager.Object,
                                                     _env.Object,
@@ -313,6 +316,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void GetIoEModeratorsByIoEId_ShouldReturnListOfModerators_IfEverythingIsOk()
+        {
+            // Arrange  
+            _ioEModeratorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>);
+            _mapperMock.Setup(x => x.Map<IEnumerable<IoEModeratorsResponseApiModel>>(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>()));
+
+            // Act
+            var result = await superAdminService.GetIoEModeratorsByIoEId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
     }
