@@ -297,7 +297,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange  
             _superAdminService.Setup(x => x.GetIoEModeratorsByIoEId(It.IsAny<string>()))
-                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>());
+                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>());
 
             // Act
             var result = await superAdminController.GetModeratorsByIoEId(It.IsAny<string>());

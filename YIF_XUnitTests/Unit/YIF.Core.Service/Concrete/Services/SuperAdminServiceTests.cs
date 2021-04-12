@@ -31,7 +31,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>> _institutionOfEducationAdminRepository;
+        private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _institutionOfEducationAdminRepository;
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository;
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository;
@@ -73,7 +73,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
-            _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
+            _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
             _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
             _specialtyRepository = new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
@@ -340,13 +340,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange  
             _ioEModeratorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>);
-            _mapperMock.Setup(x => x.Map<IEnumerable<IoEModeratorsResponseApiModel>>(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>()));
+            _mapperMock.Setup(x => x.Map<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>()));
 
             // Act
             var result = await superAdminService.GetIoEModeratorsByIoEId(It.IsAny<string>());
 
             // Assert  
-            Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>>(result);
+            Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
     }

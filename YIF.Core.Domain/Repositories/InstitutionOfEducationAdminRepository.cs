@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -11,7 +13,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class InstitutionOfEducationAdminRepository : IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>
+    public class InstitutionOfEducationAdminRepository : IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>
     {
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -109,6 +111,44 @@ namespace YIF.Core.Domain.Repositories
         public void Dispose()
         {
             _dbContext.Dispose();
+        }
+
+        public Task<bool> Update(InstitutionOfEducationAdmin item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Delete(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<InstitutionOfEducationAdminDTO> Get(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<InstitutionOfEducationAdminDTO>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<InstitutionOfEducationAdminDTO>> Find(Expression<Func<InstitutionOfEducationAdmin, bool>> predicate)
+        {
+            var ioEAdmins = await _dbContext.InstitutionOfEducationAdmins
+                .Where(predicate)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<InstitutionOfEducationAdminDTO>>(ioEAdmins);
+        }
+
+        public async Task<InstitutionOfEducationAdminDTO> GetByUserId(string userId)
+        {
+            var ioEAdmin = await _dbContext.InstitutionOfEducationAdmins
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            return _mapper.Map<InstitutionOfEducationAdminDTO>(ioEAdmin);
         }
     }
 }

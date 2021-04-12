@@ -13,7 +13,10 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>().ReverseMap();
 
-            CreateMap<InstitutionOfEducationModeratorDTO, IoEModeratorsResponseApiModel>()
+            CreateMap<InstitutionOfEducationModeratorDTO, IoEModeratorsForSuperAdminResponseApiModel>()
+                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.User.Email));
+
+            CreateMap<InstitutionOfEducationModeratorDTO, IoEModeratorsForIoEAdminResponseApiModel>()
                 .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.User.Email));
         }
     }

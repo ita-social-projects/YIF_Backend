@@ -1,4 +1,6 @@
-﻿using System.Resources;
+﻿using System.Collections.Generic;
+using System.Resources;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -59,6 +61,28 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var result = await _testControl.UpdateSpecialtyDescription(It.IsAny<SpecialtyDescriptionUpdateApiModel>());
 
             //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async void GetModeratorsByUserId_ShouldReturnOk_IfEverythingIsOk()
+        {
+            // Arrange  
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            _ioEAdminService.Setup(x => x.GetIoEModeratorsByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>>());
+
+            // Act
+            var result = await _testControl.GetModeratorsByUserId();
+
+            // Assert  
             Assert.IsType<OkObjectResult>(result);
         }
     }

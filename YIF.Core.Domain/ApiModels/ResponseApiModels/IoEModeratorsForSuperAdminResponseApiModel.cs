@@ -1,6 +1,6 @@
 ﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class IoEModeratorsResponseApiModel
+    public class IoEModeratorsForSuperAdminResponseApiModel
     {
         /// <summary>
         /// User Id
