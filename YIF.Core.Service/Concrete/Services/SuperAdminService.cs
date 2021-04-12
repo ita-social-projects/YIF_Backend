@@ -83,6 +83,7 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
             _paginationService = paginationService;
+            _specialtyRepository = specialtyRepository;
         }
 
         ///<inheritdoc/>
@@ -384,6 +385,16 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasSuccessefullyChanged")),
                 await _specialtyRepository.Update(_mapper.Map<Specialty>(specialtyDTO)));
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialityPostApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialityDTO = _mapper.Map<SpecialtyDTO>(specialityPostApiModel);
+            await _specialtyRepository.Add(_mapper.Map<Specialty>(specialityDTO));
+
+            return result.Set(
+                   new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasAdded")), true);
         }
 
         public async Task<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)

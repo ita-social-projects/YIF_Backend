@@ -34,6 +34,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>> GetAllInstitutionOfEducationAdmins(InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel, PageApiModel pageModel);
         Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins();
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyById(SpecialtyPutApiModel model);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialityPostApiModel);
         Task<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId);
     }
 }

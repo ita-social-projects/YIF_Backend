@@ -304,6 +304,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
+        public async Task AddSpecialtyToListOfSpecialties_ShouldAddSpecialty()
+        {
+            //Arrange
+            _mapperMock.Setup(sr => sr.Map<SpecialtyDTO>(It.IsAny<SpecialtyPostApiModel>())).Returns(It.IsAny<SpecialtyDTO>());
+            _mapperMock.Setup(sr => sr.Map<Specialty>(It.IsAny<SpecialtyDTO>())).Returns(It.IsAny<Specialty>());
+            _specialtyRepository.Setup(sr => sr.Add(It.IsAny<Specialty>()));
+
+            //Act
+            var result = await superAdminService.AddSpecialtyToTheListOfAllSpecialties(new SpecialtyPostApiModel());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
         public async Task UpdateSpecialtyById_ShouldUpdateSpecialtyByIdAndReturnCorrectMessage_IfEverythingIsOk()
         {
             //Arrange
