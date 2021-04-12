@@ -100,7 +100,7 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<InstitutionOfEducationAdminDTO>(institutionOfEducationAdmin);
         }
 
-        public async Task<InstitutionOfEducationAdminDTO> GetById(string id)
+        public async Task<InstitutionOfEducationAdminDTO> GetByUserId(string id)
         {
             var admin = await _dbContext.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == id);
             return _mapper.Map<InstitutionOfEducationAdminDTO>(admin);
