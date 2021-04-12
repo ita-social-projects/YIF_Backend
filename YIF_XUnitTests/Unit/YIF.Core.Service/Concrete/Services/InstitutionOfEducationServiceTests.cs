@@ -674,7 +674,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(institutionOfEducation);
 
             _ioeAdminRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(admin);
 
             // Act
@@ -701,7 +701,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(institutionOfEducation);
 
             _ioeModeratorRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(moderator);
 
             // Act
@@ -725,7 +725,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(institutionOfEducation);
 
             _ioeAdminRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(admin);
 
             // Act
@@ -748,7 +748,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(institutionOfEducation);
 
             _ioeAdminRepository
-                .Setup(sr => sr.GetById(It.IsAny<string>()))
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(admin);
 
             // Act

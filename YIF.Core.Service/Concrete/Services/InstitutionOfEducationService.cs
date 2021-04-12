@@ -257,13 +257,13 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialitiesInIoE(string userId)
         {
-            var admin = await _institutionOfEducationAdminRepository.GetById(userId);
+            var admin = await _institutionOfEducationAdminRepository.GetByUserId(userId);
 
             string ioeId;
 
             if (admin == null)
             {
-                var moderator = await _institutionOfEducationModeratorRepository.GetById(userId);
+                var moderator = await _institutionOfEducationModeratorRepository.GetByUserId(userId);
 
                 if (moderator == null)
                 {

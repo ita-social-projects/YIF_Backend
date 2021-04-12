@@ -264,7 +264,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _institutionOfEducationAdminRepository
-                .Setup(p => p.GetById(uniAdmin.Id))
+                .Setup(p => p.GetByUserId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
@@ -286,7 +286,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _institutionOfEducationAdminRepository
-                .Setup(p => p.GetById(uniAdmin.Id))
+                .Setup(p => p.GetByUserId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,

@@ -10,7 +10,7 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<string> AddUniModerator(InstitutionOfEducationModerator institutionOfEducationModerator);
         Task<bool> Delete(string id);
-        Task<K> GetById(string id);
+        Task<K> GetByUserId(string id);
         Task<IEnumerable<K>> GetAllUniModerators();
     }
 }
