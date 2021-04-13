@@ -122,5 +122,22 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.GetIoEModeratorsByUserId(userId);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get Institution Of Education Information
+        /// </summary>
+        /// <returns>Institution Of Education</returns>
+        /// <response code="200">Returns Institution Of Education</response>
+        /// <response code="403">If user is not Institution of Education admin</response>
+        [HttpGet("GetIoEInfo")]
+        [ProducesResponseType(typeof(InstitutionOfEducationResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetIoEInfoByUserId()
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.GetIoEModeratorsByUserId(userId);
+            return Ok(result.Object);
+        }
     }
 }

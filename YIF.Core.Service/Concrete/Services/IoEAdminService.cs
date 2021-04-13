@@ -41,7 +41,8 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ResourceManager resourceManager)
+            ResourceManager resourceManager
+        )
         {
             _specialtyRepository = specialtyRepository;
             _ioERepository = ioERepository;
@@ -151,6 +152,17 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 Object = _mapper.Map<IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
                 Success = true
+            };
+        }
+
+        public async Task<ResponseApiModel<InstitutionOfEducationResponseApiModel>> GetIoEInfoByUserId(string userId) 
+        { 
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+
+            return new ResponseApiModel<InstitutionOfEducationResponseApiModel> 
+            { 
+               Object = _mapper.Map<InstitutionOfEducationResponseApiModel>(await _ioERepository.Get(ioEId)),
+               Success = true
             };
         }
     }
