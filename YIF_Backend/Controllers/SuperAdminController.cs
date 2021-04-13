@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
-using System.Web.Http;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -142,7 +141,6 @@ namespace YIF_Backend.Controllers
             return result.Success ? Ok(result.Object) : (IActionResult)BadRequest(result.Description);
         }
 
-
         /// <summary>
         /// Get all admins.
         /// </summary>
@@ -158,7 +156,7 @@ namespace YIF_Backend.Controllers
             bool? Email = null,
             bool? InstitutionOfEducationName = null,
             bool? IsBanned = null,
-            int page  = 1,
+            int page = 1,
             int pageSize = 10)
         {
             var sortingModel = new InstitutionOfEducationAdminSortingModel
@@ -193,6 +191,56 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetAllSchoolUsersAsync()
         {
             var result = await _superAdminService.GetAllSchoolAdmins();
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Add new specialty.
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Specialty added</response>
+        /// <response code="400">If request model isn't valid </response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpPost("AddSpecialty")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> AddSpecialtyToTheListOfAllSpecialties([FromBody] SpecialtyPostApiModel specialityPostApiModel)
+        {
+            var result = await _superAdminService.AddSpecialtyToTheListOfAllSpecialties(specialityPostApiModel);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Update specialty.
+        /// </summary>
+        /// <returns>Message</returns>
+        /// <response code="200">If specialty description successfully updated</response>
+        /// <response code="400">If request model isn't valid </response>
+        [HttpPut("UpdateSpecialty")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> UpdateSpecialtyById([FromBody] SpecialtyPutApiModel model)
+        {
+            var result = await _superAdminService.UpdateSpecialtyById(model);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get Institution of Education moderators by Institution of Education id.
+        /// </summary>
+        /// <returns>List of moderators</returns>
+        /// <response code="200">Returns a list of moderators</response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpGet("GetIoEModeratorsById")]
+        [ProducesResponseType(typeof(IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetModeratorsByIoEId(string ioEId)
+        {
+            var result = await _superAdminService.GetIoEModeratorsByIoEId(ioEId);
             return Ok(result.Object);
         }
     }

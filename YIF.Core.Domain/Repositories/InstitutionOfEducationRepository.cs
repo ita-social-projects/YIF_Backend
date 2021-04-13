@@ -109,14 +109,7 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task<bool> ContainsById(string id)
         {
-            var result = await _context.InstitutionOfEducations
-                .AsNoTracking()
-                .Where(x => x.Id == id)
-                .FirstOrDefaultAsync();
-
-            if (result != null)
-                return true;
-            return false;
+            return await _context.InstitutionOfEducations.AnyAsync(x => x.Id == id);
         }
 
     }

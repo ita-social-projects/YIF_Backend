@@ -16,7 +16,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
         private readonly Mock<IMapper> _mapperMock;
         private readonly FakeUserManager<DbUser> _userManagerMock;
         private readonly InstitutionOfEducationModeratorRepository _institutionOfEducationModeratorRepository;
-
         private readonly List<InstitutionOfEducationModerator> _databaseInstitutionOfEducationModerators = new List<InstitutionOfEducationModerator>();
         private readonly InstitutionOfEducationModerator institutionOfEducationModerator = new InstitutionOfEducationModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
 
@@ -26,10 +25,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             _mapperMock = new Mock<IMapper>();
             _userManagerMock = new FakeUserManager<DbUser>();
 
-            _institutionOfEducationModeratorRepository = new InstitutionOfEducationModeratorRepository(_mapperMock.Object, _userManagerMock, _dbContextMock.Object);
+            _institutionOfEducationModeratorRepository = new InstitutionOfEducationModeratorRepository(_mapperMock.Object, _dbContextMock.Object);
             _dbContextMock.Setup(p => p.InstitutionOfEducationModerators).Returns(DbContextMock.GetQueryableMockDbSet<InstitutionOfEducationModerator>(_databaseInstitutionOfEducationModerators));
-
-            //_databaseInstitutionOfEducationModerators.Add(institutionOfEducationModerator);
         }
 
         [Fact]

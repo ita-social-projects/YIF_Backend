@@ -1042,14 +1042,14 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
-        public async static void SeedSpecialtyToInstitutionOfEducationToGraduate(EFDbContext context)
+        public static void SeedSpecialtyToInstitutionOfEducationToGraduate(EFDbContext context)
         {
             if (context.SpecialtyToInstitutionOfEducationToGraduates.Count() == 0)
             {
                 var graduate = context.Graduates.ToList();
                 var specialtyToUniversity = context.SpecialtyToInstitutionOfEducations.ToList();
 
-                await context.SpecialtyToInstitutionOfEducationToGraduates.AddRangeAsync(new List<SpecialtyToInstitutionOfEducationToGraduate>
+                context.SpecialtyToInstitutionOfEducationToGraduates.AddRange(new List<SpecialtyToInstitutionOfEducationToGraduate>
                 {
                     new SpecialtyToInstitutionOfEducationToGraduate
                     {
@@ -1058,18 +1058,18 @@ namespace YIF.Core.Data.Seaders
                         InstitutionOfEducationId = specialtyToUniversity.FirstOrDefault().InstitutionOfEducationId
                     }
                 });
-                await context.SaveChangesAsync();
+                context.SaveChanges();
             }
         }
 
-        public async static void SeedSpecialtyToGraduate(EFDbContext context)
+        public static void SeedSpecialtyToGraduate(EFDbContext context)
         {
             if (context.SpecialtyToGraduates.Count() == 0)
             {
                 var graduate = context.Graduates.ToList();
                 var specialty = context.Specialties.ToList();
 
-                await context.SpecialtyToGraduates.AddRangeAsync(new List<SpecialtyToGraduate>
+                context.SpecialtyToGraduates.AddRange(new List<SpecialtyToGraduate>
                 {
                     new SpecialtyToGraduate
                     {
@@ -1077,7 +1077,7 @@ namespace YIF.Core.Data.Seaders
                         SpecialtyId = specialty.FirstOrDefault().Id
                     }
                 });
-                await context.SaveChangesAsync();
+                context.SaveChanges();
             }
         }
 

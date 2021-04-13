@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -105,6 +105,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act            
             var response = await _client.PutAsync($"/api/InstitutionOfEducationAdmin/Specialty/Description/Update", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async void GetModerators_EndpointReturnsListOfModeratorsWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoEModerators");
 
             // Assert
             response.EnsureSuccessStatusCode();

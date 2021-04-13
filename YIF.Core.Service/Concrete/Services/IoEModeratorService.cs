@@ -11,7 +11,7 @@ using YIF.Core.Domain.ServiceInterfaces;
 
 namespace YIF.Core.Service.Concrete.Services
 {
-    public class IoEModeratorService:IIoEModeratorService
+    public class IoEModeratorService : IIoEModeratorService
     {
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;

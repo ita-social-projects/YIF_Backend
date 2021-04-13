@@ -7,20 +7,24 @@
         /// </summary>
         /// <example>a47e79d8-7e68-43c5-a5c9-1c6dff1e1693</example>
         public string UserId { get; set; }
+
         /// <summary>
         /// Secure token for reset password
         /// </summary>
         public string Token { get; set; }
+
         /// <summary>
         /// User new password
         /// </summary>
         /// <example>QWerty-1</example>
         public string NewPassword { get; set; }
+
         /// <summary>
         /// Confirm new password
         /// </summary>
         /// <example>QWerty-1</example>
         public string ConfirmNewPassword { get; set; }
+
         /// <summary>
         /// Google Recaptcha Token
         /// </summary>

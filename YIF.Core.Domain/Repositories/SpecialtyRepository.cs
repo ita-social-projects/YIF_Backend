@@ -21,21 +21,13 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
+
         public async Task<bool> Update(Specialty specialty)
         {
-            if (specialty != null)
-            {
-                if (_context.Specialties.Find(specialty) != null)
-                {
-                    _context.Specialties.Update(specialty);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
-            }
-            return false;
+             _context.Specialties.Update(specialty);
+             return await _context.SaveChangesAsync() > 0;
         }
 
-        // Not implemented, as the logic will be determined in the future
         public Task<bool> Delete(string id)
         {
             throw new NotImplementedException();
@@ -70,6 +62,7 @@ namespace YIF.Core.Domain.Repositories
 
             return null;
         }
+
         public async Task<IEnumerable<SpecialtyDTO>> GetFavoritesByUserId(string userId)
         {
             var specialties = from specialtyToGraduate in _context.SpecialtyToGraduates
@@ -82,27 +75,15 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
         }
 
-        public async Task AddFavorite(SpecialtyToGraduate specialtyToGraduate)
-        {
-            await _context.SpecialtyToGraduates.AddAsync(specialtyToGraduate);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveFavorite(SpecialtyToGraduate specialtyToGraduate)
-        {
-            _context.SpecialtyToGraduates.Remove(specialtyToGraduate);
-            await _context.SaveChangesAsync();
-        }
         public async Task<bool> ContainsById(string id)
         {
-            var result = await _context.Specialties
-                          .AsNoTracking()
-                          .Where(x => x.Id == id)
-                          .FirstOrDefaultAsync();
+            return await _context.Specialties.AnyAsync(x => x.Id == id);
+        }
 
-            if (result != null)
-                return true;
-            return false;
+        public async Task Add(Specialty specialty)
+        {
+            await _context.Specialties.AddAsync(specialty);
+            await _context.SaveChangesAsync();
         }
     }
 }

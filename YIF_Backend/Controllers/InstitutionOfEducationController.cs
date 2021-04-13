@@ -160,14 +160,14 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _institutionOfEducationService.AddInstitutionOfEducationToFavorite(institutionOfEducationId, userId);
-            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", null);
+            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}", institutionOfEducationId);
         }
 
         /// <summary>
         /// Delete institutionOfEducation from favorite.
         /// </summary>
         /// <returns>None</returns>
-        /// <response code="204">Returns if the institutionOfEducation has been successfully deleted from the favorites list</response>
+        /// <response code="200">Returns if the institutionOfEducation has been successfully deleted from the favorites list</response>
         /// <response code="400">If id is not valid or institutionOfEducation has not been added to favorites</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not graduate</response>
@@ -180,7 +180,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             await _institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(institutionOfEducationId, userId);
-            return NoContent();
+            return Ok(value: institutionOfEducationId);
         }
 
 

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization.Policy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class SuperAdminControllerTest : TestServerFixture
     {
         private readonly IMapper _mapper;
-        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         public SuperAdminControllerTest(ApiWebApplicationFactory fixture)          
         {
             _client = getInstance(fixture);
@@ -35,7 +35,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             }).CreateClient();
 
             _mapper = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IMapper>();
-            _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
+            _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         }
 
         [Fact]
@@ -212,6 +212,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
         [Fact]
         public async Task DisableInstitutionOfEducationAdmin()
         {
@@ -220,6 +221,62 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData("Інформація", "Системний аналіз", "66")]
+        public async Task AddSpecialtyToListOfSpecialties_ShouldReturnOk(string name, string description, string code)
+        {
+            //Arrange
+            var directionId = _context.Directions.AsNoTracking().FirstOrDefault().Id;
+
+            var model = new SpecialtyPostApiModel()
+            {
+                Name = name,
+                DirectionId = directionId,
+                Description = description,
+                Code = code
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/SuperAdmin/AddSpecialty", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task UpdateSpecialtyDescription_EndpointReturnOk()
+        {
+            //Arrange
+            var specialty = _context.Specialties.AsNoTracking().FirstOrDefault();
+            var model = new SpecialtyPutApiModel
+            {
+                Id = specialty.Id,
+                Description = specialty.Description,
+                Name = specialty.Name,
+                DirectionId = specialty.DirectionId,
+                Code = specialty.Code
+            };
+
+            // Act            
+            var response = await _client.PutAsync($"/api/SuperAdmin/UpdateSpecialty", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async void GetModeratorsByIoEId_EndpointReturnsListOfModeratorsWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            var ioEId = _context.InstitutionOfEducations.FirstOrDefault().Id;
+
+            // Act
+            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById?ioEId={ioEId}");
 
             // Assert
             response.EnsureSuccessStatusCode();

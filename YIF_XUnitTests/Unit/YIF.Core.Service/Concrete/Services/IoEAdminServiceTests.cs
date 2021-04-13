@@ -24,16 +24,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
     {
         private readonly IoEAdminService _ioEAdminService;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository= new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
-        private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>> _ioEAdminRepository =
-            new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
+        private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _ioEAdminRepository =
+            new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         private readonly Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>> 
             _specialtyToIoERepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> 
             _ioERepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
-        private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> 
-            _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
-        private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> 
-            _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
+        private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
+        private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
+        private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
@@ -48,6 +47,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _ioEAdminRepository.Object,
                 _specialtyToIoEDescriptionRepository.Object,
                 _examRequirementRepository.Object,
+                _ioEModeratorRepository.Object,
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
@@ -184,6 +184,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
+            _mapper.Setup(x => x.Map<SpecialtyToInstitutionOfEducationDTO>(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>())).Returns(It.IsAny<SpecialtyToInstitutionOfEducationDTO>());
+            _mapper.Setup(x => x.Map<SpecialtyToInstitutionOfEducation>(It.IsAny<SpecialtyToInstitutionOfEducationDTO>())).Returns(new SpecialtyToInstitutionOfEducation());
+
             // Act
             var exception = await Record
                 .ExceptionAsync(() => _ioEAdminService.DeleteSpecialtyToIoe(new SpecialtyToInstitutionOfEducationPostApiModel
@@ -313,6 +316,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void GetIoEModeratorsByUserId_ShouldReturnListOfModerators_IfEverythingIsOk()
+        {
+            // Arrange  
+            _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>);
+            _mapper.Setup(x => x.Map<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>()));
+
+            // Act
+            var result = await _ioEAdminService.GetIoEModeratorsByUserId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
     }

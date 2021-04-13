@@ -16,7 +16,7 @@ namespace YIF.Core.Data
     {       
         public EFDbContext(DbContextOptions<EFDbContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         #region Tables
@@ -86,12 +86,6 @@ namespace YIF.Core.Data
                 .WithMany(x => x.InstitutionOfEducationAdmins)
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            //builder.Entity<InstitutionOfEducationModerator>() //too many cascade deleting
-            //    .HasOne(x => x.User)
-            //    .WithMany(x => x.InstitutionOfEducationModerators)
-            //    .HasForeignKey(x => x.UserId)
-            //    .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Lecture>()
                 .HasOne(x => x.User)

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -113,7 +113,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_EndpointsReturnOk()
+        public async Task AddSpecialtyAndInstitutionOfEducationToFavorite_EndpointsReturnCreated()
         {
             //Arrange
             _specialtyInputAttribute.SetUserIdByGraduateUserIdForHttpContext();

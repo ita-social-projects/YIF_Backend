@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
@@ -9,9 +8,6 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task<IEnumerable<K>> GetSpecialtyToIoEDescriptionsById(string id);
-        Task AddFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate);
-        Task RemoveFavorite(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate);
-        Task<bool> FavoriteContains(SpecialtyToInstitutionOfEducationToGraduate specialtyToInstitutionOfEducationToGraduate);
-        Task AddSpecialty(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation);
+        Task AddSpecialty(T specialtyToInstitutionOfEducation);
     }
 }

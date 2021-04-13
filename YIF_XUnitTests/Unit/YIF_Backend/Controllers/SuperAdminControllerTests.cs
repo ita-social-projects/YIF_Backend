@@ -278,6 +278,34 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.Equal(error.Message, result.Message);
         }
 
+        [Fact]
+        public async Task UpdateSpecialtyById_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.UpdateSpecialtyById(It.IsAny<SpecialtyPutApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.UpdateSpecialtyById(It.IsAny<SpecialtyPutApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async void GetModeratorsByIoEId_ShouldReturnOk_IfEverythingIsOk()
+        {
+            // Arrange  
+            _superAdminService.Setup(x => x.GetIoEModeratorsByIoEId(It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>());
+
+            // Act
+            var result = await superAdminController.GetModeratorsByIoEId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<OkObjectResult>(result);
+        }
+
         private List<AuthenticateResponseApiModel> GetTestJwt()
         {
             return new List<AuthenticateResponseApiModel>
@@ -285,6 +313,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 new AuthenticateResponseApiModel { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImRmZWY1ZmM4LTA1NjEtNDI2OS04Zjc1LTk1N2RhNzg4ODkyOCIsImVtYWlsIjoicXRvbmk2QGdtYWlsLmNvbSIsIm5hbWUiOiJBcm5vbGRCZWFzbGV5Iiwicm9sZXMiOiJVbml2ZXJzaXR5QWRtaW4iLCJleHAiOjE2MDg1MDQxMjl9.araGavMMEaMXF2fjFU_OH72ipfJuae21vzxEcfTp_L0" },
                 new AuthenticateResponseApiModel { Token = null },
             };
+        }
+
+        [Fact]
+        public async Task AddSpecialtyToListOfSpecialties_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialtyPostApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.AddSpecialtyToTheListOfAllSpecialties(It.IsAny<SpecialtyPostApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

@@ -78,8 +78,8 @@ namespace YIF_Backend
             services.AddTransient<IRecaptchaService, RecaptchaService>();
             services.AddTransient<IEmailService, SendGridService>();
             services.AddTransient<ISuperAdminService, SuperAdminService>();
-            services.AddTransient<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>, InstitutionOfEducationModeratorRepository>();
-            services.AddTransient<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>, InstitutionOfEducationAdminRepository>();
+            services.AddTransient<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>, InstitutionOfEducationModeratorRepository>();
+            services.AddTransient<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>, InstitutionOfEducationAdminRepository>();
             services.AddTransient<ISchoolRepository<SchoolDTO>, SchoolRepository>();
             services.AddTransient<ISchoolModeratorRepository<SchoolModeratorDTO>, SchoolModeratorRepository>();
             services.AddTransient<ISchoolAdminRepository<SchoolAdminDTO>, SchoolAdminRepository>();
@@ -92,6 +92,8 @@ namespace YIF_Backend
             services.AddTransient<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>, SpecialtyToIoEDescriptionRepository>();
             services.AddTransient<IIoEAdminService, IoEAdminService>();
             services.AddTransient<IIoEModeratorService, IoEModeratorService>();
+            services.AddTransient<ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO>, SpecialtyToGraduateRepository>();
+            services.AddTransient<ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>, SpecialtyToIoEToGraduateRepository>();
 
             #endregion
 

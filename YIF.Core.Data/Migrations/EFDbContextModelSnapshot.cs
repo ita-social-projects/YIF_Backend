@@ -425,6 +425,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("AdminId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
