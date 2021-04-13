@@ -30,8 +30,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
         private static readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
-        private static readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>> _ioeAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
-        private static readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>> _ioeModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModeratorDTO>>();
+        private static readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _ioeAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
+        private static readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioeModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
         private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private static readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();

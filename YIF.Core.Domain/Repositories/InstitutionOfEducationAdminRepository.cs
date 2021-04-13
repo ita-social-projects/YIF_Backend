@@ -142,13 +142,5 @@ namespace YIF.Core.Domain.Repositories
 
             return _mapper.Map<IEnumerable<InstitutionOfEducationAdminDTO>>(ioEAdmins);
         }
-
-        public async Task<InstitutionOfEducationAdminDTO> GetByUserId(string userId)
-        {
-            var ioEAdmin = await _dbContext.InstitutionOfEducationAdmins
-                .FirstOrDefaultAsync(x => x.UserId == userId);
-
-            return _mapper.Map<InstitutionOfEducationAdminDTO>(ioEAdmin);
-        }
     }
 }
