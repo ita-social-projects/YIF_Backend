@@ -32,7 +32,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
-        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
@@ -53,7 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
             IJwtService _IJwtService,
             IMapper mapper,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
-            IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
+            IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             ISchoolAdminRepository<SchoolAdminDTO> schoolAdminRepository,
@@ -397,11 +397,11 @@ namespace YIF.Core.Service.Concrete.Services
                    new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasAdded")), true);
         }
 
-        public async Task<ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)
+        public async Task<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)
         {
-            return new ResponseApiModel<IEnumerable<IoEModeratorsResponseApiModel>>
+            return new ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>
             {
-                Object = _mapper.Map<IEnumerable<IoEModeratorsResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
+                Object = _mapper.Map<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
                 Success = true
             };
         }

@@ -22,7 +22,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     public class SuperAdminControllerTest : TestServerFixture
     {
         private readonly IMapper _mapper;
-        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         public SuperAdminControllerTest(ApiWebApplicationFactory fixture)          
         {
             _client = getInstance(fixture);
@@ -35,7 +35,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             }).CreateClient();
 
             _mapper = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IMapper>();
-            _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdminDTO>>();
+            _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         }
 
         [Fact]

@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IInstitutionOfEducationAdminRepository<K> : IDisposable
+    public interface IInstitutionOfEducationAdminRepository<T, K> : IRepository<T, K>
+        where T : class
         where K : class
     {
-        Task<string> AddUniAdmin(InstitutionOfEducationAdmin institutionOfEducationAdmin);
+        Task<string> AddUniAdmin(T institutionOfEducationAdmin);
         Task<string> Delete(DbUser user);
-        Task<string> Disable(InstitutionOfEducationAdmin adminId);
-        Task<string> Enable(InstitutionOfEducationAdmin adminId);
+        Task<string> Disable(T adminId);
+        Task<string> Enable(T adminId);
         Task<K> GetById(string id);
         Task<K> GetByInstitutionOfEducationId(string institutionOfEducationId);
         Task<K> GetByInstitutionOfEducationIdWithoutIsDeletedCheck(string institutionOfEducationId);
         Task<K> GetUserByAdminId(string id);
         Task<IEnumerable<K>> GetAllUniAdmins();
+        Task<K> GetByUserId(string userId);
     }
 }

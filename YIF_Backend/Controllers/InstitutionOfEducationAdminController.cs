@@ -6,7 +6,7 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
-
+using System.Collections.Generic;
 
 namespace YIF_Backend.Controllers
 {
@@ -103,6 +103,23 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> UpdateSpecialtyDescription([FromBody] SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {
             var result = await _ioEAdminService.UpdateSpecialtyDescription(specialtyDescriptionUpdateApiModel);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get Institution of Education moderators.
+        /// </summary>
+        /// <returns>List of moderators</returns>
+        /// <response code="200">Returns a list of moderators</response>
+        /// <response code="403">If user is not Institution of Education admin</response>
+        [HttpGet("GetIoEModerators")]
+        [ProducesResponseType(typeof(IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetModeratorsByUserId()
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.GetIoEModeratorsByUserId(userId);
             return Ok(result.Object);
         }
     }

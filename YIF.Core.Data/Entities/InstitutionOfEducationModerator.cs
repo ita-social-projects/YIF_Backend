@@ -17,6 +17,6 @@ namespace YIF.Core.Data.Entities
         [ForeignKey("UserId")]
         public string UserId { get; set; }
         public DbUser User { get; set; }
-
+        public bool IsBanned { get; set; } = false;
     }
 }
