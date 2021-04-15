@@ -18,5 +18,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel);
         Task<ResponseApiModel<IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>>> GetIoEModeratorsByUserId(string userId);
+        Task<ResponseApiModel<IoEInfromationResponseApiModel>> GetIoEInfoByUserId(string userId);
     }
 }
