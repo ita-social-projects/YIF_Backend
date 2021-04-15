@@ -1,6 +1,6 @@
 ﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class IoEInfromationResponseApiModel
+    public class IoEInformationResponseApiModel
     {
         /// <summary>
         /// Unique id

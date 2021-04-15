@@ -99,7 +99,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
             _ioEAdminService.Setup(x => x.GetIoEInfoByUserId(It.IsAny<string>()))
-                .ReturnsAsync(new ResponseApiModel<IoEInfromationResponseApiModel>());
+                .ReturnsAsync(new ResponseApiModel<IoEInformationResponseApiModel>());
 
             // Act
             var result = await _testControl.GetIoEInfoByUserId();

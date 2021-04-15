@@ -12,7 +12,7 @@ namespace YIF.Core.Service.Mapping
         {
             CreateMap<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>().ReverseMap();
             CreateMap<InstitutionOfEducationAdminDTO, InstitutionOfEducationAdminResponseApiModel>();
-            CreateMap<InstitutionOfEducationDTO, IoEInfromationResponseApiModel>();
+            CreateMap<InstitutionOfEducationDTO, IoEInformationResponseApiModel>();
 
             CreateMap<InstitutionOfEducationDTO, InstitutionOfEducationForInstitutionOfEducationAdminResponseApiModel>();
 
