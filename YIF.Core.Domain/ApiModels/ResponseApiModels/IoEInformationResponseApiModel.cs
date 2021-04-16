@@ -49,5 +49,17 @@
         /// </summary> 
         /// <example>Єдиний в Україні вищий навчальний заклад водогосподарського профілю. Заклад є навчально-науковим комплексом, що здійснює підготовку висококваліфікованих фахівців, науково-педагогічних кадрів, забезпечує підвищення кваліфікації фахівців та проводить науково-дослідну роботу.</example>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Latitude of institutionOfEducation
+        /// </summary>
+        /// <example>50.61798</example>
+        public float Lat { get; set; }
+
+        /// <summary>
+        /// Longitude of institutionOfEducation
+        /// </summary>
+        /// <example>26.258654</example>
+        public float Lon { get; set; }
     }
 }
