@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Collections.Generic;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
