@@ -68,7 +68,6 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// <summary>
         /// Path of the institutionOfEducation image in project directory
         /// </summary>
-        /// <example></example>
         public string ImagePath { get; set; }
 
         /// <summary>
