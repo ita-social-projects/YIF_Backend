@@ -1,4 +1,7 @@
-﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+﻿using System.Text.Json.Serialization;
+using YIF.Core.Data.Entities;
+
+namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     public class IoEInformationResponseApiModel
     {
@@ -67,5 +70,11 @@
         /// </summary>
         /// <example></example>
         public string ImagePath { get; set; }
+
+        /// <summary>
+        /// Type of institution Of Education
+        /// </summary>
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public InstitutionOfEducationType InstitutionOfEducationType { get; set; }
     }
 }
