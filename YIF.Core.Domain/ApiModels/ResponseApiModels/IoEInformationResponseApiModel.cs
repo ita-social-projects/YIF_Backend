@@ -61,5 +61,11 @@
         /// </summary>
         /// <example>26.258654</example>
         public float Lon { get; set; }
+
+        /// <summary>
+        /// Path of the institutionOfEducation image in project directory
+        /// </summary>
+        /// <example></example>
+        public string ImagePath { get; set; }
     }
 }
