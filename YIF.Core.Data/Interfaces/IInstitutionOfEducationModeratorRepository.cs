@@ -7,7 +7,6 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<bool> Delete(string id);
         Task<K> GetByUserId(string id);
         Task<IEnumerable<K>> GetAllUniModerators();
         Task<string> AddUniModerator(T institutionOfEducationModerator);

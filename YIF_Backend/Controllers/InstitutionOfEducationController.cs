@@ -216,7 +216,7 @@ namespace YIF_Backend.Controllers
         /// Get all directions and specialties of institution of education
         /// </summary>
         /// <response code="200">Get all directions and specialties in institution of education</response>
-        /// <response code="404">If there are no directions</response>
+        /// <response code="400">If there is no user with such id</response>
         [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
