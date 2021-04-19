@@ -18,5 +18,6 @@ namespace YIF.Core.Data.Entities
         public string UserId { get; set; }
         public DbUser User { get; set; }
         public bool IsBanned { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
     }
 }

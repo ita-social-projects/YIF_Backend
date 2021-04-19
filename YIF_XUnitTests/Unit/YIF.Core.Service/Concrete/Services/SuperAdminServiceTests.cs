@@ -349,5 +349,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
+
+        //[Fact]
+        //public async void AddIoEAdminFromModerators_ShouldAddAdmin_IfEverythingIsOk()
+        //{
+        //    //Arrange
+        //    var moderator =_ioEModeratorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>());
+        //    _ioEModeratorRepository.Setup(x => x.Delete(moderator));
+        //    _ioEModeratorRepository.Setup(x => x.AddUniModerator(new InstitutionOfEducationModerator{UserId = It.IsAny<string>()}));
+
+        //    //Act
+        //    var result = await superAdminService.AddIoEAdminFromModerators(It.IsAny<IoEAdminAddFromModeratorsApiModel>());
+
+        //    //Assert
+        //    Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+        //    Assert.True(result.Success);
+        //}
     }
 }

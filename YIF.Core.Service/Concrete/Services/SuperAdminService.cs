@@ -387,10 +387,10 @@ namespace YIF.Core.Service.Concrete.Services
                 await _specialtyRepository.Update(_mapper.Map<Specialty>(specialtyDTO)));
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialityPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialtyPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var specialityDTO = _mapper.Map<SpecialtyDTO>(specialityPostApiModel);
+            var specialityDTO = _mapper.Map<SpecialtyDTO>(specialtyPostApiModel);
             await _specialtyRepository.Add(_mapper.Map<Specialty>(specialityDTO));
 
             return result.Set(
@@ -404,6 +404,20 @@ namespace YIF.Core.Service.Concrete.Services
                 Object = _mapper.Map<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
                 Success = true
             };
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var moderator = await _ioEModeratorRepository.GetByUserId(ioEAdminAddFromModeratorsApiModel.UserId);
+            await _ioEModeratorRepository.Delete(moderator.Id);
+
+            await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin
+            {
+                InstitutionOfEducationId = ioEAdminAddFromModeratorsApiModel.IoEId,
+                UserId = ioEAdminAddFromModeratorsApiModel.UserId
+            });
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminAdded")), true);
         }
     }
 }

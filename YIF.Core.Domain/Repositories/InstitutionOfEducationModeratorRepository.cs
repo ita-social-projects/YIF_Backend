@@ -29,14 +29,17 @@ namespace YIF.Core.Domain.Repositories
              return string.Empty;
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            var moderator = _dbContext.InstitutionOfEducationModerators.FirstOrDefault(x => x.Id == id);
+            moderator.IsDeleted = true;
+            _dbContext.InstitutionOfEducationModerators.Update(moderator);
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public  void Dispose()
         {
-             _dbContext.Dispose();
+            _dbContext.Dispose();
         }
 
         public async Task<IEnumerable<InstitutionOfEducationModeratorDTO>> GetAll()
@@ -58,6 +61,12 @@ namespace YIF.Core.Domain.Repositories
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<InstitutionOfEducationModeratorDTO>>(result);
+        }
+
+        public async Task<InstitutionOfEducationModeratorDTO> GetByUserId(string id)
+        {
+            var moderator = await _dbContext.InstitutionOfEducationModerators.FirstOrDefaultAsync(x => x.UserId == id);
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 
         public Task<bool> Update(InstitutionOfEducationModerator item)

@@ -11,6 +11,7 @@ namespace YIF.Core.Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public bool IsBanned { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
 
         [ForeignKey("InstitutionOfEducationId")]
         public string InstitutionOfEducationId { get; set; }
