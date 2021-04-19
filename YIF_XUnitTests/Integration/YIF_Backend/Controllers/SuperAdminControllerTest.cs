@@ -281,5 +281,25 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async void AddIoEAdminFromModerators_IfEverythingOk()
+        {
+            //Arrange
+            var moderator = _context.InstitutionOfEducationModerators.Include(x=>x.Admin).AsNoTracking().FirstOrDefault();
+            var user = moderator.UserId;
+
+            var model = new IoEAdminAddFromModeratorsApiModel
+            {
+                IoEId = moderator.Admin.InstitutionOfEducationId,
+                UserId = user
+            };
+
+            //Act
+            var response = await _client.PutAsync($"/api/SuperAdmin/AddIoEAdminFromModerators", ContentHelper.GetStringContent(model));
+            
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

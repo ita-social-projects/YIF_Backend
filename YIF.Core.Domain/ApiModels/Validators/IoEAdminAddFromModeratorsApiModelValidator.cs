@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Resources;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using YIF.Core.Data;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 
@@ -38,6 +39,13 @@ namespace YIF.Core.Domain.ApiModels.Validators
                     .Where(y => y.InstitutionOfEducationId == x)
                     .Any(z => z.IsDeleted == false))
                 .WithMessage(_resourceManager.GetString("IoEAlreadyHasAnAdmin"));
+
+            RuleFor(x => x.UserId)
+                .Must((x, userId) => ((_context.InstitutionOfEducationModerators
+                    .Include(x => x.Admin)
+                    .AsNoTracking()
+                    .FirstOrDefault(x => x.UserId == userId).Admin.InstitutionOfEducationId) == x.IoEId))
+                .WithMessage(_resourceManager.GetString("IoEModeratorNotExistsInIoE"));
         }
     }
 }

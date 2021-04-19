@@ -251,7 +251,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">IoE Admin added</response>
         /// <response code="400">If request model isn't valid </response>
         /// <response code="403">If user is not super admin</response>
-        [HttpPost("AddIoEAdminFromModerators")]
+        [HttpPut("AddIoEAdminFromModerators")]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]

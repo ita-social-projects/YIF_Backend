@@ -350,20 +350,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.True(result.Success);
         }
 
-        //[Fact]
-        //public async void AddIoEAdminFromModerators_ShouldAddAdmin_IfEverythingIsOk()
-        //{
-        //    //Arrange
-        //    var moderator =_ioEModeratorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<InstitutionOfEducationModeratorDTO>>());
-        //    _ioEModeratorRepository.Setup(x => x.Delete(moderator));
-        //    _ioEModeratorRepository.Setup(x => x.AddUniModerator(new InstitutionOfEducationModerator{UserId = It.IsAny<string>()}));
+        [Fact]
+        public async void AddIoEAdminFromModerators_ShouldAddAdmin_IfEverythingIsOk()
+        {
+            //Arrange
+            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO{Id = It.IsAny<string>()});
+            _ioEModeratorRepository.Setup(x => x.Delete(It.IsAny<string>()));
+            _ioEModeratorRepository.Setup(x => x.AddUniModerator(It.IsAny<InstitutionOfEducationModerator>()));
 
-        //    //Act
-        //    var result = await superAdminService.AddIoEAdminFromModerators(It.IsAny<IoEAdminAddFromModeratorsApiModel>());
+            //Act
+            var result =
+                await superAdminService.AddIoEAdminFromModerators(new IoEAdminAddFromModeratorsApiModel{IoEId = It.IsAny<string>(), UserId = It.IsAny<string>()});
 
-        //    //Assert
-        //    Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
-        //    Assert.True(result.Success);
-        //}
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
     }
 }
