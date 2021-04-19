@@ -1,4 +1,5 @@
 ﻿using System.Resources;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
@@ -85,6 +86,7 @@ namespace YIF.Core.Service.Concrete.Services
                 IsDeleted = true
             });
         }
+
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
@@ -95,6 +97,28 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(
                 new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
                 await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
+        }
+
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
+            var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
+            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyToIoE.SpecialtyId && s.InstitutionOfEducationId == specialtyToIoE.InstitutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (entity == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
+            {
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(entity.FirstOrDefault()),
+                Success = true
+            };
         }
     }
 }

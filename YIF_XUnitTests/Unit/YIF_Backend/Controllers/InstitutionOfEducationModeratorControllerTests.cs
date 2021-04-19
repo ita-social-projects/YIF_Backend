@@ -62,5 +62,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task GetSpecialtyDescription_ShouldReturnOk_IfEverythingIsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>(new SpecialtyToInstitutionOfEducationResponseApiModel(), true);
+            _ioEModeratorService.Setup(x => x.GetSpecialtyToIoEDescription(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.GetSpecialtyDescription(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

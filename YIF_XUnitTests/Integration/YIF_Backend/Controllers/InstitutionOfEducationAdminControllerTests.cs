@@ -136,5 +136,28 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task GetSpecialtyDescription_EndpointReturnsSuccessAndCorrectContentType()
+        {
+            //Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().FirstOrDefault();
+            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.Id == institutionOfEducation.Id).FirstOrDefault();
+
+            var model = new SpecialtyToInstitutionOfEducationPostApiModel()
+            {
+                SpecialtyId = specialty.SpecialtyId,
+                InstitutionOfEducationId = institutionOfEducation.Id
+            };
+
+            //Act
+            var response = await _client.PatchAsync(
+                $"/api/InstitutionOfEducationAdmin/Specialty/Description/Get", ContentHelper.GetStringContent(model));
+
+            //Assert
+            response.EnsureSuccessStatusCode(); 
+            Assert.Equal("application/json; charset=utf-8",
+                 response.Content.Headers.ContentType.ToString());
+        }
     }
 }

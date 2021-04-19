@@ -165,5 +165,27 @@ namespace YIF.Core.Service.Concrete.Services
                Success = true
             };
         }
+
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
+            var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
+            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyToIoE.SpecialtyId && s.InstitutionOfEducationId == specialtyToIoE.InstitutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (entity == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
+            {
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(entity.FirstOrDefault()),
+                Success = true
+            };
+        }
     }
 }
