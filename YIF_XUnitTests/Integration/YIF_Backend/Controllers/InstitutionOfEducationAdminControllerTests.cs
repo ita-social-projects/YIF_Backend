@@ -123,5 +123,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async void GetIoEInfo_EndpointReturnsIoEWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoEInfo");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
