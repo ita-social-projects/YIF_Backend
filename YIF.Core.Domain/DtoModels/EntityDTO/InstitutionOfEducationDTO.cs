@@ -63,7 +63,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// Is the institution Of Education favorite
         /// </summary>
         public bool IsFavorite { get; set; }
-
+        public bool IsDeleted { get; set; }
         /// <summary>
         /// List of institution Of Education admins
         /// </summary>

@@ -297,4 +297,7 @@
   <data name="SpecialtyWasAdded" xml:space="preserve">
     <value>Спеціальність була додана</value>
   </data>
+  <data name="IoEIsDeleted" xml:space="preserve">
+    <value>Навчальний заклад було видалено</value>
+  </data>
 </root>

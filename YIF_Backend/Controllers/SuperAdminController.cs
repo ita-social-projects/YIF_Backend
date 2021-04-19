@@ -101,6 +101,23 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Delete InstitutionOfEducation (sets its InstitutionOfEducation IsDeleted to true).
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteInstitutionOfEducation/{id}")]
+        public async Task<IActionResult> DeleteInstitutionOfEducation(string id)
+        {
+            var result = await _superAdminService.DeleteInstitutionOfEducation(id);
+            return Ok(result.Object);
+        }
+
+
+        /// <summary>
         /// Delete School admin(sets its asp.net user IsDeleted to true.
         /// </summary>
         /// <returns>Success message</returns>

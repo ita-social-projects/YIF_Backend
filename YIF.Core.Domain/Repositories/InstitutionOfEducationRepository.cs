@@ -29,10 +29,10 @@ namespace YIF.Core.Domain.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        // Not implemented, as the logic will be determined in the future
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+           (await _context.InstitutionOfEducations.FirstOrDefaultAsync(x => x.Id == id)).IsDeleted = true;
+           return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<InstitutionOfEducationDTO> Get(string id)
@@ -107,6 +107,7 @@ namespace YIF.Core.Domain.Repositories
             _context.InstitutionOfEducationsToGraduates.Remove(institutionOfEducationToGraduate);
             await _context.SaveChangesAsync();
         }
+        
         public async Task<bool> ContainsById(string id)
         {
             return await _context.InstitutionOfEducations.AnyAsync(x => x.Id == id);
