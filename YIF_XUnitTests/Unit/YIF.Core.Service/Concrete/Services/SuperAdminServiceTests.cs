@@ -349,5 +349,67 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessDisableMessage()
+        {
+            //Arrange
+            _institutionOfEducationRepository
+                .Setup(p => p.Get(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationDTO>(new InstitutionOfEducationDTO { 
+                    Id = uni.Id,
+                    Name = uni.Name,
+                    Abbreviation = uni.Abbreviation,
+                    Site = uni.Site,
+                    Address = uni.Address,
+                    Phone = uni.Phone,
+                    Email = uni.Email,
+                    Description = uni.Description,
+                    ImagePath = uni.ImagePath,
+                    Lat = uni.Lat,
+                    Lon = uni.Lon,
+                    InstitutionOfEducationType = uni.InstitutionOfEducationType
+                }));
+            _institutionOfEducationRepository.Setup(x => x.Disable(uni)).Returns(Task.FromResult("InstitutionOfEducation isBanned was set to true"));
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>())).Returns(uni);
+
+            //Act
+            var result = await superAdminService.DisableInstitutionOfEducation(uni.Id);
+
+            //Assert
+            Assert.Equal("InstitutionOfEducation isBanned was set to true", result.Object.Message);
+        }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessEnableMessage()
+        {
+            //Arrange
+            _institutionOfEducationRepository
+                .Setup(p => p.Get(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationDTO>(new InstitutionOfEducationDTO
+                {
+                    Id = uni.Id,
+                    Name = uni.Name,
+                    Abbreviation = uni.Abbreviation,
+                    Site = uni.Site,
+                    Address = uni.Address,
+                    Phone = uni.Phone,
+                    Email = uni.Email,
+                    Description = uni.Description,
+                    ImagePath = uni.ImagePath,
+                    Lat = uni.Lat,
+                    Lon = uni.Lon,
+                    isBanned = true,
+                    InstitutionOfEducationType = uni.InstitutionOfEducationType
+                }));
+            _institutionOfEducationRepository.Setup(x => x.Enable(uni)).Returns(Task.FromResult("InstitutionOfEducation isBanned was set to false"));
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>())).Returns(uni);
+
+            //Act
+            var result = await superAdminService.DisableInstitutionOfEducation(uni.Id);
+
+            //Assert
+            Assert.Equal("InstitutionOfEducation isBanned was set to false", result.Object.Message);
+        }
     }
 }

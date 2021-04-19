@@ -112,5 +112,20 @@ namespace YIF.Core.Domain.Repositories
             return await _context.InstitutionOfEducations.AnyAsync(x => x.Id == id);
         }
 
+        public async Task<string> Disable(InstitutionOfEducation IoE)
+        {
+            IoE.isBanned = true;
+            _context.InstitutionOfEducations.Update(IoE);
+            await _context.SaveChangesAsync();
+            return "InstitutionOfEducation isBanned was set to true";
+        }
+
+        public async Task<string> Enable(InstitutionOfEducation IoE)
+        {
+            IoE.isBanned = false;
+            _context.InstitutionOfEducations.Update(IoE);
+            await _context.SaveChangesAsync();
+            return "InstitutionOfEducation isBanned was set to false";
+        }
     }
 }

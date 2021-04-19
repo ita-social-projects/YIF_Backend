@@ -297,4 +297,7 @@
   <data name="SpecialtyWasAdded" xml:space="preserve">
     <value>Спеціальність була додана</value>
   </data>
+  <data name="IoEWithSuchIdNotFound" xml:space="preserve">
+    <value>Інституту з таким ідентифікатором не знайдено</value>
+  </data>
 </root>

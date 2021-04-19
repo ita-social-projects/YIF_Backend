@@ -405,5 +405,25 @@ namespace YIF.Core.Service.Concrete.Services
                 Success = true
             };
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducation(string adminId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var ch = await _institutionOfEducationRepository.Get(adminId);
+            if (ch == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("IoEWithSuchIdNotFound")}: {adminId}");
+            }
+            string res;
+            if (ch.isBanned == false)
+            {
+                res = await _institutionOfEducationRepository.Disable(_mapper.Map<InstitutionOfEducation>(ch));
+            }
+            else
+            {
+                res = await _institutionOfEducationRepository.Enable(_mapper.Map<InstitutionOfEducation>(ch));
+            }
+            return result.Set(new DescriptionResponseApiModel(res), true);
+        }
     }
 }
