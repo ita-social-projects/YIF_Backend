@@ -169,7 +169,7 @@ namespace YIF.Core.Service.Concrete.Services
             var specialtyDescriptions = await _specialtyToInstitutionOfEducationRepository.GetSpecialtyToIoEDescriptionsById(id);
             if (specialtyDescriptions.Count() < 1)
             {
-                throw new NotFoundException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyDescriptionsNotFound"));
             }
             var result = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationResponseApiModel>>(specialtyDescriptions);
             return result;
