@@ -300,4 +300,10 @@
   <data name="IoEWithSuchIdNotFound" xml:space="preserve">
     <value>Інституту з таким ідентифікатором не знайдено</value>
   </data>
+  <data name="InstitutionOfEducationIsDisabled" xml:space="preserve">
+    <value>Заклад освіти є забаненим</value>
+  </data>
+  <data name="InstitutionOfEducationIsEnabled" xml:space="preserve">
+    <value>Заклад освіти є розбаненим</value>
+  </data>
 </root>

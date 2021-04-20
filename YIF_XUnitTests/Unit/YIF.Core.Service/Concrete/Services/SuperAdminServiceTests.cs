@@ -361,7 +361,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>())).Returns(uni);
 
             //Act
-            var result = await superAdminService.DisableInstitutionOfEducation(uni.Id);
+            var result = await superAdminService.ChangeBannedStatusOfIoE(uni.Id);
 
             //Assert
             Assert.Equal("InstitutionOfEducation isBanned was set to true", result.Object.Message);
@@ -374,13 +374,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _institutionOfEducationRepository
                 .Setup(p => p.Get(uni.Id))
                 .ReturnsAsync(new InstitutionOfEducationDTO() { 
-                isBanned = true
+                IsBanned = true
                 });
             _institutionOfEducationRepository.Setup(x => x.Enable(uni)).Returns(Task.FromResult("InstitutionOfEducation isBanned was set to false"));
             _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>())).Returns(uni);
 
             //Act
-            var result = await superAdminService.DisableInstitutionOfEducation(uni.Id);
+            var result = await superAdminService.ChangeBannedStatusOfIoE(uni.Id);
 
             //Assert
             Assert.Equal("InstitutionOfEducation isBanned was set to false", result.Object.Message);

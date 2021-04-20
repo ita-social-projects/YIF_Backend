@@ -406,22 +406,22 @@ namespace YIF.Core.Service.Concrete.Services
             };
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducation(string adminId)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoE(string id)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _institutionOfEducationRepository.Get(adminId);
-            if (ch == null)
+            var IoE = await _institutionOfEducationRepository.Get(id);
+            if (IoE == null)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("IoEWithSuchIdNotFound")}: {adminId}");
+                throw new NotFoundException($"{_resourceManager.GetString("InstitutionOfEducationNotFound")}: {id}");
             }
             string res;
-            if (ch.isBanned == false)
+            if (IoE.IsBanned == false)
             {
-                res = await _institutionOfEducationRepository.Disable(_mapper.Map<InstitutionOfEducation>(ch));
+                res = await _institutionOfEducationRepository.Disable(_mapper.Map<InstitutionOfEducation>(IoE));
             }
             else
             {
-                res = await _institutionOfEducationRepository.Enable(_mapper.Map<InstitutionOfEducation>(ch));
+                res = await _institutionOfEducationRepository.Enable(_mapper.Map<InstitutionOfEducation>(IoE));
             }
             return result.Set(new DescriptionResponseApiModel(res), true);
         }

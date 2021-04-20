@@ -50,7 +50,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// <summary>
         /// Whether IoE is banned or not
         /// </summary>
-        public bool isBanned { get; set; }
+        public bool IsBanned { get; set; }
         /// <summary>
         /// Type of institution Of Education
         /// </summary>

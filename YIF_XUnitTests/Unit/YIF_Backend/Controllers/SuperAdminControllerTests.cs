@@ -341,7 +341,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             if (success)
             {
-                _superAdminService.Setup(x => x.DisableInstitutionOfEducation(requestId)).Returns(Task.FromResult(responseModel));
+                _superAdminService.Setup(x => x.ChangeBannedStatusOfIoE(requestId)).Returns(Task.FromResult(responseModel));
                 // Act
                 var result = await superAdminController.BanInstituionOfEducation(requestId);
                 // Assert
@@ -351,7 +351,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             }
             else
             {
-                _superAdminService.Setup(x => x.DisableInstitutionOfEducation(requestId)).Throws(error);
+                _superAdminService.Setup(x => x.ChangeBannedStatusOfIoE(requestId)).Throws(error);
                 // Assert
                 var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.BanInstituionOfEducation(requestId));
                 Assert.Equal(error.Message, exсeption.Message);
