@@ -218,7 +218,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Get all directions and specialties in institution of education</response>
         /// <response code="400">If there is no user with such id</response>
         [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("DirectionsAndSpecialties")]
         [Authorize(Roles = "InstitutionOfEducationAdmin,InstitutionOfEducationModerator")]
