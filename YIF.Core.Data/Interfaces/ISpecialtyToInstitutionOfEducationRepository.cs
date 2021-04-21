@@ -9,5 +9,6 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<IEnumerable<K>> GetSpecialtyToIoEDescriptionsById(string id);
         Task AddSpecialty(T specialtyToInstitutionOfEducation);
+        Task AddRange(IEnumerable<T> collectionOfSpecialties);
     }
 }

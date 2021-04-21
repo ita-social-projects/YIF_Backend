@@ -1,4 +1,5 @@
-﻿using System.Resources;
+﻿using System.Collections.Generic;
+using System.Resources;
 using System.Threading.Tasks;
 using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
@@ -40,27 +41,16 @@ namespace YIF.Core.Service.Concrete.Services
 
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
-            SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(
+            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> specialtyToIoE)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
-            var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
-            var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
-            var entity = new SpecialtyToInstitutionOfEducation()
-            {
-                SpecialtyId = specialtyToIoE.SpecialtyId,
-                InstitutionOfEducationId = specialtyToIoE.InstitutionOfEducationId
-            };
+            var specialtyToInstitutionOfEducationDTO = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToIoE);
+            var specialtyToInstitutionOfEducation = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducation>>(specialtyToInstitutionOfEducationDTO);
 
-            if (institutionOfEducation == false)
-                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
-
-            if (specialty == false)
-                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
-
-            await _specialtyToIoERepository.AddSpecialty(entity);
-            return result.Set(new DescriptionResponseApiModel("Specialty was successfully added to the Institution of Education"), true);
+            await _specialtyToIoERepository.AddRange(specialtyToInstitutionOfEducation);
+            return result.Set(new DescriptionResponseApiModel("Specialties were successfully added to the Institution of Education"), true);
         }
 
         public async Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)

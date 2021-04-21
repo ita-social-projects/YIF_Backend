@@ -14,7 +14,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         /// <param name="institutionOfEducationPostApiModel">All params for institution</param>
         /// <returns></returns>
         Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> specialtyToIoE);
         Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel);
         Task<ResponseApiModel<IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>>> GetIoEModeratorsByUserId(string userId);

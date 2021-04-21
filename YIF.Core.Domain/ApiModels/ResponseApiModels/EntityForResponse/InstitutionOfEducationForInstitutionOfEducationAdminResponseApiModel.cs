@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YIF.Core.Domain.EntityForResponse
+﻿namespace YIF.Core.Domain.EntityForResponse
 {
     public class InstitutionOfEducationForInstitutionOfEducationAdminResponseApiModel
     {

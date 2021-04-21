@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
+using System.Collections.Generic;
 
 namespace YIF_Backend.Controllers
 {
@@ -26,7 +27,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Adds Specialty to the Institution of Education.
+        /// Adds Specialties to the Institution of Education.
         /// </summary>
         /// <response code="200">Specialty successfully added to the Institution of Education</response>
         /// <response code="400">If model state is not valid</response>
@@ -35,12 +36,12 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("AddSpecialtyToInstitutionOfEducation")]
-        public async Task<IActionResult> AddSpecialtyToIoE([FromBody] SpecialtyToInstitutionOfEducationPostApiModel model)
+        [HttpPost("AddRangeSpecialtiesToInstitutionOfEducation")]
+        public async Task<IActionResult> AddSpecialtyToIoE([FromBody] IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
-            await _ioEModeratorService.AddSpecialtyToIoe(model);
+            await _ioEModeratorService.AddRangeSpecialtiesToIoE(model);
             return Ok();
         }
 

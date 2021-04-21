@@ -104,5 +104,11 @@ namespace YIF.Core.Domain.Repositories
 
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
+
+        public async Task AddRange(IEnumerable<SpecialtyToInstitutionOfEducation> collectionOfSpecialties)
+        {
+            await _context.SpecialtyToInstitutionOfEducations.AddRangeAsync(collectionOfSpecialties);
+            await _context.SaveChangesAsync();
+        }
     }
 }
