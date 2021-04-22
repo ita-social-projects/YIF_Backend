@@ -355,13 +355,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
-                .ReturnsAsync(new InstitutionOfEducationModeratorDTO{Id = It.IsAny<string>()});
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO { Id = It.IsAny<string>() });
             _ioEModeratorRepository.Setup(x => x.Delete(It.IsAny<string>()));
             _ioEModeratorRepository.Setup(x => x.AddUniModerator(It.IsAny<InstitutionOfEducationModerator>()));
 
             //Act
             var result =
-                await superAdminService.AddIoEAdminFromModerators(new IoEAdminAddFromModeratorsApiModel{IoEId = It.IsAny<string>(), UserId = It.IsAny<string>()});
+                await superAdminService.ChooseIoEAdminFromModerators(new IoEAdminAddFromModeratorsApiModel { IoEId = It.IsAny<string>(), UserId = It.IsAny<string>() });
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);

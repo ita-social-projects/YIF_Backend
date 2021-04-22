@@ -406,10 +406,15 @@ namespace YIF.Core.Service.Concrete.Services
             };
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChooseIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var moderator = await _ioEModeratorRepository.GetByUserId(ioEAdminAddFromModeratorsApiModel.UserId);
+            
+            var user = _mapper.Map<DbUser>(moderator.User);
+            await _userManager.RemoveFromRoleAsync(user, ProjectRoles.InstitutionOfEducationModerator);
+            await _userManager.AddToRoleAsync(user, ProjectRoles.InstitutionOfEducationAdmin);
+
             await _ioEModeratorRepository.Delete(moderator.Id);
 
             await _institutionOfEducationAdminRepository.AddUniAdmin(new InstitutionOfEducationAdmin
@@ -417,6 +422,7 @@ namespace YIF.Core.Service.Concrete.Services
                 InstitutionOfEducationId = ioEAdminAddFromModeratorsApiModel.IoEId,
                 UserId = ioEAdminAddFromModeratorsApiModel.UserId
             });
+
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminAdded")), true);
         }
     }

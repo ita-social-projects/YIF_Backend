@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\YIF.Core.Data\YIF.Core.Data.csproj" />
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.3" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
   </ItemGroup>
 

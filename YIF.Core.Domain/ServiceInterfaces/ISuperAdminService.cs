@@ -22,6 +22,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyById(SpecialtyPutApiModel model);
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialtyPostApiModel);
         Task<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> ChooseIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel);
     }
 }

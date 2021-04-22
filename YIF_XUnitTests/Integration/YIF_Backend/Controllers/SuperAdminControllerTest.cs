@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,7 +23,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
-        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)          
+        public SuperAdminControllerTest(ApiWebApplicationFactory fixture)
         {
             _client = getInstance(fixture);
             _client = fixture.WithWebHostBuilder(builder =>
@@ -82,7 +82,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var InstitutionOfEducation = new InstitutionOfEducation() { Name = "newInstitutionOfEducation" };
             _context.InstitutionOfEducations.Add(InstitutionOfEducation);
             _context.SaveChanges();
-            
+
             var postRequest = new
             {
                 Url = "/api/SuperAdmin/AddInstitutionOfEducationAdmin",
@@ -129,7 +129,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
         [Fact]
         public async Task AddInstitutionOfEducationAndAdmin_Output_ByAddingSameInstitutionOfEducationTwoTimes()
-        {            
+        {
             // Arrange
             var postRequest = new
             {
@@ -185,7 +185,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             // Arrange
             var compareDTO = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
-            compareDTO = compareDTO.OrderBy(x=> x.User.UserName).Take(2).ToList();
+            compareDTO = compareDTO.OrderBy(x => x.User.UserName).Take(2).ToList();
             var compare = _mapper.Map<IEnumerable<InstitutionOfEducationAdminResponseApiModel>>(compareDTO);
 
             // Act
@@ -205,7 +205,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             // Arrange
             var admin = _context.InstitutionOfEducationAdmins.First();
-            
+
             // Act
             var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteInstitutionOfEducationAdmin/{0}", admin.Id));
 
@@ -283,10 +283,10 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async void AddIoEAdminFromModerators_IfEverythingOk()
+        public async void ChooseIoEAdminFromModerators_IfEverythingOk()
         {
             //Arrange
-            var moderator = _context.InstitutionOfEducationModerators.Include(x=>x.Admin).AsNoTracking().FirstOrDefault();
+            var moderator = _context.InstitutionOfEducationModerators.Include(x => x.Admin).AsNoTracking().FirstOrDefault();
             var user = moderator.UserId;
 
             var model = new IoEAdminAddFromModeratorsApiModel
@@ -296,8 +296,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             };
 
             //Act
-            var response = await _client.PutAsync($"/api/SuperAdmin/AddIoEAdminFromModerators", ContentHelper.GetStringContent(model));
-            
+            var response = await _client.PutAsync($"/api/SuperAdmin/ChooseIoEAdminFromModerators", ContentHelper.GetStringContent(model));
+
             //Assert
             response.EnsureSuccessStatusCode();
         }

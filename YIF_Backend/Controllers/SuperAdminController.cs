@@ -249,16 +249,16 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns></returns>
         /// <response code="200">IoE Admin added</response>
-        /// <response code="400">If request model isn't valid </response>
+        /// <response code="400">If request model isn't valid</response>
         /// <response code="403">If user is not super admin</response>
-        [HttpPut("AddIoEAdminFromModerators")]
+        [HttpPut("ChooseIoEAdminFromModerators")]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> AddIoEAdminFromModerators([FromBody] IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel)
+        public async Task<IActionResult> ChooseIoEAdminFromModerators([FromBody] IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel)
         {
-            var result = await _superAdminService.AddIoEAdminFromModerators(ioEAdminAddFromModeratorsApiModel);
+            var result = await _superAdminService.ChooseIoEAdminFromModerators(ioEAdminAddFromModeratorsApiModel);
             return Ok(result.Object);
         }
     }

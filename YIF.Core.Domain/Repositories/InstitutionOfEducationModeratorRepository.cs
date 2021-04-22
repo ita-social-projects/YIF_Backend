@@ -65,7 +65,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<InstitutionOfEducationModeratorDTO> GetByUserId(string id)
         {
-            var moderator = await _dbContext.InstitutionOfEducationModerators.FirstOrDefaultAsync(x => x.UserId == id);
+            var moderator = await _dbContext.InstitutionOfEducationModerators.Include(x=>x.User).FirstOrDefaultAsync(x => x.UserId == id);
             return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 

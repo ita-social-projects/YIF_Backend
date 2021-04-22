@@ -37,7 +37,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.IoEId)
                 .Must(x => _context.InstitutionOfEducationAdmins
                     .Where(y => y.InstitutionOfEducationId == x)
-                    .Any(z => z.IsDeleted == false))
+                    .All(z => z.IsDeleted == true))
                 .WithMessage(_resourceManager.GetString("IoEAlreadyHasAnAdmin"));
 
             RuleFor(x => x.UserId)
