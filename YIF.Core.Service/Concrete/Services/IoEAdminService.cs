@@ -13,6 +13,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
+using YIF.Core.Domain.ApiModels.Validators;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -107,7 +108,12 @@ namespace YIF.Core.Service.Concrete.Services
             InstitutionOfEducationPostApiModel request = new InstitutionOfEducationPostApiModel();
             institutionOfEducationPostApiModel.ApplyTo(request);
 
-            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId("707baf63-e58a-4452-bd49-75e4dc51f9dd")).InstitutionOfEducationId;
+            var validator = new InstitutionOfEducationPostApiModelValidator();
+            var validResult = await validator.ValidateAsync(request);
+            if (!validResult.IsValid)
+                throw new BadRequestException(validResult.ToString());
+
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
             var currentInstitutionOfEducationDTO = await _ioERepository.Get(ioEId);
 
             var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
@@ -119,10 +125,10 @@ namespace YIF.Core.Service.Concrete.Services
             #region imageSaving
             if (request.ImageApiModel != null)
             {
-                ImageBase64Validator validator = new ImageBase64Validator();
-                var validResults = validator.Validate(request.ImageApiModel);
-                if (!validResults.IsValid)
-                    throw new BadRequestException(validResults.ToString());
+                //ImageBase64Validator validator = new ImageBase64Validator();
+                //var validResults = validator.Validate(request.ImageApiModel);
+                //if (!validResults.IsValid)
+                //    throw new BadRequestException(validResults.ToString());
 
                 var serverPath = _env.ContentRootPath;
                 var folerName = _configuration.GetValue<string>("ImagesPath");
