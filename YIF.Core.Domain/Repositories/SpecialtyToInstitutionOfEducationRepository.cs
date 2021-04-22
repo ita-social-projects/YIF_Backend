@@ -73,10 +73,11 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list);
         }
 
-        public async Task AddSpecialty(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation)
+        public async Task<string> AddSpecialty(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation)
         {
             await _context.SpecialtyToInstitutionOfEducations.AddAsync(specialtyToInstitutionOfEducation);
             await _context.SaveChangesAsync();
+            return specialtyToInstitutionOfEducation.Id;
         }
 
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> GetSpecialtyToIoEDescriptionsById(string id)

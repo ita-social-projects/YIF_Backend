@@ -31,16 +31,16 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <response code="200">Specialty successfully added to the Institution of Education</response>
         /// <response code="400">If model state is not valid</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="404">If specialty not found</response>
         [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("AddRangeSpecialtiesToInstitutionOfEducation")]
-        public async Task<IActionResult> AddSpecialtyToIoE([FromBody] IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> model)
+        public async Task<IActionResult> AddRangeOfSpecialtiesToIoE([FromBody] IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
             await _ioEModeratorService.AddRangeSpecialtiesToIoE(model);
             return Ok();
         }

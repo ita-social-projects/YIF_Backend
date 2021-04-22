@@ -1,4 +1,5 @@
-﻿using YIF.Core.Data.Entities;
+﻿using System.Text.Json.Serialization;
+using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse
 {
@@ -8,12 +9,14 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse
         /// Institution Of Education form
         /// </summary>
         /// <example>Daily</example>
-        public EducationForm educationForm { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public EducationForm EducationForm { get; set; }
 
         /// <summary>
         /// Institution Of Education payment form
         /// </summary>
         /// <example>Contract</example>
-        public PaymentForm paymentForm { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public PaymentForm PaymentForm { get; set; }
     }
 }

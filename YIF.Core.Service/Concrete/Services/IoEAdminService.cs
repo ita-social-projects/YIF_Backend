@@ -61,10 +61,32 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
-            var specialtyToInstitutionOfEducationDTO = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToIoE);
-            var specialtyToInstitutionOfEducation = _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducation>>(specialtyToInstitutionOfEducationDTO);
+            foreach (var item in specialtyToIoE)
+            {
+                var specialtyToInstitutionOfEducationDTO = _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(item);
+                var specialtyToInstitutionOfEducation = _mapper.Map<SpecialtyToInstitutionOfEducation>(specialtyToInstitutionOfEducationDTO);
+                
+                SpecialtyToInstitutionOfEducation specialtyToInstitutionOf = new SpecialtyToInstitutionOfEducation
+                {
+                    SpecialtyId = specialtyToInstitutionOfEducation.SpecialtyId,
+                    InstitutionOfEducationId = specialtyToInstitutionOfEducation.InstitutionOfEducationId,
+                    IsDeleted = false
+                };
 
-            await _specialtyToIoERepository.AddRange(specialtyToInstitutionOfEducation);
+                var id = await _specialtyToIoERepository.AddSpecialty(specialtyToInstitutionOf);
+                
+                foreach (var desc in item.PaymentAndEducationForms)
+                {
+                    var toIoEDescription = new SpecialtyToIoEDescription
+                    {
+                        SpecialtyToInstitutionOfEducationId = id,
+                        PaymentForm = desc.PaymentForm,
+                        EducationForm = desc.EducationForm
+                    };
+
+                    await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                }
+            }
             return result.Set(new DescriptionResponseApiModel("Specialties were successfully added to the Institution of Education"), true);
         }
 
