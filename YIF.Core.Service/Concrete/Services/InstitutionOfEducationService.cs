@@ -255,7 +255,7 @@ namespace YIF.Core.Service.Concrete.Services
             });
         }
 
-        public async Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialitiesInIoE(string userId)
+        public async Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialtiesInIoE(string userId)
         {
             var admin = await _institutionOfEducationAdminRepository.GetByUserId(userId);
 

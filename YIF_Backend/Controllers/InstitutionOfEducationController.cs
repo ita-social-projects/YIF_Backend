@@ -225,7 +225,7 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE()
         {
             var userId = User.FindFirst("id")?.Value;
-            var result = await _institutionOfEducationService.GetAllDirectionsAndSpecialitiesInIoE(userId);
+            var result = await _institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(userId);
             return Ok(result);
         }
     }

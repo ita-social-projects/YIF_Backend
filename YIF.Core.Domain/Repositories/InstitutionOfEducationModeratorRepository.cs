@@ -76,11 +76,6 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 
-        public Task<IEnumerable<InstitutionOfEducationModeratorDTO>> GetAllUniModerators()
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<IEnumerable<InstitutionOfEducationModeratorDTO>> Find(Expression<Func<InstitutionOfEducationModerator, bool>> predicate)
         {
             throw new NotImplementedException();

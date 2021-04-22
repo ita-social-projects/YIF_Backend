@@ -679,7 +679,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             var exception = await Record
-                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialitiesInIoE(admin.Id));
+                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(admin.Id));
 
             // Assert
             Assert.Null(exception);
@@ -706,7 +706,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             var exception = await Record
-                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialitiesInIoE(moderator.Id));
+                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(moderator.Id));
 
             // Assert
             Assert.Null(exception);
@@ -729,7 +729,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(admin);
 
             // Act
-            Func<Task> act = () => institutionOfEducationService.GetAllDirectionsAndSpecialitiesInIoE(admin.Id);
+            Func<Task> act = () => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(admin.Id);
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -752,7 +752,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .ReturnsAsync(admin);
 
             // Act
-            Func<Task> act = () => institutionOfEducationService.GetAllDirectionsAndSpecialitiesInIoE("AdminId");
+            Func<Task> act = () => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE("AdminId");
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
