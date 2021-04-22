@@ -1,5 +1,4 @@
 ﻿using System.Resources;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using SendGrid.Helpers.Errors.Model;
@@ -13,6 +12,7 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -100,37 +100,43 @@ namespace YIF.Core.Service.Concrete.Services
             await _specialtyToIoERepository.Update(specialtyToInstitutionOfEducation);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
-            var admin = admins.SingleOrDefault(x => x.UserId == userId);
 
-            if (admin == null)
-            {
-                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminWithSuchIdNotFound")), false);
-            }
+            InstitutionOfEducationPostApiModel request = new InstitutionOfEducationPostApiModel();
+            institutionOfEducationPostApiModel.ApplyTo(request);
 
-            var institutionOfEducationDTONew = _mapper.Map<InstitutionOfEducationDTO>(institutionOfEducationPostApiModel);
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId("707baf63-e58a-4452-bd49-75e4dc51f9dd")).InstitutionOfEducationId;
+            var currentInstitutionOfEducationDTO = await _ioERepository.Get(ioEId);
 
+            var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
+
+            newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
+            currentInstitutionOfEducationDTO.Id = ioEId;
+
+            //add validator for request model + join image validator
             #region imageSaving
-            if (institutionOfEducationPostApiModel.ImageApiModel != null)
+            if (request.ImageApiModel != null)
             {
+                ImageBase64Validator validator = new ImageBase64Validator();
+                var validResults = validator.Validate(request.ImageApiModel);
+                if (!validResults.IsValid)
+                    throw new BadRequestException(validResults.ToString());
+
                 var serverPath = _env.ContentRootPath;
                 var folerName = _configuration.GetValue<string>("ImagesPath");
                 var path = Path.Combine(serverPath, folerName);
 
-                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(institutionOfEducationPostApiModel.ImageApiModel.Photo, path);
-                institutionOfEducationDTONew.ImagePath = fileName;
+                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
+                currentInstitutionOfEducationDTO.ImagePath = fileName;
             }
             #endregion
 
-            institutionOfEducationDTONew.Id = admin.InstitutionOfEducationId;
-
-            await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTONew));
+            await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
-        }
+        }       
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {

@@ -17,6 +17,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Service.Concrete.Services;
 using YIF_XUnitTests.Unit.TestData;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -65,7 +66,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(Task.FromResult(listOfAdmins));
 
             // Act
-            var result = _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new InstitutionOfEducationPostApiModel());
+            var result = _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.False(result.Result.Success);
@@ -91,7 +92,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns("");
 
             // Act
-            var result = _ioEAdminService.ModifyDescriptionOfInstitution(listOfAdmins.FirstOrDefault().Id, new InstitutionOfEducationPostApiModel());
+            var result = _ioEAdminService.ModifyDescriptionOfInstitution(listOfAdmins.FirstOrDefault().Id, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.True(result.Result.Success);
