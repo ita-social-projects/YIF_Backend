@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -86,8 +85,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _ioERepository.Setup(x => x.Get(It.IsAny<string>()))
                 .ReturnsAsync(new InstitutionOfEducationDTO());
-
-
 
             _mapper.Setup(x => x.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
                 .Returns(new JsonPatchDocument<InstitutionOfEducationDTO>());

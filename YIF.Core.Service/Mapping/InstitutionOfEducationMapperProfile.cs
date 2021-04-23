@@ -36,7 +36,6 @@ namespace YIF.Core.Service.Mapping
             CreateMap<JsonPatchDocument<InstitutionOfEducationPostApiModel>, JsonPatchDocument<InstitutionOfEducationDTO>>();
             CreateMap<Operation<InstitutionOfEducationPostApiModel>, Operation<InstitutionOfEducationDTO>>();
 
-
             CreateMap<Direction, DirectionDTO>()
                 .ReverseMap();
             CreateMap<DirectionDTO, DirectionForIoEResponseApiModel>();
