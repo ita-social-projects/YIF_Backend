@@ -121,15 +121,9 @@ namespace YIF.Core.Service.Concrete.Services
             newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
             currentInstitutionOfEducationDTO.Id = ioEId;
 
-            //add validator for request model + join image validator
             #region imageSaving
             if (request.ImageApiModel != null)
             {
-                //ImageBase64Validator validator = new ImageBase64Validator();
-                //var validResults = validator.Validate(request.ImageApiModel);
-                //if (!validResults.IsValid)
-                //    throw new BadRequestException(validResults.ToString());
-
                 var serverPath = _env.ContentRootPath;
                 var folerName = _configuration.GetValue<string>("ImagesPath");
                 var path = Path.Combine(serverPath, folerName);

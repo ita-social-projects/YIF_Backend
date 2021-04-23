@@ -65,34 +65,44 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioEAdminRepository.Setup(x => x.GetAllUniAdmins())
                 .Returns(Task.FromResult(listOfAdmins));
 
-            // Act
-            var result = _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            //// Act
+            Func<Task> act = () => _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
-            Assert.False(result.Result.Success);
+            Assert.ThrowsAsync<NullReferenceException>(act);
         }
 
         [Fact]
         public void ModifyDescriptionOfInstitution_ReturnTrue()
         {
             // Arrange
-            var listOfAdmins = InstitutionOfEducationAdminTestData.GetIEnumerableInstitutionOfEducationAdminDTO();
-            var institutionDTO = InstitutionOfEducationTestData.GetInstitutionOfEducationDTO();
-            var institution = InstitutionOfEducationTestData.GetInstitutionOfEducation();
+            var institutionOfEducationAdminDTO = new InstitutionOfEducationAdminDTO()
+            {
+                InstitutionOfEducationId = "id"
+            };
 
-            _ioEAdminRepository.Setup(x => x.GetAllUniAdmins())
-                .Returns(Task.FromResult(listOfAdmins));
-            _mapper.Setup(x => x.Map<InstitutionOfEducationDTO>(It.IsAny<InstitutionOfEducationPostApiModel>()))
-                .Returns(institutionDTO);
+            _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducationAdminDTO);
+
+            _ioERepository.Setup(x => x.Get(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationDTO());
+
+
+
+            _mapper.Setup(x => x.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
+                .Returns(new JsonPatchDocument<InstitutionOfEducationDTO>());
+
             _mapper.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>()))
-                .Returns(institution);
+                .Returns(It.IsAny<InstitutionOfEducation>());
+
             _ioERepository.Setup(x => x.Update(It.IsAny<InstitutionOfEducation>()))
                 .Returns(Task.FromResult(true));
+
             _resourceManager.Setup(x => x.GetString(It.IsAny<string>()))
                 .Returns("");
 
             // Act
-            var result = _ioEAdminService.ModifyDescriptionOfInstitution(listOfAdmins.FirstOrDefault().Id, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            var result = _ioEAdminService.ModifyDescriptionOfInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.True(result.Result.Success);
