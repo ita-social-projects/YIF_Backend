@@ -286,17 +286,28 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async void ChooseIoEAdminFromModerators_IfEverythingOk()
         {
             //Arrange
-            var moderator = _context.InstitutionOfEducationModerators.Include(x => x.Admin).AsNoTracking().FirstOrDefault();
-            var user = moderator.UserId;
+            var moderator = _context.InstitutionOfEducationModerators
+                .Include(x => x.User)
+                .Include(x => x.Admin)
+                .ThenInclude(x => x.InstitutionOfEducation).AsNoTracking().FirstOrDefault();
+
+            var list =  _context.InstitutionOfEducationAdmins
+                .Where(x => x.InstitutionOfEducationId == moderator.Admin.InstitutionOfEducationId).ToList();
+
+            foreach (var item in list)
+            {
+                item.IsDeleted = true;
+            }
+            await _context.SaveChangesAsync();
 
             var model = new IoEAdminAddFromModeratorsApiModel
             {
                 IoEId = moderator.Admin.InstitutionOfEducationId,
-                UserId = user
+                UserId = moderator.UserId
             };
 
             //Act
-            var response = await _client.PutAsync($"/api/SuperAdmin/ChooseIoEAdminFromModerators", ContentHelper.GetStringContent(model));
+            var response = await _client.PutAsync($"api/SuperAdmin/ChooseIoEAdminFromModerators", ContentHelper.GetStringContent(model));
 
             //Assert
             response.EnsureSuccessStatusCode();

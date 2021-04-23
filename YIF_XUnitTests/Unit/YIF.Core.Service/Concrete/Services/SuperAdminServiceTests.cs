@@ -351,7 +351,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async void AddIoEAdminFromModerators_ShouldAddAdmin_IfEverythingIsOk()
+        public async void ChooseIoEAdminFromModerators_ShouldAddAdmin_IfEverythingIsOk()
         {
             //Arrange
             _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))

@@ -33,11 +33,17 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.IoEId)
                 .Must(x => _context.InstitutionOfEducations.Any(y => y.Id == x))
                 .WithMessage(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+            
+            RuleFor(x => x.UserId)
+                .Must(x => (_context.InstitutionOfEducationModerators
+                    .Where(y=>y.UserId == x)
+                    .FirstOrDefault()).IsDeleted == false)
+                .WithMessage(_resourceManager.GetString("IoEModeratorIsDeleted"));
 
             RuleFor(x => x.IoEId)
-                .Must(x => _context.InstitutionOfEducationAdmins
+                .Must(x => !_context.InstitutionOfEducationAdmins
                     .Where(y => y.InstitutionOfEducationId == x)
-                    .All(z => z.IsDeleted == true))
+                    .Any(z => z.IsDeleted == false))
                 .WithMessage(_resourceManager.GetString("IoEAlreadyHasAnAdmin"));
 
             RuleFor(x => x.UserId)
@@ -45,7 +51,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
                     .Include(x => x.Admin)
                     .AsNoTracking()
                     .FirstOrDefault(x => x.UserId == userId).Admin.InstitutionOfEducationId) == x.IoEId))
-                .WithMessage(_resourceManager.GetString("IoEModeratorNotExistsInIoE"));
+                .WithMessage(_resourceManager.GetString("IoEModeratorNotExists"));
         }
     }
 }

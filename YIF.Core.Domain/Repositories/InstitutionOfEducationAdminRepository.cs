@@ -124,7 +124,6 @@ namespace YIF.Core.Domain.Repositories
         {
             var admin = _dbContext.InstitutionOfEducationAdmins.FirstOrDefault(x => x.Id == id);
             admin.IsDeleted = true;
-            _dbContext.InstitutionOfEducationAdmins.Update(admin);
             return await _dbContext.SaveChangesAsync() > 0;
         }
 

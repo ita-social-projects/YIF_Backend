@@ -303,7 +303,10 @@
   <data name="IoEModeratorNotFound" xml:space="preserve">
     <value>Такого модератора не знайдено</value>
   </data>
-  <data name="IoEModeratorNotExistsInIoE" xml:space="preserve">
-    <value>Такого модератора у навчальному закладі не існує</value>
+  <data name="IoEModeratorNotExists" xml:space="preserve">
+    <value>Такого модератора не існує</value>
+  </data>
+  <data name="IoEModeratorIsDeleted" xml:space="preserve">
+    <value>Цей модератор видалений</value>
   </data>
 </root>
