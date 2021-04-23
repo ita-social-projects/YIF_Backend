@@ -98,67 +98,23 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task AddSpecialtyToIoE_ShouldAddSpecialty()
+        public async Task AddRangeOfSpecialtiesToIoE_ShouldAddSpecialty()
         {
             //Arrange
-            var specialty = true;
-            var institution = true;
-            var entity = new SpecialtyToInstitutionOfEducationPostApiModel
-            {
-                SpecialtyId = "1",
-                InstitutionOfEducationId = "1"
-            };
-            _specialtyRepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(specialty);
-            _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
-            _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
-            // Act
-            var exception = await Record
-                .ExceptionAsync(() => _ioEAdminService.AddSpecialtyToIoe(entity));
+            _mapper.Setup(sr => sr.Map<SpecialtyToInstitutionOfEducationDTO>(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()))
+                   .Returns(It.IsAny<SpecialtyToInstitutionOfEducationDTO >());
 
-            // Assert
-            Assert.Null(exception);
-        }
+            _mapper.Setup(sr => sr.Map<SpecialtyToInstitutionOfEducation>(It.IsAny<SpecialtyToInstitutionOfEducationDTO>()))
+                   .Returns(It.IsAny<SpecialtyToInstitutionOfEducation>());
 
-        [Fact]
-        public void AddSpecialtyToIoE_ShouldReturnBadRequestException_IfSpecialtyNotFound()
-        {
-            //Arrange
-            var specialty = false;
-            var institution = true;
-            var entity = new SpecialtyToInstitutionOfEducationPostApiModel
-            {
-                SpecialtyId = "1",
-                InstitutionOfEducationId = "1"
-            };
-            _specialtyRepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(specialty);
-            _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
-            _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
-            // Act
-            Func<Task> act = () => _ioEAdminService.AddSpecialtyToIoe(entity);
+            _specialtyToIoERepository.Setup(sr => sr.AddRange(It.IsAny<IEnumerable<SpecialtyToInstitutionOfEducation>>()));
 
-            // Assert
-            Assert.ThrowsAsync<BadRequestException>(act);
-        }
+            //Act
+            var result = await _ioEAdminService.AddRangeSpecialtiesToIoE(It.IsAny<IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel>>());
 
-        [Fact]
-        public void AddSpecialtyToIoE_ShouldReturnBadRequestException_IfIoENotFound()
-        {
-            //Arrange
-            var specialty = true;
-            var institution = false;
-            var entity = new SpecialtyToInstitutionOfEducationPostApiModel
-            {
-                SpecialtyId = "1",
-                InstitutionOfEducationId = "1"
-            };
-            _specialtyRepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(specialty);
-            _ioERepository.Setup(x => x.ContainsById(It.IsAny<string>())).ReturnsAsync(institution);
-            _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
-            // Act
-            Func<Task> act = () => _ioEAdminService.AddSpecialtyToIoe(entity);
-
-            // Assert
-            Assert.ThrowsAsync<BadRequestException>(act);
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
