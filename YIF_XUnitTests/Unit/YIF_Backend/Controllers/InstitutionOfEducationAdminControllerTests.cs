@@ -87,6 +87,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Fact]
+        public async void DeleteSpecialtyFromInstitutionOfEducation_ShouldReturnNoContent_IfEverythingIsOk()
+        {
+            // Arrange
+            _ioEAdminService.Setup(x => x.DeleteSpecialtyToIoe(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()));
+
+            // Act
+            var result = await _testControl.DeleteSpecialtyFromIoE(new SpecialtyToInstitutionOfEducationPostApiModel());
+
+            // Assert  
+            Assert.IsType<NoContentResult>(result);
+        }
+      
+        [Fact]
         public async void GetIoEInfoByUserId_ShouldReturnOk_IfEverythingIsOk()
         {
             // Arrange  

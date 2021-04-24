@@ -230,7 +230,7 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _institutionOfEducationAdminRepository.GetById(adminId);
+            var ch = await _institutionOfEducationAdminRepository.GetByUserId(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
@@ -404,6 +404,26 @@ namespace YIF.Core.Service.Concrete.Services
                 Object = _mapper.Map<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>(await _ioEModeratorRepository.GetByIoEId(ioEId)),
                 Success = true
             };
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoE(string id)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var IoE = await _institutionOfEducationRepository.Get(id);
+            if (IoE == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("InstitutionOfEducationNotFound")}: {id}");
+            }
+            string res;
+            if (IoE.IsBanned == false)
+            {
+                res = await _institutionOfEducationRepository.Disable(_mapper.Map<InstitutionOfEducation>(IoE));
+            }
+            else
+            {
+                res = await _institutionOfEducationRepository.Enable(_mapper.Map<InstitutionOfEducation>(IoE));
+            }
+            return result.Set(new DescriptionResponseApiModel(res), true);
         }
     }
 }
