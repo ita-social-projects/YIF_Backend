@@ -20,7 +20,6 @@ namespace YIF.Core.Data.Entities
         public string ImagePath { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
-        public bool IsBanned { get; set; } = false;
         public InstitutionOfEducationType InstitutionOfEducationType { get; set; }
         public DateTime StartOfCampaign { get; set; }
         public DateTime EndOfCampaign { get; set; }

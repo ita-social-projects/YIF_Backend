@@ -12,6 +12,7 @@ namespace YIF.Core.Data.Interfaces
         Task<string> Delete(DbUser user);
         Task<string> Disable(T adminId);
         Task<string> Enable(T adminId);
+        Task<K> GetById(string id);
         Task<K> GetByInstitutionOfEducationId(string institutionOfEducationId);
         Task<K> GetByInstitutionOfEducationIdWithoutIsDeletedCheck(string institutionOfEducationId);
         Task<K> GetUserByAdminId(string id);

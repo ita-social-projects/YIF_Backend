@@ -45,8 +45,6 @@ namespace YIF.Core.Domain.Repositories
                 .Include(x => x.Specialty)
                 .Include(x => x.InstitutionOfEducation)
                 .Include(x => x.SpecialtyToIoEDescriptions)
-                .ThenInclude(sd => sd.ExamRequirements)
-                .ThenInclude(er => er.Exam)
                 .Where(predicate)
                 .ToListAsync();
 

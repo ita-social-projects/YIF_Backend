@@ -245,22 +245,6 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Ban InstitutionOfEducation (sets its InstitutionOfEducation IsBanned to true  or false).
-        /// </summary>
-        /// <returns>Success message</returns>
-        /// <response code="200">Success message</response>
-        /// <response code="404">Institution Of Education wasn't found</response>
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
-        [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("BanInstitutionOfEducation/{id}")]
-        public async Task<IActionResult> BanInstituionOfEducation(string id)
-        {
-            var result = await _superAdminService.ChangeBannedStatusOfIoE(id);
-            return Ok(result.Object);
-        }
-
-        /// <summary>
         /// Add new IoE Admin from IoE Moderators.
         /// </summary>
         /// <returns></returns>

@@ -57,17 +57,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task DeleteSpecialtyFromIoE_EndpointReturnNoContent()
         {
             //Arrange
-            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().FirstOrDefault();
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().FirstOrDefault();
+            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.Id == institutionOfEducation.Id).FirstOrDefault();
 
             var model = new SpecialtyToInstitutionOfEducationPostApiModel()
             {
                 SpecialtyId = specialty.SpecialtyId,
-                InstitutionOfEducationId = specialty.InstitutionOfEducationId
+                InstitutionOfEducationId = institutionOfEducation.Id
             };
 
             //Act
             var response = await _client.PatchAsync(
-                $"/api/InstitutionOfEducationAdmin/DeleteSpecialtyFromInstitutionOfEducation", ContentHelper.GetStringContent(model));
+                $"/api/Specialty/InstitutionOfEducationAdmin/DeleteSpecialtyFromInstitutionOfEducation", ContentHelper.GetStringContent(model));
 
             //Assert
             response.EnsureSuccessStatusCode();
@@ -118,19 +119,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoEModerators");
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-        }
-
-        [Fact]
-        public async void GetIoEInfo_EndpointReturnsIoEWithOkStatusCode_IfEverythingIsOk()
-        {
-            // Arrange
-            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
-
-            // Act
-            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoEInfo");
 
             // Assert
             response.EnsureSuccessStatusCode();

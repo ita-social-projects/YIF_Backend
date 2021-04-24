@@ -20,7 +20,5 @@ namespace YIF.Core.Data.Interfaces
         /// <param name="id"></param>
         /// <returns> true if exist</returns>
         Task<bool> ContainsById(string id);
-        Task<string> Disable(InstitutionOfEducation IoE);
-        Task<string> Enable(InstitutionOfEducation IoE);
     }
 }

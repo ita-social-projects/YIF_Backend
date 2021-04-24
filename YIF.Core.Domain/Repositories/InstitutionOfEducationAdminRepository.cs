@@ -104,9 +104,9 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<InstitutionOfEducationAdminDTO>(institutionOfEducationAdmin);
         }
 
-        public async Task<InstitutionOfEducationAdminDTO> GetByUserId(string userId)
+        public async Task<InstitutionOfEducationAdminDTO> GetById(string id)
         {
-            var admin = await _dbContext.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId);
+            var admin = await _dbContext.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
             return _mapper.Map<InstitutionOfEducationAdminDTO>(admin);
         }
 
@@ -145,6 +145,14 @@ namespace YIF.Core.Domain.Repositories
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<InstitutionOfEducationAdminDTO>>(ioEAdmins);
+        }
+
+        public async Task<InstitutionOfEducationAdminDTO> GetByUserId(string userId)
+        {
+            var ioEAdmin = await _dbContext.InstitutionOfEducationAdmins
+                .FirstOrDefaultAsync(x => x.UserId == userId);
+
+            return _mapper.Map<InstitutionOfEducationAdminDTO>(ioEAdmin);
         }
     }
 }

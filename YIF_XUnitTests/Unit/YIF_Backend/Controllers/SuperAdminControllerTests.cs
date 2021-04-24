@@ -329,35 +329,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.IsType<OkObjectResult>(result);
         }
 
-        [Theory]
-        [InlineData(true, "success")]
-        [InlineData(false, "wrong")]
-        public async Task DisableInstitutionOfEducation_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
-        {
-            // Arrange
-            var requestId = "04b9a0c9-2545-4e28-9920-478aa6031c4b";
-            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
-            var error = new NotFoundException(message);
-
-            if (success)
-            {
-                _superAdminService.Setup(x => x.ChangeBannedStatusOfIoE(requestId)).Returns(Task.FromResult(responseModel));
-                // Act
-                var result = await superAdminController.BanInstituionOfEducation(requestId);
-                // Assert
-                var responseResult = Assert.IsType<OkObjectResult>(result);
-                var model = (DescriptionResponseApiModel)responseResult.Value;
-                Assert.Equal(responseModel.Object.Message, model.Message);
-            }
-            else
-            {
-                _superAdminService.Setup(x => x.ChangeBannedStatusOfIoE(requestId)).Throws(error);
-                // Assert
-                var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.BanInstituionOfEducation(requestId));
-                Assert.Equal(error.Message, exсeption.Message);
-            }
-        }
-
         //[Fact]
         //public async Task AddIoEAdminFromModerators_EndpointReturnsOk()
         //{
