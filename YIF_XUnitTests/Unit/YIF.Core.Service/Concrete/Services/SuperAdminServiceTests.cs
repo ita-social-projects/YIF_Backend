@@ -349,5 +349,41 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.IsType<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessDisableMessage()
+        {
+            //Arrange
+            _institutionOfEducationRepository
+                .Setup(p => p.Get(uni.Id))
+                .ReturnsAsync(new InstitutionOfEducationDTO());
+            _institutionOfEducationRepository.Setup(x => x.Disable(uni)).Returns(Task.FromResult("InstitutionOfEducation isBanned was set to true"));
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>())).Returns(uni);
+
+            //Act
+            var result = await superAdminService.ChangeBannedStatusOfIoE(uni.Id);
+
+            //Assert
+            Assert.Equal("InstitutionOfEducation isBanned was set to true", result.Object.Message);
+        }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessEnableMessage()
+        {
+            //Arrange
+            _institutionOfEducationRepository
+                .Setup(p => p.Get(uni.Id))
+                .ReturnsAsync(new InstitutionOfEducationDTO() { 
+                IsBanned = true
+                });
+            _institutionOfEducationRepository.Setup(x => x.Enable(uni)).Returns(Task.FromResult("InstitutionOfEducation isBanned was set to false"));
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>())).Returns(uni);
+
+            //Act
+            var result = await superAdminService.ChangeBannedStatusOfIoE(uni.Id);
+
+            //Assert
+            Assert.Equal("InstitutionOfEducation isBanned was set to false", result.Object.Message);
+        }
     }
 }

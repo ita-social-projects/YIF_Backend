@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210419130245_AddedIsBannedFieldToIoE")]
+    partial class AddedIsBannedFieldToIoE
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,7 +389,7 @@ namespace YIF.Core.Data.Migrations
                     b.Property<DateTime>("StartOfCampaign")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("isBanned")
+                    b.Property<bool>("IsBanned")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
