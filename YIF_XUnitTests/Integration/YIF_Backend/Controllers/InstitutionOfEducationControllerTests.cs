@@ -5,12 +5,17 @@ using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using YIF_XUnitTests.Integration.Fixture;
+using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
     public class InstitutionOfEducationControllerTests : TestServerFixture
     {
         private readonly InstitutionOfEducationInputAttribute _institutionOfEducationInputAttribute;
+
+        private readonly IoEAdminInputAttribute _adminInputAttribute;
+
+        private readonly IoEModeratorInputAttribute _IoEmoderatorInputAttribute;
         public InstitutionOfEducationControllerTests(ApiWebApplicationFactory fixture)
         {
             _client = getInstance(fixture);
@@ -24,6 +29,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             _institutionOfEducationInputAttribute = new InstitutionOfEducationInputAttribute(_context);
             _institutionOfEducationInputAttribute.SetUserIdByGraduateUserIdForHttpContext();
+            _adminInputAttribute = new IoEAdminInputAttribute(_context);
+            _IoEmoderatorInputAttribute = new IoEModeratorInputAttribute(_context);
         }
 
         #region CorrectTests
@@ -179,6 +186,38 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal("application/json; charset=utf-8",
                 response.Content.Headers.ContentType.ToString());
             Assert.True(contentJsonObj.Count >= 1);
+        }
+
+        [Fact]
+        public async Task GetAllDirectionsAndSpecialtiesInIoE_AsAdmin_EndpointsReturnSuccessAndCorrectContentType()
+        {
+            //Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+
+            //Act
+            var response = await _client.GetAsync(
+                $"/api/InstitutionOfEducation/DirectionsAndSpecialties");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
+        }
+
+        [Fact]
+        public async Task GetAllDirectionsAndSpecialtiesInIoE_AsModerator_EndpointsReturnSuccessAndCorrectContentType()
+        {
+            //Arrange
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
+
+            //Act
+            var response = await _client.GetAsync(
+                $"/api/InstitutionOfEducation/DirectionsAndSpecialties");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("application/json; charset=utf-8",
+                response.Content.Headers.ContentType.ToString());
         }
         #endregion
 

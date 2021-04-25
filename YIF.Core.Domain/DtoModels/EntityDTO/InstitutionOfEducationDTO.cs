@@ -48,6 +48,10 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// </summary>
         public float Lon { get; set; }
         /// <summary>
+        /// Whether IoE is banned or not
+        /// </summary>
+        public bool IsBanned { get; set; }
+        /// <summary>
         /// Type of institution Of Education
         /// </summary>
         public InstitutionOfEducationType InstitutionOfEducationType { get; set; }
