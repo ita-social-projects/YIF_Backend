@@ -306,4 +306,7 @@
   <data name="InstitutionOfEducationIsEnabled" xml:space="preserve">
     <value>Заклад освіти є розбаненим</value>
   </data>
+  <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
+    <value>Не знайдено модератора з таким ідентифікатором</value>
+  </data>
 </root>

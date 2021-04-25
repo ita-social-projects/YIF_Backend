@@ -156,8 +156,9 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId) 
-        { 
-            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+        {
+            var admin = await _institutionOfEducationAdminRepository.GetByUserId(userId);
+            string ioEId = admin.InstitutionOfEducationId;
 
             return new ResponseApiModel<IoEInformationResponseApiModel> 
             { 
@@ -166,19 +167,20 @@ namespace YIF.Core.Service.Concrete.Services
             };
         }
 
-        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
         {
-            var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
-            var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
-            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyToIoE.SpecialtyId && s.InstitutionOfEducationId == specialtyToIoE.InstitutionOfEducationId);
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var admin = await _institutionOfEducationAdminRepository.GetByUserId(userId);
+            var institutionOfEducation = await _ioERepository.ContainsById(admin.InstitutionOfEducationId);
+            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == admin.InstitutionOfEducationId);
 
             if (institutionOfEducation == false)
                 throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
 
             if (specialty == false)
-                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            if (entity == null)
+            if (entity.Count() == 0)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
 
             return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>

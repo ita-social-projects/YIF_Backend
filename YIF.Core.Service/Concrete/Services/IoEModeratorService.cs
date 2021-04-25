@@ -18,6 +18,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
@@ -27,6 +28,7 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IMapper mapper,
             ResourceManager resourceManager)
@@ -35,6 +37,7 @@ namespace YIF.Core.Service.Concrete.Services
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
+            _ioEModeratorRepository = ioEModeratorRepository;
             _examRequirementRepository = examRequirementRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
@@ -99,19 +102,20 @@ namespace YIF.Core.Service.Concrete.Services
                 await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
         }
 
-        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
         {
-            var specialty = await _specialtyRepository.ContainsById(specialtyToIoE.SpecialtyId);
-            var institutionOfEducation = await _ioERepository.ContainsById(specialtyToIoE.InstitutionOfEducationId);
-            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyToIoE.SpecialtyId && s.InstitutionOfEducationId == specialtyToIoE.InstitutionOfEducationId);
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var moderator = await _ioEModeratorRepository.GetByUserId(userId);
+            var institutionOfEducation = await _ioERepository.ContainsById(moderator.Admin.InstitutionOfEducationId);
+            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == moderator.Admin.InstitutionOfEducationId);
 
             if (institutionOfEducation == false)
                 throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
 
             if (specialty == false)
-                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            if (entity == null)
+            if (entity.Count() == 0)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
 
             return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>

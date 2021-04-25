@@ -360,6 +360,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var institutionOfEducation = true;
             var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
             { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
+            var admin = new InstitutionOfEducationAdminDTO { Id = "userId", InstitutionOfEducationId = "IoEId" };
+
+            _specialtyRepository.
+                Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(specialty);
 
             _specialtyRepository.
                 Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -373,6 +378,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(specialtyToIoe);
 
+            _ioEAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             _mapper.Setup(x => x.Map<SpecialtyToInstitutionOfEducationDTO>(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>())).Returns(It.IsAny<SpecialtyToInstitutionOfEducationDTO>());
@@ -380,11 +389,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             var exception = await Record
-                .ExceptionAsync(() => _ioEAdminService.GetSpecialtyToIoEDescription(new SpecialtyToInstitutionOfEducationPostApiModel
-                {
-                    InstitutionOfEducationId = "IoEId",
-                    SpecialtyId = "SpecialtyId"
-                }));
+                .ExceptionAsync(() => _ioEAdminService.GetSpecialtyToIoEDescription("userId","IoEId"));
 
             // Assert
             Assert.Null(exception);
@@ -395,10 +400,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange  
             var specialty = true;
-            // InstitutionNotFound
-            var institutionOfEducation = false;
             var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
             { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
+            var admin = new InstitutionOfEducationAdminDTO { Id = "userId", InstitutionOfEducationId = "IoEId" };
+
+            // InstitutionNotFound
+            var institutionOfEducation = false;
 
             _specialtyRepository.
                 Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -412,14 +419,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(specialtyToIoe);
 
+            _ioEAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEAdminService.GetSpecialtyToIoEDescription(new SpecialtyToInstitutionOfEducationPostApiModel
-            {
-                InstitutionOfEducationId = "IoEId",
-                SpecialtyId = "SpecialtyId"
-            });
+            Func<Task> act = () => _ioEAdminService.GetSpecialtyToIoEDescription("userId", "IoEId");
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -435,6 +442,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var institutionOfEducation = true;
             var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
             { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
+            var admin = new InstitutionOfEducationAdminDTO { Id = "userId", InstitutionOfEducationId = "IoEId" };
 
             _specialtyRepository.
                 Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -448,14 +456,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(specialtyToIoe);
 
+            _ioEAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEAdminService.GetSpecialtyToIoEDescription(new SpecialtyToInstitutionOfEducationPostApiModel
-            {
-                InstitutionOfEducationId = "IoEId",
-                SpecialtyId = "SpecialtyId"
-            });
+            Func<Task> act = () => _ioEAdminService.GetSpecialtyToIoEDescription("userId", "IoEId");
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
@@ -467,6 +475,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange  
             var specialty = true;
             var institutionOfEducation = true;
+            var admin = new InstitutionOfEducationAdminDTO { Id = "userId", InstitutionOfEducationId = "IoEId" };
+
             //SpecialtyToInstitutionOfEducation not found
             List<SpecialtyToInstitutionOfEducationDTO> specialtyToIoe = null;
 
@@ -482,14 +492,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Setup(sr => sr.Find(It.IsAny<Expression<Func<SpecialtyToInstitutionOfEducation, bool>>>()))
                 .ReturnsAsync(specialtyToIoe);
 
+            _ioEAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
             _specialtyToIoERepository.Setup(sr => sr.Update(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            Func<Task> act = () => _ioEAdminService.GetSpecialtyToIoEDescription(new SpecialtyToInstitutionOfEducationPostApiModel
-            {
-                InstitutionOfEducationId = "IoEId",
-                SpecialtyId = "SpecialtyId"
-            });
+            Func<Task> act = () => _ioEAdminService.GetSpecialtyToIoEDescription("userId", "IoEId");
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);

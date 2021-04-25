@@ -147,13 +147,15 @@ namespace YIF_Backend.Controllers
         /// <response code="400">If id is not valid.</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="403">If user is not institution of education admin</response>
-        [HttpGet("Specialty/Description/Get")]
+        /// <response code="404">Specialty not found</response>
+        [HttpGet("Specialty/Description/Get/{specialtyId}")]
         [ProducesResponseType(typeof(SpecialtyToInstitutionOfEducationResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetSpecialtyDescription([FromBody] SpecialtyToInstitutionOfEducationPostApiModel model)
+        public async Task<IActionResult> GetSpecialtyDescription(string specialtyId)
         {
-            var result = await _ioEAdminService.GetSpecialtyToIoEDescription(model);
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _ioEAdminService.GetSpecialtyToIoEDescription(userId, specialtyId);
             return Ok(result.Object);
         }
     }

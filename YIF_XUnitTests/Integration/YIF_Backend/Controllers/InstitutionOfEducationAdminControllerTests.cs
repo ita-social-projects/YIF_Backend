@@ -140,18 +140,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task GetSpecialtyDescription_EndpointReturnsSuccessAndCorrectContentType()
         {
             //Arrange
-            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().FirstOrDefault();
-            var specialty = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.Id == institutionOfEducation.Id).FirstOrDefault();
-
-            var model = new SpecialtyToInstitutionOfEducationPostApiModel()
-            {
-                SpecialtyId = specialty.SpecialtyId,
-                InstitutionOfEducationId = institutionOfEducation.Id
-            };
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var admin = _context.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefault();
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().Where(i => i.Id == admin.InstitutionOfEducationId).FirstOrDefault();
+            var specialtyToIoE = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.InstitutionOfEducationId == institutionOfEducation.Id).FirstOrDefault();
 
             //Act
-            var response = await _client.PatchAsync(
-                $"/api/InstitutionOfEducationAdmin/Specialty/Description/Get", ContentHelper.GetStringContent(model));
+            var response = await _client.GetAsync(
+                $"/api/InstitutionOfEducationAdmin/Specialty/Description/Get/" + specialtyToIoE.SpecialtyId);
 
             //Assert
             response.EnsureSuccessStatusCode(); 
