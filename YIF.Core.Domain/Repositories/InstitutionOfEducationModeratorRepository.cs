@@ -22,6 +22,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
             _dbContext = dbContext;
         }
+
         public async Task<string> AddUniModerator(InstitutionOfEducationModerator institutionOfEducationModerator)
         {
              await _dbContext.InstitutionOfEducationModerators.AddAsync(institutionOfEducationModerator);
@@ -69,6 +70,7 @@ namespace YIF.Core.Domain.Repositories
                 .Include(m => m.Admin)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UserId == id);
+            
             return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 

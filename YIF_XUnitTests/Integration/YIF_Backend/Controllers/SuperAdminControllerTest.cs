@@ -304,7 +304,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 .Include(x => x.Admin)
                 .ThenInclude(x => x.InstitutionOfEducation).AsNoTracking().FirstOrDefault();
 
-            var list =  _context.InstitutionOfEducationAdmins
+            var list = _context.InstitutionOfEducationAdmins
                 .Where(x => x.InstitutionOfEducationId == moderator.Admin.InstitutionOfEducationId).ToList();
 
             foreach (var item in list)

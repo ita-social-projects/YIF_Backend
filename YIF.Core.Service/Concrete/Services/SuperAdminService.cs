@@ -410,7 +410,7 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var moderator = await _ioEModeratorRepository.GetByUserId(ioEAdminAddFromModeratorsApiModel.UserId);
-            var dbUser = _userManager.Users.FirstOrDefault(x=>x.Id == moderator.User.Id);
+            var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
 
             await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
             await _userManager.AddToRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationAdmin);

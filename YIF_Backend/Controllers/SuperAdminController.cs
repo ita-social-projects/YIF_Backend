@@ -263,7 +263,7 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Add new IoE Admin from IoE Moderators.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Ok message</returns>
         /// <response code="200">IoE Admin added</response>
         /// <response code="400">If request model isn't valid</response>
         /// <response code="403">If user is not super admin</response>

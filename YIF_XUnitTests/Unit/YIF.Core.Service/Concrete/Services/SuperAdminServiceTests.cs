@@ -391,9 +391,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
-                .ReturnsAsync(new InstitutionOfEducationModeratorDTO { Id = It.IsAny<string>() });
-            _ioEModeratorRepository.Setup(x => x.Delete(It.IsAny<string>()));
-            _ioEModeratorRepository.Setup(x => x.AddUniModerator(It.IsAny<InstitutionOfEducationModerator>()));
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO { Id = It.IsAny<string>(), User = new UserDTO { Id = It.IsAny<string>() } });
+            _userRepository.Setup(x => x.GetUserWithRoles(It.IsAny<string>())).ReturnsAsync(new DbUser());
+            _userManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
+            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
+            _ioEModeratorRepository.Setup(x => x.Delete(It.IsAny<string>())).ReturnsAsync(true);
+            _institutionOfEducationAdminRepository.Setup(x => x.AddUniAdmin(It.IsAny<InstitutionOfEducationAdmin>())).ReturnsAsync(It.IsAny<string>());
 
             //Act
             var result =
