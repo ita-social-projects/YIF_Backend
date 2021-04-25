@@ -1,4 +1,5 @@
-﻿using System.Resources;
+﻿using System.Collections.Generic;
+using System.Resources;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -38,15 +39,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task AddSpecialty_EndpointReturnsOk()
+        public async Task AddRangeOfSpecialtiesToIoE_EndpointReturnsOk()
         {
-            ////Arrange
-            //_httpContext.SetupGet(x => x.User).Returns(_principal);
-            //_ioEModeratorService.Setup(x => x.AddSpecialtyToIoe(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()));
-            ////Act
-            //var result = await _testControl.AddSpecialtyToIoE(new SpecialtyToInstitutionOfEducationPostApiModel());
-            ////Assert
-            //Assert.IsType<OkResult>(result);
+            //Arrange
+            _httpContext.SetupGet(x => x.User).Returns(_principal);
+            var model = It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>();
+
+            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationPostApiModel[] { model };
+            _ioEModeratorService.Setup(x => x.AddRangeSpecialtiesToIoE(collectionOfModels));
+
+            //Act
+            var result = await _testControl.AddRangeOfSpecialtiesToIoE(collectionOfModels);
+
+            //Assert
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]

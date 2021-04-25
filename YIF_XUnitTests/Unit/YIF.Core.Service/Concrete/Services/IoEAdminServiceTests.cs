@@ -101,16 +101,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task AddRangeOfSpecialtiesToIoE_ShouldAddSpecialty()
         {
             //Arrange
-            _mapper.Setup(sr => sr.Map<SpecialtyToInstitutionOfEducationDTO>(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()))
-                   .Returns(It.IsAny<SpecialtyToInstitutionOfEducationDTO >());
+            _specialtyToIoEDescriptionRepository.Setup(s => s.Add(It.IsAny<SpecialtyToIoEDescription>()));
+            _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
-            _mapper.Setup(sr => sr.Map<SpecialtyToInstitutionOfEducation>(It.IsAny<SpecialtyToInstitutionOfEducationDTO>()))
-                   .Returns(It.IsAny<SpecialtyToInstitutionOfEducation>());
-
-            _specialtyToIoERepository.Setup(sr => sr.AddRange(It.IsAny<IEnumerable<SpecialtyToInstitutionOfEducation>>()));
-
-            //Act
-            var result = await _ioEAdminService.AddRangeSpecialtiesToIoE(It.IsAny<IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel>>());
+            // Act
+            var result = await _ioEAdminService.AddRangeSpecialtiesToIoE(new List<SpecialtyToInstitutionOfEducationPostApiModel>());
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);

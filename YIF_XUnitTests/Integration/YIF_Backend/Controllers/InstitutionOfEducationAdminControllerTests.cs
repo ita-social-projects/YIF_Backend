@@ -9,6 +9,7 @@ using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
+using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
@@ -31,7 +32,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task AddSpecialtyToIoE_ShouldReturnOk()
+        public async Task AddRangeOfSpecialtiesToIoE_ShouldReturnOk()
         {
             //Arrange
             _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
@@ -40,14 +41,25 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _context.SpecialtyToInstitutionOfEducations.Remove(chosen);
             await _context.SaveChangesAsync();
 
+            var paymentAndEducationForm = new PaymentAndEducationFormsResponseApiModel()
+            {
+                PaymentForm = YIF.Core.Data.Entities.PaymentForm.Contract,
+                EducationForm = YIF.Core.Data.Entities.EducationForm.Daily
+            };
+
+            ICollection<PaymentAndEducationFormsResponseApiModel> collectionOfPaymentFormAndEducation = new PaymentAndEducationFormsResponseApiModel[] { paymentAndEducationForm };
+
             var model = new SpecialtyToInstitutionOfEducationPostApiModel()
             {
                 SpecialtyId = chosen.SpecialtyId,
-                InstitutionOfEducationId = chosen.InstitutionOfEducationId
+                InstitutionOfEducationId = chosen.InstitutionOfEducationId,
+                PaymentAndEducationForms = collectionOfPaymentFormAndEducation
             };
 
+            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationPostApiModel[] { model };
+            
             // Act            
-            var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddSpecialtyToInstitutionOfEducation", ContentHelper.GetStringContent(model));
+            var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddRangeSpecialtiesToInstitutionOfEducation", ContentHelper.GetStringContent(collectionOfModels));
 
             // Assert
             response.EnsureSuccessStatusCode();
