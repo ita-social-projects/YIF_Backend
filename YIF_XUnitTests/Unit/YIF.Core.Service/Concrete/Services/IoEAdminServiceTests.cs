@@ -64,7 +64,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioEAdminRepository.Setup(x => x.GetAllUniAdmins())
                 .Returns(Task.FromResult(listOfAdmins));
 
-            //// Act
+            // Act
             Func<Task> act = () => _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert

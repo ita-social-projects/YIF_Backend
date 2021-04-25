@@ -119,14 +119,13 @@ namespace YIF.Core.Service.Concrete.Services
             var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
 
             newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
-            currentInstitutionOfEducationDTO.Id = ioEId;
 
             #region imageSaving
             if (request.ImageApiModel != null)
             {
                 var serverPath = _env.ContentRootPath;
-                var folerName = _configuration.GetValue<string>("ImagesPath");
-                var path = Path.Combine(serverPath, folerName);
+                var folderName = _configuration.GetValue<string>("ImagesPath");
+                var path = Path.Combine(serverPath, folderName);
 
                 var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
                 currentInstitutionOfEducationDTO.ImagePath = fileName;
