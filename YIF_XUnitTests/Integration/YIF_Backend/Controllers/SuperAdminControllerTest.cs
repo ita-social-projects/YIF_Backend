@@ -281,5 +281,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task BanInstitutionOfEducation()
+        {
+            // Arrange
+            var IoE = _context.InstitutionOfEducations.First();
+
+            // Act
+            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/BanInstitutionOfEducation/{0}", IoE.Id), ContentHelper.GetStringContent(IoE));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

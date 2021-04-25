@@ -30,6 +30,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private static readonly Mock<IGraduateRepository<Graduate, GraduateDTO>> _graduateRepository = new Mock<IGraduateRepository<Graduate, GraduateDTO>>();
         private static readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
         private static readonly Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>> _directionToIoERepository = new Mock<IRepository<DirectionToInstitutionOfEducation, DirectionToInstitutionOfEducationDTO>>();
+        private static readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _ioeAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
+        private static readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioeModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private static readonly Mock<IPaginationService> _paginationService = new Mock<IPaginationService>();
         private static readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private static readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();
@@ -42,6 +44,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _directionRepository.Object,
             _specialtyToInstitutionOfEducationRepository.Object,
             _specialtyToIoEDescriptionRepository.Object,
+            _ioeAdminRepository.Object,
+            _ioeModeratorRepository.Object,
             _graduateRepository.Object,
             _mapperMock.Object,
             _paginationService.Object,
@@ -653,6 +657,102 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Act
             Task act() => institutionOfEducationService.DeleteInstitutionOfEducationFromFavorite(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task GetAllDirectionsAndSpecialitiesInIoE_ForAdmin_IfEverythingOk()
+        {
+            // Arrange  
+            var institutionOfEducation = true;
+            var admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" };
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _ioeAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(admin.Id));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task GetAllDirectionsAndSpecialitiesInIoE_ForModerator_IfEverythingOk()
+        {
+            // Arrange  
+            var institutionOfEducation = true;
+            var moderator = new InstitutionOfEducationModeratorDTO
+            {
+                Id = "ModerId",
+                Admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" }
+            };
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _ioeModeratorRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(moderator.Id));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void GetAllDirectionsAndSpecialitiesInIoE_ShouldThrowBadRequestException_IfInstitutionOfEducationNotFound()
+        {
+            // Arrange
+            // InstitutionNotFound
+            var institutionOfEducation = false;
+            var admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" };
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _ioeAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
+            // Act
+            Func<Task> act = () => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(admin.Id);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public void GetAllDirectionsAndSpecialitiesInIoE_ShouldThrowBadRequestException_IfAdminOrModeratorNotFound()
+        {
+            // Arrange  
+            var institutionOfEducation = true;
+            //Admin not found
+            InstitutionOfEducationAdminDTO admin = null;
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _ioeAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
+            // Act
+            Func<Task> act = () => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE("AdminId");
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);

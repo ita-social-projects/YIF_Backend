@@ -68,5 +68,18 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async void DeleteSpecialtyFromInstitutionOfEducation_ShouldReturnNoContent_IfEverythingIsOk()
+        {
+            // Arrange
+            _ioEModeratorService.Setup(x => x.DeleteSpecialtyToIoe(It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>()));
+
+            // Act
+            var result = await _testControl.DeleteSpecialtyFromIoE(new SpecialtyToInstitutionOfEducationPostApiModel());
+
+            // Assert  
+            Assert.IsType<NoContentResult>(result);
+        }
     }
 }
