@@ -211,5 +211,22 @@ namespace YIF_Backend.Controllers
             var result = await _institutionOfEducationService.GetInstitutionOfEducationAbbreviations(filterModel);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get all directions and specialties of institution of education
+        /// </summary>
+        /// <response code="200">Get all directions and specialties in institution of education</response>
+        /// <response code="400">If there is no user with such id</response>
+        [ProducesResponseType(typeof(IEnumerable<DirectionToIoEResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("DirectionsAndSpecialties")]
+        [Authorize(Roles = "InstitutionOfEducationAdmin,InstitutionOfEducationModerator")]
+        public async Task<IActionResult> GetAllDirectionsAndSpecialtiesInIoE()
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(userId);
+            return Ok(result);
+        }
     }
 }

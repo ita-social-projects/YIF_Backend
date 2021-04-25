@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -16,11 +17,13 @@ namespace YIF.Core.Domain.Repositories
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ResourceManager _resourceManager;
 
-        public InstitutionOfEducationRepository(IApplicationDbContext context, IMapper mapper)
+        public InstitutionOfEducationRepository(IApplicationDbContext context, IMapper mapper, ResourceManager resourceManager)
         {
             _context = context;
             _mapper = mapper;
+            _resourceManager = resourceManager;
         }
 
         public async Task<bool> Update(InstitutionOfEducation item)
@@ -112,5 +115,20 @@ namespace YIF.Core.Domain.Repositories
             return await _context.InstitutionOfEducations.AnyAsync(x => x.Id == id);
         }
 
+        public async Task<string> Disable(InstitutionOfEducation IoE)
+        {
+            IoE.IsBanned = true;
+            _context.InstitutionOfEducations.Update(IoE);
+            await _context.SaveChangesAsync();
+            return _resourceManager.GetString("InstitutionOfEducationIsDisabled");
+        }
+
+        public async Task<string> Enable(InstitutionOfEducation IoE)
+        {
+            IoE.IsBanned = false;
+            _context.InstitutionOfEducations.Update(IoE);
+            await _context.SaveChangesAsync();
+            return _resourceManager.GetString("InstitutionOfEducationIsEnabled");
+        }
     }
 }
