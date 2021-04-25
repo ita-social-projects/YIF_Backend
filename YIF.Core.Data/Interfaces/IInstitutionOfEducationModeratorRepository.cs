@@ -7,7 +7,6 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<K> GetByUserId(string id);
         Task<string> AddUniModerator(T institutionOfEducationModerator);
         Task<IEnumerable<K>> GetByIoEId(string ioEId);
         Task<K> GetByUserId(string userId);
