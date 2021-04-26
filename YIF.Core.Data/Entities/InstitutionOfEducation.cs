@@ -32,6 +32,5 @@ namespace YIF.Core.Data.Entities
         public ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
         public ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducation { get; set; }
         public ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
-
     }
 }
