@@ -10,6 +10,7 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
+using YIF.Core.Data.Entities;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
@@ -43,8 +44,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var paymentAndEducationForm = new PaymentAndEducationFormsPostApiModel()
             {
-                PaymentForm = YIF.Core.Data.Entities.PaymentForm.Contract,
-                EducationForm = YIF.Core.Data.Entities.EducationForm.Daily
+                PaymentForm = PaymentForm.Contract,
+                EducationForm = EducationForm.Daily
             };
 
             ICollection<PaymentAndEducationFormsPostApiModel> collectionOfPaymentFormAndEducation = new PaymentAndEducationFormsPostApiModel[] { paymentAndEducationForm };

@@ -75,13 +75,13 @@ namespace YIF.Core.Service.Concrete.Services
                     IsDeleted = false
                 };
 
-                var id = await _specialtyToIoERepository.AddSpecialty(specialtyToInstitutionOf);
+                var specialtyId = await _specialtyToIoERepository.AddSpecialty(specialtyToInstitutionOf);
                 
                 foreach (var desc in item.PaymentAndEducationForms)
                 {
                     var toIoEDescription = new SpecialtyToIoEDescription
                     {
-                        SpecialtyToInstitutionOfEducationId = id,
+                        SpecialtyToInstitutionOfEducationId = specialtyId,
                         PaymentForm = desc.PaymentForm,
                         EducationForm = desc.EducationForm
                     };
@@ -89,7 +89,9 @@ namespace YIF.Core.Service.Concrete.Services
                     await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
                 }
             }
-            return result.Set(new DescriptionResponseApiModel("Specialties were successfully added to the Institution of Education"), true);
+
+            return result.Set(
+                   new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtiesWereAdded")), true);
         }
 
         public async Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE)

@@ -42,17 +42,17 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task AddRangeOfSpecialtiesToIoE_EndpointReturnsOk()
         {
             //Arrange
-            _httpContext.SetupGet(x => x.User).Returns(_principal);
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
             var model = It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>();
 
             IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationPostApiModel[] { model };
-            _ioEAdminService.Setup(x => x.AddRangeSpecialtiesToIoE(collectionOfModels));
+            _ioEAdminService.Setup(x => x.AddRangeSpecialtiesToIoE(collectionOfModels)).ReturnsAsync(response);
 
             //Act
             var result = await _testControl.AddRangeOfSpecialtiesToIoE(collectionOfModels);
 
             //Assert
-            Assert.IsType<OkResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]

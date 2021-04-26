@@ -318,4 +318,7 @@
   <data name="IoEModeratorIsDeleted" xml:space="preserve">
     <value>Цей модератор видалений</value>
   </data>
+  <data name="SpecialtiesWereAdded" xml:space="preserve">
+    <value>Спеціальності додано</value>
+  </data>
 </root>
