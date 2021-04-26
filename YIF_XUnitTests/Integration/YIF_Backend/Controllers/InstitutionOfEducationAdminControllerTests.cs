@@ -41,13 +41,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _context.SpecialtyToInstitutionOfEducations.Remove(chosen);
             await _context.SaveChangesAsync();
 
-            var paymentAndEducationForm = new PaymentAndEducationFormsResponseApiModel()
+            var paymentAndEducationForm = new PaymentAndEducationFormsPostApiModel()
             {
                 PaymentForm = YIF.Core.Data.Entities.PaymentForm.Contract,
                 EducationForm = YIF.Core.Data.Entities.EducationForm.Daily
             };
 
-            ICollection<PaymentAndEducationFormsResponseApiModel> collectionOfPaymentFormAndEducation = new PaymentAndEducationFormsResponseApiModel[] { paymentAndEducationForm };
+            ICollection<PaymentAndEducationFormsPostApiModel> collectionOfPaymentFormAndEducation = new PaymentAndEducationFormsPostApiModel[] { paymentAndEducationForm };
 
             var model = new SpecialtyToInstitutionOfEducationPostApiModel()
             {

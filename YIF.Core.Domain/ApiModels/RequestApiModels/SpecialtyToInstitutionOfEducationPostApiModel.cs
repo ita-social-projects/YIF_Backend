@@ -20,6 +20,6 @@ namespace YIF.Core.Domain.ApiModels.RequestApiModels
         /// <summary>
         /// List of payment and education forms
         /// </summary>  
-        public ICollection<PaymentAndEducationFormsResponseApiModel> PaymentAndEducationForms { get; set; }
+        public ICollection<PaymentAndEducationFormsPostApiModel> PaymentAndEducationForms { get; set; }
     }
 }

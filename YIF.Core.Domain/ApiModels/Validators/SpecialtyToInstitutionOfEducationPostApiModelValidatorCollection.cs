@@ -33,7 +33,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
                 .Must(x => _context.Specialties.Any(y => y.Id == x))
                 .WithMessage(NotFoundInDbMessage);
 
-            RuleForEach(x => x.PaymentAndEducationForms).SetValidator(new PaymentAndEducationFormsResponseApiModelValidator(_context));
+            RuleForEach(x => x.PaymentAndEducationForms).SetValidator(new PaymentAndEducationFormsPostApiModelValidator(_context));
         }
     }
 }

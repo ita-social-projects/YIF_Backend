@@ -6,12 +6,12 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 
 namespace YIF.Core.Domain.ApiModels.Validators
 {
-    public class PaymentAndEducationFormsResponseApiModelValidator : AbstractValidator<PaymentAndEducationFormsResponseApiModel>
+    public class PaymentAndEducationFormsPostApiModelValidator : AbstractValidator<PaymentAndEducationFormsPostApiModel>
     {
         private readonly EFDbContext _context;
         private readonly string NotValid = "Such {PropertyName} isn't valid";
 
-        public PaymentAndEducationFormsResponseApiModelValidator(EFDbContext context)
+        public PaymentAndEducationFormsPostApiModelValidator(EFDbContext context)
         {
             _context = context;
 
