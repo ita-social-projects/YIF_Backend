@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
-using YIF.Core.Service.Concrete.Services;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace YIF_Backend.Controllers
 {
@@ -32,20 +32,17 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
+        /// <response code="400">If model state is not valid</response>
         /// <response code="404">Not found message</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPost("ModifyDescriptionOfInstitution")]
-        public async Task<IActionResult> ModifyDescriptionOfInstitution([FromBody] InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
+        [HttpPatch("ModifyDescriptionOfInstitution")]
+        public async Task<IActionResult> ModifyDescriptionOfInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
-            if (institutionOfEducationPostApiModel.ImageApiModel != null)
-            {
-                ImageBase64Validator validator = new ImageBase64Validator();
-                var validResults = validator.Validate(institutionOfEducationPostApiModel.ImageApiModel);
-
-                if (!validResults.IsValid) return BadRequest(new DescriptionResponseApiModel(validResults.ToString()));
-            }
+            if (institutionOfEducationPostApiModel == null)
+                return BadRequest();
 
             var userId = User.FindFirst("id")?.Value;
             var result = await _ioEAdminService.ModifyDescriptionOfInstitution(userId, institutionOfEducationPostApiModel);
