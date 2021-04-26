@@ -188,7 +188,7 @@ namespace YIF_Backend
             services.AddSingleton<ResourceManager>(new ResourceManager("YIF_Backend.Resources.Strings", Assembly.GetExecutingAssembly()));
             #endregion
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
