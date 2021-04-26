@@ -343,7 +343,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 _superAdminService.Setup(x => x.ChangeBannedStatusOfIoE(requestId)).Returns(Task.FromResult(responseModel));
                 // Act
-                var result = await superAdminController.BanInstituionOfEducation(requestId);
+                var result = await superAdminController.BanInstitutionOfEducation(requestId);
                 // Assert
                 var responseResult = Assert.IsType<OkObjectResult>(result);
                 var model = (DescriptionResponseApiModel)responseResult.Value;
@@ -353,7 +353,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             {
                 _superAdminService.Setup(x => x.ChangeBannedStatusOfIoE(requestId)).Throws(error);
                 // Assert
-                var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.BanInstituionOfEducation(requestId));
+                var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.BanInstitutionOfEducation(requestId));
                 Assert.Equal(error.Message, exсeption.Message);
             }
         }
@@ -369,6 +369,21 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             //Act
             var result = await superAdminController.ChooseIoEAdminFromModerators(It.IsAny<IoEAdminAddFromModeratorsApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteInstitutionOfEducation_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.DeleteInstitutionOfEducation(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.DeleteInstitutionOfEducation(It.IsAny<string>());
 
             //Assert
             Assert.IsType<OkObjectResult>(result);

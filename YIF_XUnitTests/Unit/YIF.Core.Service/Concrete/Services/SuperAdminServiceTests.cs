@@ -406,5 +406,34 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
             Assert.True(result.Success);
         }
+
+        [Fact]
+        public async void DeleteInstitutionOfEducation_ReturnsSuccess()
+        {
+            //Arrange
+            _institutionOfEducationRepository.Setup(x => x.Get(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationDTO>(new InstitutionOfEducationDTO
+                {
+                    Id = uni.Id
+                }));
+            _institutionOfEducationRepository.Setup(x => x.Delete(uni.Id))
+                .Returns(Task.FromResult<bool>(true));
+            //Act
+            var result = await superAdminService.DeleteInstitutionOfEducation(uni.Id);
+            //Assert
+            Assert.Equal("IoEIsDeleted", result.Object.Message);
+        }
+
+        [Fact]
+        public async void DeleteInstitutionOfEducation_ReturnsNotFoundMessage()
+        {
+            //Arrange
+            _institutionOfEducationRepository
+                .Setup(x => x.Get(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationDTO>(null));
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteInstitutionOfEducation(uni.Id));
+        }
     }
 }

@@ -318,4 +318,7 @@
   <data name="IoEModeratorIsDeleted" xml:space="preserve">
     <value>Цей модератор видалений</value>
   </data>
+  <data name="IoEIsDeleted" xml:space="preserve">
+    <value>Навчальний заклад було видалено</value>
+  </data>
 </root>
