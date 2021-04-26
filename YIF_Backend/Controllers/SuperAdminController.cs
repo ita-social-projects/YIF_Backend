@@ -116,7 +116,6 @@ namespace YIF_Backend.Controllers
             return Ok(result.Object);
         }
 
-
         /// <summary>
         /// Delete School admin(sets its asp.net user IsDeleted to true.
         /// </summary>
