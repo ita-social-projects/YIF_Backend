@@ -17,12 +17,6 @@ namespace YIF.Core.Domain.ApiModels.Validators
             _context = context;
             _resouseManager = resouseManager;
 
-            RuleFor(x => x.EducationForm)
-                .IsInEnum();
-
-            RuleFor(x => x.PaymentForm)
-                .IsInEnum();
-
             RuleFor(x => x.PaymentForm)
                .Must(x => _context.SpecialtyToIoEDescriptions.All(y => y.PaymentForm != PaymentForm.Contract || y.PaymentForm != PaymentForm.Govermental))
                .WithMessage(_resouseManager.GetString("ModelIsInvalid"));

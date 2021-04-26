@@ -68,14 +68,14 @@ namespace YIF.Core.Service.Concrete.Services
                 var specialtyToInstitutionOfEducationDTO = _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(item);
                 var specialtyToInstitutionOfEducation = _mapper.Map<SpecialtyToInstitutionOfEducation>(specialtyToInstitutionOfEducationDTO);
                 
-                SpecialtyToInstitutionOfEducation specialtyToInstitutionOf = new SpecialtyToInstitutionOfEducation
+                SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
                 {
                     SpecialtyId = specialtyToInstitutionOfEducation.SpecialtyId,
                     InstitutionOfEducationId = specialtyToInstitutionOfEducation.InstitutionOfEducationId,
                     IsDeleted = false
                 };
 
-                var specialtyId = await _specialtyToIoERepository.AddSpecialty(specialtyToInstitutionOf);
+                var specialtyId = await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
                 
                 foreach (var desc in item.PaymentAndEducationForms)
                 {

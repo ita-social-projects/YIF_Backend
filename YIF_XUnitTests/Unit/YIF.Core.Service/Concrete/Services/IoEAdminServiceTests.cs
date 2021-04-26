@@ -106,7 +106,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task AddRangeOfSpecialtiesToIoE_ShouldAddSpecialty()
+        public async Task AddRangeOfSpecialtiesToIoE_ShouldAddSpecialties()
         {
             //Arrange
             _specialtyToIoEDescriptionRepository.Setup(s => s.Add(It.IsAny<SpecialtyToIoEDescription>()));

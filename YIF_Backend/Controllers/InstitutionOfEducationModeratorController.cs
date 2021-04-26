@@ -29,7 +29,7 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Adds Specialties to the Institution of Education.
         /// </summary>
-        /// <response code="200">Specialty successfully added to the Institution of Education</response>
+        /// <response code="200">Specialties successfully added to the Institution of Education</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="401">If user is unauthorized, token is bad/expired</response>
         /// <response code="404">If specialty not found</response>
