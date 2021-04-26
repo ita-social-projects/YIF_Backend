@@ -17,5 +17,6 @@ namespace YIF.Core.Data.Interfaces
         Task<K> GetUserWithUserProfile(string userId);
         Task<bool> UpdateUserPhoto(K user, string photo);
         Task<bool> Exist(string userId);
+        Task<T> GetUserWithRoles(string userId);
     }
 }

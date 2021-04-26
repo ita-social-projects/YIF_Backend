@@ -22,6 +22,7 @@ namespace YIF.Core.Domain.Repositories
             _mapper = mapper;
             _dbContext = dbContext;
         }
+
         public async Task<string> AddUniModerator(InstitutionOfEducationModerator institutionOfEducationModerator)
         {
              await _dbContext.InstitutionOfEducationModerators.AddAsync(institutionOfEducationModerator);
@@ -29,14 +30,16 @@ namespace YIF.Core.Domain.Repositories
              return string.Empty;
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            var moderator = _dbContext.InstitutionOfEducationModerators.FirstOrDefault(x => x.Id == id);
+            moderator.IsDeleted = true;
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public  void Dispose()
         {
-             _dbContext.Dispose();
+            _dbContext.Dispose();
         }
 
         public async Task<IEnumerable<InstitutionOfEducationModeratorDTO>> GetAll()
@@ -60,6 +63,17 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<InstitutionOfEducationModeratorDTO>>(result);
         }
 
+        public async Task<InstitutionOfEducationModeratorDTO> GetByUserId(string id)
+        {
+            var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Include(x=>x.User)
+                .Include(m => m.Admin)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.UserId == id);
+            
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
+        }
+
         public Task<bool> Update(InstitutionOfEducationModerator item)
         {
             throw new NotImplementedException();
@@ -68,12 +82,6 @@ namespace YIF.Core.Domain.Repositories
         public Task<InstitutionOfEducationModeratorDTO> Get(string id)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<InstitutionOfEducationModeratorDTO> GetByUserId(string userId)
-        {
-            var moderator = await _dbContext.InstitutionOfEducationModerators.Include(m => m.Admin).AsNoTracking().FirstAsync(a => a.UserId == userId);
-            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 
         public Task<IEnumerable<InstitutionOfEducationModeratorDTO>> Find(Expression<Func<InstitutionOfEducationModerator, bool>> predicate)

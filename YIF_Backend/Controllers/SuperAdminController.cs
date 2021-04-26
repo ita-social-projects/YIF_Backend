@@ -276,5 +276,23 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.ChangeBannedStatusOfIoE(id);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Add new IoE Admin from IoE Moderators.
+        /// </summary>
+        /// <returns>Ok message</returns>
+        /// <response code="200">IoE Admin added</response>
+        /// <response code="400">If request model isn't valid</response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpPut("ChooseIoEAdminFromModerators")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> ChooseIoEAdminFromModerators([FromBody] IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel)
+        {
+            var result = await _superAdminService.ChooseIoEAdminFromModerators(ioEAdminAddFromModeratorsApiModel);
+            return Ok(result.Object);
+        }
     }
 }
