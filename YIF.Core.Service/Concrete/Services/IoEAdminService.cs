@@ -1,5 +1,4 @@
 ﻿using System.Resources;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using SendGrid.Helpers.Errors.Model;
@@ -13,6 +12,8 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.JsonPatch;
+using YIF.Core.Domain.ApiModels.Validators;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -113,37 +114,41 @@ namespace YIF.Core.Service.Concrete.Services
             await _specialtyToIoERepository.Update(specialtyToInstitutionOfEducation);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var admins = await _institutionOfEducationAdminRepository.GetAllUniAdmins();
-            var admin = admins.SingleOrDefault(x => x.UserId == userId);
 
-            if (admin == null)
-            {
-                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("AdminWithSuchIdNotFound")), false);
-            }
+            InstitutionOfEducationPostApiModel request = new InstitutionOfEducationPostApiModel();
+            institutionOfEducationPostApiModel.ApplyTo(request);
 
-            var institutionOfEducationDTONew = _mapper.Map<InstitutionOfEducationDTO>(institutionOfEducationPostApiModel);
+            var validator = new InstitutionOfEducationPostApiModelValidator();
+            var validResult = await validator.ValidateAsync(request);
+            if (!validResult.IsValid)
+                throw new BadRequestException(validResult.ToString());
+
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var currentInstitutionOfEducationDTO = await _ioERepository.Get(ioEId);
+
+            var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
+
+            newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
 
             #region imageSaving
-            if (institutionOfEducationPostApiModel.ImageApiModel != null)
+            if (request.ImageApiModel != null)
             {
                 var serverPath = _env.ContentRootPath;
-                var folerName = _configuration.GetValue<string>("ImagesPath");
-                var path = Path.Combine(serverPath, folerName);
+                var folderName = _configuration.GetValue<string>("ImagesPath");
+                var path = Path.Combine(serverPath, folderName);
 
-                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(institutionOfEducationPostApiModel.ImageApiModel.Photo, path);
-                institutionOfEducationDTONew.ImagePath = fileName;
+                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
+                currentInstitutionOfEducationDTO.ImagePath = fileName;
             }
             #endregion
 
-            institutionOfEducationDTONew.Id = admin.InstitutionOfEducationId;
-
-            await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(institutionOfEducationDTONew));
+            await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
-        }
+        }       
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {

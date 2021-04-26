@@ -90,6 +90,11 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<UserDTO>(user);
         }
 
+        public async Task<DbUser> GetUserWithRoles(string userId)
+        {
+            return await _userManager.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
         public async Task<bool> UpdateUserPhoto(UserDTO user, string photo)
         {
             if (user == null || string.IsNullOrWhiteSpace(photo)) return false;
@@ -133,11 +138,13 @@ namespace YIF.Core.Domain.Repositories
             var user = await _context.Users.FindAsync(id);
             return _mapper.Map<UserDTO>(user);
         }
+
         public async Task<UserDTO> GetByEmail(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
             return _mapper.Map<UserDTO>(user);
         }
+
         public async Task<IEnumerable<UserDTO>> GetAll()
         {
             var list = await _context.Users.ToListAsync();

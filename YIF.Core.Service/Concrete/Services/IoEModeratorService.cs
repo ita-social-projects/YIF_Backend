@@ -97,6 +97,7 @@ namespace YIF.Core.Service.Concrete.Services
                 IsDeleted = true
             });
         }
+
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();

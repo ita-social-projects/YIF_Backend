@@ -148,7 +148,7 @@
     <value>Не знаю, що, але щось точно не так</value>
   </data>
   <data name="FavoriteInstitutionOfEducationsNotFound" xml:space="preserve">
-    <value>Немає вибраних університетів</value>
+    <value>Немає вибраних навчальних закладів</value>
   </data>
   <data name="GraduateNotFound" xml:space="preserve">
     <value>Випускника не було знайдено</value>
@@ -196,10 +196,10 @@
     <value>Спеціальностей немає</value>
   </data>
   <data name="SpecialtyAndInstitutionOfEducationIsAlreadyFavorite" xml:space="preserve">
-    <value>Спеціальність і університет уже в улюбленому</value>
+    <value>Спеціальність і навчальний заклад уже в улюбленому</value>
   </data>
   <data name="SpecialtyAndInstitutionOfEducationIsNotFavorite" xml:space="preserve">
-    <value>Спеціальності і університету немає в улюбленому</value>
+    <value>Спеціальності і навчального закладу немає в улюбленому</value>
   </data>
   <data name="SpecialtyDescriptionsNotFound" xml:space="preserve">
     <value>Описів спеціальності не  знайдено</value>
@@ -214,34 +214,34 @@
     <value>Тестова помилка сервера успішно запущена</value>
   </data>
   <data name="InstitutionOfEducationsNotFound" xml:space="preserve">
-    <value>Університети не було знайдено</value>
+    <value>Навчальні заклади не знайдено</value>
   </data>
   <data name="InstitutionOfEducationAdded" xml:space="preserve">
-    <value>Університет додано</value>
+    <value>Навчальний заклад додано</value>
   </data>
   <data name="InstitutionOfEducationAdminFailed" xml:space="preserve">
     <value>Не вдалося добавити адміна</value>
   </data>
   <data name="InstitutionOfEducationAndAdminAdded" xml:space="preserve">
-    <value>Університет додано. Адміну надісланий лист.</value>
+    <value>Навчальний заклад додано. Адміну надісланий лист.</value>
   </data>
   <data name="InstitutionOfEducationIsAlreadyFavorite" xml:space="preserve">
-    <value>Даний університет вже додано до улюблених</value>
+    <value>Даний навчальний заклад вже додано до улюблених</value>
   </data>
   <data name="InstitutionOfEducationIsNotFavorite" xml:space="preserve">
-    <value>Даний університет не було додано до улюблених</value>
+    <value>Даний навчальний заклад не було додано до улюблених</value>
   </data>
   <data name="InstitutionOfEducationNotFound" xml:space="preserve">
-    <value>Університет не було знайдено</value>
+    <value>Навчальний заклад не знайдено</value>
   </data>
   <data name="InstitutionOfEducationWithSuchIdNotFound" xml:space="preserve">
-    <value>Університет з таким id не знайдено</value>
+    <value>Навчальний заклад з таким id не знайдено</value>
   </data>
   <data name="InstitutionOfEducationWithSuchNameAlreadyExists" xml:space="preserve">
-    <value>Університет із таким іменем вже існує</value>
+    <value>Навчальний заклад із таким іменем вже існує</value>
   </data>
   <data name="InstitutionOfEducationWithSuchNameNotFound" xml:space="preserve">
-    <value>В базі даних немає університету із назвою</value>
+    <value>В базі даних немає навчального закладу із такою назвою</value>
   </data>
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>Користувач вже існує</value>
@@ -305,5 +305,17 @@
   </data>
   <data name="InstitutionOfEducationIsEnabled" xml:space="preserve">
     <value>Заклад освіти є розбаненим</value>
+  </data>
+  <data name="IoEAlreadyHasAnAdmin" xml:space="preserve">
+    <value>Цей навчальний заклад уже має адміністратора</value>
+  </data>
+  <data name="IoEModeratorNotFound" xml:space="preserve">
+    <value>Такого модератора не знайдено</value>
+  </data>
+  <data name="IoEModeratorNotExists" xml:space="preserve">
+    <value>Такого модератора не існує</value>
+  </data>
+  <data name="IoEModeratorIsDeleted" xml:space="preserve">
+    <value>Цей модератор видалений</value>
   </data>
 </root>

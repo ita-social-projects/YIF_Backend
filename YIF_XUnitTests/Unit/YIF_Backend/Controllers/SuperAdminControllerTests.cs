@@ -357,5 +357,21 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Assert.Equal(error.Message, exсeption.Message);
             }
         }
+
+        [Fact]
+        public async Task ChooseIoEAdminFromModerators_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService
+                .Setup(x => x.ChooseIoEAdminFromModerators(It.IsAny<IoEAdminAddFromModeratorsApiModel>()))
+                .ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.ChooseIoEAdminFromModerators(It.IsAny<IoEAdminAddFromModeratorsApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }
