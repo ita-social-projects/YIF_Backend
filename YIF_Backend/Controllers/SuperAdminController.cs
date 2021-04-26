@@ -271,7 +271,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPatch("BanInstitutionOfEducation/{id}")]
-        public async Task<IActionResult> BanInstituionOfEducation(string id)
+        public async Task<IActionResult> BanInstitutionOfEducation(string id)
         {
             var result = await _superAdminService.ChangeBannedStatusOfIoE(id);
             return Ok(result.Object);

@@ -236,7 +236,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException($"{_resourceManager.GetString("InstitutionOfEducationWithSuchIdNotFound")}: {id}");
             }
             await _institutionOfEducationRepository.Delete(ch.Id);
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEIsDeleted")), true);
+            return result.Set(new DescriptionResponseApiModel("IoEIsDeleted"), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
