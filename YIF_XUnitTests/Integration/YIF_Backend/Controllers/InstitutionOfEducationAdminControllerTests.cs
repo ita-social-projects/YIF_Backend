@@ -142,7 +142,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
 
             // Act
-            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoEInfo");
+            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoEInfoByUserId");
 
             // Assert
             response.EnsureSuccessStatusCode();

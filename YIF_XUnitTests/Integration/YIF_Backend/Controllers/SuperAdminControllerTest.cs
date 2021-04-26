@@ -325,5 +325,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             //Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task DeleteInstitutionOfEducation_EndpointReturnsOk()
+        {
+            // Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.First();
+
+            // Act
+            var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteInstitutionOfEducation/{0}", institutionOfEducation.Id));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

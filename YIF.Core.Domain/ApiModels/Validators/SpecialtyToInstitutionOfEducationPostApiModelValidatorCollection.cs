@@ -35,7 +35,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
                 .Must(x => _context.Specialties.Any(y => y.Id == x))
                 .WithMessage(_resouseManager.GetString("SpecialtyNotFound"));
 
-            RuleForEach(x => x.PaymentAndEducationForms).SetValidator(new PaymentAndEducationFormsPostApiModelValidator(_context, _resouseManager));
+            RuleForEach(x => x.PaymentAndEducationForms).SetValidator(new PaymentAndEducationFormsPostApiModelValidator());
         }
     }
 }

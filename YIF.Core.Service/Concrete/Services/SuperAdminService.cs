@@ -227,6 +227,18 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel("User IsDeleted was updated"), true);
         }
 
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducation(string id)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var ch = await _institutionOfEducationRepository.Get(id);
+            if (ch == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("InstitutionOfEducationWithSuchIdNotFound")}: {id}");
+            }
+            await _institutionOfEducationRepository.Delete(ch.Id);
+            return result.Set(new DescriptionResponseApiModel("IoEIsDeleted"), true);
+        }
+
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();

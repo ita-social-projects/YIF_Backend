@@ -9,21 +9,13 @@ namespace YIF.Core.Domain.ApiModels.Validators
 {
     public class PaymentAndEducationFormsPostApiModelValidator : AbstractValidator<PaymentAndEducationFormsPostApiModel>
     {
-        private readonly EFDbContext _context;
-        private readonly ResourceManager _resouseManager;
-
-        public PaymentAndEducationFormsPostApiModelValidator(EFDbContext context, ResourceManager resouseManager)
+        public PaymentAndEducationFormsPostApiModelValidator()
         {
-            _context = context;
-            _resouseManager = resouseManager;
-
             RuleFor(x => x.PaymentForm)
-               .Must(x => _context.SpecialtyToIoEDescriptions.All(y => y.PaymentForm != PaymentForm.Contract || y.PaymentForm != PaymentForm.Govermental))
-               .WithMessage(_resouseManager.GetString("ModelIsInvalid"));
+                .IsInEnum();
 
             RuleFor(x => x.EducationForm)
-               .Must(x => _context.SpecialtyToIoEDescriptions.All(y => y.EducationForm != EducationForm.Daily || y.EducationForm != EducationForm.Remote))
-               .WithMessage(_resouseManager.GetString("ModelIsInvalid"));
+                .IsInEnum();
         }
     }
 }
