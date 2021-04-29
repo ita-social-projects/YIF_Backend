@@ -1,6 +1,7 @@
 ﻿using System.Resources;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 using SendGrid.Helpers.Errors.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
