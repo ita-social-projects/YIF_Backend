@@ -150,6 +150,9 @@ namespace YIF_Backend.Controllers
         /// <response code="404">Specialty not found</response>
         [HttpGet("Specialty/Description/Get/{specialtyId}")]
         [ProducesResponseType(typeof(SpecialtyToInstitutionOfEducationResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetSpecialtyDescription(string specialtyId)

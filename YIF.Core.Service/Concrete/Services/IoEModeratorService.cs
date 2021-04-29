@@ -105,9 +105,10 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
         {
             var specialty = await _specialtyRepository.ContainsById(specialtyId);
-            var moderator = await _ioEModeratorRepository.GetByUserId(userId);
-            var institutionOfEducation = await _ioERepository.ContainsById(moderator.Admin.InstitutionOfEducationId);
-            var entity = await _specialtyToIoERepository.Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == moderator.Admin.InstitutionOfEducationId);
+            var institutionOfEducationId = (await _ioEModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
+            var institutionOfEducation = await _ioERepository.ContainsById(institutionOfEducationId);
+            var specialtyToIoE = await _specialtyToIoERepository
+                .Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == institutionOfEducationId);
 
             if (institutionOfEducation == false)
                 throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
@@ -115,12 +116,12 @@ namespace YIF.Core.Service.Concrete.Services
             if (specialty == false)
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
 
-            if (entity.Count() == 0)
+            if (specialtyToIoE.Count() == 0)
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
 
             return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
             {
-                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(entity.FirstOrDefault()),
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
                 Success = true
             };
         }
