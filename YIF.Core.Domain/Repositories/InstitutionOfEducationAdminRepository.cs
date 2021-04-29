@@ -57,6 +57,7 @@ namespace YIF.Core.Domain.Repositories
             await _dbContext.SaveChangesAsync();
             return "Admin IsBanned was set to false";
         }
+
         public async Task<InstitutionOfEducationAdminDTO> GetByInstitutionOfEducationId(string institutionOfEducationId)
         {
             var institutionOfEducationAdmin = await _dbContext.InstitutionOfEducationAdmins
@@ -70,6 +71,7 @@ namespace YIF.Core.Domain.Repositories
             }
             return null;
         }
+
         public async Task<InstitutionOfEducationAdminDTO> GetByInstitutionOfEducationIdWithoutIsDeletedCheck(string institutionOfEducationId)
         {
             var institutionOfEducationAdmin = await _dbContext.InstitutionOfEducationAdmins
@@ -118,9 +120,11 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            var admin = _dbContext.InstitutionOfEducationAdmins.FirstOrDefault(x => x.Id == id);
+            admin.IsDeleted = true;
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public Task<InstitutionOfEducationAdminDTO> Get(string id)

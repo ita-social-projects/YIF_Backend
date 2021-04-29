@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using YIF.Core.Data.Entities;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
@@ -67,7 +68,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// Is the institution Of Education favorite
         /// </summary>
         public bool IsFavorite { get; set; }
-
+        public bool IsDeleted { get; set; }
         /// <summary>
         /// List of institution Of Education admins
         /// </summary>
@@ -76,10 +77,13 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// List of institution Of Education lectures
         /// </summary>
         public IEnumerable<LectureDTO> Lectures { get; set; }
+        // For Json Patch
+        public ImageApiModel ImageApiModel { get; set; }
         /// <summary>
         /// List of graduates who liked the institution Of Education
         /// </summary>
         public ICollection<InstitutionOfEducationToGraduateDTO> InstitutionOfEducationGraduates { get; set; }
+
         public ICollection<DirectionToInstitutionOfEducationDTO> DirectionToInstitutionOfEducation { get; set; }
     }
 }

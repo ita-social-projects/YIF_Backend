@@ -385,5 +385,55 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             Assert.Equal("InstitutionOfEducation isBanned was set to false", result.Object.Message);
         }
+
+        [Fact]
+        public async void ChooseIoEAdminFromModerators_ShouldAddAdmin_IfEverythingIsOk()
+        {
+            //Arrange
+            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO { Id = It.IsAny<string>(), User = new UserDTO { Id = It.IsAny<string>() } });
+            _userRepository.Setup(x => x.GetUserWithRoles(It.IsAny<string>())).ReturnsAsync(new DbUser());
+            _userManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
+            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
+            _ioEModeratorRepository.Setup(x => x.Delete(It.IsAny<string>())).ReturnsAsync(true);
+            _institutionOfEducationAdminRepository.Setup(x => x.AddUniAdmin(It.IsAny<InstitutionOfEducationAdmin>())).ReturnsAsync(It.IsAny<string>());
+
+            //Act
+            var result =
+                await superAdminService.ChooseIoEAdminFromModerators(new IoEAdminAddFromModeratorsApiModel { IoEId = It.IsAny<string>(), UserId = It.IsAny<string>() });
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void DeleteInstitutionOfEducation_ReturnsSuccess()
+        {
+            //Arrange
+            _institutionOfEducationRepository.Setup(x => x.Get(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationDTO>(new InstitutionOfEducationDTO
+                {
+                    Id = uni.Id
+                }));
+            _institutionOfEducationRepository.Setup(x => x.Delete(uni.Id))
+                .Returns(Task.FromResult<bool>(true));
+            //Act
+            var result = await superAdminService.DeleteInstitutionOfEducation(uni.Id);
+            //Assert
+            Assert.Equal("IoEIsDeleted", result.Object.Message);
+        }
+
+        [Fact]
+        public async void DeleteInstitutionOfEducation_ReturnsNotFoundMessage()
+        {
+            //Arrange
+            _institutionOfEducationRepository
+                .Setup(x => x.Get(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationDTO>(null));
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteInstitutionOfEducation(uni.Id));
+        }
     }
 }

@@ -14,14 +14,16 @@ namespace YIF.Core.Domain.ServiceInterfaces
             HttpRequest request);
         Task<ResponseApiModel<AuthenticateResponseApiModel>> AddSchoolAdmin(SchoolAdminApiModel schoolAdminModel);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducationAdmin(string id);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducation(string id);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string id);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi);
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddInstitutionOfEducationAndAdmin(InstitutionOfEducationCreatePostApiModel schoolUniAdminDeleteApi, HttpRequest request);
         Task<PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>> GetAllInstitutionOfEducationAdmins(InstitutionOfEducationAdminSortingModel institutionOfEducationAdminFilterModel, PageApiModel pageModel);
         Task<ResponseApiModel<IEnumerable<SchoolAdminResponseApiModel>>> GetAllSchoolAdmins();
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyById(SpecialtyPutApiModel model);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialityPostApiModel);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToTheListOfAllSpecialties(SpecialtyPostApiModel specialtyPostApiModel);
         Task<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoE(string IoEId);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> ChooseIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -30,6 +32,9 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>()
                 .ReverseMap();
+
+            CreateMap<JsonPatchDocument<InstitutionOfEducationPostApiModel>, JsonPatchDocument<InstitutionOfEducationDTO>>();
+            CreateMap<Operation<InstitutionOfEducationPostApiModel>, Operation<InstitutionOfEducationDTO>>();
 
             CreateMap<Direction, DirectionDTO>()
                 .ReverseMap();
