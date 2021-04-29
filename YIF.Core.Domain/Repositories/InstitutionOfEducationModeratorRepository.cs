@@ -79,9 +79,15 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<InstitutionOfEducationModeratorDTO> Get(string id)
+        public async Task<InstitutionOfEducationModeratorDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Include(x => x.User)
+                .Include(m => m.Admin)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 
         public Task<IEnumerable<InstitutionOfEducationModeratorDTO>> Find(Expression<Func<InstitutionOfEducationModerator, bool>> predicate)

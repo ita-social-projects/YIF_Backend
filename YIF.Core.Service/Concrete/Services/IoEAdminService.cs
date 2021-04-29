@@ -170,5 +170,18 @@ namespace YIF.Core.Service.Concrete.Services
                Success = true
             };
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoEModerator(string moderatorId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var moderator = await _ioEModeratorRepository.Get(moderatorId);
+
+            if (moderator.IsDeleted == true)
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted")), false);
+            else if (moderator.IsDeleted == false && await _ioEModeratorRepository.Delete(moderatorId))
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorWasDeleted")), true);
+            else
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorWasNotFound")), false);
+        }
     }
 }
