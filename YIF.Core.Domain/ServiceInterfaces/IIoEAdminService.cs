@@ -9,7 +9,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
     public interface IIoEAdminService
     {
         Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> specialtyToIoE);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(string userId, IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> specialtiesToIoE);
         Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel);
         Task<ResponseApiModel<IEnumerable<IoEModeratorsForIoEAdminResponseApiModel>>> GetIoEModeratorsByUserId(string userId);

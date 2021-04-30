@@ -109,11 +109,28 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task AddRangeOfSpecialtiesToIoE_ShouldAddSpecialties()
         {
             //Arrange
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO{ InstitutionOfEducationId = "1"};
+            var specialtyToIoeId = new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId"};
+
+            var specialtyDescriptionDto = new List<SpecialtyToIoEDescriptionDTO> { new SpecialtyToIoEDescriptionDTO
+            {
+                PaymentForm = PaymentForm.Contract,
+                EducationForm = EducationForm.Daily,
+                SpecialtyToInstitutionOfEducationId = "2" 
+            }};
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _specialtyToIoERepository.Setup(s => s.GetById(It.IsAny<string>())).ReturnsAsync(specialtyToIoeId);
+
+            _specialtyToIoEDescriptionRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToIoEDescription, bool>>>()))
+                .ReturnsAsync(specialtyDescriptionDto);
+
             _specialtyToIoEDescriptionRepository.Setup(s => s.Add(It.IsAny<SpecialtyToIoEDescription>()));
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            var result = await _ioEAdminService.AddRangeSpecialtiesToIoE(new List<SpecialtyToInstitutionOfEducationPostApiModel>());
+            var result = await _ioEAdminService.AddRangeSpecialtiesToIoE
+                (It.IsAny<string>(), new List<SpecialtyToInstitutionOfEducationAddRangePostApiModel>());
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);

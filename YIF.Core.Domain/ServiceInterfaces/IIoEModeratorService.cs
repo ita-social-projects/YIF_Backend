@@ -7,7 +7,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface IIoEModeratorService
     {
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> specialtyToIoE);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(string userId, IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> specialtiesToIoE);
         Task DeleteSpecialtyToIoe(SpecialtyToInstitutionOfEducationPostApiModel specialtyToIoE);
         Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel);
     }

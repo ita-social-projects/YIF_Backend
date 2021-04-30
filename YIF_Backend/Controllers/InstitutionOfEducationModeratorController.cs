@@ -39,9 +39,10 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("AddRangeSpecialtiesToInstitutionOfEducation")]
-        public async Task<IActionResult> AddRangeOfSpecialtiesToIoE([FromBody] IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> model)
+        public async Task<IActionResult> AddRangeOfSpecialtiesToIoE([FromBody] IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> modelsCollection)
         {
-            var result = await _ioEModeratorService.AddRangeSpecialtiesToIoE(model);
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _ioEModeratorService.AddRangeSpecialtiesToIoE(userId, modelsCollection);
             return Ok(result.Object);
         }
 

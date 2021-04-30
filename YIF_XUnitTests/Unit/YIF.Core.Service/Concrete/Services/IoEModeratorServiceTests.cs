@@ -27,17 +27,20 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> 
             _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
+        private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>
+            _institutionOfEducationModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
 
         public IoEModeratorServiceTests()
         {
-            _ioEModeratorService = new IoEModeratorService(
+                _ioEModeratorService = new IoEModeratorService(
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
                 _specialtyToIoEDescriptionRepository.Object,
                 _examRequirementRepository.Object,
+                _institutionOfEducationModeratorRepository.Object,
                 _mapper.Object,
                 _resourceManager.Object
             );
@@ -47,11 +50,29 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task AddRangeOfSpecialtiesToIoE_ShouldAddSpecialties()
         {
             //Arrange
+            var ioeAdmin = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            var ioeModerator = new InstitutionOfEducationModeratorDTO { Admin = ioeAdmin };
+
+            var specialtyToIoeId = new SpecialtyToInstitutionOfEducationDTO { Id = "SpecialtyToIoeId" };
+            var specialtyDescriptionDto = new List<SpecialtyToIoEDescriptionDTO> { new SpecialtyToIoEDescriptionDTO
+            {
+                PaymentForm = PaymentForm.Contract,
+                EducationForm = EducationForm.Daily,
+                SpecialtyToInstitutionOfEducationId = "2"
+            }};
+
+            _institutionOfEducationModeratorRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeModerator);
+            _specialtyToIoERepository.Setup(s => s.GetById(It.IsAny<string>())).ReturnsAsync(specialtyToIoeId);
+
+            _specialtyToIoEDescriptionRepository.Setup(s => s.Find(It.IsAny<Expression<Func<SpecialtyToIoEDescription, bool>>>()))
+                .ReturnsAsync(specialtyDescriptionDto);
+
             _specialtyToIoEDescriptionRepository.Setup(s => s.Add(It.IsAny<SpecialtyToIoEDescription>()));
             _specialtyToIoERepository.Setup(x => x.AddSpecialty(It.IsAny<SpecialtyToInstitutionOfEducation>()));
 
             // Act
-            var result = await _ioEModeratorService.AddRangeSpecialtiesToIoE(new List<SpecialtyToInstitutionOfEducationPostApiModel>());
+            var result = await _ioEModeratorService.AddRangeSpecialtiesToIoE
+                (It.IsAny<string>(), new List<SpecialtyToInstitutionOfEducationAddRangePostApiModel>());
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);

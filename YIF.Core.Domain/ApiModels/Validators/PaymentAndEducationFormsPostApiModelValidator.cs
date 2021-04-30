@@ -7,6 +7,8 @@ namespace YIF.Core.Domain.ApiModels.Validators
     {
         public PaymentAndEducationFormsPostApiModelValidator()
         {
+            ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
+
             RuleFor(x => x.PaymentForm)
                 .IsInEnum();
 

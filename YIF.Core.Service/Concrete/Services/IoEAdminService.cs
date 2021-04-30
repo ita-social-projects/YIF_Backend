@@ -58,35 +58,42 @@ namespace YIF.Core.Service.Concrete.Services
             _configuration = configuration;
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(
-            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> specialtyToIoE)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(string userId,
+            IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> specialtyToIoE)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
 
             foreach (var item in specialtyToIoE)
-            {
-                var specialtyToInstitutionOfEducationDTO = _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(item);
-                var specialtyToInstitutionOfEducation = _mapper.Map<SpecialtyToInstitutionOfEducation>(specialtyToInstitutionOfEducationDTO);
-                
-                SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
-                {
-                    SpecialtyId = specialtyToInstitutionOfEducation.SpecialtyId,
-                    InstitutionOfEducationId = specialtyToInstitutionOfEducation.InstitutionOfEducationId,
-                    IsDeleted = false
-                };
+            {   
+                string speciltyId = (await _specialtyToIoERepository.GetById(item.SpecialtyId)).SpecialtyId;
 
-                var specialtyId = await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
-                
-                foreach (var desc in item.PaymentAndEducationForms)
+                if (speciltyId == null)
                 {
-                    var toIoEDescription = new SpecialtyToIoEDescription
+                    SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
                     {
-                        SpecialtyToInstitutionOfEducationId = specialtyId,
-                        PaymentForm = desc.PaymentForm,
-                        EducationForm = desc.EducationForm
+                        SpecialtyId = item.SpecialtyId,
+                        InstitutionOfEducationId = ioEId,
+                        IsDeleted = false
                     };
 
-                    await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                    await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
+                }
+
+                foreach (var desc in item.PaymentAndEducationForms)
+                {
+                    var description = await _specialtyToIoEDescriptionRepository.Find(s => s.PaymentForm == desc.PaymentForm && s.EducationForm == desc.EducationForm && s.SpecialtyToInstitutionOfEducationId == item.SpecialtyId);
+                    if(description == null)
+                    {
+                        var toIoEDescription = new SpecialtyToIoEDescription
+                        {
+                            SpecialtyToInstitutionOfEducationId = item.SpecialtyId,
+                            PaymentForm = desc.PaymentForm,
+                            EducationForm = desc.EducationForm
+                        };
+
+                        await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                    }
                 }
             }
 

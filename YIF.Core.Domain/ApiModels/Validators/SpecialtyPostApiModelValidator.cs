@@ -12,6 +12,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
         private readonly string NotFoundInDbMessage = "Such {PropertyName} wasn't found in the database";
         public SpecialtyPostApiModelValidator(EFDbContext context)
         {
+            ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
             _context = context;
 
             RuleFor(x => x.Name)

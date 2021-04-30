@@ -50,14 +50,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             ICollection<PaymentAndEducationFormsPostApiModel> collectionOfPaymentFormAndEducation = new PaymentAndEducationFormsPostApiModel[] { paymentAndEducationForm };
 
-            var model = new SpecialtyToInstitutionOfEducationPostApiModel()
+            var model = new SpecialtyToInstitutionOfEducationAddRangePostApiModel()
             {
                 SpecialtyId = chosen.SpecialtyId,
-                InstitutionOfEducationId = chosen.InstitutionOfEducationId,
                 PaymentAndEducationForms = collectionOfPaymentFormAndEducation
             };
 
-            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationPostApiModel[] { model };
+            IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationAddRangePostApiModel[] { model };
 
             // Act            
             var response = await _client.PostAsync($"/api/InstitutionOfEducationModerator/AddRangeSpecialtiesToInstitutionOfEducation", ContentHelper.GetStringContent(collectionOfModels));

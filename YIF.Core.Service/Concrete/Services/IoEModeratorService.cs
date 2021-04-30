@@ -19,6 +19,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
 
@@ -28,6 +29,7 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             IMapper mapper,
             ResourceManager resourceManager)
         {
@@ -36,40 +38,48 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository = specialtyToIoERepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _examRequirementRepository = examRequirementRepository;
+            _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
 
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(
-           IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> specialtyToIoE)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddRangeSpecialtiesToIoE(string userId,
+           IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> specialtyToIoE)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            string ioEId = (await _institutionOfEducationModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
 
             foreach (var item in specialtyToIoE)
             {
-                var specialtyToInstitutionOfEducationDTO = _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(item);
-                var specialtyToInstitutionOfEducation = _mapper.Map<SpecialtyToInstitutionOfEducation>(specialtyToInstitutionOfEducationDTO);
+                string speciltyId = (await _specialtyToIoERepository.GetById(item.SpecialtyId)).SpecialtyId;
 
-                SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
+                if (speciltyId == null)
                 {
-                    SpecialtyId = specialtyToInstitutionOfEducation.SpecialtyId,
-                    InstitutionOfEducationId = specialtyToInstitutionOfEducation.InstitutionOfEducationId,
-                    IsDeleted = false
-                };
+                    SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
+                    {
+                        SpecialtyId = item.SpecialtyId,
+                        InstitutionOfEducationId = ioEId,
+                        IsDeleted = false
+                    };
 
-                var specialtyId = await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
+                    await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
+                }
 
                 foreach (var desc in item.PaymentAndEducationForms)
                 {
-                    var toIoEDescription = new SpecialtyToIoEDescription
+                    var description = await _specialtyToIoEDescriptionRepository.Find(s => s.PaymentForm == desc.PaymentForm && s.EducationForm == desc.EducationForm && s.SpecialtyToInstitutionOfEducationId == item.SpecialtyId);
+                    if (description == null)
                     {
-                        SpecialtyToInstitutionOfEducationId = specialtyId,
-                        PaymentForm = desc.PaymentForm,
-                        EducationForm = desc.EducationForm
-                    };
+                        var toIoEDescription = new SpecialtyToIoEDescription
+                        {
+                            SpecialtyToInstitutionOfEducationId = item.SpecialtyId,
+                            PaymentForm = desc.PaymentForm,
+                            EducationForm = desc.EducationForm
+                        };
 
-                    await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                        await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                    }
                 }
             }
 

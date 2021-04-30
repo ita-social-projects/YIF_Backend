@@ -36,6 +36,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task AddRangeOfSpecialtiesToIoE_ShouldReturnOk()
         {
             //Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
             var chosen = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().FirstOrDefault();
 
             _context.SpecialtyToInstitutionOfEducations.Remove(chosen);
@@ -49,14 +50,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             ICollection<PaymentAndEducationFormsPostApiModel> collectionOfPaymentFormAndEducation = new PaymentAndEducationFormsPostApiModel[] { paymentAndEducationForm };
 
-            var model = new SpecialtyToInstitutionOfEducationPostApiModel()
+            var model = new SpecialtyToInstitutionOfEducationAddRangePostApiModel()
             {
                 SpecialtyId = chosen.SpecialtyId,
-                InstitutionOfEducationId = chosen.InstitutionOfEducationId,
                 PaymentAndEducationForms = collectionOfPaymentFormAndEducation
             };
 
-            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationPostApiModel[] { model };
+            IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationAddRangePostApiModel[] { model };
             
             // Act            
             var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddRangeSpecialtiesToInstitutionOfEducation", ContentHelper.GetStringContent(collectionOfModels));

@@ -6,12 +6,13 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 
 namespace YIF.Core.Domain.ApiModels.Validators
 {
-    public class SpecialtyToInstitutionOfEducationPostApiModelValidator : AbstractValidator<List<SpecialtyToInstitutionOfEducationPostApiModel>>
+    public class SpecialtyToInstitutionOfEducationPostApiModelValidator : AbstractValidator<List<SpecialtyToInstitutionOfEducationAddRangePostApiModel>>
     {
         private readonly EFDbContext _context;
         private readonly ResourceManager _resouseManager;
         public SpecialtyToInstitutionOfEducationPostApiModelValidator(EFDbContext context, ResourceManager resouseManager)
         {
+            ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
             _context = context;
             _resouseManager = resouseManager;
 

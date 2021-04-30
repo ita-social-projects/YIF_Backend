@@ -42,11 +42,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task AddRangeOfSpecialtiesToIoE_EndpointReturnsOk()
         {
             //Arrange
-            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
-            var model = It.IsAny<SpecialtyToInstitutionOfEducationPostApiModel>();
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
 
-            IEnumerable<SpecialtyToInstitutionOfEducationPostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationPostApiModel[] { model };
-            _ioEAdminService.Setup(x => x.AddRangeSpecialtiesToIoE(collectionOfModels)).ReturnsAsync(response);
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            var model = It.IsAny<SpecialtyToInstitutionOfEducationAddRangePostApiModel>();
+
+            IEnumerable<SpecialtyToInstitutionOfEducationAddRangePostApiModel> collectionOfModels = new SpecialtyToInstitutionOfEducationAddRangePostApiModel[] { model };
+            _ioEAdminService.Setup(x => x.AddRangeSpecialtiesToIoE(It.IsAny<string>(), collectionOfModels)).ReturnsAsync(response);
 
             //Act
             var result = await _testControl.AddRangeOfSpecialtiesToIoE(collectionOfModels);
