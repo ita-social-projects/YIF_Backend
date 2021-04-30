@@ -321,4 +321,7 @@
   <data name="IoEIsDeleted" xml:space="preserve">
     <value>Навчальний заклад було видалено</value>
   </data>
+  <data name="IoEModeratorWasAlreadyDeleted" xml:space="preserve">
+    <value>Модератор закладу освіти вже був видаленим</value>
+  </data>
 </root>

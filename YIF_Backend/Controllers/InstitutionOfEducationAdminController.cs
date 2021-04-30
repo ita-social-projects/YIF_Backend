@@ -144,13 +144,14 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Returns if the moderator has been successfully deleted from institution of education.</response>
         /// <response code="400">If id is not valid.</response>
         /// <response code="404">If Moderator with such Id wasn't found</response>
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPatch("DeleteIoEModerator")]
         public async Task<IActionResult> DeleteIoEModerator(string moderatorId)
         {
-            var result = await _ioEAdminService.DeleteIoEModerator(moderatorId);
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.DeleteIoEModerator(moderatorId, userId);
             return Ok(result.Object);
         }
     }

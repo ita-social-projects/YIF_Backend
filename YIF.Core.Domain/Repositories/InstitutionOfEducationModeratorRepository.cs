@@ -79,11 +79,12 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<InstitutionOfEducationModeratorDTO> Get(string id)
+        public async Task<InstitutionOfEducationModeratorDTO> GetModeratorForAdmin(string id, string adminId)
         {
             var moderator = await _dbContext.InstitutionOfEducationModerators
                 .Include(x => x.User)
                 .Include(m => m.Admin)
+                .Where(x => x.AdminId == adminId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
@@ -93,6 +94,17 @@ namespace YIF.Core.Domain.Repositories
         public Task<IEnumerable<InstitutionOfEducationModeratorDTO>> Find(Expression<Func<InstitutionOfEducationModerator, bool>> predicate)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<InstitutionOfEducationModeratorDTO> Get(string id)
+        {
+            var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Include(x => x.User)
+                .Include(m => m.Admin)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
     }
 }

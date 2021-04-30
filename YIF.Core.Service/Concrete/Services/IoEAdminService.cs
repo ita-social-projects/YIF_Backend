@@ -171,17 +171,18 @@ namespace YIF.Core.Service.Concrete.Services
             };
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoEModerator(string moderatorId)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoEModerator(string moderatorId, string userId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var moderator = await _ioEModeratorRepository.Get(moderatorId);
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var moderator = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
 
-            if (moderator.IsDeleted == true)
-                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted")), false);
-            else if (moderator.IsDeleted == false && await _ioEModeratorRepository.Delete(moderatorId))
-                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorWasDeleted")), true);
-            else
-                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorWasNotFound")), false);
+            if (moderator?.IsDeleted == true)
+                throw new BadRequestException(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted"));
+            else if (moderator?.IsDeleted != false && !(await _ioEModeratorRepository.Delete(moderatorId)))
+                throw new BadRequestException(_resourceManager.GetString("IoEModeratorNotFound"));
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
     }
 }
