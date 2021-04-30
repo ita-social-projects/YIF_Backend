@@ -1,4 +1,5 @@
 ﻿using System.Resources;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
@@ -17,6 +18,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
@@ -26,6 +28,7 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IMapper mapper,
             ResourceManager resourceManager)
@@ -34,6 +37,7 @@ namespace YIF.Core.Service.Concrete.Services
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
+            _ioEModeratorRepository = ioEModeratorRepository;
             _examRequirementRepository = examRequirementRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
@@ -96,6 +100,30 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(
                 new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
                 await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
+        }
+
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var institutionOfEducationId = (await _ioEModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
+            var institutionOfEducation = await _ioERepository.ContainsById(institutionOfEducationId);
+            var specialtyToIoE = await _specialtyToIoERepository
+                .Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == institutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (specialtyToIoE.Count() == 0)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
+            {
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
+                Success = true
+            };
         }
     }
 }

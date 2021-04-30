@@ -10,6 +10,12 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         public string SpecialtyId { get; set; }
 
         /// <summary>
+        /// Gets or sets the id of specialtyToInstitutionOfEducation entry.
+        /// </summary>     
+        /// <example>a47e79d8-7e68-43c5-a5c9-1c6dff1e1693</example>
+        public string SpecialtyToInstitutionOfEducationId { get; set; }
+
+        /// <summary>
         /// Gets or sets the institutionOfEducation id to which this specialty to institutionOfEducation belongs.
         /// </summary>
         public string InstitutionOfEducationId { get; set; }

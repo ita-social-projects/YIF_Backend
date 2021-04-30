@@ -321,4 +321,7 @@
   <data name="IoEIsDeleted" xml:space="preserve">
     <value>Навчальний заклад було видалено</value>
   </data>
+  <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
+    <value>Не знайдено модератора з таким ідентифікатором</value>
+  </data>
 </root>
