@@ -134,5 +134,27 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert  
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task GetSpecialtyDescription_ShouldReturnOk_IfEverythingIsOk()
+        {
+            //Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            var response = new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>(new SpecialtyToInstitutionOfEducationResponseApiModel(), true);
+            _ioEAdminService.Setup(x => x.GetSpecialtyToIoEDescription(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.GetSpecialtyDescription(It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

@@ -75,10 +75,11 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(list);
         }
 
-        public async Task AddSpecialty(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation)
+        public async Task<string> AddSpecialty(SpecialtyToInstitutionOfEducation specialtyToInstitutionOfEducation)
         {
             await _context.SpecialtyToInstitutionOfEducations.AddAsync(specialtyToInstitutionOfEducation);
             await _context.SaveChangesAsync();
+            return specialtyToInstitutionOfEducation.Id;
         }
 
         public async Task<IEnumerable<SpecialtyToInstitutionOfEducationDTO>> GetSpecialtyToIoEDescriptionsById(string id)
@@ -107,16 +108,10 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<IEnumerable<SpecialtyToInstitutionOfEducationDTO>>(specialtyToInstitutionOfEducation);
         }
 
-        public async Task AddRange(IEnumerable<SpecialtyToInstitutionOfEducation> collectionOfSpecialties)
+        public async Task<SpecialtyToInstitutionOfEducationDTO> GetBySpecialtyId(string id, string ioeId)
         {
-            await _context.SpecialtyToInstitutionOfEducations.AddRangeAsync(collectionOfSpecialties);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<SpecialtyToInstitutionOfEducationDTO> GetById(string id)
-        {
-            var specitalty = await _context.SpecialtyToInstitutionOfEducations.Where(x => x.SpecialtyId == id).FirstOrDefaultAsync();
-            return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specitalty);
+            var specialty = await _context.SpecialtyToInstitutionOfEducations.Where(x => x.SpecialtyId == id && x.InstitutionOfEducationId == ioeId).FirstOrDefaultAsync();
+                return _mapper.Map<SpecialtyToInstitutionOfEducationDTO>(specialty);
         }
     }
 }

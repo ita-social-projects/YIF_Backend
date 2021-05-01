@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using YIF.Core.Data.Entities;
 
-namespace YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse
+namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
     public class PaymentAndEducationFormsPostApiModel
     {

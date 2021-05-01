@@ -8,8 +8,7 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task<IEnumerable<K>> GetSpecialtyToIoEDescriptionsById(string id);
-        Task AddSpecialty(T specialtyToInstitutionOfEducation);
-        Task AddRange(IEnumerable<T> collectionOfSpecialties);
-        Task<K> GetById(string id);
+        Task<string> AddSpecialty(T specialtyToInstitutionOfEducation);
+        Task<K> GetBySpecialtyId(string id, string ioeId);
     }
 }

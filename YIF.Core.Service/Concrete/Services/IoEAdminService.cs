@@ -1,6 +1,7 @@
 ﻿using System.Resources;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 using SendGrid.Helpers.Errors.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
@@ -65,10 +66,10 @@ namespace YIF.Core.Service.Concrete.Services
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
 
             foreach (var item in specialtyToIoE)
-            {   
-                string speciltyId = (await _specialtyToIoERepository.GetById(item.SpecialtyId)).SpecialtyId;
+            {
+                var specialty = (await _specialtyToIoERepository.GetBySpecialtyId(item.SpecialtyId, ioEId));
 
-                if (speciltyId == null)
+                if (specialty == null)
                 {
                     SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
                     {
@@ -76,27 +77,31 @@ namespace YIF.Core.Service.Concrete.Services
                         InstitutionOfEducationId = ioEId,
                         IsDeleted = false
                     };
+                    string specialtyToIoEId = await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
 
-                    await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
-                }
-
-                foreach (var desc in item.PaymentAndEducationForms)
-                {
-                    var description = await _specialtyToIoEDescriptionRepository.Find(s => s.PaymentForm == desc.PaymentForm && s.EducationForm == desc.EducationForm && s.SpecialtyToInstitutionOfEducationId == item.SpecialtyId);
-                    if(description == null)
+                    foreach (var desc in item.PaymentAndEducationForms)
                     {
-                        var toIoEDescription = new SpecialtyToIoEDescription
-                        {
-                            SpecialtyToInstitutionOfEducationId = item.SpecialtyId,
-                            PaymentForm = desc.PaymentForm,
-                            EducationForm = desc.EducationForm
-                        };
+                        var description = await _specialtyToIoEDescriptionRepository.Find(s => s.PaymentForm == desc.PaymentForm
+                        && s.EducationForm == desc.EducationForm
+                        && s.SpecialtyToInstitutionOfEducationId == specialtyToIoEId
+                        && s.SpecialtyToInstitutionOfEducation.SpecialtyId == item.SpecialtyId);
 
-                        await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                        if (description == null)
+                        {
+                            var toIoEDescription = new SpecialtyToIoEDescription
+                            {
+                                SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                                PaymentForm = desc.PaymentForm,
+                                EducationForm = desc.EducationForm
+                            };
+
+                            await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                        }
                     }
                 }
+                else
+                    throw new BadRequestException(_resourceManager.GetString("ModelIsInvalid"));
             }
-
             return result.Set(
                    new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtiesWereAdded")), true);
         }
@@ -183,13 +188,37 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId) 
-        { 
+        {
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
 
             return new ResponseApiModel<IoEInformationResponseApiModel> 
             { 
                Object = _mapper.Map<IoEInformationResponseApiModel>(await _ioERepository.Get(ioEId)),
                Success = true
+            };
+        }
+
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var institutionOfEducationId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var institutionOfEducation = await _ioERepository.ContainsById(institutionOfEducationId);
+            var specialtyToIoE = await _specialtyToIoERepository
+                .Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == institutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (specialtyToIoE.Count() == 0)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
+            {
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
+                Success = true
             };
         }
     }

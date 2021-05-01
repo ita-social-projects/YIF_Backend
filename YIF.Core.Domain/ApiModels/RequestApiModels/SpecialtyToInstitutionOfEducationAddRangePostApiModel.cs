@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {

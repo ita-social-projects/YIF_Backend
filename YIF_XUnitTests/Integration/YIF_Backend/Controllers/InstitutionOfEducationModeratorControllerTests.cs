@@ -9,8 +9,8 @@ using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
-using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 using YIF.Core.Data.Entities;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
@@ -120,6 +120,25 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Assert
             response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetSpecialtyDescription_EndpointReturnsSuccessAndCorrectContentType()
+        {
+            //Arrange
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
+            var moderator = _context.InstitutionOfEducationModerators.Include(m => m.Admin).AsNoTracking().FirstOrDefault();
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().Where(i => i.Id == moderator.Admin.InstitutionOfEducationId).FirstOrDefault();
+            var specialtyToIoE = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.InstitutionOfEducationId == institutionOfEducation.Id).FirstOrDefault();
+
+            //Act
+            var response = await _client.GetAsync(
+                $"/api/InstitutionOfEducationModerator/Specialty/Description/Get/" + specialtyToIoE.SpecialtyId);
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+            Assert.Equal("application/json; charset=utf-8",
+                 response.Content.Headers.ContentType.ToString());
         }
     }
 }

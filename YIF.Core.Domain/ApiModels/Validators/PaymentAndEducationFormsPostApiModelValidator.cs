@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 
 namespace YIF.Core.Domain.ApiModels.Validators
 {

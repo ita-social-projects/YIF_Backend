@@ -9,12 +9,12 @@ namespace YIF.Core.Domain.ApiModels.Validators
     public class SpecialtyToInstitutionOfEducationPostApiModelValidatorCollection : AbstractValidator<SpecialtyToInstitutionOfEducationAddRangePostApiModel>
     {
         private readonly EFDbContext _context;
-        private readonly ResourceManager _resouseManager;
-        public SpecialtyToInstitutionOfEducationPostApiModelValidatorCollection(EFDbContext context, ResourceManager resouseManager)
+        private readonly ResourceManager _resourceManager;
+        public SpecialtyToInstitutionOfEducationPostApiModelValidatorCollection(EFDbContext context, ResourceManager resourceManager)
         {
             ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
             _context = context;
-            _resouseManager = resouseManager;
+            _resourceManager = resourceManager;
 
             RuleFor(x => x.SpecialtyId)
                 .NotEmpty()
@@ -26,7 +26,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
 
             RuleFor(x => x.SpecialtyId)
                 .Must(x => _context.Specialties.Any(y => y.Id == x))
-                .WithMessage(_resouseManager.GetString("SpecialtyNotFound"));
+                .WithMessage(_resourceManager.GetString("SpecialtyNotFound"));
 
             RuleForEach(x => x.PaymentAndEducationForms).SetValidator(new PaymentAndEducationFormsPostApiModelValidator());
         }

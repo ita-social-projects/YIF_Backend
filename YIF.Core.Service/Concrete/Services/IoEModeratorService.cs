@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Resources;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using SendGrid.Helpers.Errors.Model;
@@ -18,6 +19,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
+        private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
         private readonly IMapper _mapper;
@@ -28,6 +30,7 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
+            IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
             IMapper mapper,
@@ -37,6 +40,7 @@ namespace YIF.Core.Service.Concrete.Services
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
+            _ioEModeratorRepository = ioEModeratorRepository;
             _examRequirementRepository = examRequirementRepository;
             _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
             _mapper = mapper;
@@ -52,9 +56,9 @@ namespace YIF.Core.Service.Concrete.Services
 
             foreach (var item in specialtyToIoE)
             {
-                string speciltyId = (await _specialtyToIoERepository.GetById(item.SpecialtyId)).SpecialtyId;
+                var specialty = (await _specialtyToIoERepository.GetBySpecialtyId(item.SpecialtyId, ioEId));
 
-                if (speciltyId == null)
+                if (specialty == null)
                 {
                     SpecialtyToInstitutionOfEducation specialtyToIoEducation = new SpecialtyToInstitutionOfEducation
                     {
@@ -62,27 +66,31 @@ namespace YIF.Core.Service.Concrete.Services
                         InstitutionOfEducationId = ioEId,
                         IsDeleted = false
                     };
+                    string specialtyToIoEId = await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
 
-                    await _specialtyToIoERepository.AddSpecialty(specialtyToIoEducation);
-                }
-
-                foreach (var desc in item.PaymentAndEducationForms)
-                {
-                    var description = await _specialtyToIoEDescriptionRepository.Find(s => s.PaymentForm == desc.PaymentForm && s.EducationForm == desc.EducationForm && s.SpecialtyToInstitutionOfEducationId == item.SpecialtyId);
-                    if (description == null)
+                    foreach (var desc in item.PaymentAndEducationForms)
                     {
-                        var toIoEDescription = new SpecialtyToIoEDescription
-                        {
-                            SpecialtyToInstitutionOfEducationId = item.SpecialtyId,
-                            PaymentForm = desc.PaymentForm,
-                            EducationForm = desc.EducationForm
-                        };
+                        var description = await _specialtyToIoEDescriptionRepository.Find(s => s.PaymentForm == desc.PaymentForm
+                        && s.EducationForm == desc.EducationForm
+                        && s.SpecialtyToInstitutionOfEducationId == specialtyToIoEId
+                        && s.SpecialtyToInstitutionOfEducation.SpecialtyId == item.SpecialtyId);
 
-                        await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                        if (description == null)
+                        {
+                            var toIoEDescription = new SpecialtyToIoEDescription
+                            {
+                                SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                                PaymentForm = desc.PaymentForm,
+                                EducationForm = desc.EducationForm
+                            };
+
+                            await _specialtyToIoEDescriptionRepository.Add(toIoEDescription);
+                        }
                     }
                 }
+                else
+                    throw new BadRequestException(_resourceManager.GetString("ModelIsInvalid"));
             }
-
             return result.Set(
                    new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtiesWereAdded")), true);
         }
@@ -120,6 +128,30 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(
                 new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDescriptionUpdated")),
                 await _specialtyToIoEDescriptionRepository.Update(_mapper.Map<SpecialtyToIoEDescription>(specialtyToIoEDescriptionDTO)));
+        }
+
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var institutionOfEducationId = (await _ioEModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
+            var institutionOfEducation = await _ioERepository.ContainsById(institutionOfEducationId);
+            var specialtyToIoE = await _specialtyToIoERepository
+                .Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == institutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (specialtyToIoE.Count() == 0)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
+            {
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
+                Success = true
+            };
         }
     }
 }

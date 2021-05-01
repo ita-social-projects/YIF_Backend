@@ -137,5 +137,27 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.GetIoEInfoByUserId(userId);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get specialty description in IoE.
+        /// </summary>
+        /// <response code="200">Get full description of specialty in IoE</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not institution of education admin</response>
+        /// <response code="404">Specialty not found</response>
+        [HttpGet("Specialty/Description/Get/{specialtyId}")]
+        [ProducesResponseType(typeof(SpecialtyToInstitutionOfEducationResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetSpecialtyDescription(string specialtyId)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _ioEAdminService.GetSpecialtyToIoEDescription(userId, specialtyId);
+            return Ok(result.Object);
+        }
     }
 }
