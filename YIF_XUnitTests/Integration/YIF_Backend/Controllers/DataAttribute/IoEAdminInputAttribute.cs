@@ -24,5 +24,14 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute
                 new Claim("id", userId)
             };
         }
+
+        public void SetUserIdByIoEAdminUserIdForHttpContext(string userId)
+        {
+
+            FakePolicyEvaluator.claims = new[]
+            {
+                new Claim("id", userId)
+            };
+        }
     }
 }

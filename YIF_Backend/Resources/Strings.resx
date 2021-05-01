@@ -324,4 +324,7 @@
   <data name="IoEModeratorWasAlreadyDeleted" xml:space="preserve">
     <value>Модератор закладу освіти вже був видаленим</value>
   </data>
+  <data name="IoEModeratorNotFoundForThisAdmin" xml:space="preserve">
+    <value>Модератора закладу освіти не знайдено для цього адміна</value>
+  </data>
 </root>

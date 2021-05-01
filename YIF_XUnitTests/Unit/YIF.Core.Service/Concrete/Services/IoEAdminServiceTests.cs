@@ -277,6 +277,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
         [Fact]
         public void DeleteSpecialtyFromInstitutionOfEducation_ShouldThrowBadRequestException_IfSpecialtyInInstitutionOfEducationNotFound()
         {
@@ -310,6 +311,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
         [Fact]
         public async Task UpdateSpecialtyDescription_ShouldUpdateDescriptionAndReturnCorrectMessage_IfEverythingIsOk()
         {
@@ -356,6 +358,57 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert  
             Assert.IsType<ResponseApiModel<IoEInformationResponseApiModel>>(result);
             Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldDeleteIoEModerator_IfEverythingOk()
+        {
+            // Arrange  
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO());
+
+            // Act
+            var result = await  _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldThrowNotFoundException_IfModeratorWasNotFound()
+        {
+            // Arrange  
+            InstitutionOfEducationModeratorDTO moderator = null;
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<NotFoundException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldThrowBadRequestException_IfModeratorIsAlreadyDeleted()
+        {
+            // Arrange  
+            InstitutionOfEducationModeratorDTO moderator = new InstitutionOfEducationModeratorDTO() { IsDeleted = true };
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
         }
     }
 }

@@ -177,10 +177,12 @@ namespace YIF.Core.Service.Concrete.Services
             var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
             var moderator = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
 
-            if (moderator?.IsDeleted == true)
+            if (moderator == null)
+                throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
+            if (moderator.IsDeleted)
                 throw new BadRequestException(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted"));
-            else if (moderator?.IsDeleted != false && !(await _ioEModeratorRepository.Delete(moderatorId)))
-                throw new BadRequestException(_resourceManager.GetString("IoEModeratorNotFound"));
+            else 
+                await _ioEModeratorRepository.Delete(moderatorId);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }

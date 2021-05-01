@@ -147,7 +147,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("DeleteIoEModerator")]
+        [HttpDelete("DeleteIoEModerator")]
         public async Task<IActionResult> DeleteIoEModerator(string moderatorId)
         {
             string userId = User.FindFirst("id").Value;

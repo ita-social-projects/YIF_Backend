@@ -120,5 +120,27 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert  
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async void DeleteIoEModerator_ShouldReturnOk_IfEverythingIsOk()
+        {
+            // Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            _ioEAdminService.Setup(x => x.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<DescriptionResponseApiModel>());
+
+            // Act
+            var result = await _testControl.DeleteIoEModerator(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }
