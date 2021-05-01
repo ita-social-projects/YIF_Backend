@@ -49,13 +49,14 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("Anonymous")]
-        public async Task<IActionResult> GetInstitutionOfEducationsPageForAnonym(
+        public async Task<IActionResult> GetInstitutionOfEducationsPageForAnonymous(
             string DirectionName, 
             string SpecialtyName, 
             string InstitutionOfEducationName,
             string InstitutionOfEducationAbbreviation, 
             string PaymentForm,
             string EducationForm,
+            string InstitutionOfEducationType,
             int page = 1, 
             int pageSize = 10)
         {
@@ -66,7 +67,8 @@ namespace YIF_Backend.Controllers
                 InstitutionOfEducationName = InstitutionOfEducationName,
                 InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
                 PaymentForm = PaymentForm,
-                EducationForm = EducationForm
+                EducationForm = EducationForm,
+                InstitutionOfEducationType = InstitutionOfEducationType
             };
 
             var pageModel = new PageApiModel
@@ -99,6 +101,7 @@ namespace YIF_Backend.Controllers
             string InstitutionOfEducationAbbreviation,
             string PaymentForm,
             string EducationForm,
+            string InstitutionOfEducationType,
             int page = 1,
             int pageSize = 10)
         {
@@ -111,7 +114,8 @@ namespace YIF_Backend.Controllers
                 InstitutionOfEducationName = InstitutionOfEducationName,
                 InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
                 PaymentForm = PaymentForm,
-                EducationForm = EducationForm
+                EducationForm = EducationForm,
+                InstitutionOfEducationType = InstitutionOfEducationType
             };
 
             var pageModel = new PageApiModel

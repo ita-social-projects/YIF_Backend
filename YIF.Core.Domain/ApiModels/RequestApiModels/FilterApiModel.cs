@@ -37,5 +37,11 @@
         /// </summary>
         /// <example>Daily</example>
         public string EducationForm { get; set; }
+
+        /// <summary>
+        /// Institution of education type
+        /// </summary>
+        /// <example>University</example>
+        public string InstitutionOfEducationType { get; set; }
     }
 }

@@ -120,6 +120,14 @@ namespace YIF.Core.Service.Concrete.Services
                 filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x => specialtyToInstitutionOfEducation.Any(y => y.InstitutionOfEducationId == x.Id));
             }
 
+            if (filterModel.InstitutionOfEducationType != string.Empty 
+                && filterModel.InstitutionOfEducationType != null 
+                && (InstitutionOfEducationType)Enum.Parse(typeof(InstitutionOfEducationType), filterModel.InstitutionOfEducationType) == InstitutionOfEducationType.College)
+            {
+                filteredInstitutionOfEducations = filteredInstitutionOfEducations.Where(x =>
+                    x.InstitutionOfEducationType == InstitutionOfEducationType.College);
+            }
+
             return _mapper.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(filteredInstitutionOfEducations.Distinct().ToList());
         }
 
@@ -133,7 +141,7 @@ namespace YIF.Core.Service.Concrete.Services
             var favoriteInstitutionOfEducations = await _institutionOfEducationRepository.GetFavoritesByUserId(userId);
             institutionOfEducation.IsFavorite = favoriteInstitutionOfEducations.Where(fu => fu.Id == institutionOfEducation.Id).Count() > 0;
 
-            var response  = _mapper.Map<InstitutionOfEducationResponseApiModel>(institutionOfEducation);
+            var response = _mapper.Map<InstitutionOfEducationResponseApiModel>(institutionOfEducation);
             var directions = _mapper.Map<IEnumerable<DirectionForIoEResponseApiModel>>(await _directionRepository.GetByIoEId(institutionOfEducationId));
 
             string pathPhoto = $"{request.Scheme}://{request.Host}/{_configuration.GetValue<string>("UrlImages")}/";
@@ -167,7 +175,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<PageResponseApiModel<InstitutionsOfEducationResponseApiModel>> GetInstitutionOfEducationsPageForUser(
             FilterApiModel filterModel,
-            PageApiModel pageModel, 
+            PageApiModel pageModel,
             string userId)
         {
             var result = await GetInstitutionOfEducationsPage(filterModel, pageModel);

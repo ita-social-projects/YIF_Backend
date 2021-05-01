@@ -75,7 +75,6 @@ namespace YIF_Backend.Controllers
             string PaymentForm,
             string EducationForm)
         {
-
             var userId = User.FindFirst("id").Value;
 
             var filterModel = new FilterApiModel

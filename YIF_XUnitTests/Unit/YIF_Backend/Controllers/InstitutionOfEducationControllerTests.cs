@@ -27,7 +27,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _testControl = new InstitutionOfEducationController(_institutionOfEducationService.Object);
         }
         [Fact]
-        public async Task GetInstitutionOfEducationsPageForAnonym_ReturnOk()
+        public async Task GetInstitutionOfEducationsPageForAnonymous_ReturnOk()
         {
             // Arrange
             var filterModel = new FilterApiModel()
@@ -37,7 +37,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 InstitutionOfEducationName = "",
                 InstitutionOfEducationAbbreviation = "",
                 PaymentForm = "",
-                EducationForm = ""
+                EducationForm = "",
+                InstitutionOfEducationType = ""
             };
             var pageModel = new PageApiModel
             {
@@ -58,13 +59,14 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _institutionOfEducationService.Setup(x => x.GetInstitutionOfEducationsPage(filterModel, pageModel)).Returns(Task.FromResult(_iOEs));
 
             // Act
-            var result = await _testControl.GetInstitutionOfEducationsPageForAnonym(
+            var result = await _testControl.GetInstitutionOfEducationsPageForAnonymous(
                 filterModel.DirectionName,
                 filterModel.SpecialtyName,
                 filterModel.InstitutionOfEducationName,
                 filterModel.InstitutionOfEducationAbbreviation,
                 filterModel.PaymentForm,
                 filterModel.EducationForm,
+                filterModel.InstitutionOfEducationType,
                 1, 10);
 
             // Assert
@@ -84,7 +86,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 InstitutionOfEducationName = "",
                 InstitutionOfEducationAbbreviation = "",
                 PaymentForm = "",
-                EducationForm = ""
+                EducationForm = "",
+                InstitutionOfEducationType = ""
             };
             var pageModel = new PageApiModel
             {
@@ -124,6 +127,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 filterModel.InstitutionOfEducationAbbreviation,
                 filterModel.PaymentForm,
                 filterModel.EducationForm,
+                filterModel.InstitutionOfEducationType,
                 1, 10);
 
             // Assert
