@@ -158,5 +158,26 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.GetSpecialtyToIoEDescription(userId, specialtyId);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Adds Lector to IoE
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Lector successfully added to the Institution of Education</response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="404">If specialty not found</response>
+        /// <response code="409">If email incorrect</response>
+        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("AddLectorToIoE")]
+        public async Task<IActionResult> AddIoELector([FromBody] LectorPostApiModel model)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _ioEAdminService.AddLectorToIoE(userId, model);
+            return Ok(result.Object);
+        }
     }
 }

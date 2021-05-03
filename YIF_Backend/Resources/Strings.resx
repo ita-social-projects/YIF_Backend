@@ -324,4 +324,7 @@
   <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
     <value>Не знайдено модератора з таким ідентифікатором</value>
   </data>
+  <data name="IoEAlreadyHasLector" xml:space="preserve">
+    <value>Цей навчальний заклад вже має лектора</value>
+  </data>
 </root>

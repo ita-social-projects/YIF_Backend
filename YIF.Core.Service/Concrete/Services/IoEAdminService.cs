@@ -15,6 +15,8 @@ using YIF.Core.Domain.ServiceInterfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Domain.ApiModels.Validators;
+using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -27,6 +29,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
+        private readonly ILectorRepository<Lecture, LectureDTO> _lectorRepository;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
@@ -40,10 +44,13 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
+            ILectorRepository<Lecture, LectureDTO> lectorRepository,
+            IUserRepository<DbUser, UserDTO> userRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
             ResourceManager resourceManager
+
         )
         {
             _specialtyRepository = specialtyRepository;
@@ -53,6 +60,8 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _examRequirementRepository = examRequirementRepository;
             _ioEModeratorRepository = ioEModeratorRepository;
+            _lectorRepository = lectorRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
@@ -194,6 +203,20 @@ namespace YIF.Core.Service.Concrete.Services
                 Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
                 Success = true
             };
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(string userId, LectorPostApiModel lector)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+
+            var userDTO = await _userRepository.GetByEmail(lector.Email);
+            var user = _mapper.Map<DbUser>(userDTO);
+
+            var newLector = new Lecture { InstitutionOfEducationId = ioEId, User = user };
+            await _lectorRepository.Add(newLector);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }
     }
 }

@@ -142,5 +142,27 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task AddIoELector_ShouldReturnOk()
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _ioEAdminService.Setup(x => x.AddLectorToIoE(It.IsAny<string>(), It.IsAny<LectorPostApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.AddIoELector(new LectorPostApiModel());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

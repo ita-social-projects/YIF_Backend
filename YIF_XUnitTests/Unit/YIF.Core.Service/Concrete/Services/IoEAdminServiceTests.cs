@@ -17,6 +17,8 @@ using YIF.Core.Service.Concrete.Services;
 using YIF_XUnitTests.Unit.TestData;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using Microsoft.AspNetCore.JsonPatch;
+using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -33,6 +35,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
+        private readonly Mock<ILectorRepository<Lecture, LectureDTO>> _lectorRepository = new Mock<ILectorRepository<Lecture, LectureDTO>>();
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
@@ -40,7 +44,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public IoEAdminServiceTests()
         {
-            _ioEAdminService = new IoEAdminService(
+                _ioEAdminService = new IoEAdminService(
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
@@ -48,11 +52,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _specialtyToIoEDescriptionRepository.Object,
                 _examRequirementRepository.Object,
                 _ioEModeratorRepository.Object,
+                _lectorRepository.Object,
+                _userRepository.Object,
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
                 _resourceManager.Object
-            );
+            );;
         }
 
         [Fact]
@@ -511,6 +517,26 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task AddIoELector_ShouldReturnOk()
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            _ioEAdminRepository.Setup(sr => sr.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>()));
+
+            var newLector = new Lecture {InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>()};
+
+            //Act
+            var result = await _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new LectorPostApiModel());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
     }
 }

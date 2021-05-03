@@ -154,5 +154,20 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal("application/json; charset=utf-8",
                  response.Content.Headers.ContentType.ToString());
         }
+
+        [Fact]
+        public async Task AddIoELector_ShouldReturnOk()
+        {
+            //Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            //var chosen = _context.Users.Where(y => y.IsDeleted == false).FirstOrDefault();
+            var model = new LectorPostApiModel {Email = "AdminEmailTest1@gmial.com" };
+           
+            // Act            
+            var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddLectorToIoE", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
