@@ -520,7 +520,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task AddIoELector_ShouldReturnOk()
+        public async Task AddIoELector_ReturnsSuccess()
         {
             //Arrange
             InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
@@ -528,14 +528,37 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
             _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>())).ReturnsAsync(userDto);
 
+            List<LectureDTO> lecturesDTO = null;
             var newLector = new Lecture { InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>() };
 
+            _lectorRepository.Setup(s => s.Find(It.IsAny<Expression<Func<Lecture, bool>>>()))
+                .ReturnsAsync(lecturesDTO);
             //Act
             var result = await _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new LectorPostApiModel());
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
             Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task AddIoELector_ReturnsBadRequestMessage()
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            UserDTO userDto = new UserDTO();
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>())).ReturnsAsync(userDto);
+            var newLector = new Lecture { InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>() };
+
+            var lecturesDTO = new List<LectureDTO> { new LectureDTO { UserId = "FSDF", InstitutionOfEducationId = "DASDA"} };
+            _lectorRepository.Setup(s => s.Find(It.IsAny<Expression<Func<Lecture, bool>>>()))
+                .ReturnsAsync(lecturesDTO);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new LectorPostApiModel()));
         }
     }
 }
