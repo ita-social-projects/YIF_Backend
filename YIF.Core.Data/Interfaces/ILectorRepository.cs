@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ILectorRepository<T, K> : IDisposable
+    public interface ILectorRepository<T, K> : IRepository<T, K>
         where T : class
         where K : class
     {

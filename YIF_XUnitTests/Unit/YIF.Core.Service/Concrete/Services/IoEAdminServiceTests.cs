@@ -524,12 +524,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
-            _ioEAdminRepository.Setup(sr => sr.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
-
+            UserDTO userDto = new UserDTO();
             _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
-            _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>()));
+            _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>())).ReturnsAsync(userDto);
 
-            var newLector = new Lecture {InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>()};
+            var newLector = new Lecture { InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>() };
 
             //Act
             var result = await _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new LectorPostApiModel());

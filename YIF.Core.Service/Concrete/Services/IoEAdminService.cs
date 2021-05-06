@@ -211,12 +211,17 @@ namespace YIF.Core.Service.Concrete.Services
             var ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
 
             var userDTO = await _userRepository.GetByEmail(lector.Email);
-            var user = _mapper.Map<DbUser>(userDTO);
+            var lectorIoE = await _lectorRepository.Find(s => s.UserId == userDTO.Id);
 
-            var newLector = new Lecture { InstitutionOfEducationId = ioEId, User = user };
+            if (lectorIoE != null)
+            {
+                throw new BadRequestException(_resourceManager.GetString("IoEAlreadyHasLector"));
+            }
+
+            var newLector = new Lecture { InstitutionOfEducationId = ioEId, UserId = userDTO.Id };
             await _lectorRepository.Add(newLector);
 
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);
         }
     }
 }

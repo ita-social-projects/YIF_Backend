@@ -1,4 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -23,9 +28,42 @@ namespace YIF.Core.Domain.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public Task<bool> Delete(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
             _context.Dispose();
+        }
+
+        public async Task<IEnumerable<LectureDTO>> Find(Expression<Func<Lecture, bool>> predicate)
+        {
+            var lectors = await _context.Lectures.Where(predicate)
+                .AsNoTracking().ToListAsync();
+
+            if (lectors != null || lectors.Count > 0)
+            {
+                return _mapper.Map<IEnumerable<LectureDTO>>(lectors);
+            }
+
+            return null;
+        }
+
+        public Task<LectureDTO> Get(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<LectureDTO>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Update(Lecture item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

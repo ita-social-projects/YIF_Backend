@@ -25,10 +25,6 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.Email)
                 .Must(x => _context.Users.Any(y => y.Email == x && y.IsDeleted == false))
                 .WithMessage(_resourceManager.GetString("UserDoesNotExist"));
-
-            RuleFor(x => x.Email)
-                .Must(x => _context.Lectures.Any(y => y.User.Email != x))
-                .WithMessage(_resourceManager.GetString("IoEAlreadyHasLector"));
-        }
+        } 
     }
 }

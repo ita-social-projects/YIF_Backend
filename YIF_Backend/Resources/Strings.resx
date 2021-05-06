@@ -325,6 +325,9 @@
     <value>Не знайдено модератора з таким ідентифікатором</value>
   </data>
   <data name="IoEAlreadyHasLector" xml:space="preserve">
-    <value>Цей навчальний заклад вже має лектора</value>
+    <value>Цей лектор вже є в навчальному закладі</value>
+  </data>
+  <data name="LectorWasAdded" xml:space="preserve">
+    <value>Лектора успішно додано </value>
   </data>
 </root>

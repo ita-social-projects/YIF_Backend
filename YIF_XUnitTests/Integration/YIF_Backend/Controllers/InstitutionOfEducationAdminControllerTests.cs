@@ -160,8 +160,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             //Arrange
             _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
-            //var chosen = _context.Users.Where(y => y.IsDeleted == false).FirstOrDefault();
-            var model = new LectorPostApiModel {Email = "AdminEmailTest1@gmial.com" };
+            var chosen = _context.Users.Where(y => y.IsDeleted == false).FirstOrDefault();
+            var model = new LectorPostApiModel {Email = chosen.Email};
            
             // Act            
             var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddLectorToIoE", ContentHelper.GetStringContent(model));

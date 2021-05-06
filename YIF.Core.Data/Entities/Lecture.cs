@@ -1,21 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Entities
 {
-    public class Lecture
+    public class Lecture : BaseEntity
     {
-        [Key, ForeignKey("User")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
         public string InstitutionOfEducationId { get; set; }
 
         [ForeignKey("InstitutionOfEducationId")]
         public InstitutionOfEducation InstitutionOfEducation { get; set; }
-        /// <summary>
-        /// Link to Identity user
-        /// </summary>
+
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
         public DbUser User { get; set; }
     }
 }
