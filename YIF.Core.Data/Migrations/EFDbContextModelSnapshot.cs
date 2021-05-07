@@ -369,6 +369,9 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -389,9 +392,6 @@ namespace YIF.Core.Data.Migrations
 
                     b.Property<DateTime>("StartOfCampaign")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

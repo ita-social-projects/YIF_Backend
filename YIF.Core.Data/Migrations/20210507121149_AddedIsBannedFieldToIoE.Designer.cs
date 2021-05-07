@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210419130245_AddedIsBannedFieldToIoE")]
+    [Migration("20210507121149_AddedIsBannedFieldToIoE")]
     partial class AddedIsBannedFieldToIoE
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -371,6 +371,12 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<float>("Lat")
                         .HasColumnType("real");
 
@@ -389,9 +395,6 @@ namespace YIF.Core.Data.Migrations
                     b.Property<DateTime>("StartOfCampaign")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsBanned")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
 
                     b.ToTable("InstitutionOfEducations");
@@ -407,6 +410,9 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserId")
@@ -431,6 +437,9 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserId")

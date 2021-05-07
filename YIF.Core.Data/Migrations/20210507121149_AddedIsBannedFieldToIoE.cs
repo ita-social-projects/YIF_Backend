@@ -6,18 +6,18 @@ namespace YIF.Core.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsBanned",
+            migrationBuilder.RenameColumn(
+                name: "isBanned",
                 table: "InstitutionOfEducations",
-                nullable: false,
-                defaultValue: false);
+                newName: "IsBanned");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            migrationBuilder.RenameColumn(
                 name: "IsBanned",
-                table: "InstitutionOfEducations");
+                table: "InstitutionOfEducations",
+                newName: "isBanned");
         }
     }
 }
