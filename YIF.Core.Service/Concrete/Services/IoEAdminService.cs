@@ -1,6 +1,7 @@
 ﻿using System.Resources;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 using SendGrid.Helpers.Errors.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
@@ -161,13 +162,37 @@ namespace YIF.Core.Service.Concrete.Services
         }
 
         public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId) 
-        { 
+        {
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
 
             return new ResponseApiModel<IoEInformationResponseApiModel> 
             { 
                Object = _mapper.Map<IoEInformationResponseApiModel>(await _ioERepository.Get(ioEId)),
                Success = true
+            };
+        }
+
+        public async Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId)
+        {
+            var specialty = await _specialtyRepository.ContainsById(specialtyId);
+            var institutionOfEducationId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var institutionOfEducation = await _ioERepository.ContainsById(institutionOfEducationId);
+            var specialtyToIoE = await _specialtyToIoERepository
+                .Find(s => s.SpecialtyId == specialtyId && s.InstitutionOfEducationId == institutionOfEducationId);
+
+            if (institutionOfEducation == false)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            if (specialty == false)
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if (specialtyToIoE.Count() == 0)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyInInstitutionOfEducationNotFound"));
+
+            return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
+            {
+                Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
+                Success = true
             };
         }
 

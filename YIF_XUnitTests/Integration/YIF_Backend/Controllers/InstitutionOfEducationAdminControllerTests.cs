@@ -137,6 +137,25 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
+        public async Task GetSpecialtyDescription_EndpointReturnsSuccessAndCorrectContentType()
+        {
+            //Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var admin = _context.InstitutionOfEducationAdmins.AsNoTracking().FirstOrDefault();
+            var institutionOfEducation = _context.InstitutionOfEducations.AsNoTracking().Where(i => i.Id == admin.InstitutionOfEducationId).FirstOrDefault();
+            var specialtyToIoE = _context.SpecialtyToInstitutionOfEducations.AsNoTracking().Where(x => x.InstitutionOfEducationId == institutionOfEducation.Id).FirstOrDefault();
+
+            //Act
+            var response = await _client.GetAsync(
+                $"/api/InstitutionOfEducationAdmin/Specialty/Description/Get/" + specialtyToIoE.SpecialtyId);
+
+            //Assert
+            response.EnsureSuccessStatusCode(); 
+            Assert.Equal("application/json; charset=utf-8",
+                 response.Content.Headers.ContentType.ToString());
+        }
+
+        [Fact]
         public async Task DeleteIoEModerator_EndpointReturnOk()
         {
             //Arrange
