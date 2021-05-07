@@ -139,6 +139,7 @@ namespace YIF_Backend.Controllers
             _logger.LogInformation("Getting a specialty");
             return Ok(result.Object);
         }
+
         /// <summary>
         /// Get specialty descriptions by id.
         /// </summary>
@@ -196,6 +197,7 @@ namespace YIF_Backend.Controllers
             await _specialtyService.DeleteSpecialtyAndInstitutionOfEducationFromFavorite(specialtyId, institutionOfEducationId, userId);
             return Ok(value: new { specialtyId, institutionOfEducationId });
         }
+
         /// <summary>
         /// Add specialty to favorite.
         /// </summary>

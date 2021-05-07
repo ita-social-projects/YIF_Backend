@@ -26,6 +26,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _logger = new Mock<ILogger<InstitutionOfEducationController>>();
             _testControl = new InstitutionOfEducationController(_institutionOfEducationService.Object);
         }
+
         [Fact]
         public async Task GetInstitutionOfEducationsPageForAnonymous_ReturnOk()
         {

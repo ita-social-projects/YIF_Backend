@@ -44,6 +44,7 @@ namespace YIF_Backend.Controllers
         /// <returns>Returns the page with institutionOfEducations</returns>
         /// <response code="200">Returns the page with institutionOfEducations</response>
         /// <response code="400">If page size or page number is incorrect</response>
+        /// <response code="404">If model is invalid</response>
         [ProducesResponseType(typeof(PageResponseApiModel<InstitutionOfEducationResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -88,6 +89,7 @@ namespace YIF_Backend.Controllers
         /// <returns>Returns the page with institutionOfEducations</returns>
         /// <response code="200">Returns the page with institutionOfEducations</response>
         /// <response code="400">If page size or page number is incorrect</response>
+        /// <response code="404">If model is invalid</response>
         [ProducesResponseType(typeof(PageResponseApiModel<InstitutionOfEducationResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
