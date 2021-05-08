@@ -10,7 +10,7 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210507121149_AddedIsBannedFieldToIoE")]
+    [Migration("20210508184310_AddedIsBannedFieldToIoE")]
     partial class AddedIsBannedFieldToIoE
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
