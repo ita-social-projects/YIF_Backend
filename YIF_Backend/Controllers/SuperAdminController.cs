@@ -250,7 +250,7 @@ namespace YIF_Backend.Controllers
         /// <returns>List of moderators</returns>
         /// <response code="200">Returns a list of moderators</response>
         /// <response code="403">If user is not super admin</response>
-        [HttpGet("GetIoEModeratorsById")]
+        [HttpGet("GetIoEModeratorsById/{ioEId}")]
         [ProducesResponseType(typeof(IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
