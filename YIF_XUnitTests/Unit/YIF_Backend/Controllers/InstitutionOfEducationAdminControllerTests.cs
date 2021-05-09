@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SendGrid.Helpers.Errors.Model;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -141,6 +142,35 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             //Assert
             Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData(true, "success")]
+        [InlineData(false, "wrong")]
+        public async Task DisableIoEModerator_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
+        {
+            // Arrange
+            var requestId = "04b9a0c9-2545-4e28-9920-478aa6031c4b";
+            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
+            var error = new NotFoundException(message);
+
+            if (success)
+            {
+                _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId)).Returns(Task.FromResult(responseModel));
+                // Act
+                var result = await _testControl.BanIoEModerator(requestId);
+                // Assert
+                var responseResult = Assert.IsType<OkObjectResult>(result);
+                var model = (DescriptionResponseApiModel)responseResult.Value;
+                Assert.Equal(responseModel.Object.Message, model.Message);
+            }
+            else
+            {
+                _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId)).Throws(error);
+                // Assert
+                var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => _testControl.BanIoEModerator(requestId));
+                Assert.Equal(error.Message, exсeption.Message);
+            }
         }
     }
 }

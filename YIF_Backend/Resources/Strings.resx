@@ -324,4 +324,10 @@
   <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
     <value>Не знайдено модератора з таким ідентифікатором</value>
   </data>
+  <data name="IoEModeratorIsDisabled" xml:space="preserve">
+    <value>Модератор забанений</value>
+  </data>
+  <data name="IoEModeratorIsEnabled" xml:space="preserve">
+    <value>Модератор розбанений</value>
+  </data>
 </root>

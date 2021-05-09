@@ -195,5 +195,25 @@ namespace YIF.Core.Service.Concrete.Services
                 Success = true
             };
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoEModerator(string userId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var ioEModerator = await _ioEModeratorRepository.Get(userId);
+            if (ioEModerator == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("IoEModeratorNotExists")}: {userId}");
+            }
+            string res;
+            if (ioEModerator.IsBanned == false)
+            {
+                res = await _ioEModeratorRepository.Disable(_mapper.Map<InstitutionOfEducationModerator>(ioEModerator));
+            }
+            else
+            {
+                res = await _ioEModeratorRepository.Enable(_mapper.Map<InstitutionOfEducationModerator>(ioEModerator));
+            }
+            return result.Set(new DescriptionResponseApiModel(res), true);
+        }
     }
 }

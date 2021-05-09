@@ -158,5 +158,21 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.GetSpecialtyToIoEDescription(userId, specialtyId);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Ban IoE Moderator (sets its Moderator IsBanned to true  or false).
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">IoE Moderator wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("BanIoEModerator/{id}")]
+        public async Task<IActionResult> BanIoEModerator(string id)
+        {
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(id);
+            return Ok(result.Object);
+        }
     }
 }

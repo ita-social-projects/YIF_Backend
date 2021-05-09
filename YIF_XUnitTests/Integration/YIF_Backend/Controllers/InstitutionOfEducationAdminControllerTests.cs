@@ -154,5 +154,20 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal("application/json; charset=utf-8",
                  response.Content.Headers.ContentType.ToString());
         }
+
+        [Fact]
+        public async Task BanIoEModerator_ShouldReturnOk()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var ioEModerator = _context.InstitutionOfEducationModerators.AsNoTracking().FirstOrDefault();
+
+            // Act
+            var response = await _client.PatchAsync(string.Format("/api/InstitutionOfEducationAdmin/BanIoEModerator/{0}",
+                ioEModerator.UserId), ContentHelper.GetStringContent(ioEModerator));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
