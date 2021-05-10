@@ -18,7 +18,6 @@ using YIF_XUnitTests.Unit.TestData;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Data.Entities.IdentityEntities;
-using Microsoft.AspNetCore.Identity;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
