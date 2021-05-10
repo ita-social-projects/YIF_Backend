@@ -15,11 +15,17 @@ using YIF.Core.Domain.ServiceInterfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Domain.ApiModels.Validators;
+using YIF.Core.Data.Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
+using YIF.Shared;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminService : IIoEAdminService
     {
+        private readonly UserManager<DbUser> _userManager;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
@@ -33,6 +39,8 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
 
         public IoEAdminService(
+            UserManager<DbUser> userManager,
+            IUserRepository<DbUser, UserDTO> userRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
@@ -46,6 +54,8 @@ namespace YIF.Core.Service.Concrete.Services
             ResourceManager resourceManager
         )
         {
+            _userManager = userManager;
+            _userRepository = userRepository;
             _specialtyRepository = specialtyRepository;
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
@@ -194,6 +204,25 @@ namespace YIF.Core.Service.Concrete.Services
                 Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
                 Success = true
             };
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoEModerator(string moderatorId, string userId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var moderator = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
+
+            if (moderator == null)
+                throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
+            if (moderator.IsDeleted)
+                throw new BadRequestException(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted"));
+            else
+                await _ioEModeratorRepository.Delete(moderatorId);
+
+                var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
+                await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
     }
 }
