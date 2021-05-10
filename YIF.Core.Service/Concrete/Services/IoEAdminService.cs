@@ -211,16 +211,16 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
             var moderator = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
-            var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
 
             if (moderator == null)
                 throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
             if (moderator.IsDeleted)
                 throw new BadRequestException(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted"));
-            else 
+            else
                 await _ioEModeratorRepository.Delete(moderatorId);
 
-            await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+                var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
+                await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
