@@ -163,7 +163,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 Include(x => x.Admin).AsNoTracking().FirstOrDefault();
             _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext(ioEModerator.Admin.UserId);
 
-
             //Act
             var response = await _client.DeleteAsync(
                 $"/api/InstitutionOfEducationAdmin/DeleteIoEModerator?moderatorId={ioEModerator.Id}");

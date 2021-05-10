@@ -166,6 +166,7 @@ namespace YIF_Backend.Controllers
         /// <response code="200">Returns if the moderator has been successfully deleted from institution of education.</response>
         /// <response code="400">If id is not valid.</response>
         /// <response code="404">If Moderator with such Id wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]

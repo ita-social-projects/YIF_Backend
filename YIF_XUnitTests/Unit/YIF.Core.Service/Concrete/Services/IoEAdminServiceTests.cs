@@ -17,11 +17,16 @@ using YIF.Core.Service.Concrete.Services;
 using YIF_XUnitTests.Unit.TestData;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using Microsoft.AspNetCore.JsonPatch;
+using YIF.Core.Data.Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminServiceTests
     {
+        private readonly Mock<FakeUserManager<DbUser>> _userManager = new Mock<FakeUserManager<DbUser>>();
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private readonly IoEAdminService _ioEAdminService;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository= new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _ioEAdminRepository =
@@ -41,6 +46,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public IoEAdminServiceTests()
         {
             _ioEAdminService = new IoEAdminService(
+                _userManager.Object,
+                _userRepository.Object,
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
@@ -519,8 +526,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Arrange  
             _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
                 .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            var user = new UserDTO() { Id = "blabla" };
             _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new InstitutionOfEducationModeratorDTO());
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO() { User = user });
+            _userRepository.Setup(x => x.GetUserWithRoles(It.IsAny<string>())).ReturnsAsync(new DbUser());
+            _userManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
 
             // Act
             var result = await  _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
