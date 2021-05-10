@@ -160,6 +160,25 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Soft delete Institution Of Education Moderator
+        /// </summary>
+        /// <returns>Whether Moderator was deleted or not</returns>
+        /// <response code="200">Returns if the moderator has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="404">If Moderator with such Id wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteIoEModerator")]
+        public async Task<IActionResult> DeleteIoEModerator(string moderatorId)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.DeleteIoEModerator(moderatorId, userId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
         /// Ban IoE Moderator (sets its Moderator IsBanned to true or false).
         /// </summary>
         /// <returns>Success message</returns>

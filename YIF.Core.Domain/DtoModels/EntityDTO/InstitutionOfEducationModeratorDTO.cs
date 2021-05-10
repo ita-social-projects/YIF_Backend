@@ -12,5 +12,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string UserId { get; set; }
         public UserDTO User { get; set; }
         public bool IsBanned { get; set; } = false;
+        public bool IsDeleted { get; set; } = false;
     }
 }

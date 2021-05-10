@@ -156,6 +156,22 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
+        public async Task DeleteIoEModerator_EndpointReturnOk()
+        {
+            //Arrange
+            var ioEModerator = _context.InstitutionOfEducationModerators.
+                Include(x => x.Admin).AsNoTracking().FirstOrDefault();
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext(ioEModerator.Admin.UserId);
+
+            //Act
+            var response = await _client.DeleteAsync(
+                $"/api/InstitutionOfEducationAdmin/DeleteIoEModerator?moderatorId={ioEModerator.Id}");
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
         public async Task BanIoEModerator_ShouldReturnOk()
         {
             // Arrange
