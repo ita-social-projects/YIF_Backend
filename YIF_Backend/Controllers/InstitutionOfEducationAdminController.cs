@@ -160,7 +160,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Ban IoE Moderator (sets its Moderator IsBanned to true  or false).
+        /// Ban IoE Moderator (sets its Moderator IsBanned to true or false).
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>

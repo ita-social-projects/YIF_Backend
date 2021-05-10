@@ -157,16 +157,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             if (success)
             {
                 _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId)).Returns(Task.FromResult(responseModel));
+                
                 // Act
                 var result = await _testControl.BanIoEModerator(requestId);
+
                 // Assert
                 var responseResult = Assert.IsType<OkObjectResult>(result);
                 var model = (DescriptionResponseApiModel)responseResult.Value;
                 Assert.Equal(responseModel.Object.Message, model.Message);
             }
+
             else
             {
                 _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId)).Throws(error);
+
                 // Assert
                 var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => _testControl.BanIoEModerator(requestId));
                 Assert.Equal(error.Message, exсeption.Message);
