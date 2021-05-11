@@ -578,13 +578,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             var ioEMonederator = new InstitutionOfEducationModeratorDTO() { IsBanned = false };
-            _ioEModeratorRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+            _ioEModeratorRepository.Setup(s => s.GetByAdminId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ioEMonederator);
 
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
             _ioEModeratorRepository.Setup(x => x.Disable(It.IsAny<InstitutionOfEducationModerator>())).Returns(Task.FromResult("IoE Moderator isBanned was set to true"));
             _mapper.Setup(x => x.Map<InstitutionOfEducationModerator>(It.IsAny<InstitutionOfEducationModeratorDTO>())).Returns(It.IsAny<InstitutionOfEducationModerator>());
 
             //Act
-            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>());
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>(), It.IsAny<string>());
 
             //Assert
             Assert.Equal("IoE Moderator isBanned was set to true", result.Object.Message);
@@ -595,13 +596,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             var ioEMonederator = new InstitutionOfEducationModeratorDTO() { IsBanned = true };
-            _ioEModeratorRepository.Setup(s => s.Get(It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+            _ioEModeratorRepository.Setup(s => s.GetByAdminId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
 
             _ioEModeratorRepository.Setup(x => x.Enable(It.IsAny<InstitutionOfEducationModerator>())).Returns(Task.FromResult("IoE Moderator isBanned was set to false"));
             _mapper.Setup(x => x.Map<InstitutionOfEducationModerator>(It.IsAny<InstitutionOfEducationModeratorDTO>())).Returns(It.IsAny<InstitutionOfEducationModerator>());
 
             //Act
-            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>());
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>(), It.IsAny<string>());
 
             //Assert
             Assert.Equal("IoE Moderator isBanned was set to false", result.Object.Message);

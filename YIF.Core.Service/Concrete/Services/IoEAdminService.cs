@@ -206,13 +206,14 @@ namespace YIF.Core.Service.Concrete.Services
             };
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoEModerator(string userId)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoEModerator(string moderatorId, string userId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ioEModerator = await _ioEModeratorRepository.Get(userId);
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var ioEModerator = await _ioEModeratorRepository.GetByAdminId(moderatorId, adminId);
             if (ioEModerator == null)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("IoEModeratorNotExists")}: {userId}");
+                throw new NotFoundException($"{_resourceManager.GetString("IoEModeratorNotExists")}: {moderatorId}");
             }
             string res;
             if (ioEModerator.IsBanned == false)

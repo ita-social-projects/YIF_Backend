@@ -172,14 +172,22 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task DisableIoEModerator_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
         {
             // Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+
             var requestId = "04b9a0c9-2545-4e28-9920-478aa6031c4b";
             var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
             var error = new NotFoundException(message);
 
             if (success)
             {
-                _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId)).Returns(Task.FromResult(responseModel));
-                
+                _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId, It.IsAny<string>())).Returns(Task.FromResult(responseModel));
+
                 // Act
                 var result = await _testControl.BanIoEModerator(requestId);
 
@@ -191,7 +199,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             else
             {
-                _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId)).Throws(error);
+                _ioEAdminService.Setup(x => x.ChangeBannedStatusOfIoEModerator(requestId, It.IsAny<string>())).Throws(error);
 
                 // Assert
                 var exсeption = await Assert.ThrowsAsync<NotFoundException>(() => _testControl.BanIoEModerator(requestId));

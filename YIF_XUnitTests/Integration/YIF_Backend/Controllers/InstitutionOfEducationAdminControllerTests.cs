@@ -180,7 +180,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.PatchAsync(string.Format("/api/InstitutionOfEducationAdmin/BanIoEModerator/{0}",
-                ioEModerator.UserId), ContentHelper.GetStringContent(ioEModerator));
+                ioEModerator.Id), ContentHelper.GetStringContent(ioEModerator));
 
             // Assert
             response.EnsureSuccessStatusCode();

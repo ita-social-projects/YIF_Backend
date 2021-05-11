@@ -187,10 +187,11 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("BanIoEModerator/{id}")]
-        public async Task<IActionResult> BanIoEModerator(string id)
+        [HttpPatch("BanIoEModerator/{Id}")]
+        public async Task<IActionResult> BanIoEModerator(string Id)
         {
-            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(id);
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(Id, userId);
             return Ok(result.Object);
         }
     }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
@@ -12,7 +11,8 @@ namespace YIF.Core.Data.Interfaces
         Task<IEnumerable<K>> GetByIoEId(string ioEId);
         Task<K> GetByUserId(string userId);
         Task<K> GetModeratorForAdmin(string id, string adminId);
-        Task<string> Disable(InstitutionOfEducationModerator ioEModerator);
-        Task<string> Enable(InstitutionOfEducationModerator ioEModerator);
+        Task<K> GetByAdminId(string id, string adminId);
+        Task<string> Disable(T ioEModerator);
+        Task<string> Enable(T ioEModerator);
     }
 }
