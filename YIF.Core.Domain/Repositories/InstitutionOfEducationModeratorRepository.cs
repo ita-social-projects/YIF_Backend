@@ -87,6 +87,8 @@ namespace YIF.Core.Domain.Repositories
         public async Task<InstitutionOfEducationModeratorDTO> GetModeratorForAdmin(string id, string adminId)
         {
             var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Include(x => x.User)
+                .Include(m => m.Admin)
                 .Where(x => x.AdminId == adminId)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
