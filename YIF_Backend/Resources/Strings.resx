@@ -330,4 +330,10 @@
   <data name="IoEModeratorNotFoundForThisAdmin" xml:space="preserve">
     <value>Модератора закладу освіти не знайдено для цього адміна</value>
   </data>
+  <data name="IoEModeratorIsDisabled" xml:space="preserve">
+    <value>Модератор забанений</value>
+  </data>
+  <data name="IoEModeratorIsEnabled" xml:space="preserve">
+    <value>Модератор розбанений</value>
+  </data>
 </root>

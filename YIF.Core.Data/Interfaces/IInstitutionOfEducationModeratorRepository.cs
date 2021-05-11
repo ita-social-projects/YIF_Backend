@@ -11,5 +11,8 @@ namespace YIF.Core.Data.Interfaces
         Task<IEnumerable<K>> GetByIoEId(string ioEId);
         Task<K> GetByUserId(string userId);
         Task<K> GetModeratorForAdmin(string id, string adminId);
+        Task<K> GetByAdminId(string id, string adminId);
+        Task<string> Disable(T ioEModerator);
+        Task<string> Enable(T ioEModerator);
     }
 }
