@@ -18,7 +18,7 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<InstitutionOfEducationModeratorDTO, IoEModeratorsForIoEAdminResponseApiModel>()
                 .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.User.Email))
-                .ForMember(dst => dst.ModeratorId, opt => opt.MapFrom(src => src.User.Id));
+                .ForMember(dst => dst.ModeratorId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }
