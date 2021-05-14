@@ -218,9 +218,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             // Arrange
             var admin = _context.InstitutionOfEducationAdmins.First();
-
+            var content = ContentHelper.GetStringContent(admin);
             // Act
-            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.UserId),content);
 
             // Assert
             response.EnsureSuccessStatusCode();
