@@ -242,7 +242,7 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _institutionOfEducationAdminRepository.GetByUserId(adminId);
+            var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");

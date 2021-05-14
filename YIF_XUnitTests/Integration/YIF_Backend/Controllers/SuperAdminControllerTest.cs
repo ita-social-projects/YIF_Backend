@@ -220,7 +220,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var admin = _context.InstitutionOfEducationAdmins.First();
             var content = ContentHelper.GetStringContent(admin);
             // Act
-            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.UserId),content);
+            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id),content);
 
             // Assert
             response.EnsureSuccessStatusCode();
