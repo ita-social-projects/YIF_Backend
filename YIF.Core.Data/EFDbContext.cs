@@ -16,7 +16,7 @@ namespace YIF.Core.Data
     {       
         public EFDbContext(DbContextOptions<EFDbContext> options) : base(options)
         {
-           //Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         #region Tables
