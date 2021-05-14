@@ -116,28 +116,28 @@ Then you can access the web api at http://ip:5000/swagger/index.html
 
 ## Team
 
-![@team](https://avatars.githubusercontent.com/u/34924839?s=200&u=c698ded4b7aa4c34491d39b76fb0b7d2436d26e6&v=4)
-![@team](https://avatars.githubusercontent.com/u/42476974?s=200&u=b49aa4ca49046de0c87c82da6d48cc37ac08a170&v=4)
-![@team](https://avatars.githubusercontent.com/u/44744677?s=200&u=0b6a5ad0c6e7712a53c4ff2c42a24e2aeb0c34a3&v=4)
-![@team](https://avatars.githubusercontent.com/u/52170310?s=200&v=4)
-![@team](https://avatars.githubusercontent.com/u/55939463?s=200&v=4)
-![@team](https://avatars.githubusercontent.com/u/16308549?s=200&u=48b55feed8dad680a02c1633efff050ccfb1ebb2&v=4)
+![@team](https://avatars.githubusercontent.com/u/34924839?s=400&u=c698ded4b7aa4c34491d39b76fb0b7d2436d26e6&v=4)
+![@team](https://avatars.githubusercontent.com/u/42476974?s=400&u=b49aa4ca49046de0c87c82da6d48cc37ac08a170&v=4)
+![@team](https://avatars.githubusercontent.com/u/44744677?s=400&u=0b6a5ad0c6e7712a53c4ff2c42a24e2aeb0c34a3&v=4)
+![@team](https://avatars.githubusercontent.com/u/52170310?s=400&v=4)
+![@team](https://avatars.githubusercontent.com/u/55939463?s=400&v=4)
+![@team](https://avatars.githubusercontent.com/u/16308549?s=400&u=48b55feed8dad680a02c1633efff050ccfb1ebb2&v=4)
 
-![@team](https://avatars.githubusercontent.com/u/78746301?s=200&u=30423308506a96a6943b287113bb8f6ec3c76ded&v=4)
-![@team](https://avatars.githubusercontent.com/u/56673817?s=200&u=f1324d56227074f2c38c314f5a316a2a827a7be4&v=4)
-![@team](https://avatars.githubusercontent.com/u/48133795?s=200&u=2a5419941d325d551f95331c953b2ed5add3bf1e&v=4)
-![@team](https://avatars.githubusercontent.com/u/62856840?s=200&u=3efd2de912e9adc9ed80036c0b2ded59628d0e90&v=4)
-![@team](https://avatars.githubusercontent.com/u/31737653?s=200&v=4)
-![@team](https://avatars.githubusercontent.com/u/61685799?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/73486410?v=4&s=200)
+![@team](https://avatars.githubusercontent.com/u/78746301?s=400&u=30423308506a96a6943b287113bb8f6ec3c76ded&v=4)
+![@team](https://avatars.githubusercontent.com/u/56673817?s=400&u=f1324d56227074f2c38c314f5a316a2a827a7be4&v=4)
+![@team](https://avatars.githubusercontent.com/u/48133795?s=400&u=2a5419941d325d551f95331c953b2ed5add3bf1e&v=4)
+![@team](https://avatars.githubusercontent.com/u/62856840?s=400&u=3efd2de912e9adc9ed80036c0b2ded59628d0e90&v=4)
+![@team](https://avatars.githubusercontent.com/u/31737653?s=400&v=4)
+![@team](https://avatars.githubusercontent.com/u/61685799?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/73486410?v=4&s=400)
 
-![@team](https://avatars.githubusercontent.com/u/54326631?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/49400214?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/51949505?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/35916945?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/51949879?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/58307006?v=4&s=200)
-![@team](https://avatars.githubusercontent.com/u/83704219?v=4&s=200)
+![@team](https://avatars.githubusercontent.com/u/54326631?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/49400214?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/51949505?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/35916945?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/51949879?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/58307006?v=4&s=400)
+![@team](https://avatars.githubusercontent.com/u/83704219?v=4&s=400)
 
 - https://github.com/shelkon
 - https://github.com/Yura-Androshchuk
