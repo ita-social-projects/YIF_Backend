@@ -30,7 +30,6 @@ namespace YIF.Core.Service.Concrete.Services
                 .NotEmpty().WithMessage("Електронна пошта є обов'язковою!")
                 .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
 
-            RuleFor(x => x.Email).Must(IsUserNotDeleted).WithMessage("Користувач видалений!");
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Пароль є обов'язковим!")
@@ -41,6 +40,7 @@ namespace YIF.Core.Service.Concrete.Services
                 .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
             RuleFor(x => x.Email).Must(IsEmailExist).WithMessage("Логін або пароль неправильний!");
+            RuleFor(x => x.Email).Must(IsUserNotDeleted).WithMessage("Користувач видалений!");
             RuleFor(x => x.Password).Must(IsPasswordCorrect).WithMessage("Логін або пароль неправильний!");
         }
 
