@@ -30,7 +30,6 @@ namespace YIF.Core.Service.Concrete.Services
                 .NotEmpty().WithMessage("Електронна пошта є обов'язковою!")
                 .EmailAddress().WithMessage("Введіть дійсну електронну пошту!");
 
-
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Пароль є обов'язковим!")
                 .Length(8, 20).WithMessage("Пароль має містити мінімум 8 символів і максимум 20 (включно)!")
