@@ -217,11 +217,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task DisableInstitutionOfEducationAdmin()
         {
             // Arrange
-            var admin = _context.InstitutionOfEducationAdmins.First();
+            var admin = _context.InstitutionOfEducationAdmins.Last();
             var content = ContentHelper.GetStringContent(admin);
 
             // Act
-            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id),content);
+            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), content);
 
             // Assert
             response.EnsureSuccessStatusCode();
