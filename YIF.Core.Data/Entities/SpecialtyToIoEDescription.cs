@@ -4,7 +4,7 @@ namespace YIF.Core.Data.Entities
 {
     public enum PaymentForm
     {
-        Govermental,
+        Governmental,
         Contract 
     }
     public enum EducationForm
