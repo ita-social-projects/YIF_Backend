@@ -16,12 +16,18 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Domain.ApiModels.Validators;
 using YIF.Core.Data.Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
+using YIF.Shared;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 
 namespace YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminService : IIoEAdminService
     {
+        private readonly UserManager<DbUser> _userManager;
+        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _ioERepository;
         private readonly ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> _specialtyToIoERepository;
@@ -30,13 +36,14 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly ILectorRepository<Lecture, LectureDTO> _lectorRepository;
-        private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
 
         public IoEAdminService(
+            UserManager<DbUser> userManager,
+            IUserRepository<DbUser, UserDTO> userRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> ioERepository,
             ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO> specialtyToIoERepository,
@@ -45,7 +52,6 @@ namespace YIF.Core.Service.Concrete.Services
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             ILectorRepository<Lecture, LectureDTO> lectorRepository,
-            IUserRepository<DbUser, UserDTO> userRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
@@ -53,6 +59,8 @@ namespace YIF.Core.Service.Concrete.Services
 
         )
         {
+            _userManager = userManager;
+            _userRepository = userRepository;
             _specialtyRepository = specialtyRepository;
             _ioERepository = ioERepository;
             _specialtyToIoERepository = specialtyToIoERepository;
@@ -61,7 +69,6 @@ namespace YIF.Core.Service.Concrete.Services
             _examRequirementRepository = examRequirementRepository;
             _ioEModeratorRepository = ioEModeratorRepository;
             _lectorRepository = lectorRepository;
-            _userRepository = userRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
@@ -203,6 +210,46 @@ namespace YIF.Core.Service.Concrete.Services
                 Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
                 Success = true
             };
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoEModerator(string moderatorId, string userId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var ioEModerator = await _ioEModeratorRepository.GetByAdminId(moderatorId, adminId);
+            if (ioEModerator == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("IoEModeratorNotExists")}: {moderatorId}");
+            }
+            string res;
+            if (ioEModerator.IsBanned == false)
+            {
+                res = await _ioEModeratorRepository.Disable(_mapper.Map<InstitutionOfEducationModerator>(ioEModerator));
+            }
+            else
+            {
+                res = await _ioEModeratorRepository.Enable(_mapper.Map<InstitutionOfEducationModerator>(ioEModerator));
+            }
+            return result.Set(new DescriptionResponseApiModel(res), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoEModerator(string moderatorId, string userId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var moderator = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
+
+            if (moderator == null)
+                throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
+            if (moderator.IsDeleted)
+                throw new BadRequestException(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted"));
+            else
+                await _ioEModeratorRepository.Delete(moderatorId);
+
+                var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
+                await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(string userId, LectorPostApiModel lector)

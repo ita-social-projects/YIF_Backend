@@ -99,5 +99,26 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task GetAdminByUserId_EndpointReturnsOk()
+        {
+            //Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            var response = new ResponseApiModel<IoEAdminForIoEModeratorResponseApiModel>(new IoEAdminForIoEModeratorResponseApiModel(), true);
+
+            _ioEModeratorService.Setup(x => x.GetIoEAdminByUserId(It.IsAny<string>())).ReturnsAsync(response);
+            var result = await _testControl.GetAdminByUserId();
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

@@ -44,18 +44,20 @@ namespace YIF_Backend.Controllers
         /// <returns>Returns the page with institutionOfEducations</returns>
         /// <response code="200">Returns the page with institutionOfEducations</response>
         /// <response code="400">If page size or page number is incorrect</response>
+        /// <response code="404">If model is invalid</response>
         [ProducesResponseType(typeof(PageResponseApiModel<InstitutionOfEducationResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpGet("Anonymous")]
-        public async Task<IActionResult> GetInstitutionOfEducationsPageForAnonym(
+        public async Task<IActionResult> GetInstitutionOfEducationsPageForAnonymous(
             string DirectionName, 
             string SpecialtyName, 
             string InstitutionOfEducationName,
             string InstitutionOfEducationAbbreviation, 
             string PaymentForm,
             string EducationForm,
+            string InstitutionOfEducationType,
             int page = 1, 
             int pageSize = 10)
         {
@@ -66,7 +68,8 @@ namespace YIF_Backend.Controllers
                 InstitutionOfEducationName = InstitutionOfEducationName,
                 InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
                 PaymentForm = PaymentForm,
-                EducationForm = EducationForm
+                EducationForm = EducationForm,
+                InstitutionOfEducationType = InstitutionOfEducationType
             };
 
             var pageModel = new PageApiModel
@@ -86,6 +89,7 @@ namespace YIF_Backend.Controllers
         /// <returns>Returns the page with institutionOfEducations</returns>
         /// <response code="200">Returns the page with institutionOfEducations</response>
         /// <response code="400">If page size or page number is incorrect</response>
+        /// <response code="404">If model is invalid</response>
         [ProducesResponseType(typeof(PageResponseApiModel<InstitutionOfEducationResponseApiModel>), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
@@ -99,6 +103,7 @@ namespace YIF_Backend.Controllers
             string InstitutionOfEducationAbbreviation,
             string PaymentForm,
             string EducationForm,
+            string InstitutionOfEducationType,
             int page = 1,
             int pageSize = 10)
         {
@@ -111,7 +116,8 @@ namespace YIF_Backend.Controllers
                 InstitutionOfEducationName = InstitutionOfEducationName,
                 InstitutionOfEducationAbbreviation = InstitutionOfEducationAbbreviation,
                 PaymentForm = PaymentForm,
-                EducationForm = EducationForm
+                EducationForm = EducationForm,
+                InstitutionOfEducationType = InstitutionOfEducationType
             };
 
             var pageModel = new PageApiModel

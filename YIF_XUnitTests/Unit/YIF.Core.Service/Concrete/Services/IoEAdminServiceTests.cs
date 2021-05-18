@@ -24,6 +24,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminServiceTests
     {
+        private readonly Mock<FakeUserManager<DbUser>> _userManager = new Mock<FakeUserManager<DbUser>>();
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private readonly IoEAdminService _ioEAdminService;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository= new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _ioEAdminRepository =
@@ -36,7 +38,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<ILectorRepository<Lecture, LectureDTO>> _lectorRepository = new Mock<ILectorRepository<Lecture, LectureDTO>>();
-        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
@@ -44,7 +45,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         public IoEAdminServiceTests()
         {
-                _ioEAdminService = new IoEAdminService(
+            _ioEAdminService = new IoEAdminService(
+                _userManager.Object,
+                _userRepository.Object,
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
@@ -53,7 +56,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _examRequirementRepository.Object,
                 _ioEModeratorRepository.Object,
                 _lectorRepository.Object,
-                _userRepository.Object,
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
@@ -517,6 +519,96 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldDeleteIoEModerator_IfEverythingOk()
+        {
+            // Arrange  
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            var user = new UserDTO() { Id = "blabla" };
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO() { User = user });
+            _userRepository.Setup(x => x.GetUserWithRoles(It.IsAny<string>())).ReturnsAsync(new DbUser());
+            _userManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
+
+            // Act
+            var result = await  _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldThrowNotFoundException_IfModeratorWasNotFound()
+        {
+            // Arrange  
+            InstitutionOfEducationModeratorDTO moderator = null;
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<NotFoundException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldThrowBadRequestException_IfModeratorIsAlreadyDeleted()
+        {
+            // Arrange  
+            InstitutionOfEducationModeratorDTO moderator = new InstitutionOfEducationModeratorDTO() { IsDeleted = true };
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessDisableMessage()
+        {
+            //Arrange
+            var ioEMonederator = new InstitutionOfEducationModeratorDTO() { IsBanned = false };
+            _ioEModeratorRepository.Setup(s => s.GetByAdminId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(x => x.Disable(It.IsAny<InstitutionOfEducationModerator>())).Returns(Task.FromResult("IoE Moderator isBanned was set to true"));
+            _mapper.Setup(x => x.Map<InstitutionOfEducationModerator>(It.IsAny<InstitutionOfEducationModeratorDTO>())).Returns(It.IsAny<InstitutionOfEducationModerator>());
+
+            //Act
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
+            Assert.Equal("IoE Moderator isBanned was set to true", result.Object.Message);
+        }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessEnableMessage()
+        {
+            //Arrange
+            var ioEMonederator = new InstitutionOfEducationModeratorDTO() { IsBanned = true };
+            _ioEModeratorRepository.Setup(s => s.GetByAdminId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+
+            _ioEModeratorRepository.Setup(x => x.Enable(It.IsAny<InstitutionOfEducationModerator>())).Returns(Task.FromResult("IoE Moderator isBanned was set to false"));
+            _mapper.Setup(x => x.Map<InstitutionOfEducationModerator>(It.IsAny<InstitutionOfEducationModeratorDTO>())).Returns(It.IsAny<InstitutionOfEducationModerator>());
+
+            //Act
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
+            Assert.Equal("IoE Moderator isBanned was set to false", result.Object.Message);
         }
 
         [Fact]

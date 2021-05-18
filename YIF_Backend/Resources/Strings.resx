@@ -324,6 +324,18 @@
   <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
     <value>Не знайдено модератора з таким ідентифікатором</value>
   </data>
+  <data name="IoEModeratorWasAlreadyDeleted" xml:space="preserve">
+    <value>Модератор закладу освіти вже був видаленим</value>
+  </data>
+  <data name="IoEModeratorNotFoundForThisAdmin" xml:space="preserve">
+    <value>Модератора закладу освіти не знайдено для цього адміна</value>
+  </data>
+  <data name="IoEModeratorIsDisabled" xml:space="preserve">
+    <value>Модератор забанений</value>
+  </data>
+  <data name="IoEModeratorIsEnabled" xml:space="preserve">
+    <value>Модератор розбанений</value>
+  </data>
   <data name="IoEAlreadyHasLector" xml:space="preserve">
     <value>Цей лектор вже є в навчальному закладі</value>
   </data>

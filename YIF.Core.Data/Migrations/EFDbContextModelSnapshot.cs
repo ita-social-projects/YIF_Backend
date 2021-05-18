@@ -393,6 +393,9 @@ namespace YIF.Core.Data.Migrations
                     b.Property<DateTime>("StartOfCampaign")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("InstitutionOfEducations");
