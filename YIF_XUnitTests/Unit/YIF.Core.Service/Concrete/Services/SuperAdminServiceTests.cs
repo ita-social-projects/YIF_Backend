@@ -263,7 +263,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _institutionOfEducationAdminRepository
-                .Setup(p => p.GetByUserId(uniAdmin.Id))
+                .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
@@ -274,10 +274,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
-            var a = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
+            var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to true", a.Object.Message);
+            Assert.Equal("Admin IsBanned was set to true", result.Object.Message);
         }
 
         [Fact]
@@ -285,7 +285,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _institutionOfEducationAdminRepository
-                .Setup(p => p.GetByUserId(uniAdmin.Id))
+                .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
@@ -297,10 +297,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
-            var a = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
+            var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to false", a.Object.Message);
+            Assert.Equal("Admin IsBanned was set to false", result.Object.Message);
         }
 
         [Fact]
@@ -362,7 +362,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             //Act
             var result = await superAdminService.ChangeBannedStatusOfIoE(uni.Id);
-
+            
             //Assert
             Assert.Equal("InstitutionOfEducation isBanned was set to true", result.Object.Message);
         }
