@@ -206,5 +206,18 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 Assert.Equal(error.Message, exсeption.Message);
             }
         }
+
+        [Theory]
+        [InlineData(null, "sms")]
+        [InlineData("sms", null)]
+        public async Task AddInstitutionOfEducationAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid(string adminEmail, string institutionOfEducationId)
+        {
+            // Arrange
+            var inst = new InstitutionOfEducationAdminApiModel() { AdminEmail = adminEmail, InstitutionOfEducationId = institutionOfEducationId };
+
+            // Act
+            // Assert
+            var exeption = await Assert.ThrowsAsync<NullReferenceException>(() => superAdminController.AddInstitutionOfEducationAdmin(inst));
+        }
     }
 }

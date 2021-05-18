@@ -19,6 +19,8 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -40,7 +42,9 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
-        private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();
+        private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>(); 
+        private readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
+        private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
 
         public IoEAdminServiceTests()
         {
@@ -57,7 +61,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
-                _resourceManager.Object
+                _resourceManager.Object,
+                _userService.Object
             );
         }
 
@@ -607,6 +612,26 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             //Assert
             Assert.Equal("IoE Moderator isBanned was set to false", result.Object.Message);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_UserExistAndHaveModeratorPermission(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            IEnumerable<InstitutionOfEducationModeratorDTO> institutionOfEducationModerator;
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _ioEModeratorRepository.Setup(p => p.GetAll()).ReturnsAsync(IEnumerable<InstitutionOfEducationModeratorDTO>);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<InvalidOperationException>(act);
         }
     }
 }

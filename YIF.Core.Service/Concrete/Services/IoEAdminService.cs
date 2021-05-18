@@ -19,11 +19,15 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using YIF.Shared;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using System;
+using Microsoft.AspNetCore.Http;
+using System.Diagnostics.CodeAnalysis;
 
 namespace YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminService : IIoEAdminService
     {
+        private readonly IUserService<DbUser> _userService;
         private readonly UserManager<DbUser> _userManager;
         private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
@@ -51,7 +55,8 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ResourceManager resourceManager
+            ResourceManager resourceManager,
+            IUserService<DbUser> userService
         )
         {
             _userManager = userManager;
@@ -67,6 +72,7 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
+            _userService = userService;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
@@ -244,6 +250,52 @@ namespace YIF.Core.Service.Concrete.Services
                 await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEModerator( [NotNull] string moderatorEmail,
+           [NotNull] string userId,
+           [NotNull] HttpRequest request)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var dbUser = new DbUser
+            {
+                Email = moderatorEmail,
+                UserName = moderatorEmail
+            };
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var searchUser = _userManager.FindByEmailAsync(moderatorEmail);
+
+            if (searchUser.Result == null)
+            {
+                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator);
+
+                if (registerResult != string.Empty)
+                {
+                    throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+                }
+
+                var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(moderatorEmail, request);
+
+                if (!resultResetPasswordByEmail.Success)
+                {
+                    throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+                }
+            }
+            else
+            {
+                var ifUserAlreadyModerator = (await _ioEModeratorRepository.GetAll()).SingleOrDefault(x => x.UserId == searchUser.Result.Id);
+
+                if (ifUserAlreadyModerator != null)
+                {
+                    throw new InvalidOperationException(_resourceManager.GetString("IoEModeratorFailedUserAlreadyModerator"));
+                }
+
+                dbUser = searchUser.Result;
+            }
+
+            await _ioEModeratorRepository.AddUniModerator(new InstitutionOfEducationModerator { AdminId = adminId, UserId = dbUser.Id });
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorAdded")), true);
         }
     }
 }
