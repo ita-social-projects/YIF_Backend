@@ -7,5 +7,6 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task Add(T lector);
+        Task<K> GetByUserId(string userId, string ioEId);
     }
 }

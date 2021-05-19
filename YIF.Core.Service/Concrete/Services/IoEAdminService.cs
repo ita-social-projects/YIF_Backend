@@ -19,13 +19,15 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using YIF.Shared;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using YIF.Core.Data.Entities.IdentityEntities;
-using YIF.Core.Domain.DtoModels.IdentityDTO;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminService : IIoEAdminService
     {
+        private readonly IUserService<DbUser> _userService;
         private readonly UserManager<DbUser> _userManager;
         private readonly IUserRepository<DbUser, UserDTO> _userRepository;
         private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
@@ -42,6 +44,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
 
         public IoEAdminService(
+            IUserService<DbUser> userService,
             UserManager<DbUser> userManager,
             IUserRepository<DbUser, UserDTO> userRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
@@ -59,6 +62,7 @@ namespace YIF.Core.Service.Concrete.Services
 
         )
         {
+            _userService = userService;
             _userManager = userManager;
             _userRepository = userRepository;
             _specialtyRepository = specialtyRepository;
@@ -252,20 +256,46 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(string userId, LectorPostApiModel lector)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(
+            [NotNull] string userId,
+            [NotNull] EmailApiModel email,
+            [NotNull] HttpRequest request)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
-
-            var userDTO = await _userRepository.GetByEmail(lector.Email);
-            var lectorIoE = await _lectorRepository.Find(s => s.UserId == userDTO.Id);
-
-            if (lectorIoE != null)
+            var dbUser = new DbUser
             {
-                throw new BadRequestException(_resourceManager.GetString("IoEAlreadyHasLector"));
+                Email = email.UserEmail,
+                UserName = email.UserEmail
+            };
+
+            var ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var searchUser = await _userManager.FindByEmailAsync(email.UserEmail);
+            if (searchUser == null)
+            {
+                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.Lecture);
+                if (registerResult != string.Empty)
+                {
+                    throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+                }
+
+                var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(email.UserEmail, request);
+                if (!resultResetPasswordByEmail.Success)
+                {
+                    throw new BadRequestException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+                }
             }
 
-            var newLector = new Lecture { InstitutionOfEducationId = ioEId, UserId = userDTO.Id };
+            else
+            {
+                var lectorExist = await _lectorRepository.GetByUserId(searchUser.Id, ioEId);
+                if (lectorExist != null)
+                {
+                    throw new BadRequestException(_resourceManager.GetString("IoEAlreadyHasLector"));
+                }
+                throw new BadRequestException(_resourceManager.GetString("UserAlreadyExists"));
+            }
+
+            var newLector = new Lecture { InstitutionOfEducationId = ioEId, UserId = dbUser.Id };
             await _lectorRepository.Add(newLector);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);

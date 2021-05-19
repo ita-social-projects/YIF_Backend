@@ -61,6 +61,12 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<LectureDTO> GetByUserId(string userId, string ioEId)
+        {
+            var lector = await _context.Lectures.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId && a.InstitutionOfEducationId == ioEId);
+            return _mapper.Map<LectureDTO>(lector);
+        }
+
         public Task<bool> Update(Lecture item)
         {
             throw new NotImplementedException();

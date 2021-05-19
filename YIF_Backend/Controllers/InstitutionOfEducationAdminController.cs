@@ -209,10 +209,10 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPost("AddLectorToIoE")]
-        public async Task<IActionResult> AddIoELector([FromBody] LectorPostApiModel model)
+        public async Task<IActionResult> AddIoELector(EmailApiModel email)
         {
             var userId = User.FindFirst("id")?.Value;
-            var result = await _ioEAdminService.AddLectorToIoE(userId, model);
+            var result = await _ioEAdminService.AddLectorToIoE(userId, email, Request);
             return Ok(result.Object);
         }
     }

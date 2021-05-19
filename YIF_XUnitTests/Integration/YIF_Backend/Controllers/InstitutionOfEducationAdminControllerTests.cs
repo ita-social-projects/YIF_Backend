@@ -191,14 +191,37 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             //Arrange
             _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
-            var chosen = _context.Users.Where(y => y.IsDeleted == false).FirstOrDefault();
-            var model = new LectorPostApiModel {Email = chosen.Email};
-           
-            // Act            
-            var response = await _client.PostAsync($"/api/InstitutionOfEducationAdmin/AddLectorToIoE", ContentHelper.GetStringContent(model));
+            var postRequest = new
+            {
+                Url = "/api/InstitutionOfEducationAdmin/AddLectorToIoE",
+                Body = new EmailApiModel() { UserEmail = "fakeEmail@gmail.com" }
+            };
+
+            // Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            //Assert 
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData("test@gmail.com")]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task AddInstitutionOfEducationAdmin_Input_WrongEmailApiModel(string lectorEmail)
+        {
+            // Arrange
+            var postRequest = new
+            {
+                Url = "/api/SuperAdmin/AddInstitutionOfEducationAdmin",
+                Body = new EmailApiModel() { UserEmail = lectorEmail }
+            };
+
+            // Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
             // Assert
-            response.EnsureSuccessStatusCode();
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

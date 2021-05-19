@@ -19,11 +19,15 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Http;
+using YIF.Shared;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminServiceTests
     {
+        private readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
         private readonly Mock<FakeUserManager<DbUser>> _userManager = new Mock<FakeUserManager<DbUser>>();
         private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private readonly IoEAdminService _ioEAdminService;
@@ -42,10 +46,12 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
         private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();
+        private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
 
         public IoEAdminServiceTests()
         {
             _ioEAdminService = new IoEAdminService(
+                _userService.Object,
                 _userManager.Object,
                 _userRepository.Object,
                 _specialtyRepository.Object,
@@ -60,7 +66,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _env.Object,
                 _configuration.Object,
                 _resourceManager.Object
-            );;
+                );;
         }
 
         [Fact]
@@ -612,45 +618,65 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
+        public async Task AddIoELector_ReturnsBadRequestMessageIfUserWithSuchEmailExist()
+        {
+            //Arrange
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            LectureDTO lectureDto = null;
+            DbUser dbUser = new DbUser();
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lecture)).ReturnsAsync(It.IsAny<string>());
+            _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+            _lectorRepository.Setup(p => p.GetByUserId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>()));
+        }
+
+        [Fact]
+        public async Task AddIoELector_ReturnsBadRequestMessageIfUserWithSuchEmailExistAndUserAlreadyLector()
+        {
+            //Arrange
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            LectureDTO lectureDto = new LectureDTO();
+            DbUser dbUser = new DbUser();
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lecture)).ReturnsAsync(It.IsAny<string>());
+            _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+            _lectorRepository.Setup(p => p.GetByUserId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>()));
+        }
+
+        [Fact]
         public async Task AddIoELector_ReturnsSuccess()
         {
             //Arrange
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
             InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
-            UserDTO userDto = new UserDTO();
+            DbUser dbUser = new DbUser();
+            DbUser dbUserNull = null;
+
             _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
-            _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>())).ReturnsAsync(userDto);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUserNull);
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lecture)).ReturnsAsync(It.IsAny<string>());
+            _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
 
-            List<LectureDTO> lecturesDTO = null;
-            var newLector = new Lecture { InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>() };
-
-            _lectorRepository.Setup(s => s.Find(It.IsAny<Expression<Func<Lecture, bool>>>()))
-                .ReturnsAsync(lecturesDTO);
             //Act
-            var result = await _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new LectorPostApiModel());
+            var result = await _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>());
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
             Assert.True(result.Success);
-        }
-
-        [Fact]
-        public async Task AddIoELector_ReturnsBadRequestMessage()
-        {
-            //Arrange
-            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
-            UserDTO userDto = new UserDTO();
-
-            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
-            _userRepository.Setup(s => s.GetByEmail(It.IsAny<string>())).ReturnsAsync(userDto);
-            var newLector = new Lecture { InstitutionOfEducationId = It.IsAny<string>(), User = It.IsAny<DbUser>() };
-
-            var lecturesDTO = new List<LectureDTO> { new LectureDTO { UserId = "FSDF", InstitutionOfEducationId = "DASDA"} };
-            _lectorRepository.Setup(s => s.Find(It.IsAny<Expression<Func<Lecture, bool>>>()))
-                .ReturnsAsync(lecturesDTO);
-
-            //Act
-            //Assert
-            await Assert.ThrowsAsync<BadRequestException>(() => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new LectorPostApiModel()));
         }
     }
 }

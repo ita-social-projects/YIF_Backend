@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
@@ -17,6 +18,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoEModerator(string moderatorId, string userId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoEModerator(string moderatorId, string userId);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(string userId, LectorPostApiModel lector);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(string userId, EmailApiModel email, HttpRequest request);
     }
 }
