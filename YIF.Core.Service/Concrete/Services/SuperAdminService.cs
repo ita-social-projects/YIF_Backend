@@ -214,17 +214,22 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
-
+        
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
-            if (ch == null)
+            var admin = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
+            if (admin == null)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
+                throw new NotFoundException(_resourceManager.GetString("IoEAdminNotFound"));
             }
-            await _userRepository.Delete(ch.User.Id);
-            return result.Set(new DescriptionResponseApiModel("User IsDeleted was updated"), true);
+
+            var searchUser = _userManager.FindByIdAsync(admin.UserId);
+            
+            await _institutionOfEducationAdminRepository.Delete(adminId);
+            await _userManager.RemoveFromRoleAsync(searchUser.Result, ProjectRoles.InstitutionOfEducationAdmin);
+            await _userRepository.Delete(searchUser.Result.Id);
+            return result.Set(new DescriptionResponseApiModel("IoEAdminDeleted"), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducation(string id)

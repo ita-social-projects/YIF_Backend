@@ -336,4 +336,10 @@
   <data name="IoEModeratorIsEnabled" xml:space="preserve">
     <value>Модератор розбанений</value>
   </data>
+  <data name="IoEAdminNotFound" xml:space="preserve">
+    <value>Адміністратора не знайдено</value>
+  </data>
+  <data name="IoEAdminDeleted" xml:space="preserve">
+    <value>Адміністратора видалено</value>
+  </data>
 </root>

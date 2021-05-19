@@ -6,6 +6,7 @@ using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,6 +20,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF.Shared;
 using YIF_XUnitTests.Unit.TestData;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
@@ -227,21 +229,25 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task DeleteAdmin_ReturnsSuccessDeleteMessage()
         {
             //Arrange
+            var user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", Email = "shadj_hadjf@maliberty.com", UserName= "Jeremiah Gibson"};
             _institutionOfEducationAdminRepository
                 .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
-                    { 
-                        Id = uniAdmin.Id,
-                        UserId = uniAdmin.UserId,
-                        User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
-                    }));
-            _userRepository.Setup(p => p.Delete(uniAdmin.UserId)).Returns(Task.FromResult<bool>(true));
-
+                {
+                    Id = uniAdmin.Id,
+                    UserId = uniAdmin.UserId,
+                    User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
+                }));
+            _userManager.Setup(s => s.FindByIdAsync(uniAdmin.UserId)).ReturnsAsync(uniAdmin.UserId == "" ? null : user);
+            _institutionOfEducationAdminRepository.Setup(s => s.Delete(uniAdmin.Id)).Returns(Task.FromResult<bool>(true));
+            _userManager.Setup(s => s.RemoveFromRoleAsync(user, ProjectRoles.InstitutionOfEducationAdmin));
+            _userRepository.Setup(s => s.Delete(user.Id));
+           
             //Act
-            var a = await superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id);
+            var result = await superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("User IsDeleted was updated", a.Object.Message);
+            Assert.Equal("IoEAdminDeleted", result.Object.Message);
         }
 
         [Fact]
