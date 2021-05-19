@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Resources;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -24,6 +25,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         private readonly GenericIdentity _fakeIdentity;
         private readonly string[] _roles;
         private readonly GenericPrincipal _principal;
+        private readonly Mock<HttpRequest> _httpRequest;
 
         public InstitutionOfEducationAdminControllerTests()
         {
@@ -208,16 +210,37 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData(null, "sms")]
-        [InlineData("sms", null)]
-        public async Task AddInstitutionOfEducationAdmin_EndpointsReturnBadRequest_IfModelStateIsNotValid(string adminEmail, string institutionOfEducationId)
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task AddInstitutionOfEducationModerator_EndpointsReturnBadRequest_IfModelStateIsNotValid(string email)
         {
             // Arrange
-            var inst = new InstitutionOfEducationAdminApiModel() { AdminEmail = adminEmail, InstitutionOfEducationId = institutionOfEducationId };
+            var inst = new EmailApiModel() { UserEmail = email };
+
+            // Assert
+            Assert.ThrowsAsync<NullReferenceException>(() => _testControl.AddIoEModerator(inst));
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_EndpointsReturnOk_IfEverythingIsOk(string email)
+        {
+            // Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            var inst = new EmailApiModel() { UserEmail = email };
+            _ioEAdminService.Setup(x => x.AddIoEModerator(email, It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(new ResponseApiModel<DescriptionResponseApiModel>());
 
             // Act
+            var result = await _testControl.AddIoEModerator(inst);
+
             // Assert
-            var exeption = await Assert.ThrowsAsync<NullReferenceException>(() => superAdminController.AddInstitutionOfEducationAdmin(inst));
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

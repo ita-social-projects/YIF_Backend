@@ -222,8 +222,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
             // Assert
-            Assert.True(response.StatusCode == System.Net.HttpStatusCode.InternalServerError 
-                || response.StatusCode == System.Net.HttpStatusCode.Conflict);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest 
+                || response.StatusCode == System.Net.HttpStatusCode.InternalServerError);
         }
 
         [Fact]
@@ -247,7 +247,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
             // Assert
-            Assert.True(response.StatusCode == System.Net.HttpStatusCode.Conflict);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

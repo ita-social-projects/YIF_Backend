@@ -271,14 +271,14 @@ namespace YIF.Core.Service.Concrete.Services
 
                 if (registerResult != string.Empty)
                 {
-                    throw new InvalidOperationException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+                    throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
                 }
 
                 var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(moderatorEmail, request);
 
                 if (!resultResetPasswordByEmail.Success)
                 {
-                    throw new InvalidOperationException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+                    throw new BadRequestException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
                 }
             }
             else
@@ -287,7 +287,7 @@ namespace YIF.Core.Service.Concrete.Services
 
                 if (ifUserAlreadyModerator != null)
                 {
-                    throw new InvalidOperationException(_resourceManager.GetString("IoEModeratorFailedUserAlreadyModerator"));
+                    throw new BadRequestException(_resourceManager.GetString("IoEModeratorFailedUserAlreadyModerator"));
                 }
 
                 dbUser = searchUser.Result;
