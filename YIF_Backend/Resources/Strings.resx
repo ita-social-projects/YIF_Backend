@@ -345,4 +345,7 @@
   <data name="IoEModeratorFailedUserAlreadyModerator" xml:space="preserve">
     <value>Користувач уже є модератором</value>
   </data>
+  <data name="UserWithSuchEmailAlreadyExists" xml:space="preserve">
+    <value>Користувач з такою поштою вже зареєстрований</value>
+  </data>
 </root>

@@ -641,33 +641,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
         [Theory]
         [InlineData("moderatorEmail")]
-        public async Task AddInstitutionOfEducationModerator_ThrowsNoExceptionWhenEverythingIsOk(string email)
-        {
-            //Arrange
-            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
-            DbUser dbUser = new DbUser();
-            IEnumerable<InstitutionOfEducationModeratorDTO> institutionOfEducationModerators = new List<InstitutionOfEducationModeratorDTO>{
-                new InstitutionOfEducationModeratorDTO {
-                    Admin = admin
-                }
-            };
-
-            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
-            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(dbUser);
-            _ioEModeratorRepository.Setup(p => p.GetAll());
-            _ioEModeratorRepository.Setup(p => p.AddUniModerator(new InstitutionOfEducationModerator())).ReturnsAsync(It.IsAny<string>());
-
-            // Act
-            var exception = await Record
-                .ExceptionAsync(() => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Theory]
-        [InlineData("moderatorEmail")]
-        public async Task AddInstitutionOfEducationModerator_ShouldThrowNoExceptionsIfUserWasNotInDatabase(string email)
+        public async Task AddInstitutionOfEducationModerator_ShouldThrowExceptionIfThereIsUserWithThisEmail(string email)
         {
             //Arrange
             InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
@@ -680,8 +654,32 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
 
             _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
-            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
-            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator)).ReturnsAsync(It.IsAny<string>());
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(dbUser);
+            _ioEModeratorRepository.Setup(p => p.GetAll());
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_ShouldThrowNoExceptionsIfUserWasNotInDatabase(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser() {
+                Email = email,
+                UserName = email
+            };
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            DbUser nullUser = null;
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(nullUser);
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.InstitutionOfEducationModerator)).Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(email, It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
             _ioEModeratorRepository.Setup(p => p.AddUniModerator(new InstitutionOfEducationModerator())).ReturnsAsync(It.IsAny<string>());
 
@@ -725,7 +723,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
             _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
-            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator)).ReturnsAsync(It.IsAny<string>());
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.InstitutionOfEducationModerator))
+                .Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(email, It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
 
             // Act

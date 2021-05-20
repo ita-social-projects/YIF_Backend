@@ -265,23 +265,7 @@ namespace YIF.Core.Service.Concrete.Services
             var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
             var searchUser = _userManager.FindByEmailAsync(moderatorEmail);
 
-            if (searchUser.Result == null)
-            {
-                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator);
-
-                if (registerResult != string.Empty)
-                {
-                    throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
-                }
-
-                var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(moderatorEmail, request);
-
-                if (!resultResetPasswordByEmail.Success)
-                {
-                    throw new BadRequestException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
-                }
-            }
-            else
+            if (searchUser.Result != null)
             {
                 var ifUserAlreadyModerator = (await _ioEModeratorRepository.GetAll()).SingleOrDefault(x => x.UserId == searchUser.Result.Id);
 
@@ -290,7 +274,21 @@ namespace YIF.Core.Service.Concrete.Services
                     throw new BadRequestException(_resourceManager.GetString("IoEModeratorFailedUserAlreadyModerator"));
                 }
 
-                dbUser = searchUser.Result;
+                throw new BadRequestException(_resourceManager.GetString("UserWithSuchEmailAlreadyExists"));
+            }
+
+            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator);
+
+            if (registerResult != string.Empty)
+            {
+                throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+            }
+
+            var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(moderatorEmail, request);
+
+            if (!resultResetPasswordByEmail.Success)
+            {
+                throw new BadRequestException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
             }
 
             await _ioEModeratorRepository.AddUniModerator(new InstitutionOfEducationModerator { AdminId = adminId, UserId = dbUser.Id });

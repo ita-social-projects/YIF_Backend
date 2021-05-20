@@ -198,11 +198,11 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Adds new Institution Of Education Moderator
         /// </summary>
-        /// <response code="201">Institution Of Education Moderator was succesfully added</response>
+        /// <response code="200">Institution Of Education Moderator was succesfully added</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="404">If institutionOfEducation not found</response>
         /// <response code="409">If any issue appeared</response>
-        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 201)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
