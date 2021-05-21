@@ -224,11 +224,11 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new NotFoundException(_resourceManager.GetString("IoEAdminNotFound"));
             }
 
-            var searchUser = _userManager.FindByIdAsync(admin.UserId);
+            var searchUser = await _userManager.FindByIdAsync(admin.UserId);
             
             await _institutionOfEducationAdminRepository.Delete(adminId);
-            await _userManager.RemoveFromRoleAsync(searchUser.Result, ProjectRoles.InstitutionOfEducationAdmin);
-            await _userRepository.Delete(searchUser.Result.Id);
+            await _userManager.RemoveFromRoleAsync(searchUser, ProjectRoles.InstitutionOfEducationAdmin);
+            await _userRepository.Delete(searchUser.Id);
             return result.Set(new DescriptionResponseApiModel("IoEAdminDeleted"), true);
         }
 
