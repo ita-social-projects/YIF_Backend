@@ -9,7 +9,6 @@ using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
-using System.Net.Http;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
