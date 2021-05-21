@@ -277,7 +277,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var ioEId = _context.InstitutionOfEducations.FirstOrDefault().Id;
 
             // Act
-            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById?ioEId={ioEId}");
+            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById/{ioEId}");
 
             // Assert
             response.EnsureSuccessStatusCode();
