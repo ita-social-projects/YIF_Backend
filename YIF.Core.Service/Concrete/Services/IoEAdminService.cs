@@ -245,8 +245,8 @@ namespace YIF.Core.Service.Concrete.Services
             else
                 await _ioEModeratorRepository.Delete(moderatorId);
 
-                var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
-                await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+            var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
+            await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
@@ -262,11 +262,11 @@ namespace YIF.Core.Service.Concrete.Services
                 UserName = moderatorEmail
             };
             var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
-            var searchUser = _userManager.FindByEmailAsync(moderatorEmail);
+            var searchUser = await _userManager.FindByEmailAsync(moderatorEmail);
 
-            if (searchUser.Result != null)
+            if (searchUser != null)
             {
-                var ifUserAlreadyModerator = (await _ioEModeratorRepository.GetAll()).SingleOrDefault(x => x.UserId == searchUser.Result.Id);
+                var ifUserAlreadyModerator = (await _ioEModeratorRepository.GetAll()).SingleOrDefault(x => x.UserId == searchUser.Id);
 
                 if (ifUserAlreadyModerator != null)
                 {
