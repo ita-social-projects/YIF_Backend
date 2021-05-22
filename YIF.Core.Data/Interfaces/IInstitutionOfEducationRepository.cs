@@ -8,7 +8,7 @@ namespace YIF.Core.Data.Interfaces
         where T : class
         where K : class
     {
-        Task<K> AddInstitutionOfEducation(InstitutionOfEducation institutionOfEducation);
+        Task<K> AddInstitutionOfEducation(T institutionOfEducation);
         Task<K> GetByName(string name);
         Task AddFavorite(InstitutionOfEducationToGraduate institutionOfEducationToGraduate);
         Task RemoveFavorite(InstitutionOfEducationToGraduate institutionOfEducationToGraduate);
@@ -20,7 +20,7 @@ namespace YIF.Core.Data.Interfaces
         /// <param name="id"></param>
         /// <returns> true if exist</returns>
         Task<bool> ContainsById(string id);
-        Task<string> Disable(InstitutionOfEducation IoE);
-        Task<string> Enable(InstitutionOfEducation IoE);
+        Task<string> Disable(T IoE);
+        Task<string> Enable(T IoE);
     }
 }

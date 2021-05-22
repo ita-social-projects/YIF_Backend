@@ -217,10 +217,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task DisableInstitutionOfEducationAdmin()
         {
             // Arrange
-            var admin = _context.InstitutionOfEducationAdmins.First();
+            var admin = _context.InstitutionOfEducationAdmins.Last();
+            var content = ContentHelper.GetStringContent(admin);
 
             // Act
-            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), content);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -276,7 +277,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var ioEId = _context.InstitutionOfEducations.FirstOrDefault().Id;
 
             // Act
-            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById?ioEId={ioEId}");
+            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById/{ioEId}");
 
             // Assert
             response.EnsureSuccessStatusCode();

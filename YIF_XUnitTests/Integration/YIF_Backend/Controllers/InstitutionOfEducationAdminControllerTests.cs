@@ -185,5 +185,68 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task AddInstitutionOfEducationModerator_Output_Correct()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var postRequest = new
+            {
+                Url = "/api/InstitutionOfEducationAdmin/AddIoEModerator",
+                Body = new EmailApiModel() { UserEmail = "AdminEmailTest1@gmail.com" }
+            };
+
+            //Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task AddInstitutionOfEducationModerator_Input_WrongEmailApiModel(string moderatorEmail)
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var postRequest = new
+            {
+                Url = "/api/InstitutionOfEducationAdmin/AddIoEModerator",
+                Body = new EmailApiModel() { UserEmail = moderatorEmail }
+            };
+
+            // Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            // Assert
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest 
+                || response.StatusCode == System.Net.HttpStatusCode.InternalServerError);
+        }
+
+        [Fact]
+        public async Task AddInstitutionOfEducationModerator_Output_ByAddingSameModeratorTwoTimes()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var postRequest = new
+            {
+                Url = "/api/InstitutionOfEducationAdmin/AddIoEModerator",
+                Body = new EmailApiModel() { UserEmail = "AdminEmailTest5@gmail.com" }
+            };
+
+            //Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            //Assert
+            response.EnsureSuccessStatusCode();
+
+            // Act
+            response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            // Assert
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest);
+        }
     }
 }
