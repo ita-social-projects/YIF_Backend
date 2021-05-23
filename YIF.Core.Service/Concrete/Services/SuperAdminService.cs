@@ -229,7 +229,7 @@ namespace YIF.Core.Service.Concrete.Services
             await _institutionOfEducationAdminRepository.Delete(adminId);
             await _userManager.RemoveFromRoleAsync(searchUser, ProjectRoles.InstitutionOfEducationAdmin);
             await _userRepository.Delete(searchUser.Id);
-            return result.Set(new DescriptionResponseApiModel("IoEAdminDeleted"), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEAdminDeleted")), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducation(string id)
