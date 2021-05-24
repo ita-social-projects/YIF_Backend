@@ -123,7 +123,7 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Institution Of Education</returns>
         /// <response code="200">Returns Institution Of Education</response>
-        /// <response code="403">If user is not Institution of Education admin</response>
+        /// <response code="403">If user is not Institution of Education moderator</response>
         [HttpGet("GetIoEInfoByUserId")]
         [ProducesResponseType(typeof(IoEInformationResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
