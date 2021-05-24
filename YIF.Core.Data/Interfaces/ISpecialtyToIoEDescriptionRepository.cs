@@ -2,10 +2,9 @@
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISpecialtyToIoEDescriptionRepository <T, K> : IRepository<T, K>
-        where T: class
-        where K: class
+    public interface ISpecialtyToIoEDescriptionRepository <TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
-        Task Add(T specialtyToIoEDescription);
+        Task Add(TEntity specialtyToIoEDescription);
     }
 }

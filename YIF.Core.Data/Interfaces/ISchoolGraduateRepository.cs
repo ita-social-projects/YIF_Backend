@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISchoolGraduateRepository<T> : IDisposable where T : class
+    public interface ISchoolGraduateRepository<TEntity> where TEntity : class
     {
-        Task<T> GetSchoolByUserId(string userId);
+        Task<TEntity> GetSchoolByUserId(string userId);
     }
 }

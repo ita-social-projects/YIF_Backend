@@ -2,11 +2,10 @@
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISpecialtyToGraduateRepository<T, K> : IRepository<T, K>
-        where T : class
-        where K : class
+    public interface ISpecialtyToGraduateRepository<TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
-        Task AddFavorite(T specialtyToGraduate);
-        Task RemoveFavorite(T specialtyToGraduate);
+        Task AddFavorite(TEntity specialtyToGraduate);
+        Task RemoveFavorite(TEntity specialtyToGraduate);
     }
 }

@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISchoolRepository<K> : IDisposable
-        where K : class
+    public interface ISchoolRepository<TEntity>
+        where TEntity : class
     {
-        Task<K> GetByName(string name);
+        Task<TEntity> GetByName(string name);
         Task<bool> Exist(string schoolName);
 
-        Task<IEnumerable<K>> GetAll();
-        Task<IEnumerable<string>> GetAllAsStrings();
+        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetAllAsStrings();
     }
 }

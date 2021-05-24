@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IDirectionRepository <T, K> : IRepository<T, K>
-        where T: class
-        where K: class
+    public interface IDirectionRepository <TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
-        Task<IEnumerable<K>> GetByIoEId(string InstitytionOfEducationId);
+        Task<IEnumerable<TEntity>> GetByIoEId(string institutionOfEducationId);
     }
 }

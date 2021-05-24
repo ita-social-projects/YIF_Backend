@@ -4,23 +4,16 @@ using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IInstitutionOfEducationRepository<T, K> : IRepository<T, K>
-        where T : class
-        where K : class
+    public interface IInstitutionOfEducationRepository<TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
-        Task<K> AddInstitutionOfEducation(T institutionOfEducation);
-        Task<K> GetByName(string name);
-        Task AddFavorite(InstitutionOfEducationToGraduate institutionOfEducationToGraduate);
-        Task RemoveFavorite(InstitutionOfEducationToGraduate institutionOfEducationToGraduate);
-        Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
-
-        /// <summary>
-        /// Check if object exist
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns> true if exist</returns>
+        Task<TEntity> AddInstitutionOfEducation(TEntity institutionOfEducation);
+        Task<TEntity> GetByName(string name);
+        Task AddFavorite(TEntity institutionOfEducationToGraduate);
+        Task RemoveFavorite(TEntity institutionOfEducationToGraduate);
+        Task<IEnumerable<TEntity>> GetFavoritesByUserId(string userId);
         Task<bool> ContainsById(string id);
-        Task<string> Disable(T IoE);
-        Task<string> Enable(T IoE);
+        Task<string> Disable(TEntity IoE);
+        Task<string> Enable(TEntity IoE);
     }
 }

@@ -5,33 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Domain.Repositories
 {
-    public class DirectionRepository : IDirectionRepository<Direction, DirectionDTO>
+    public class DirectionRepository : Repository<Direction>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
-        public DirectionRepository(IApplicationDbContext context, IMapper mapper)
+        public DirectionRepository(EFDbContext context):base(context)
         {
-            _context = context;
-            _mapper = mapper;
-        }
 
-        public async Task<bool> Update(Direction item)
-        {
-            _context.Directions.Update(item);
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        // Not implemented, as the logic will be determined in the future
-        public Task<bool> Delete(string id)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<DirectionDTO> Get(string id)

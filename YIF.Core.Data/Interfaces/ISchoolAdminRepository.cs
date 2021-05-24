@@ -5,13 +5,13 @@ using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISchoolAdminRepository<K> : IDisposable
-        where K : class
+    public interface ISchoolAdminRepository<TEntity>
+        where TEntity : class
     {
-        Task<string> AddSchoolAdmin(SchoolAdmin schoolAdmin);
-        Task<K> GetBySchoolId(string schoolId);
+        Task<string> AddSchoolAdmin(TEntity schoolAdmin);
+        Task<TEntity> GetBySchoolId(string schoolId);
         Task<string> Delete(string adminId);
-        Task<K> GetBySchoolIdWithoutIsDeletedCheck(string schoolId);
-        Task<IEnumerable<K>> GetAllSchoolAdmins();
+        Task<TEntity> GetBySchoolIdWithoutIsDeletedCheck(string schoolId);
+        Task<IEnumerable<TEntity>> GetAllSchoolAdmins();
     }
 }

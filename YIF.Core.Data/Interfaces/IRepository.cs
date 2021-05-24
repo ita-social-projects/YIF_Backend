@@ -5,15 +5,13 @@ using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IRepository<T, K> : IDisposable
-        where T : class
-        where K : class
+    public interface IRepository<TEntity>
+        where TEntity : class
     {
-        Task<bool> Update(T item);
-        Task<bool> Delete(string id);
-        Task<K> Get(string id);
-        Task<IEnumerable<K>> GetAll();
-        Task<IEnumerable<K>> Find(Expression<Func<T, bool>> predicate);
-
+        Task Update(TEntity item);
+        Task Delete(string id);
+        Task<TEntity> Get(string id);
+        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
     }
 }

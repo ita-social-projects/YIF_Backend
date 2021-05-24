@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISpecialtyRepository<T, K> : IRepository<T, K>
-        where T : class
-        where K : class
+    public interface ISpecialtyRepository<TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
         Task<bool> ContainsById(string id);
-        Task<IEnumerable<K>> GetFavoritesByUserId(string userId);
-        Task Add(T specialty);
+        Task<IEnumerable<TEntity>> GetFavoritesByUserId(string userId);
+        Task Add(TEntity specialty);
     }
 }

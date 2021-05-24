@@ -4,9 +4,9 @@ using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface ISchoolModeratorRepository<K> : IDisposable
-        where K : class
+    public interface ISchoolModeratorRepository<TEntity>
+        where TEntity : class
     {
-        Task<string> AddSchoolModerator(SchoolModerator schoolModerator);
+        Task<string> AddSchoolModerator(TEntity schoolModerator);
     }
 }

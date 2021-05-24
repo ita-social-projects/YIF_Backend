@@ -2,9 +2,8 @@
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IExamRequirementRepository <T, K> : IRepository<T, K>
-        where T : class
-        where K : class
+    public interface IExamRequirementRepository <TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
         Task DeleteRangeByDescriptionId(string id);
     }

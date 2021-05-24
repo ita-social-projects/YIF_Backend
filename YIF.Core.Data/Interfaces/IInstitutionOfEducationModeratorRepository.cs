@@ -3,16 +3,15 @@ using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IInstitutionOfEducationModeratorRepository<T, K> : IRepository<T, K>
-        where T : class
-        where K : class
+    public interface IInstitutionOfEducationModeratorRepository<TEntity> : IRepository<TEntity>
+        where TEntity : class
     {
-        Task<string> AddUniModerator(T institutionOfEducationModerator);
-        Task<IEnumerable<K>> GetByIoEId(string ioEId);
-        Task<K> GetByUserId(string userId);
-        Task<K> GetModeratorForAdmin(string id, string adminId);
-        Task<K> GetByAdminId(string id, string adminId);
-        Task<string> Disable(T ioEModerator);
-        Task<string> Enable(T ioEModerator);
+        Task<string> AddUniModerator(TEntity institutionOfEducationModerator);
+        Task<IEnumerable<TEntity>> GetByIoEId(string ioEId);
+        Task<TEntity> GetByUserId(string userId);
+        Task<TEntity> GetModeratorForAdmin(string id, string adminId);
+        Task<TEntity> GetByAdminId(string id, string adminId);
+        Task<string> Disable(TEntity ioEModerator);
+        Task<string> Enable(TEntity ioEModerator);
     }
 }
