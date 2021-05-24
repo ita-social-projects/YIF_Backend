@@ -246,7 +246,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("IoEAdminDeleted", result.Object.Message);
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
