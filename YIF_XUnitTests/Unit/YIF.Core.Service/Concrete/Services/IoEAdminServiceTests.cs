@@ -77,7 +77,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(Task.FromResult(listOfAdmins));
 
             // Act
-            Func<Task> act = () => _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            Func<Task> act = () => _ioEAdminService.ModifyInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.ThrowsAsync<NullReferenceException>(act);
@@ -111,7 +111,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns("");
 
             // Act
-            var result = _ioEAdminService.ModifyDescriptionOfInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            var result = _ioEAdminService.ModifyInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.True(result.Result.Success);

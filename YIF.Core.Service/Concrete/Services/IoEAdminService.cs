@@ -117,7 +117,7 @@ namespace YIF.Core.Service.Concrete.Services
             await _specialtyToIoERepository.Update(specialtyToInstitutionOfEducation);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 

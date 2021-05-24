@@ -28,7 +28,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Modify description of Institution
+        /// Modify Institution
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -38,14 +38,14 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("ModifyDescriptionOfInstitution")]
-        public async Task<IActionResult> ModifyDescriptionOfInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        [HttpPatch("ModifyInstitution")]
+        public async Task<IActionResult> ModifyInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             if (institutionOfEducationPostApiModel == null)
                 return BadRequest();
 
             var userId = User.FindFirst("id")?.Value;
-            var result = await _ioEAdminService.ModifyDescriptionOfInstitution(userId, institutionOfEducationPostApiModel);
+            var result = await _ioEAdminService.ModifyInstitution(userId, institutionOfEducationPostApiModel);
             return Ok(result.Object);
         }
 
