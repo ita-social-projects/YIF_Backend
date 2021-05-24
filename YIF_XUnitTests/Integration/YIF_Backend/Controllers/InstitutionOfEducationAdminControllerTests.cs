@@ -238,15 +238,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             //Act
             var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
-
-            //Assert
-            response.EnsureSuccessStatusCode();
-
-            // Act
-            response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+            var secondResponse = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
             // Assert
-            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest);
+            response.EnsureSuccessStatusCode();
+            Assert.True(secondResponse.StatusCode == System.Net.HttpStatusCode.BadRequest);
         }
     }
 }

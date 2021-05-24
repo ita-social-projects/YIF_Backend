@@ -433,5 +433,23 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.IsType<ResponseApiModel<IoEAdminForIoEModeratorResponseApiModel>>(result);
             Assert.True(result.Success);
         }
+
+
+        [Fact]
+        public async void GetIoEInfoByUserId_ShouldReturnIoE_IfEverythingIsOk()
+        {
+            // Arrange  
+            var userId = "Id";
+            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationModeratorDTO() {Admin = new InstitutionOfEducationAdminDTO() { InstitutionOfEducationId = "blahblah"}});
+            _ioERepository.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationDTO());
+            _mapper.Setup(x => x.Map<IoEInformationResponseApiModel>(It.IsAny<InstitutionOfEducationDTO>()));
+
+            // Act
+            var result = await _ioEModeratorService.GetIoEInfoByUserId(userId);
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IoEInformationResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
     }
 }
