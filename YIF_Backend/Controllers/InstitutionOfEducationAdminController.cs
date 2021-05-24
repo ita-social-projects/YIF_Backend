@@ -28,7 +28,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Modify Institution
+        /// Modify Institution Of Education
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>

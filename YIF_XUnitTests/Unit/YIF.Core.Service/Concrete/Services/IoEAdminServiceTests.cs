@@ -68,7 +68,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public void ModifyDescriptionOfInstitution_WrongAdminId()
+        public void ModifyInstitution_WrongAdminId()
         {
             // Arrange
             var wrongAdminId = "0";
@@ -84,7 +84,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public void ModifyDescriptionOfInstitution_ReturnTrue()
+        public void ModifyInstitution_ReturnTrue()
         {
             // Arrange
             var institutionOfEducationAdminDTO = new InstitutionOfEducationAdminDTO()
