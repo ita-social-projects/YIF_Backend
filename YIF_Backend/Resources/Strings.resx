@@ -348,4 +348,10 @@
   <data name="UserWithSuchEmailAlreadyExists" xml:space="preserve">
     <value>Користувач з такою поштою вже зареєстрований</value>
   </data>
+  <data name="IoEAdminNotFound" xml:space="preserve">
+    <value>Адміністратора не знайдено</value>
+  </data>
+  <data name="IoEAdminDeleted" xml:space="preserve">
+    <value>Адміністратора видалено</value>
+  </data>
 </root>
