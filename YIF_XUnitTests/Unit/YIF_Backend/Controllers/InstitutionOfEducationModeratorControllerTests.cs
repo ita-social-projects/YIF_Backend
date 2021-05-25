@@ -122,7 +122,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async void GetIoEInfoByUserId_ShouldReturnOk_IfEverythingIsOk()
+        public async void GetIoEInfoByUserId_ShouldReturnSuccess()
         {
             // Arrange  
             var claims = new List<Claim>()

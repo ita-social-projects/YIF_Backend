@@ -143,7 +143,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async void GetIoEInfo_EndpointReturnsIoEWithOkStatusCode_IfEverythingIsOk()
+        public async void GetIoEInfo_EndpointReturnsSuccess()
         {
             // Arrange
             _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
