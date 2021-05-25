@@ -138,5 +138,16 @@ namespace YIF.Core.Service.Concrete.Services
                 Success = true
             };
         }
+
+        public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId)
+        {
+            string ioEId = (await _ioEModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
+
+            return new ResponseApiModel<IoEInformationResponseApiModel>
+            {
+                Object = _mapper.Map<IoEInformationResponseApiModel>(await _ioERepository.Get(ioEId)),
+                Success = true
+            };
+        }
     }
 }
