@@ -436,7 +436,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
 
         [Fact]
-        public async void GetIoEInfoByUserId_ShouldReturnIoE_IfEverythingIsOk()
+        public async void GetIoEInfoByUserId_ShouldReturnSuccess()
         {
             // Arrange  
             var userId = "Id";
