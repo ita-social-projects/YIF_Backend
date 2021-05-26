@@ -6,7 +6,7 @@
         /// User id
         /// </summary>
         /// <example>a47e79d8-7e68-43c5-a5c9-1c6dff1e1693</example>
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         /// <summary>
         /// User old password
         /// </summary>

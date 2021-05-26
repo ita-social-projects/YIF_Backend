@@ -206,10 +206,13 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPut("ChangePassword")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordApiModel model)
         {
             if (!ModelState.IsValid) 
                 return BadRequest(new DescriptionResponseApiModel(_resourceManager.GetString("ModelIsInvalid")));
+
+            model.UserId = User.FindFirst("id")?.Value;
             var result = await _userService.ChangeUserPassword(model);
             return Ok(result.Object);
         }

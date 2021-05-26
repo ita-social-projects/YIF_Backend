@@ -354,4 +354,7 @@
   <data name="IoEAdminDeleted" xml:space="preserve">
     <value>Адміністратора видалено</value>
   </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Пароль успішно змінено</value>
+  </data>
 </root>
