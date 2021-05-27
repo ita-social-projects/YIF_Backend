@@ -277,5 +277,43 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             //Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task AddIoELector_ShouldReturnOk()
+        {
+            //Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+            var postRequest = new
+            {
+                Url = "/api/InstitutionOfEducationAdmin/AddLectorToIoE",
+                Body = new EmailApiModel() { UserEmail = "fakeEmail@gmail.com" }
+            };
+
+            // Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            //Assert 
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData("test@gmail.com")]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task AddInstitutionOfEducationAdmin_Input_WrongEmailApiModel(string lectorEmail)
+        {
+            // Arrange
+            var postRequest = new
+            {
+                Url = "/api/SuperAdmin/AddInstitutionOfEducationAdmin",
+                Body = new EmailApiModel() { UserEmail = lectorEmail }
+            };
+
+            // Act
+            var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
+
+            // Assert
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest);
+        }
     }
 }
