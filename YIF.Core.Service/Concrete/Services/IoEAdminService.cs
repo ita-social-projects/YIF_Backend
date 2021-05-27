@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Identity;
 using YIF.Shared;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace YIF.Core.Service.Concrete.Services
@@ -59,7 +58,6 @@ namespace YIF.Core.Service.Concrete.Services
             IWebHostEnvironment env,
             IConfiguration configuration,
             ResourceManager resourceManager
-
         )
         {
             _userService = userService;
@@ -287,7 +285,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             else
             {
-                var lectorExist = await _lectorRepository.GetByUserId(searchUser.Id, ioEId);
+                var lectorExist = await _lectorRepository.GetLectorByUserAndIoEIds(searchUser.Id, ioEId);
                 if (lectorExist != null)
                 {
                     throw new BadRequestException(_resourceManager.GetString("IoEAlreadyHasLector"));

@@ -198,7 +198,6 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Adds Lector to IoE
         /// </summary>
-        /// <returns></returns>
         /// <response code="200">Lector successfully added to the Institution of Education</response>
         /// <response code="400">If model state is not valid</response>
         /// <response code="404">If such user doesn't exist</response>

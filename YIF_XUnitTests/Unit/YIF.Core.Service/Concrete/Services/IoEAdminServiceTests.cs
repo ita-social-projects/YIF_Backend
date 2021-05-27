@@ -630,7 +630,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lecture)).Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
-            _lectorRepository.Setup(p => p.GetByUserId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
+            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
 
             //Act
             //Assert
@@ -650,7 +650,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
             _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lecture)).Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
-            _lectorRepository.Setup(p => p.GetByUserId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
+            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
 
             //Act
             //Assert

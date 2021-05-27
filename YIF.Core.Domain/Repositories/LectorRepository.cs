@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -40,15 +39,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<IEnumerable<LectureDTO>> Find(Expression<Func<Lecture, bool>> predicate)
         {
-            var lectors = await _context.Lectures.Where(predicate)
-                .AsNoTracking().ToListAsync();
-
-            if (lectors != null || lectors.Count > 0)
-            {
-                return _mapper.Map<IEnumerable<LectureDTO>>(lectors);
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
         public Task<LectureDTO> Get(string id)
@@ -61,7 +52,7 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<LectureDTO> GetByUserId(string userId, string ioEId)
+        public async Task<LectureDTO> GetLectorByUserAndIoEIds(string userId, string ioEId)
         {
             var lector = await _context.Lectures.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId && a.InstitutionOfEducationId == ioEId);
             return _mapper.Map<LectureDTO>(lector);
