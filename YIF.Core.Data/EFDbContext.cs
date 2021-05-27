@@ -90,7 +90,7 @@ namespace YIF.Core.Data
             builder.Entity<Lecture>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.Lectures)
-                .HasForeignKey(x => x.Id)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<SchoolModerator>()
