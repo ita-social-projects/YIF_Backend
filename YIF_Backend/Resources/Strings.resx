@@ -336,6 +336,24 @@
   <data name="IoEModeratorIsEnabled" xml:space="preserve">
     <value>Модератор розбанений</value>
   </data>
+  <data name="RegistrationAsIoEModerator" xml:space="preserve">
+    <value>Реєстрація як модератор навчального закладу</value>
+  </data>
+  <data name="IoEModeratorAdded" xml:space="preserve">
+    <value>Модератора було додано</value>
+  </data>
+  <data name="IoEModeratorFailedUserAlreadyModerator" xml:space="preserve">
+    <value>Користувач уже є модератором</value>
+  </data>
+  <data name="UserWithSuchEmailAlreadyExists" xml:space="preserve">
+    <value>Користувач з такою поштою вже зареєстрований</value>
+  </data>
+  <data name="IoEAdminNotFound" xml:space="preserve">
+    <value>Адміністратора не знайдено</value>
+  </data>
+  <data name="IoEAdminDeleted" xml:space="preserve">
+    <value>Адміністратора видалено</value>
+  </data>
   <data name="IoEAlreadyHasLector" xml:space="preserve">
     <value>Цей лектор вже є в навчальному закладі</value>
   </data>

@@ -28,7 +28,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Modify description of Institution
+        /// Modify Institution Of Education
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -38,14 +38,14 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("ModifyDescriptionOfInstitution")]
-        public async Task<IActionResult> ModifyDescriptionOfInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        [HttpPatch("ModifyInstitution")]
+        public async Task<IActionResult> ModifyInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             if (institutionOfEducationPostApiModel == null)
                 return BadRequest();
 
             var userId = User.FindFirst("id")?.Value;
-            var result = await _ioEAdminService.ModifyDescriptionOfInstitution(userId, institutionOfEducationPostApiModel);
+            var result = await _ioEAdminService.ModifyInstitution(userId, institutionOfEducationPostApiModel);
             return Ok(result.Object);
         }
 
@@ -192,6 +192,26 @@ namespace YIF_Backend.Controllers
         {
             string userId = User.FindFirst("id").Value;
             var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(Id, userId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Adds new Institution Of Education Moderator
+        /// </summary>
+        /// <response code="200">Institution Of Education Moderator was succesfully added</response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="404">If institutionOfEducation not found</response>
+        /// <response code="409">If any issue appeared</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("AddIoEModerator")]
+        public async Task<IActionResult> AddIoEModerator([FromBody] EmailApiModel model)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.AddIoEModerator(model.UserEmail, userId, Request);
             return Ok(result.Object);
         }
 

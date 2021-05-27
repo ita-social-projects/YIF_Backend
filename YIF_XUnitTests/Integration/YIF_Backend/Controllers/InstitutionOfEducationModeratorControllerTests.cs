@@ -141,5 +141,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async void GetIoEInfo_EndpointReturnsSuccess()
+        {
+            // Arrange
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducationModerator/GetIoEInfoByUserId");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

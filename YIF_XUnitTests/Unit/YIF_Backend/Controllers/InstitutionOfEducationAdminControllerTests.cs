@@ -25,6 +25,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         private readonly GenericIdentity _fakeIdentity;
         private readonly string[] _roles;
         private readonly GenericPrincipal _principal;
+        private readonly Mock<HttpRequest> _httpRequest;
 
         public InstitutionOfEducationAdminControllerTests()
         {
@@ -241,6 +242,40 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert
             Assert.ThrowsAsync<NullReferenceException>(() => _testControl.AddIoELector(inst));
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task AddInstitutionOfEducationModerator_EndpointsReturnBadRequest_IfModelStateIsNotValid(string email)
+        {
+            // Arrange
+            var inst = new EmailApiModel() { UserEmail = email };
+
+            // Assert
+            Assert.ThrowsAsync<NullReferenceException>(() => _testControl.AddIoEModerator(inst));
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_EndpointsReturnOk_IfEverythingIsOk(string email)
+        {
+            // Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            var inst = new EmailApiModel() { UserEmail = email };
+            _ioEAdminService.Setup(x => x.AddIoEModerator(email, It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(new ResponseApiModel<DescriptionResponseApiModel>());
+
+            // Act
+            var result = await _testControl.AddIoEModerator(inst);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }

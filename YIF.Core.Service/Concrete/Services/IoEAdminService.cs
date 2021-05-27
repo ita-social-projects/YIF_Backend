@@ -57,10 +57,10 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ResourceManager resourceManager
+            ResourceManager resourceManager,
+            IUserService<DbUser> userService
         )
         {
-            _userService = userService;
             _userManager = userManager;
             _userRepository = userRepository;
             _specialtyRepository = specialtyRepository;
@@ -75,6 +75,7 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
+            _userService = userService;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
@@ -120,7 +121,7 @@ namespace YIF.Core.Service.Concrete.Services
             await _specialtyToIoERepository.Update(specialtyToInstitutionOfEducation);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyDescriptionOfInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
@@ -248,10 +249,54 @@ namespace YIF.Core.Service.Concrete.Services
             else
                 await _ioEModeratorRepository.Delete(moderatorId);
 
-                var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
-                await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+            var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
+            await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEModerator( [NotNull] string moderatorEmail,
+           [NotNull] string userId,
+           [NotNull] HttpRequest request)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var dbUser = new DbUser
+            {
+                Email = moderatorEmail,
+                UserName = moderatorEmail
+            };
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var searchUser = await _userManager.FindByEmailAsync(moderatorEmail);
+
+            if (searchUser != null)
+            {
+                var ifUserAlreadyModerator = (await _ioEModeratorRepository.GetAll()).SingleOrDefault(x => x.UserId == searchUser.Id);
+
+                if (ifUserAlreadyModerator != null)
+                {
+                    throw new BadRequestException(_resourceManager.GetString("IoEModeratorFailedUserAlreadyModerator"));
+                }
+
+                throw new BadRequestException(_resourceManager.GetString("UserWithSuchEmailAlreadyExists"));
+            }
+
+            var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator);
+
+            if (registerResult != string.Empty)
+            {
+                throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+            }
+
+            var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(moderatorEmail, request);
+
+            if (!resultResetPasswordByEmail.Success)
+            {
+                throw new BadRequestException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+            }
+
+            await _ioEModeratorRepository.AddUniModerator(new InstitutionOfEducationModerator { AdminId = adminId, UserId = dbUser.Id });
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorAdded")), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(
