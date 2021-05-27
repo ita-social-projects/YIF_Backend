@@ -6,20 +6,25 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_Backend;
 using YIF_XUnitTests.Integration.Fixture;
+using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 {
     public class UsersControllerTests : TestServerFixture
     {
         private static string _correctUserId;
+        private readonly UserInputAttribute _userInputAttribute;
         public UsersControllerTests(ApiWebApplicationFactory fixture)
         {
+            _client = getInstance(fixture);
+
             _client = fixture.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(services =>
@@ -28,8 +33,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 });
             }).CreateClient();
 
-            _client = getInstance(fixture);
             _correctUserId = _context.Users.First().Id;
+            _userInputAttribute = new UserInputAttribute(_context);
         }
 
         [Fact]
@@ -102,10 +107,12 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             string confirmPassword,
             string recaptcha)
         {
+            //Arrange
+            _userInputAttribute.SetUserIdForHttpContext();
+
             // Act
             var content = new StringContent(JsonConvert.SerializeObject(new ChangePasswordApiModel
             {
-                UserId = _correctUserId,
                 OldPassword = oldPassword,
                 NewPassword = newPassword,
                 ConfirmNewPassword = confirmPassword,
