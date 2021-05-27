@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using YIF.Core.Data;
 using YIF_XUnitTests.Integration.Fixture;
 
