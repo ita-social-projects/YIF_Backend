@@ -222,7 +222,7 @@ namespace YIF_Backend.Controllers
         /// <response code="400">If model state is not valid</response>
         /// <response code="404">If such user doesn't exist</response>
         /// <response code="409">If email incorrect</response>
-        [ProducesResponseType(typeof(AuthenticateResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
