@@ -57,10 +57,10 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ResourceManager resourceManager,
-            IUserService<DbUser> userService
+            ResourceManager resourceManager
         )
         {
+            _userService = userService;
             _userManager = userManager;
             _userRepository = userRepository;
             _specialtyRepository = specialtyRepository;
@@ -75,7 +75,6 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
-            _userService = userService;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
