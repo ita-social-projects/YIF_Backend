@@ -13,7 +13,7 @@ namespace YIF.Core.Data.Entities.IdentityEntities
         public virtual ICollection<Graduate> Graduates { get; set; }
         public virtual ICollection<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
         public virtual ICollection<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
-        public virtual ICollection<Lecture> Lectures { get; set; }
+        public virtual ICollection<Lector> Lectors { get; set; }
         public virtual ICollection<SchoolModerator> SchoolModerators { get; set; } 
         public virtual ICollection<SuperAdmin> SuperAdmins { get; set; } 
     }

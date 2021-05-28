@@ -3,7 +3,8 @@ using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Entities
 {
-    public class Lecture : BaseEntity
+    [Table("Lector")]
+    public class Lector : BaseEntity
     {
         public string InstitutionOfEducationId { get; set; }
 

@@ -41,7 +41,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
-        private readonly Mock<ILectorRepository<Lecture, LectureDTO>> _lectorRepository = new Mock<ILectorRepository<Lecture, LectureDTO>>();
+        private readonly Mock<ILectorRepository<Lector, LectorDTO>> _lectorRepository = new Mock<ILectorRepository<Lector, LectorDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
@@ -742,14 +742,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Arrange
             ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
             InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
-            LectureDTO lectureDto = null;
+            LectorDTO lectorDto = null;
             DbUser dbUser = new DbUser();
 
             _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
             _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
-            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lecture)).Returns(Task.FromResult(string.Empty));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lector)).Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
-            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
+            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectorDto);
 
             //Act
             //Assert
@@ -762,14 +762,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Arrange
             ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
             InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
-            LectureDTO lectureDto = new LectureDTO();
+            LectorDTO lectorDto = new LectorDTO();
             DbUser dbUser = new DbUser();
 
             _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
             _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
-            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lecture)).Returns(Task.FromResult(string.Empty));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lector)).Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
-            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectureDto);
+            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectorDto);
 
             //Act
             //Assert
@@ -787,7 +787,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
             _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUserNull);
-            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lecture)).Returns(Task.FromResult(string.Empty));
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lector)).Returns(Task.FromResult(string.Empty));
             _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
 
             //Act
@@ -810,7 +810,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
             _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
-            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lecture)).ReturnsAsync(response);
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lector)).ReturnsAsync(response);
 
             // Act
             Func<Task> act = () => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>());
@@ -830,7 +830,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
             _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
-            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lecture)).ReturnsAsync(It.IsAny<string>());
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lector)).ReturnsAsync(It.IsAny<string>());
             _userService.Setup(p => p.ResetPasswordByEmail(email, It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
 
             // Act
