@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using YIF.Core.Data.Entities;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels.EntityForResponse;
 using YIF.Core.Domain.DtoModels.EntityDTO;
@@ -18,6 +19,7 @@ namespace YIF.Core.Service.Mapping
             CreateMap<SpecialtyDTO, SpecialtyForDirectionResponseModel>();
             CreateMap<Direction, DirectionDTO>().ReverseMap();
             CreateMap<DirectionDTO, DirectionResponseApiModel>().ReverseMap();
+            CreateMap<DirectionPostApiModel, DirectionDTO>();
         }
     }
 }

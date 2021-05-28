@@ -32,6 +32,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository;
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _institutionOfEducationAdminRepository;
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository;
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
@@ -74,6 +75,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
+            _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
+
             _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
             _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
@@ -95,6 +98,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _signInManager,
                                                     _jwtService.Object,
                                                     _mapperMock.Object,
+                                                    _directionRepository.Object,
                                                     _institutionOfEducationRepository.Object,
                                                     _institutionOfEducationAdminRepository.Object,
                                                     _schoolRepository.Object,
@@ -130,6 +134,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[0].Id,  },
                 new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[1].Id,  }
             };
+        }
+
+        [Fact]
+        public async Task AddDierction_ShouldAddDirection()
+        {
+            //Arrange
+            _mapperMock.Setup(sr => sr.Map<DirectionDTO>(It.IsAny<DirectionPostApiModel>())).Returns(It.IsAny<DirectionDTO>());
+            _mapperMock.Setup(sr => sr.Map<Direction>(It.IsAny<DirectionDTO>())).Returns(It.IsAny<Direction>());
+            _directionRepository.Setup(sr => sr.Add(It.IsAny<Direction>()));
+
+            //Act
+            var result = await superAdminService.AddDirection(new DirectionPostApiModel());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]

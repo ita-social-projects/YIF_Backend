@@ -42,6 +42,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             };
         }
 
+        [Fact]
+        public async Task AddDirection_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.AddDirection(It.IsAny<DirectionPostApiModel>())).ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.AddDirection(It.IsAny<DirectionPostApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
         [Theory]
         [InlineData(null, "sms")]
         [InlineData("sms", null)]

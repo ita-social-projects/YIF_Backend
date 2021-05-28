@@ -38,6 +38,25 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         }
 
+        [Theory]
+        [InlineData("Машинобудування", "Автомеханіка", "78")]
+        public async Task AddDirection_ShouldReturnOk(string name, string description, string code)
+        {
+            //Arrange
+            var model = new DirectionPostApiModel()
+            {
+                Name = name,
+                Description = description,
+                Code = code
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/SuperAdmin/AddDirection", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
         [Fact]
         public async Task AddInstitutionOfEducationAdmin_Output_Correct()
         {

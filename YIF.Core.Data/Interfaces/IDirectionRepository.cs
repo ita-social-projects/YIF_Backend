@@ -8,5 +8,6 @@ namespace YIF.Core.Data.Interfaces
         where K: class
     {
         Task<IEnumerable<K>> GetByIoEId(string InstitytionOfEducationId);
+        Task Add(T dbUser);
     }
 }

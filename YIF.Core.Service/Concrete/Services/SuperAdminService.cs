@@ -32,6 +32,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
@@ -52,6 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper,
+            IDirectionRepository<Direction, DirectionDTO> directionRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
@@ -71,6 +73,7 @@ namespace YIF.Core.Service.Concrete.Services
             _signInManager = signInManager;
             _jwtService = _IJwtService;
             _mapper = mapper;
+            _directionRepository = directionRepository;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _schoolRepository = schoolRepository;
@@ -412,6 +415,16 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(
                    new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasAdded")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDirection(DirectionPostApiModel directionModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var DirectionDTO = _mapper.Map<DirectionDTO>(directionModel);
+            await _directionRepository.Add(_mapper.Map<Direction>(DirectionDTO));
+
+            return result.Set(
+                   new DescriptionResponseApiModel(_resourceManager.GetString("DirectionWasAdded")), true);
         }
 
         public async Task<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)

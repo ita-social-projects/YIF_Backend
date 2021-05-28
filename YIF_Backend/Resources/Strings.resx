@@ -354,4 +354,7 @@
   <data name="IoEAdminDeleted" xml:space="preserve">
     <value>Адміністратора видалено</value>
   </data>
+  <data name="DirectionWasAdded" xml:space="preserve">
+    <value>Напрямок додано</value>
+  </data>
 </root>
