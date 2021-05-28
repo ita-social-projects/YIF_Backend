@@ -105,8 +105,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         {
             //Arrange
             _userInputAttribute.SetUserIdForHttpContext();
-
-            // Act
             var content = new StringContent(JsonConvert.SerializeObject(new ChangePasswordApiModel
             {
                 OldPassword = oldPassword,
@@ -114,6 +112,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 ConfirmNewPassword = confirmPassword,
                 RecaptchaToken = recaptcha
             }), Encoding.UTF8, "application/json");
+
+            // Act
             var response = await _client.PutAsync("api/Users/ChangePassword", content);
 
             // Assert
