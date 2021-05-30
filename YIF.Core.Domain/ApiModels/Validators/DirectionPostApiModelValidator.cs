@@ -18,10 +18,6 @@ namespace YIF.Core.Domain.ApiModels.Validators
                 .NotEmpty()
                 .NotNull();
 
-            RuleFor(x => x.Description)
-                .NotEmpty()
-                .NotNull();
-
             RuleFor(x => x.Code)
                 .NotEmpty()
                 .NotNull();

@@ -39,14 +39,13 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("Машинобудування", "Автомеханіка", "78")]
-        public async Task AddDirection_ShouldReturnOk(string name, string description, string code)
+        [InlineData("Машинобудування", "78")]
+        public async Task AddDirection_ShouldReturnOk(string name, string code)
         {
             //Arrange
             var model = new DirectionPostApiModel()
             {
                 Name = name,
-                Description = description,
                 Code = code
             };
 
