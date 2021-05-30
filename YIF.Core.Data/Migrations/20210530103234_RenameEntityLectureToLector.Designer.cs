@@ -10,8 +10,8 @@ using YIF.Core.Data;
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    [Migration("20210528095532_ChangeEntityLectureToLector")]
-    partial class ChangeEntityLectureToLector
+    [Migration("20210530103234_RenameEntityLectureToLector")]
+    partial class RenameEntityLectureToLector
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -469,7 +469,7 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("InstitutionOfEducationsToGraduates");
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
+            modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -487,7 +487,7 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Lector");
+                    b.ToTable("Lectors");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.School", b =>
@@ -869,7 +869,7 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
+            modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
                         .WithMany("Lectors")
@@ -877,7 +877,7 @@ namespace YIF.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany("Lectures")
+                        .WithMany("Lectors")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
