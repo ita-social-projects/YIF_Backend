@@ -357,4 +357,10 @@
   <data name="DirectionWasAdded" xml:space="preserve">
     <value>Напрямок додано</value>
   </data>
+  <data name="AlreadyExistsInDbMessage" xml:space="preserve">
+    <value>Запис з таким параметром уже існує</value>
+  </data>
+  <data name="NotFoundInDbMessage" xml:space="preserve">
+    <value>Запис з таким параметром не знайдено</value>
+  </data>
 </root>
