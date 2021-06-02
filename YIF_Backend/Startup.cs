@@ -18,7 +18,6 @@ using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
