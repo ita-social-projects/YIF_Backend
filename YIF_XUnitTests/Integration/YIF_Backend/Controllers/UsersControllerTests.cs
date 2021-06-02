@@ -131,7 +131,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
         [InlineData("QWerty-1", "QWerty-12", "QWerty-12", // Recaptcha incorrect
             "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRowkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        public async Task ChangePassword_With_InCurrentParameters(
+        public async Task ChangePassword_With_IncorrentParameters(
             string oldPassword,
             string newPassword,
             string confirmPassword,
@@ -153,30 +153,6 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal("application/json; charset=utf-8",
               response.Content.Headers.ContentType.ToString());
         }
-        [Theory]
-        [InlineData("WrongId", "QWerty-1", "QWerty-1", "QWerty-1", // ID is incorrect
-            "03AGdBq25YLH-yC_93jfCWQBUm3bGFwnZBh1vyA4KmSeqtYlfDD7sgCHy9LxnYwqGpQPOTRIwkCbCoG2ZGQlPyHuwKZaEXZU3L9R_Oel8J_mJsVHJReRn9tDXinrw6uXG16Abgc-UoTW_DoBNFA8ScJ0W97TR2ThYB0Mh1dO-wv0JLUknKA5Dubvb5jLvsgx4QKtiNUNexXQxHP-LBUaJFIGwg1QD_5DVJ4HzXlGRrDBCQhBkvuew9znk-EnLvyP1bpUXfix2T1lVTxwFNNw-yiLWZFXZIzCt2JrreEOSmImE-7eQKguD27-xu4qkmGDZSMyyB8w8WrvkLYnglNxWbWSscZg0jbEF-NQMB3NW-Z2KytnOg7TocV-fxf11OjEu2H0rcmMLNk7s9yLOOPnJlO-C8t2SeaLu99XFkFWN5AVTV-ikReaX0wWTS8edKD5rAdIbMNeZugFLs")]
-        public async Task ChangePassword_With_WrongId(string id,
-            string oldPassword,
-            string newPassword,
-            string confirmPassword,
-            string recaptcha)
-        {
-            // Act
-            var content = new StringContent(JsonConvert.SerializeObject(new ChangePasswordApiModel
-            {
-                UserId = id,
-                OldPassword = oldPassword,
-                NewPassword = newPassword,
-                ConfirmNewPassword = confirmPassword,
-                RecaptchaToken = recaptcha
-            }), Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync("api/Users/ChangePassword", content);
-
-            // Assert
-            Assert.Equal(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Equal("application/json; charset=utf-8",
-              response.Content.Headers.ContentType.ToString());
-        }
+        
     }
 }
