@@ -18,6 +18,7 @@ using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using YIF.Core.Data;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -95,6 +96,7 @@ namespace YIF_Backend
             services.AddTransient<ISpecialtyToGraduateRepository<SpecialtyToGraduate, SpecialtyToGraduateDTO>, SpecialtyToGraduateRepository>();
             services.AddTransient<ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>, SpecialtyToIoEToGraduateRepository>();
             services.AddTransient<ILectorRepository<Lecture, LectureDTO>, LectorRepository>();
+            services.AddTransient<ILectorService, LectorService>();
 
             #endregion
 
