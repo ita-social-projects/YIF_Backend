@@ -23,8 +23,8 @@ namespace YIF.Core.Domain.Repositories
         }
         public async Task Add(Direction direction)
         {
-                await _context.Directions.AddAsync(direction);
-                await _context.SaveChangesAsync();
+            await _context.Directions.AddAsync(direction);
+            await _context.SaveChangesAsync();
         }
         public async Task<bool> Update(Direction item)
         {

@@ -420,8 +420,8 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDirection(DirectionPostApiModel directionModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var DirectionDTO = _mapper.Map<DirectionDTO>(directionModel);
-            await _directionRepository.Add(_mapper.Map<Direction>(DirectionDTO));
+            var directionDTO = _mapper.Map<DirectionDTO>(directionModel);
+            await _directionRepository.Add(_mapper.Map<Direction>(directionDTO));
 
             return result.Set(
                    new DescriptionResponseApiModel(_resourceManager.GetString("DirectionWasAdded")), true);

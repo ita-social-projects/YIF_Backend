@@ -26,10 +26,6 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.Name)
                .Must(x => _context.Directions.All(n => n.Name != x))
                .WithMessage(_resourceManager.GetString("AlreadyExistsInDbMessage"));
-
-            RuleFor(x => x.Code)
-                .Must(x => _context.Directions.All(n => n.Code != x))
-                .WithMessage(_resourceManager.GetString("NotFoundInDbMessage"));
         }
     }
 }
