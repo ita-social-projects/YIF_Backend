@@ -537,9 +537,9 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(true);
         }
-        public async Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeUserPassword(ChangePasswordApiModel model)
         {
-            var result = new ResponseApiModel<ChangePasswordApiModel>();
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
             var validator = new ChangePasswordValidator(_userManager, _recaptcha);
             var validResults = validator.Validate(model);
@@ -556,9 +556,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new InvalidOperationException(_resourceManager.GetString("ErrorOccurred"));
             }
 
-            result.Object = model;
-
-            return result.Set(true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("PasswordChanged")), true);
         }
 
         public async Task<ResponseApiModel<bool>> SendEmailConfirmMail(EmailApiModel model, HttpRequest request)

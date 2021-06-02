@@ -360,4 +360,7 @@
   <data name="LectorWasAdded" xml:space="preserve">
     <value>Лектора успішно додано </value>
   </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Пароль успішно змінено</value>
+  </data>
 </root>

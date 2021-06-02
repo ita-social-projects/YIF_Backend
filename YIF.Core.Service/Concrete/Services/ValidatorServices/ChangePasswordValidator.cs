@@ -26,6 +26,9 @@ namespace YIF.Core.Service.Concrete.Services.ValidatorServices
                .Must(_recaptcha.IsValid).WithMessage("Роботи атакують!");
 
             RuleFor(x => x.UserId)
+                .NotNull();
+
+            RuleFor(x => x.UserId)
                 .Must(x => IsUserExist(x)).WithMessage("Такого користувача не існує");
 
             RuleFor(x => x.OldPassword)
