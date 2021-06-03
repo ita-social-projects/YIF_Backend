@@ -297,8 +297,8 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Add new direction.
         /// </summary>
-        /// <returns></returns>
-        /// <response code="200">Success message</response>
+        /// <returns>Success message</returns>
+        /// <response code="200">Direction added</response>
         /// <response code="400">If request model isn't valid </response>
         /// <response code="403">If user is not super admin</response>
         [HttpPost("AddDirection")]
