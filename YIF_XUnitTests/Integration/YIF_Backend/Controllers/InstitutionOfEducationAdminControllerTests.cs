@@ -297,15 +297,15 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Theory]
-        [InlineData("test@gmail.com")]
         [InlineData(null)]
         [InlineData("")]
-        public async Task AddInstitutionOfEducationAdmin_Input_WrongEmailApiModel(string lectorEmail)
+        public async Task AddIoELector_Input_WrongEmailApiModel(string lectorEmail)
         {
             // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
             var postRequest = new
             {
-                Url = "/api/SuperAdmin/AddInstitutionOfEducationAdmin",
+                Url = "/api/InstitutionOfEducationAdmin/AddLectorToIoE",
                 Body = new EmailApiModel() { UserEmail = lectorEmail }
             };
 
@@ -313,7 +313,8 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
             // Assert
-            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest);
+            Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest
+               || response.StatusCode == System.Net.HttpStatusCode.InternalServerError);
         }
     }
 }

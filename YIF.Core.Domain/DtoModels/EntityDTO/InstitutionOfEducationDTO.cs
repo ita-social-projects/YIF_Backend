@@ -76,7 +76,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// <summary>
         /// List of institution Of Education lectures
         /// </summary>
-        public IEnumerable<LectureDTO> Lectures { get; set; }
+        public IEnumerable<LectorDTO> Lectors { get; set; }
         // For Json Patch
         public ImageApiModel ImageApiModel { get; set; }
         /// <summary>

@@ -2,7 +2,7 @@
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
-    public class LectureDTO
+    public class LectorDTO
     {
         public string Id { get; set; }
         public string UserId { get; set; }

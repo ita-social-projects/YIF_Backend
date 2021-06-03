@@ -50,7 +50,7 @@ namespace YIF.Core.Service.Mapping
             CreateMap<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>()
                 .ReverseMap();
 
-            CreateMap<Lecture, LectureDTO>()
+            CreateMap<Lector, LectorDTO>()
                 .ReverseMap();
         }
     }

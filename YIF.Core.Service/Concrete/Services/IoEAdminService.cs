@@ -36,7 +36,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
-        private readonly ILectorRepository<Lecture, LectureDTO> _lectorRepository;
+        private readonly ILectorRepository<Lector, LectorDTO> _lectorRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
@@ -53,7 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
-            ILectorRepository<Lecture, LectureDTO> lectorRepository,
+            ILectorRepository<Lector, LectorDTO> lectorRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
@@ -314,7 +314,7 @@ namespace YIF.Core.Service.Concrete.Services
             var searchUser = await _userManager.FindByEmailAsync(email.UserEmail);
             if (searchUser == null)
             {
-                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.Lecture);
+                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.Lector);
                 if (registerResult != string.Empty)
                 {
                     throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
@@ -337,7 +337,7 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(_resourceManager.GetString("UserAlreadyExists"));
             }
 
-            var newLector = new Lecture { InstitutionOfEducationId = ioEId, UserId = dbUser.Id };
+            var newLector = new Lector { InstitutionOfEducationId = ioEId, UserId = dbUser.Id };
             await _lectorRepository.Add(newLector);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);

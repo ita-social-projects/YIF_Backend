@@ -12,7 +12,7 @@ namespace YIF.Core.Data.Interfaces
         DbSet<SuperAdmin> SuperAdmins { get; set; }
         DbSet<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
         DbSet<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
-        DbSet<Lecture> Lectures { get; set; }
+        DbSet<Lector> Lectors { get; set; }
         DbSet<InstitutionOfEducation> InstitutionOfEducations { get; set; }
         DbSet<Direction> Directions { get; set; }
         DbSet<Specialty> Specialties { get; set; }
