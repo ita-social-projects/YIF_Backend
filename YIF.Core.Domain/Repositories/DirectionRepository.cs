@@ -21,11 +21,13 @@ namespace YIF.Core.Domain.Repositories
             _context = context;
             _mapper = mapper;
         }
+
         public async Task Add(Direction direction)
         {
             await _context.Directions.AddAsync(direction);
             await _context.SaveChangesAsync();
         }
+
         public async Task<bool> Update(Direction item)
         {
             _context.Directions.Update(item);
