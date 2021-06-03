@@ -6,7 +6,7 @@ namespace YIF_Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    [Authorize(Roles = "Lecture")]
+    [Authorize(Roles = "Lector")]
     public class LectorController : ControllerBase
     {
 
