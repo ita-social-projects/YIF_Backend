@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210506082404_ChangedForeignAndPrimaryKeysForLector")]
+    partial class ChangedForeignAndPrimaryKeysForLector
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -467,7 +469,7 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("InstitutionOfEducationsToGraduates");
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
+            modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -485,7 +487,7 @@ namespace YIF.Core.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Lectors");
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.School", b =>
@@ -867,15 +869,15 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
+            modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
-                        .WithMany("Lectors")
+                        .WithMany("Lectures")
                         .HasForeignKey("InstitutionOfEducationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany("Lectors")
+                        .WithMany("Lectures")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

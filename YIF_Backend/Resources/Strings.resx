@@ -363,4 +363,13 @@
   <data name="NotFoundInDbMessage" xml:space="preserve">
     <value>Запис з таким параметром не знайдено</value>
   </data>
+  <data name="IoEAlreadyHasLector" xml:space="preserve">
+    <value>Цей лектор вже є в навчальному закладі</value>
+  </data>
+  <data name="LectorWasAdded" xml:space="preserve">
+    <value>Лектора успішно додано </value>
+  </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Пароль успішно змінено</value>
+  </data>
 </root>

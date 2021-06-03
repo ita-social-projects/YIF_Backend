@@ -99,6 +99,92 @@ Note that the server name is 'yifsql'. This is the name that the SQL Server cont
 Note the name of the DB is 'master'. You can change this to whatever you want. Entity Framework will attempt to create the DB if it doesnt already exist.
 ---
 
+---
+## How to run the Front-End docker and Back-End docker as one container
+> Clone `YIF_Frontend` and `YIF_Backend` in the same folder.
+```
+git clone https://github.com/ita-social-projects/YIF_Backend.git
+```
+```
+git clone https://github.com/ita-social-projects/YIF_Frontend.git
+```
+### Configuration
+Configure as per instructions in the YIF_Frontend and YIF_Backend repositories:
+
+
+#### For YIF_Backend
+**Uncomment**:
+1. File `YIF.Core.Data/Seaders/SeederDB.cs`, line `context.Database.Migrate();`
+2. File `YIF.Backend/Startup.cs`, line `SeederDB.SeedData(app.ApplicationServices)`
+
+Add files `appsettings.json` and `appsettings.Testing.json` to YIF_Backend/YIF_Backend. Ensure that the following Code is uncommented.
+```
+"DefaultConnection":"Server=yifsql, 1433;Database=YITF;User Id=SA;Password=YIF_Backend_DB_MyKeyOnlyInMyHeart;"
+```
+
+#### For YIF_Frontend
+> Add `.env` file to the `YIF_Frontend`(`.env` is not presented in the github repository, you need to ask one of the developer for it)
+
+> Create `docker-compose.yml` file on the same folder level as `YIF_Backend` and `YIF_Frontend`.
+```
+.
+├── YIF_Backend             ← cloned YIF_Backend repository
+├── YIF_Frontend            ← cloned YIF_Frontend repository
+├── docker-compose.yml
+```
+> Paste below code in the `docker-compose.yml` file.
+```
+version: "3.8"
+services:
+    yif_frontend:
+        build:
+            dockerfile: Dockerfile.development
+            context: ./YIF_Frontend
+        ports:
+        - "3000:3000"
+        container_name: yif_frontend
+        restart: always
+    yif_backend:
+        build:
+            dockerfile: Dockerfile.VM
+            context: ./YIF_Backend
+        container_name: yif_backend
+        image: smethan/yifbackend:latest
+        networks: 
+            - yif
+        ports:
+            - "5000:3000"
+        depends_on:
+            - yif_sql
+        restart: always
+    yif_sql:
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        container_name: yif_sql
+        networks: 
+            - yif
+        ports: 
+            - "1433:1433"
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "YIF_Backend_DB_MyKeyOnlyInMyHeart"
+            MSSQL_PID: "Express"
+        restart: always
+        volumes: 
+            - yifsqldata:/var/opt/mssql/data
+networks:
+    yif:
+        name: yif
+        driver: bridge
+volumes: 
+    yifsqldata:
+```
+> Run the following command on the same level: 
+`docker-compose up --build`
+
+If the project doesn't open automatically, open your browser and type:
+```
+http://localhost:3000 
+```
 ## How to run the project with docker-compose on Azure
 
 ### Prerequisites:

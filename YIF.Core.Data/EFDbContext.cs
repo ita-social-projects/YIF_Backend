@@ -23,7 +23,7 @@ namespace YIF.Core.Data
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
         public DbSet<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
         public DbSet<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
-        public DbSet<Lecture> Lectures { get; set; }
+        public DbSet<Lector> Lectors { get; set; }
         public DbSet<InstitutionOfEducation> InstitutionOfEducations { get; set; }
         public DbSet<Direction> Directions { get; set; }
         public DbSet<Specialty> Specialties { get; set; }
@@ -87,10 +87,10 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Lecture>()
+            builder.Entity<Lector>()
                 .HasOne(x => x.User)
-                .WithMany(x => x.Lectures)
-                .HasForeignKey(x => x.Id)
+                .WithMany(x => x.Lectors)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<SchoolModerator>()
@@ -115,9 +115,9 @@ namespace YIF.Core.Data
 
             #region InstitutionOfEducation
 
-            builder.Entity<Lecture>()
+            builder.Entity<Lector>()
                 .HasOne(x => x.InstitutionOfEducation)
-                .WithMany(x => x.Lectures)
+                .WithMany(x => x.Lectors)
                 .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
 

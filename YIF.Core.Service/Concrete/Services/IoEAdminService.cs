@@ -36,12 +36,14 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
+        private readonly ILectorRepository<Lector, LectorDTO> _lectorRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
 
         public IoEAdminService(
+            IUserService<DbUser> userService,
             UserManager<DbUser> userManager,
             IUserRepository<DbUser, UserDTO> userRepository,
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
@@ -51,13 +53,14 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
+            ILectorRepository<Lector, LectorDTO> lectorRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ResourceManager resourceManager,
-            IUserService<DbUser> userService
+            ResourceManager resourceManager
         )
         {
+            _userService = userService;
             _userManager = userManager;
             _userRepository = userRepository;
             _specialtyRepository = specialtyRepository;
@@ -67,11 +70,11 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _examRequirementRepository = examRequirementRepository;
             _ioEModeratorRepository = ioEModeratorRepository;
+            _lectorRepository = lectorRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
-            _userService = userService;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
@@ -293,6 +296,51 @@ namespace YIF.Core.Service.Concrete.Services
             await _ioEModeratorRepository.AddUniModerator(new InstitutionOfEducationModerator { AdminId = adminId, UserId = dbUser.Id });
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorAdded")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(
+            [NotNull] string userId,
+            [NotNull] EmailApiModel email,
+            [NotNull] HttpRequest request)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var dbUser = new DbUser
+            {
+                Email = email.UserEmail,
+                UserName = email.UserEmail
+            };
+
+            var ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var searchUser = await _userManager.FindByEmailAsync(email.UserEmail);
+            if (searchUser == null)
+            {
+                var registerResult = await _userRepository.Create(dbUser, null, null, ProjectRoles.Lector);
+                if (registerResult != string.Empty)
+                {
+                    throw new BadRequestException($"{_resourceManager.GetString("UserCreationFailed")}: {registerResult}");
+                }
+
+                var resultResetPasswordByEmail = await _userService.ResetPasswordByEmail(email.UserEmail, request);
+                if (!resultResetPasswordByEmail.Success)
+                {
+                    throw new BadRequestException($"{_resourceManager.GetString("ResetPasswordByEmailFailed")}: {resultResetPasswordByEmail.Message}");
+                }
+            }
+
+            else
+            {
+                var lectorExist = await _lectorRepository.GetLectorByUserAndIoEIds(searchUser.Id, ioEId);
+                if (lectorExist != null)
+                {
+                    throw new BadRequestException(_resourceManager.GetString("IoEAlreadyHasLector"));
+                }
+                throw new BadRequestException(_resourceManager.GetString("UserAlreadyExists"));
+            }
+
+            var newLector = new Lector { InstitutionOfEducationId = ioEId, UserId = dbUser.Id };
+            await _lectorRepository.Add(newLector);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);
         }
     }
 }

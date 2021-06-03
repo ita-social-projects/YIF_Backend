@@ -209,6 +209,41 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             }
         }
 
+        [Fact]
+        public async Task AddIoELector_ShouldReturnOk()
+        {
+            // Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _ioEAdminService.Setup(x => x.AddLectorToIoE(It.IsAny<string>(), It.IsAny<EmailApiModel>(), It.IsAny<HttpRequest>())).ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.AddIoELector(It.IsAny<EmailApiModel>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public async Task AddIoELector_EndpointsReturnBadRequest_IfModelStateIsNotValid(string email)
+        {
+            // Arrange
+            var inst = new EmailApiModel() { UserEmail = email };
+
+            // Assert
+            Assert.ThrowsAsync<NullReferenceException>(() => _testControl.AddIoELector(inst));
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]

@@ -27,7 +27,7 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<bool>> RestorePasswordById(RestoreApiModel model);
         Task<ResponseApiModel<bool>> SendEmailConfirmMail(EmailApiModel model,HttpRequest request);
         Task<ResponseApiModel<ConfirmEmailApiModel>> ConfirmUserEmail(ConfirmEmailApiModel model);
-        Task<ResponseApiModel<ChangePasswordApiModel>> ChangeUserPassword(ChangePasswordApiModel model);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeUserPassword(ChangePasswordApiModel model);
 
         Task<bool> UpdateUser(UserDTO user);
         Task<bool> DeleteUserById(string id);
