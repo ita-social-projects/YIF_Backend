@@ -25,5 +25,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoE(string IoEId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChooseIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> GetIoEAdminIdByIoEId(string ioEId);
     }
 }

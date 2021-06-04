@@ -293,5 +293,21 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.ChooseIoEAdminFromModerators(ioEAdminAddFromModeratorsApiModel);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get Institution of Education Admin's Id by Institution of Education id.
+        /// </summary>
+        /// <returns>IoEAdmin's Id</returns>
+        /// <response code="200">IoEAdmin's Id</response>
+        /// <response code="404">If IoE Admin was not found</response>
+        [HttpGet("GetIoEAdminIdByIoEId/{ioEId}")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetIoEAdminIdByIoEId(string ioEId)
+        {
+            var result = await _superAdminService.GetIoEAdminIdByIoEId(ioEId);
+            return Ok(result.Object);
+        }
     }
 }
