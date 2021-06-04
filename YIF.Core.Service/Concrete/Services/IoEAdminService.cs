@@ -342,5 +342,17 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoELector(string lectorId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var lector = await _lectorRepository.Get(lectorId);
+            if (lector == null)
+            {
+                throw new NotFoundException($"{_resourceManager.GetString("IoELectorWithSuchIdNotFound")}: {lectorId}");
+            }
+            await _lectorRepository.Delete(lector.Id);
+            return result.Set(new DescriptionResponseApiModel("IoELectorIsDeleted"), true);
+        }
     }
 }

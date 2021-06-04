@@ -277,5 +277,20 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async void DeleteIoELector_ShouldReturnOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _ioEAdminService.Setup(x => x.DeleteIoELector(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.DeleteIoELector(It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

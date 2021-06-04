@@ -234,5 +234,23 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.AddLectorToIoE(userId, email, Request);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Soft delete Institution Of Education Lector
+        /// </summary>
+        /// <returns>Whether Lector was deleted or not</returns>
+        /// <response code="200">Returns if the lector has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="404">If lector with such Id wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteIoELector")]
+        public async Task<IActionResult> DeleteIoELector(string lectorId)
+        {
+            var result = await _ioEAdminService.DeleteIoELector(lectorId);
+            return Ok(result.Object);
+        }
     }
 }

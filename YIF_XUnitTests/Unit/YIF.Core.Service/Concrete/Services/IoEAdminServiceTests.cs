@@ -839,5 +839,34 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
+        [Fact]
+        public async void DeleteIoELector_ReturnsSuccess()
+        {
+            //Arrange
+            _lectorRepository.Setup(x => x.Get(It.IsAny<string>()))
+                .Returns(Task.FromResult<LectorDTO>(new LectorDTO
+                {
+                    Id = It.IsAny<string>()
+                }));
+            _lectorRepository.Setup(x => x.Delete(It.IsAny<string>()))
+                .Returns(Task.FromResult<bool>(true));
+            //Act
+            var result = await _ioEAdminService.DeleteIoELector(It.IsAny<string>());
+            //Assert
+            Assert.Equal("IoELectorIsDeleted", result.Object.Message);
+        }
+
+        [Fact]
+        public async void DeleteIoELector_ReturnsNotFoundMessage()
+        {
+            //Arrange
+            _lectorRepository
+                .Setup(x => x.Get(It.IsAny<string>()))
+                .Returns(Task.FromResult<LectorDTO>(null));
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => _ioEAdminService.DeleteIoELector(It.IsAny<string>()));
+        }
     }
 }

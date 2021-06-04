@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -27,9 +28,10 @@ namespace YIF.Core.Domain.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            (await _context.Lectors.FirstOrDefaultAsync(x => x.Id == id)).IsDeleted = true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public void Dispose()
@@ -42,9 +44,10 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<LectorDTO> Get(string id)
+        public async Task<LectorDTO> Get(string id)
         {
-            throw new NotImplementedException();
+            var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return _mapper.Map<LectorDTO>(lector);
         }
 
         public Task<IEnumerable<LectorDTO>> GetAll()
