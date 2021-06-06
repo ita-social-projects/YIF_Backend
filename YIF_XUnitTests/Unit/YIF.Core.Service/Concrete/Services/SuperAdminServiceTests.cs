@@ -76,7 +76,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
             _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
-
             _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
             _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
@@ -137,7 +136,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task AddDierction_ShouldAddDirection()
+        public async Task AddDirection_ShouldAddDirection()
         {
             //Arrange
             _mapperMock.Setup(sr => sr.Map<DirectionDTO>(It.IsAny<DirectionPostApiModel>())).Returns(It.IsAny<DirectionDTO>());

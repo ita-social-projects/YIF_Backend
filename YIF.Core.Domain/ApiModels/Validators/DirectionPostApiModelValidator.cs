@@ -12,6 +12,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
         private readonly ResourceManager _resourceManager;
         public DirectionPostApiModelValidator(EFDbContext context, ResourceManager resourceManager)
         {
+            ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
             _resourceManager = resourceManager;
             _context = context;
 
