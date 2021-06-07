@@ -53,7 +53,7 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<LectorDTO>> GetByIoEId(string ioEId)
+        public async Task<IEnumerable<LectorDTO>> GetLectorsByIoEId(string ioEId)
         {
             var result = await _context.Lectors
                 .Include(x => x.User)

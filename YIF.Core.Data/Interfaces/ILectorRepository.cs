@@ -9,6 +9,6 @@ namespace YIF.Core.Data.Interfaces
     {
         Task Add(T lector);
         Task<K> GetLectorByUserAndIoEIds(string userId, string ioEId);
-        Task<IEnumerable<K>> GetByIoEId(string ioEId);
+        Task<IEnumerable<K>> GetLectorsByIoEId(string ioEId);
     }
 }

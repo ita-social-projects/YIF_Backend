@@ -845,7 +845,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange  
             _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
-            _lectorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<LectorDTO>>);
+            _lectorRepository.Setup(x => x.GetLectorsByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<LectorDTO>>);
             _mapper.Setup(x => x.Map<IEnumerable<LectorResponseApiModel>>(It.IsAny<IEnumerable<LectorDTO>>()));
 
             // Act

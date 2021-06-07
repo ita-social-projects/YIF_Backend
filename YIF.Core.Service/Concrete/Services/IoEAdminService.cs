@@ -349,7 +349,7 @@ namespace YIF.Core.Service.Concrete.Services
 
             return new ResponseApiModel<IEnumerable<LectorResponseApiModel>>
             {
-                Object = _mapper.Map<IEnumerable<LectorResponseApiModel>>(await _lectorRepository.GetByIoEId(ioEId)),
+                Object = _mapper.Map<IEnumerable<LectorResponseApiModel>>(await _lectorRepository.GetLectorsByIoEId(ioEId)),
                 Success = true
             };
         }
