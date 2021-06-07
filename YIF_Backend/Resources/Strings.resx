@@ -378,4 +378,7 @@
   <data name="DepartmentWasAdded" xml:space="preserve">
     <value>Департамент успішно додано</value>
   </data>
+  <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
+    <value>Заклад освіти не знайдено або адмін був видалений</value>
+  </data>
 </root>
