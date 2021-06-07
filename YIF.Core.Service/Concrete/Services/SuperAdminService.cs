@@ -480,13 +480,18 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var specialty = await _specialtyRepository.Get(specialtyId);
+
             if (specialty == null)
             {
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
             }
+            else if (specialty.isDeleted) 
+            {
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyHasAlreadyBeenDeleted"));
+            }
 
             await _specialtyRepository.Delete(specialtyId);
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyIsDeleted")), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
         }
 
     }

@@ -357,5 +357,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task VerifyDeletedSpecialty() 
+        {
+            // Arrange
+            var specialty = _context.Specialties.First();
+
+            // Act
+            var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteSpecialty/{0}", specialty.Id));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

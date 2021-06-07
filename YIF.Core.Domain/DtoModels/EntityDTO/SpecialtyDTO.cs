@@ -21,6 +21,10 @@
         /// <summary>
         /// Gets or sets the description for this specialty
         /// </summary>
+        public bool isDeleted { get; set; }
+        /// <summary>
+        /// Gets or sets the description for this specialty
+        /// </summary>
         public string Description { get; set; }
         /// <summary>
         /// Navigation property for the direction to which this specialty belongs.

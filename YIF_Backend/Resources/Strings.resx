@@ -372,4 +372,10 @@
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
   </data>
+  <data name="SpecialtyDeleted" xml:space="preserve">
+    <value>Спеціальність була успішно видалена</value>
+  </data>
+  <data name="SpecialtyHasAlreadyBeenDeleted" xml:space="preserve">
+    <value>Спеціальність уже видалена</value>
+  </data>
 </root>
