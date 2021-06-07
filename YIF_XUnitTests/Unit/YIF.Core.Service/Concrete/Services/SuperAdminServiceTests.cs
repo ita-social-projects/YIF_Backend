@@ -460,5 +460,36 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteInstitutionOfEducation(uni.Id));
         }
+
+        [Fact]
+        public async Task GetIoEAdminIdByIoEId_ReturnsSuccess()
+        {
+            //Arrange
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
+                {
+                    InstitutionOfEducationId = uni.Id
+                }));
+
+            //Act
+            var result = await superAdminService.GetIoEAdminIdByIoEId(uni.Id);
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task GetIoEAdminIdByIoEId_ReturnsNotFoundIfThereIsNoIoEWithSuchId()
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO nullAdmin = null;
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(It.IsAny<string>()))
+                .ReturnsAsync(nullAdmin);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetIoEAdminIdByIoEId(It.IsAny<string>()));
+        }
     }
 }
