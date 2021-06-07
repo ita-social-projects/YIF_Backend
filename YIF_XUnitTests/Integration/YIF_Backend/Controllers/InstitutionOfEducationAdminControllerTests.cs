@@ -316,5 +316,18 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.True(response.StatusCode == System.Net.HttpStatusCode.BadRequest
                || response.StatusCode == System.Net.HttpStatusCode.InternalServerError);
         }
+
+        [Fact]
+        public async void GetLectors_EndpointReturnsListOfLectorsWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoELectors");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

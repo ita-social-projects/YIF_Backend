@@ -839,5 +839,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
+
+        [Fact]
+        public async void GetIoELectorsByUserId_ShouldReturnListOfLectors_IfEverythingIsOk()
+        {
+            // Arrange  
+            _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _lectorRepository.Setup(x => x.GetByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<LectorDTO>>);
+            _mapper.Setup(x => x.Map<IEnumerable<LectorApiModel>>(It.IsAny<IEnumerable<LectorDTO>>()));
+
+            // Act
+            var result = await _ioEAdminService.GetIoELectorsByUserId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IEnumerable<LectorApiModel>>>(result);
+            Assert.True(result.Success);
+        }
     }
 }
