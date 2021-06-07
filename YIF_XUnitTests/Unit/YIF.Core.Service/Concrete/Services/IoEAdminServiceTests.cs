@@ -42,6 +42,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<ILectorRepository<Lector, LectorDTO>> _lectorRepository = new Mock<ILectorRepository<Lector, LectorDTO>>();
+        private readonly Mock<IDepartmentRepository<Department, DepartmentDTO>> _departmentRepository = new Mock<IDepartmentRepository<Department, DepartmentDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
@@ -62,6 +63,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _examRequirementRepository.Object,
                 _ioEModeratorRepository.Object,
                 _lectorRepository.Object,
+                _departmentRepository.Object,
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
@@ -837,6 +839,39 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Func<Task> act = () => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>());
 
             // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task AddDepartment_ReturnsSuccess()
+        {
+            //Arrange
+            bool isDepartmentExist = false;
+
+            _departmentRepository.Setup(x => x.IsDepartmentByNameAndDescriptionExist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(isDepartmentExist);
+            _departmentRepository.Setup(x => x.Add(new Department{Name = It.IsAny<string>(), Description = It.IsAny<string>()})).Returns(Task.FromResult(string.Empty));
+            
+            //Act
+            var result = await _ioEAdminService.AddDepartment(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+        
+        [Fact]
+        public async Task AddDepartment_ShouldThrowBadRequestIfDepartmentAlreadyExist()
+        {
+            //Arrange
+            bool isDepartmentExist = true;
+
+            _departmentRepository.Setup(x => x.IsDepartmentByNameAndDescriptionExist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(isDepartmentExist);
+            _departmentRepository.Setup(x => x.Add(new Department{Name = It.IsAny<string>(), Description = It.IsAny<string>()})).Returns(Task.FromResult(string.Empty));
+            
+            //Act
+            Func<Task> act = () => _ioEAdminService.AddDepartment(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
             Assert.ThrowsAsync<BadRequestException>(act);
         }
     }

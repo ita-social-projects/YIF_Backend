@@ -96,6 +96,7 @@ namespace YIF_Backend
             services.AddTransient<ISpecialtyToIoEToGraduateRepository<SpecialtyToInstitutionOfEducationToGraduate, SpecialtyToInstitutionOfEducationToGraduateDTO>, SpecialtyToIoEToGraduateRepository>();
             services.AddTransient<ILectorService, LectorService>();
             services.AddTransient<ILectorRepository<Lector, LectorDTO>, LectorRepository>();
+            services.AddTransient<IDepartmentRepository<Department, DepartmentDTO>, DepartmentRepository>();
 
             #endregion
 
@@ -228,7 +229,7 @@ namespace YIF_Backend
             #endregion
 
             #region Seeder
-            //SeederDB.SeedData(app.ApplicationServices);
+            SeederDB.SeedData(app.ApplicationServices);
             if (_currentEnvironment.IsEnvironment("Testing"))
             {
                 SeederDB.SeedData(app.ApplicationServices);

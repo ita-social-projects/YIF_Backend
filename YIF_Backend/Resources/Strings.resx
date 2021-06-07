@@ -372,4 +372,10 @@
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
   </data>
+  <data name="DepartmentAlreadyExist" xml:space="preserve">
+    <value>Такий департамент вже існує</value>
+  </data>
+  <data name="DepartmentWasAdded" xml:space="preserve">
+    <value>Департамент успішно додано</value>
+  </data>
 </root>

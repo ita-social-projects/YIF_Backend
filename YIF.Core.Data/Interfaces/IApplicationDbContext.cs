@@ -13,6 +13,7 @@ namespace YIF.Core.Data.Interfaces
         DbSet<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
         DbSet<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
         DbSet<Lector> Lectors { get; set; }
+        DbSet<Department> Departments { get; set; }
         DbSet<InstitutionOfEducation> InstitutionOfEducations { get; set; }
         DbSet<Direction> Directions { get; set; }
         DbSet<Specialty> Specialties { get; set; }

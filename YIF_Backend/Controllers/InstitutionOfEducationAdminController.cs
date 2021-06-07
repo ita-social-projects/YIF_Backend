@@ -234,5 +234,21 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.AddLectorToIoE(userId, email, Request);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Add department
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Returns if the department has been successfully added.</response>
+        /// <response code="400">If such department already exist.</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("AddDepartment")]
+        public async Task<IActionResult> AddDepartment([FromBody] DepartmentApiModel department)
+        {
+            var result = await _ioEAdminService.AddDepartment(department.Name, department.Description);
+            return Ok(result.Object);
+        }
     }
 }

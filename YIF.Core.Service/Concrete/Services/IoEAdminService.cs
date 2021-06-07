@@ -21,6 +21,7 @@ using YIF.Shared;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -37,6 +38,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly ILectorRepository<Lector, LectorDTO> _lectorRepository;
+        private readonly IDepartmentRepository<Department, DepartmentDTO> _departmentRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
@@ -54,6 +56,7 @@ namespace YIF.Core.Service.Concrete.Services
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             ILectorRepository<Lector, LectorDTO> lectorRepository,
+            IDepartmentRepository<Department, DepartmentDTO> departmentRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
@@ -71,6 +74,7 @@ namespace YIF.Core.Service.Concrete.Services
             _examRequirementRepository = examRequirementRepository;
             _ioEModeratorRepository = ioEModeratorRepository;
             _lectorRepository = lectorRepository;
+            _departmentRepository = departmentRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
@@ -341,6 +345,26 @@ namespace YIF.Core.Service.Concrete.Services
             await _lectorRepository.Add(newLector);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDepartment(string name, string description)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            var departmentExist = await _departmentRepository.IsDepartmentByNameAndDescriptionExist(name, description);
+            if (departmentExist)
+            {
+                throw new BadRequestException(_resourceManager.GetString("DepartmentAlreadyExist"));
+            }
+
+            var newDepartment = new Department
+            {
+                Name = name,
+                Description = description
+            };
+            await _departmentRepository.Add(newDepartment);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("DepartmentWasAdded")), true);
         }
     }
 }

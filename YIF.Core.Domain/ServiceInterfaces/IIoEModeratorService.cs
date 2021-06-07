@@ -12,5 +12,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>> GetSpecialtyToIoEDescription(string userId, string specialtyId);
         Task<ResponseApiModel<IoEAdminForIoEModeratorResponseApiModel>> GetIoEAdminByUserId(string userId);
         Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddDepartment(string name, string description);
     }
 }
