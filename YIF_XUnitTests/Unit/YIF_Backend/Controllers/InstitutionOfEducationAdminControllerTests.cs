@@ -277,5 +277,27 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async void GetLectorsByUserId_ShouldReturnOk_IfEverythingIsOk()
+        {
+            // Arrange  
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            _ioEAdminService.Setup(x => x.GetIoELectorsByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<IEnumerable<LectorResponseApiModel>>());
+
+            // Act
+            var result = await _testControl.GetLectorsByUserId();
+
+            // Assert  
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }
