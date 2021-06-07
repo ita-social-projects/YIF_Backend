@@ -463,7 +463,8 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(res), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> GetIoEAdminIdByIoEId(string ioEId) {
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> GetIoEAdminIdByIoEId(string ioEId) 
+        {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
 
