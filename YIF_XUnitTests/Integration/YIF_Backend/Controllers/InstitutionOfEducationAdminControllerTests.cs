@@ -318,6 +318,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
+        public async void GetLectors_EndpointReturnsListOfLectorsWithOkStatusCode_IfEverythingIsOk()
+        {
+            // Arrange
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducationAdmin/GetIoELectors");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
         public async Task AddDepartment_ShouldReturnOk()
         {
             //Arrange 
