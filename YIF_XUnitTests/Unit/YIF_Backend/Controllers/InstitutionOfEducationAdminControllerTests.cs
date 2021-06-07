@@ -277,5 +277,30 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task AddDepartment_ShouldReturnOk()
+        {
+            // Arrange
+            var inst = new DepartmentApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>() };
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _ioEAdminService.Setup(x => x.AddDepartment(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
+
+            //Act
+            var result = await _testControl.AddDepartment(inst);
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task AddDepartment_EndpointsReturnBadRequest_IfDepartmentAlreadyExist()
+        {
+            // Arrange
+            var inst = new DepartmentApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>()};
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(() => _testControl.AddDepartment(inst));
+        }
     }
 }
