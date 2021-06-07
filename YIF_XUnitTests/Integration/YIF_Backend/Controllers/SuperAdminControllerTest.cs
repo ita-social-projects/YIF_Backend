@@ -38,6 +38,24 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         }
 
+        [Theory]
+        [InlineData("Машинобудування", "78")]
+        public async Task AddDirection_ShouldReturnOk(string name, string code)
+        {
+            //Arrange
+            var model = new DirectionPostApiModel()
+            {
+                Name = name,
+                Code = code
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/SuperAdmin/AddDirection", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
         [Fact]
         public async Task AddInstitutionOfEducationAdmin_Output_Correct()
         {
@@ -335,6 +353,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteInstitutionOfEducation/{0}", institutionOfEducation.Id));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetIoEAdminIdByIoEId_EndpointReturnsOk()
+        {
+            // Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.First();
+
+            // Act
+            var response = await _client.GetAsync(string.Format("/api/SuperAdmin/GetIoEAdminIdByIoEId/{0}", institutionOfEducation.Id));
 
             // Assert
             response.EnsureSuccessStatusCode();

@@ -354,6 +354,15 @@
   <data name="IoEAdminDeleted" xml:space="preserve">
     <value>Адміністратора видалено</value>
   </data>
+  <data name="DirectionWasAdded" xml:space="preserve">
+    <value>Напрямок додано</value>
+  </data>
+  <data name="AlreadyExistsInDbMessage" xml:space="preserve">
+    <value>Запис з таким параметром уже існує</value>
+  </data>
+  <data name="NotFoundInDbMessage" xml:space="preserve">
+    <value>Запис з таким параметром не знайдено</value>
+  </data>
   <data name="IoEAlreadyHasLector" xml:space="preserve">
     <value>Цей лектор вже є в навчальному закладі</value>
   </data>
@@ -362,6 +371,9 @@
   </data>
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
+  </data>
+  <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
+    <value>Заклад освіти не знайдено або адмін був видалений</value>
   </data>
   <data name="IoELectorWithSuchIdNotFound" xml:space="preserve">
     <value>Лектора з таким Id не знайдено</value>
