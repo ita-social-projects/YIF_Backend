@@ -844,15 +844,21 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async void DeleteIoELector_ReturnsSuccess()
         {
             //Arrange
+            var user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", Email = "shadj_hadjf@maliberty.com", UserName = "Jeremiah Gibson" };
             _lectorRepository.Setup(x => x.Get(It.IsAny<string>()))
                 .Returns(Task.FromResult<LectorDTO>(new LectorDTO
                 {
                     Id = It.IsAny<string>()
                 }));
+            _userManager.Setup(s => s.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(It.IsAny<string>() == "" ? null : user);
             _lectorRepository.Setup(x => x.Delete(It.IsAny<string>()))
                 .Returns(Task.FromResult<bool>(true));
+            _userManager.Setup(s => s.RemoveFromRoleAsync(user, ProjectRoles.Lector));
+            _userRepository.Setup(s => s.Delete(user.Id));
+
             //Act
             var result = await _ioEAdminService.DeleteIoELector(It.IsAny<string>());
+
             //Assert
             Assert.Equal("IoELectorIsDeleted", result.Object.Message);
         }
@@ -864,6 +870,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _lectorRepository
                 .Setup(x => x.Get(It.IsAny<string>()))
                 .Returns(Task.FromResult<LectorDTO>(null));
+
             //Act
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => _ioEAdminService.DeleteIoELector(It.IsAny<string>()));

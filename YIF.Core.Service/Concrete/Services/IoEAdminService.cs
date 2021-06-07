@@ -351,7 +351,12 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new NotFoundException($"{_resourceManager.GetString("IoELectorWithSuchIdNotFound")}: {lectorId}");
             }
+            var searchUser = await _userManager.FindByIdAsync(lector.UserId);
+
             await _lectorRepository.Delete(lector.Id);
+            await _userManager.RemoveFromRoleAsync(searchUser, ProjectRoles.Lector);
+            await _userRepository.Delete(searchUser.Id);
+            
             return result.Set(new DescriptionResponseApiModel("IoELectorIsDeleted"), true);
         }
     }

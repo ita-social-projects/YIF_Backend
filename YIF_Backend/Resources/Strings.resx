@@ -363,4 +363,7 @@
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
   </data>
+  <data name="IoELectorWithSuchIdNotFound" xml:space="preserve">
+    <value>Лектора з таким Id не знайдено</value>
+  </data>
 </root>
