@@ -26,5 +26,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChangeBannedStatusOfIoE(string IoEId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChooseIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel);
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddDirection(DirectionPostApiModel directionModel);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSpecialty(string specialtyId);
     }
 }

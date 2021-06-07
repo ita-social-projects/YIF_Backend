@@ -311,5 +311,21 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.AddDirection(directionPostApiModel);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Delete Specialty (sets its asp.net user IsDeleted to true).
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteSpecialty/{id}")]
+        public async Task<IActionResult> DeleteSpecialty(string id)
+        {
+            var result = await _superAdminService.DeleteSpecialty(id);
+            return Ok(result.Object);
+        }
     }
 }

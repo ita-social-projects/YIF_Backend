@@ -475,5 +475,19 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return result.Set(new DescriptionResponseApiModel(res), true);
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSpecialty(string specialtyId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialty = await _specialtyRepository.Get(specialtyId);
+            if (specialty == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+            }
+
+            await _specialtyRepository.Delete(specialtyId);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyIsDeleted")), true);
+        }
+
     }
 }
