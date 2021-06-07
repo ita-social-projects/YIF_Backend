@@ -295,6 +295,24 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Add new direction.
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Direction added</response>
+        /// <response code="400">If request model isn't valid </response>
+        /// <response code="403">If user is not super admin</response>
+        [HttpPost("AddDirection")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> AddDirection([FromBody] DirectionPostApiModel directionPostApiModel)
+        {
+            var result = await _superAdminService.AddDirection(directionPostApiModel);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
         /// Get Institution of Education Admin's Id by Institution of Education id.
         /// </summary>
         /// <returns>IoEAdmin's Id</returns>
