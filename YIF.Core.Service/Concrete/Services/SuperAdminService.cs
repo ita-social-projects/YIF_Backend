@@ -468,7 +468,8 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
 
-            if (admin == null) {
+            if (admin == null) 
+            {
                 throw new NotFoundException(_resourceManager.GetString("IoEWasNotFoundOrAdminWasDeleted"));
             }
 
