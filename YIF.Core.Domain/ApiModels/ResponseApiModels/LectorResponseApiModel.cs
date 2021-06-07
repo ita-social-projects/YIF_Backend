@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YIF.Core.Domain.ApiModels.RequestApiModels
+namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
-    public class LectorApiModel
+    public class LectorResponseApiModel
     {
         /// <summary>
         /// Id of lector
