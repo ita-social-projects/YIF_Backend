@@ -1,27 +1,26 @@
-﻿using System.Resources;
-using System.IO;
-using System.Threading.Tasks;
-using System.Linq;
-using SendGrid.Helpers.Errors.Model;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
+using SendGrid.Helpers.Errors.Model;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Resources;
+using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Domain.DtoModels.EntityDTO;
-using YIF.Core.Domain.ServiceInterfaces;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Domain.ApiModels.Validators;
-using YIF.Core.Data.Entities.IdentityEntities;
-using Microsoft.AspNetCore.Identity;
-using YIF.Shared;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
-using Microsoft.AspNetCore.Http;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
+using YIF.Core.Domain.ServiceInterfaces;
+using YIF.Shared;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -158,7 +157,7 @@ namespace YIF.Core.Service.Concrete.Services
             await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
-        }       
+        }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> UpdateSpecialtyDescription(SpecialtyDescriptionUpdateApiModel specialtyDescriptionUpdateApiModel)
         {
@@ -183,14 +182,14 @@ namespace YIF.Core.Service.Concrete.Services
             };
         }
 
-        public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId) 
+        public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId)
         {
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
 
-            return new ResponseApiModel<IoEInformationResponseApiModel> 
-            { 
-               Object = _mapper.Map<IoEInformationResponseApiModel>(await _ioERepository.Get(ioEId)),
-               Success = true
+            return new ResponseApiModel<IoEInformationResponseApiModel>
+            {
+                Object = _mapper.Map<IoEInformationResponseApiModel>(await _ioERepository.Get(ioEId)),
+                Success = true
             };
         }
 
@@ -258,7 +257,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEModerator( [NotNull] string moderatorEmail,
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEModerator([NotNull] string moderatorEmail,
            [NotNull] string userId,
            [NotNull] HttpRequest request)
         {
