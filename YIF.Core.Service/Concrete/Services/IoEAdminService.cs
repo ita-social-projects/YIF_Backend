@@ -21,7 +21,6 @@ using YIF.Shared;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using Microsoft.AspNetCore.Http;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 
 namespace YIF.Core.Service.Concrete.Services
 {
