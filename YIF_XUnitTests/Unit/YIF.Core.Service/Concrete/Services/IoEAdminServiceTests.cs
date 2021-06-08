@@ -42,7 +42,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<ILectorRepository<Lector, LectorDTO>> _lectorRepository = new Mock<ILectorRepository<Lector, LectorDTO>>();
-        private readonly Mock<IDepartmentRepository<Department, DepartmentDTO>> _departmentRepository = new Mock<IDepartmentRepository<Department, DepartmentDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
@@ -63,7 +62,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _examRequirementRepository.Object,
                 _ioEModeratorRepository.Object,
                 _lectorRepository.Object,
-                _departmentRepository.Object,
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,

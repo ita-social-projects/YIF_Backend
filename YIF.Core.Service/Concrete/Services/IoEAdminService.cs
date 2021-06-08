@@ -38,7 +38,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly ILectorRepository<Lector, LectorDTO> _lectorRepository;
-        private readonly IDepartmentRepository<Department, DepartmentDTO> _departmentRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
@@ -56,7 +55,6 @@ namespace YIF.Core.Service.Concrete.Services
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             ILectorRepository<Lector, LectorDTO> lectorRepository,
-            IDepartmentRepository<Department, DepartmentDTO> departmentRepository,
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
@@ -74,7 +72,6 @@ namespace YIF.Core.Service.Concrete.Services
             _examRequirementRepository = examRequirementRepository;
             _ioEModeratorRepository = ioEModeratorRepository;
             _lectorRepository = lectorRepository;
-            _departmentRepository = departmentRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
