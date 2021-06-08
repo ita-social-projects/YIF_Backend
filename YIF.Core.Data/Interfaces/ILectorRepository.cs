@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace YIF.Core.Data.Interfaces
 {
@@ -8,5 +9,6 @@ namespace YIF.Core.Data.Interfaces
     {
         Task Add(T lector);
         Task<K> GetLectorByUserAndIoEIds(string userId, string ioEId);
+        Task<IEnumerable<K>> GetLectorsByIoEId(string ioEId);
     }
 }

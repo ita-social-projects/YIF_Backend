@@ -342,5 +342,16 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);
         }
+
+        public async Task<ResponseApiModel<IEnumerable<LectorResponseApiModel>>> GetIoELectorsByUserId(string userId)
+        {
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+
+            return new ResponseApiModel<IEnumerable<LectorResponseApiModel>>
+            {
+                Object = _mapper.Map<IEnumerable<LectorResponseApiModel>>(await _lectorRepository.GetLectorsByIoEId(ioEId)),
+                Success = true
+            };
+        }
     }
 }

@@ -313,6 +313,24 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Get Institution of Education Admin's Id by Institution of Education id.
+        /// </summary>
+        /// <returns>IoEAdmin's Id</returns>
+        /// <response code="200">IoEAdmin's Id</response>
+        /// <response code="403">If user is not super admin</response>
+        /// <response code="404">If IoE Admin was not found</response>
+        [HttpGet("GetIoEAdminIdByIoEId/{ioEId}")]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetIoEAdminIdByIoEId(string ioEId)
+        {
+            var result = await _superAdminService.GetIoEAdminIdByIoEId(ioEId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
         /// Delete Specialty (sets its asp.net user IsDeleted to true).
         /// </summary>
         /// <returns>Success message</returns>

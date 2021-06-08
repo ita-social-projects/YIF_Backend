@@ -372,6 +372,9 @@
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
   </data>
+  <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
+    <value>Заклад освіти не знайдено або адмін був видалений</value>
+  </data>
   <data name="SpecialtyDeleted" xml:space="preserve">
     <value>Спеціальність була успішно видалена</value>
   </data>

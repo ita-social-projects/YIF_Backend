@@ -1016,12 +1016,17 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
                 directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Соціальні та поведінкові науки").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
+                    #region Соціальні та поведінкові науки
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Економіка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Психологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    #endregion
                     #region Електрична інженерія
                     new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
@@ -1869,6 +1874,40 @@ namespace YIF.Core.Data.Seaders
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Географія").Id, MinimumScore = 100, Coefficient = 0.3}
+                        }
+                    });
+                #endregion
+                #region Економіка
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Економіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
+                context.SpecialtyToIoEDescriptions.Add(
+                    new SpecialtyToIoEDescription
+                    {
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                        EducationForm = EducationForm.Daily,
+                        PaymentForm = PaymentForm.Governmental,
+                        EducationalProgramLink = "example.com",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
+                        }
+                    });
+                #endregion
+                #region Психологія
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Психологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
+                context.SpecialtyToIoEDescriptions.Add(
+                    new SpecialtyToIoEDescription
+                    {
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                        EducationForm = EducationForm.Daily,
+                        PaymentForm = PaymentForm.Governmental,
+                        EducationalProgramLink = "example.com",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
                         }
                     });
                 #endregion

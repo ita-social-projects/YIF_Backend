@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -50,6 +51,17 @@ namespace YIF.Core.Domain.Repositories
         public Task<IEnumerable<LectorDTO>> GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<LectorDTO>> GetLectorsByIoEId(string ioEId)
+        {
+            var result = await _context.Lectors
+                .Include(x => x.User)
+                .Where(x => x.InstitutionOfEducationId == ioEId)
+                .AsNoTracking()
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<LectorDTO>>(result);
         }
 
         public async Task<LectorDTO> GetLectorByUserAndIoEIds(string userId, string ioEId)
