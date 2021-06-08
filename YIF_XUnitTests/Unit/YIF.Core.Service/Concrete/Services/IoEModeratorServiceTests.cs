@@ -1,18 +1,18 @@
-﻿using AutoMapper;
-using Moq;
-using SendGrid.Helpers.Errors.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System;
 using System.Resources;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Moq;
+using SendGrid.Helpers.Errors.Model;
 using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
-using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Service.Concrete.Services;
+using AutoMapper;
+using YIF.Core.Domain.ApiModels.ResponseApiModels;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
@@ -24,12 +24,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _specialtyToIoERepository = new Mock<ISpecialtyToInstitutionOfEducationRepository<SpecialtyToInstitutionOfEducation, SpecialtyToInstitutionOfEducationDTO>>();
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>
             _ioERepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
-        private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>
+        private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> 
             _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>
             _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
-        private readonly Mock<IDepartmentRepository<Department, DepartmentDTO>> _departmentRepository = new Mock<IDepartmentRepository<Department, DepartmentDTO>>();
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>
             _ioEAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
@@ -44,7 +43,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _specialtyToIoEDescriptionRepository.Object,
                 _ioEModeratorRepository.Object,
                 _examRequirementRepository.Object,
-                _departmentRepository.Object,
                 _mapper.Object,
                 _resourceManager.Object,
                 _ioEAdminRepository.Object
@@ -280,7 +278,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var institutionOfEducation = true;
             var specialtyToIoe = new List<SpecialtyToInstitutionOfEducationDTO>
             { new SpecialtyToInstitutionOfEducationDTO{ Id = "SpecialtyToIoeId", InstitutionOfEducationId = "IoEId", SpecialtyId = "SpecialtyId" } };
-            var moderator = new InstitutionOfEducationModeratorDTO { Id = "userId", Admin = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "IoEId" } };
+            var moderator = new InstitutionOfEducationModeratorDTO { Id = "userId", Admin = new InstitutionOfEducationAdminDTO {InstitutionOfEducationId = "IoEId"}};
 
             _specialtyRepository.
                 Setup(sr => sr.ContainsById(It.IsAny<string>()))
@@ -442,7 +440,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             // Arrange  
             var userId = "Id";
-            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationModeratorDTO() { Admin = new InstitutionOfEducationAdminDTO() { InstitutionOfEducationId = "blahblah" } });
+            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationModeratorDTO() {Admin = new InstitutionOfEducationAdminDTO() { InstitutionOfEducationId = "blahblah"}});
             _ioERepository.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationDTO());
             _mapper.Setup(x => x.Map<IoEInformationResponseApiModel>(It.IsAny<InstitutionOfEducationDTO>()));
 

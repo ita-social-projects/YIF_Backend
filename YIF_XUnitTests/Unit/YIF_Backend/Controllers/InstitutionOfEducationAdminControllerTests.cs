@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using SendGrid.Helpers.Errors.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Resources;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using SendGrid.Helpers.Errors.Model;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -101,7 +101,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert  
             Assert.IsType<NoContentResult>(result);
         }
-
+      
         [Fact]
         public async void GetIoEInfoByUserId_ShouldReturnOk_IfEverythingIsOk()
         {

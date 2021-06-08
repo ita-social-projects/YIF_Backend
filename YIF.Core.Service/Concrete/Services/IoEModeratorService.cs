@@ -20,7 +20,6 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _ioEModeratorRepository;
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
-        private readonly IDepartmentRepository<Department, DepartmentDTO> _departmentRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _ioEAdminRepository;
@@ -32,7 +31,6 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
-            IDepartmentRepository<Department, DepartmentDTO> departmentRepository,
             IMapper mapper,
             ResourceManager resourceManager,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> ioEAdminRepository)
@@ -43,7 +41,6 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _ioEModeratorRepository = ioEModeratorRepository;
             _examRequirementRepository = examRequirementRepository;
-            _departmentRepository = departmentRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
             _ioEAdminRepository = ioEAdminRepository;
