@@ -346,26 +346,6 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("LectorWasAdded")), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDepartment(string name, string description)
-        {
-            var result = new ResponseApiModel<DescriptionResponseApiModel>();
-
-            var departmentExist = await _departmentRepository.IsDepartmentByNameAndDescriptionExist(name, description);
-            if (departmentExist)
-            {
-                throw new BadRequestException(_resourceManager.GetString("DepartmentAlreadyExist"));
-            }
-
-            var newDepartment = new Department
-            {
-                Name = name,
-                Description = description
-            };
-            await _departmentRepository.Add(newDepartment);
-
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("DepartmentWasAdded")), true);
-        }
-
         public async Task<ResponseApiModel<IEnumerable<LectorResponseApiModel>>> GetIoELectorsByUserId(string userId)
         {
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;

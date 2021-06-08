@@ -152,25 +152,5 @@ namespace YIF.Core.Service.Concrete.Services
                 Success = true
             };
         }
-
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDepartment(string name, string description)
-        {
-            var result = new ResponseApiModel<DescriptionResponseApiModel>();
-
-            var departmentExist = await _departmentRepository.IsDepartmentByNameAndDescriptionExist(name, description);
-            if (departmentExist)
-            {
-                throw new BadRequestException(_resourceManager.GetString("DepartmentAlreadyExist"));
-            }
-
-            var newDepartment = new Department
-            {
-                Name = name,
-                Description = description
-            };
-            await _departmentRepository.Add(newDepartment);
-
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("DepartmentWasAdded")), true);
-        }
     }
 }

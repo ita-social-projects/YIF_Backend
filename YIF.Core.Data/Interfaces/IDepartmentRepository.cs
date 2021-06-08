@@ -7,6 +7,5 @@ namespace YIF.Core.Data.Interfaces
         where K : class
     {
         Task Add(T department);
-        Task<bool> IsDepartmentByNameAndDescriptionExist(string name, string description);
     }
 }

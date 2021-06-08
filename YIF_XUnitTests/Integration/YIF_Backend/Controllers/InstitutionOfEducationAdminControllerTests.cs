@@ -329,25 +329,5 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
-
-        [Fact]
-        public async Task AddDepartment_ShouldReturnOk()
-        {
-            //Arrange 
-            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
-            var postRequest = new
-            {
-                Url = "/api/InstitutionOfEducationAdmin/AddDepartment",
-                Body = new DepartmentApiModel {Name = "FakeName", Description = "FakeDescription"}
-            };
-
-            //Act
-            var responce = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
-
-            //Assert
-            responce.EnsureSuccessStatusCode();
-        }
-
-        
     }
 }

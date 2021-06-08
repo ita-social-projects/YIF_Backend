@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using YIF.Core.Data.Entities;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 
 namespace YIF.Core.Service.Mapping
@@ -11,6 +12,7 @@ namespace YIF.Core.Service.Mapping
             AllowNullCollections = true;
 
             CreateMap<Department, DepartmentDTO>().ReverseMap();
+            CreateMap<DepartmentApiModel, Department>();
         }
     }
 }

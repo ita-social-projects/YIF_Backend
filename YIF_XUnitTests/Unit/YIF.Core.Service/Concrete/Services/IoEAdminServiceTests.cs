@@ -857,38 +857,5 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.IsType<ResponseApiModel<IEnumerable<LectorResponseApiModel>>>(result);
             Assert.True(result.Success);
         }
-
-        [Fact]
-        public async Task AddDepartment_ReturnsSuccess()
-        {
-            //Arrange
-            bool isDepartmentExist = false;
-
-            _departmentRepository.Setup(x => x.IsDepartmentByNameAndDescriptionExist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(isDepartmentExist);
-            _departmentRepository.Setup(x => x.Add(new Department{Name = It.IsAny<string>(), Description = It.IsAny<string>()})).Returns(Task.FromResult(string.Empty));
-            
-            //Act
-            var result = await _ioEAdminService.AddDepartment(It.IsAny<string>(), It.IsAny<string>());
-
-            //Assert
-            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
-            Assert.True(result.Success);
-        }
-        
-        [Fact]
-        public async Task AddDepartment_ShouldThrowBadRequestIfDepartmentAlreadyExist()
-        {
-            //Arrange
-            bool isDepartmentExist = true;
-
-            _departmentRepository.Setup(x => x.IsDepartmentByNameAndDescriptionExist(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(isDepartmentExist);
-            _departmentRepository.Setup(x => x.Add(new Department{Name = It.IsAny<string>(), Description = It.IsAny<string>()})).Returns(Task.FromResult(string.Empty));
-            
-            //Act
-            Func<Task> act = () => _ioEAdminService.AddDepartment(It.IsAny<string>(), It.IsAny<string>());
-
-            //Assert
-            Assert.ThrowsAsync<BadRequestException>(act);
-        }
     }
 }

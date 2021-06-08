@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using SendGrid.Helpers.Errors.Model;
+using System;
 using System.Collections.Generic;
 using System.Resources;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using SendGrid.Helpers.Errors.Model;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -101,7 +101,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert  
             Assert.IsType<NoContentResult>(result);
         }
-      
+
         [Fact]
         public async void GetIoEInfoByUserId_ShouldReturnOk_IfEverythingIsOk()
         {
@@ -298,31 +298,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             // Assert  
             Assert.IsType<OkObjectResult>(result);
-        }
-
-        [Fact]
-        public async Task AddDepartment_ShouldReturnOk()
-        {
-            // Arrange
-            var inst = new DepartmentApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>() };
-            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
-            _ioEAdminService.Setup(x => x.AddDepartment(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(response);
-
-            //Act
-            var result = await _testControl.AddDepartment(inst);
-
-            //Assert
-            Assert.IsType<OkObjectResult>(result);
-        }
-
-        [Fact]
-        public async Task AddDepartment_EndpointsReturnBadRequest_IfDepartmentAlreadyExist()
-        {
-            // Arrange
-            var inst = new DepartmentApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>()};
-
-            // Assert
-            Assert.ThrowsAsync<BadRequestException>(() => _testControl.AddDepartment(inst));
         }
     }
 }

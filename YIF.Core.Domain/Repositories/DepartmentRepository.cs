@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -27,14 +28,6 @@ namespace YIF.Core.Domain.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> IsDepartmentByNameAndDescriptionExist(string name, string description)
-        {
-            var department = await _context.Departments.AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Name.Equals(name) && d.Description.Equals(description));
-
-            return department == null ? false : true;
-        }
-
         public void Dispose()
         {
             _context.Dispose();
@@ -60,9 +53,16 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<DepartmentDTO>> Find(Expression<Func<Department, bool>> predicate)
+        public async Task<IEnumerable<DepartmentDTO>> Find(Expression<Func<Department, bool>> predicate)
         {
-            throw new NotImplementedException();
+            var department = await _context.Departments.Where(predicate).AsNoTracking().ToListAsync();
+
+            if (department != null && department.Count > 0)
+            {
+                return _mapper.Map<IEnumerable<DepartmentDTO>>(department);
+            }
+
+            return null;
         }
     }
 }
