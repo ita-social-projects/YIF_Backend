@@ -27,5 +27,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> ChooseIoEAdminFromModerators(IoEAdminAddFromModeratorsApiModel ioEAdminAddFromModeratorsApiModel);
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddDirection(DirectionPostApiModel directionModel);
         Task<ResponseApiModel<DescriptionResponseApiModel>> GetIoEAdminIdByIoEId(string ioEId);
+        Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId);
     }
 }
