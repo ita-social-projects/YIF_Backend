@@ -9,7 +9,7 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// Unique id
         /// </summary>
         /// <example>e2bd4ad9-060b-4d53-8222-9f3e5efbcfc7</example>
-        public string Id { get; set; }
+        public string IoEId { get; set; }
 
         /// <summary>
         /// Name of institutionOfEducation
