@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -16,6 +17,7 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.ApiModels.Validators;
 using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
@@ -487,6 +489,40 @@ namespace YIF.Core.Service.Concrete.Services
             }
 
             return result.Set(new DescriptionResponseApiModel(admin.Id), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            InstitutionOfEducationPostApiModel request = new InstitutionOfEducationPostApiModel();
+            institutionOfEducationPostApiModel.ApplyTo(request);
+
+            var validator = new InstitutionOfEducationPostApiModelValidator();
+            var validResult = await validator.ValidateAsync(request);
+
+            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var currentInstitutionOfEducationDTO = await _institutionOfEducationRepository.Get(ioEId);
+
+            var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
+
+            newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
+
+            #region imageSaving
+            if (request.ImageApiModel != null)
+            {
+                var serverPath = _env.ContentRootPath;
+                var folderName = _configuration.GetValue<string>("ImagesPath");
+                var path = Path.Combine(serverPath, folderName);
+
+                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
+                currentInstitutionOfEducationDTO.ImagePath = fileName;
+            }
+            #endregion
+
+            await _institutionOfEducationRepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }
     }
 }

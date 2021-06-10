@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Resources;                                
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -490,6 +491,56 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Act
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetIoEAdminIdByIoEId(It.IsAny<string>()));
+        }
+
+        [Fact]
+        public void ModifyInstitution_WrongAdminId()
+        {
+            // Arrange
+            var wrongAdminId = "0";
+            var listOfAdmins = InstitutionOfEducationAdminTestData.GetIEnumerableInstitutionOfEducationAdminDTO();
+            _institutionOfEducationAdminRepository.Setup(x => x.GetAllUniAdmins())
+                .Returns(Task.FromResult(listOfAdmins));
+
+            // Act
+            Func<Task> act = () => superAdminService.ModifyInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+
+            // Assert
+            Assert.ThrowsAsync<NullReferenceException>(act);
+        }
+
+        [Fact]
+        public void ModifyInstitution_ReturnTrue()
+        {
+            // Arrange
+            var institutionOfEducationAdminDTO = new InstitutionOfEducationAdminDTO()
+            {
+                InstitutionOfEducationId = "id"
+            };
+
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducationAdminDTO);
+
+            _institutionOfEducationRepository.Setup(x => x.Get(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationDTO());
+
+            _mapperMock.Setup(x => x.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
+                .Returns(new JsonPatchDocument<InstitutionOfEducationDTO>());
+
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>()))
+                .Returns(It.IsAny<InstitutionOfEducation>());
+
+            _institutionOfEducationRepository.Setup(x => x.Update(It.IsAny<InstitutionOfEducation>()))
+                .Returns(Task.FromResult(true));
+
+            _resourceManager.Setup(x => x.GetString(It.IsAny<string>()))
+                .Returns("");
+
+            // Act
+            var result = superAdminService.ModifyInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+
+            // Assert
+            Assert.True(result.Result.Success);
         }
     }
 }
