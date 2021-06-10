@@ -21,6 +21,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddIoEModerator(string moderatorEmail, string userId, HttpRequest request);
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddLectorToIoE(string userId, EmailApiModel email, HttpRequest request);
         Task<ResponseApiModel<IEnumerable<LectorResponseApiModel>>> GetIoELectorsByUserId(string userId);
-        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoELector(string lectorId);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoELector(string lectorId, string userId);
     }
 }

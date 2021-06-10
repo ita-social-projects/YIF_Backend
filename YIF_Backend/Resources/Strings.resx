@@ -378,4 +378,7 @@
   <data name="IoELectorWithSuchIdNotFound" xml:space="preserve">
     <value>Лектора з таким Id не знайдено</value>
   </data>
+  <data name="IoELectorWasAlreadyDeleted" xml:space="preserve">
+    <value>Цей лектор вже видалений</value>
+  </data>
 </root>

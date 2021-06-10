@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Linq;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -47,8 +46,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<LectorDTO> Get(string id)
         {
-            var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            return _mapper.Map<LectorDTO>(lector);
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<LectorDTO>> GetAll()
@@ -70,6 +68,12 @@ namespace YIF.Core.Domain.Repositories
         public async Task<LectorDTO> GetLectorByUserAndIoEIds(string userId, string ioEId)
         {
             var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId && a.InstitutionOfEducationId == ioEId);
+            return _mapper.Map<LectorDTO>(lector);
+        }
+
+        public async Task<LectorDTO> GetLectorByLectorIdAndIoEId(string lectorId, string ioEId)
+        {
+            var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(a => a.Id == lectorId && a.InstitutionOfEducationId == ioEId);
             return _mapper.Map<LectorDTO>(lector);
         }
 

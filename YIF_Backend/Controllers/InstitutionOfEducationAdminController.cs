@@ -266,7 +266,8 @@ namespace YIF_Backend.Controllers
         [HttpDelete("DeleteIoELector")]
         public async Task<IActionResult> DeleteIoELector(string lectorId)
         {
-            var result = await _ioEAdminService.DeleteIoELector(lectorId);
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.DeleteIoELector(lectorId,userId);
             return Ok(result.Object);
         }
     }

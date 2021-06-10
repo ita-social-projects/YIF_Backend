@@ -303,15 +303,22 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         [Fact]
         public async void DeleteIoELector_ShouldReturnOk()
         {
-            //Arrange
-            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
-            _ioEAdminService.Setup(x => x.DeleteIoELector(It.IsAny<string>()))
-                .ReturnsAsync(response);
+            // Arrange
+            var claims = new List<Claim>()
+            {
+                new Claim("id", "id"),
+            };
+            var identity = new ClaimsIdentity(claims, "Test");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
 
-            //Act
+            _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
+            _ioEAdminService.Setup(x => x.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ResponseApiModel<DescriptionResponseApiModel>());
+
+            // Act
             var result = await _testControl.DeleteIoELector(It.IsAny<string>());
 
-            //Assert
+            // Assert  
             Assert.IsType<OkObjectResult>(result);
         }
     }

@@ -861,19 +861,20 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             var user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", Email = "shadj_hadjf@maliberty.com", UserName = "Jeremiah Gibson" };
-            _lectorRepository.Setup(x => x.Get(It.IsAny<string>()))
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _lectorRepository.Setup(x => x.GetLectorByLectorIdAndIoEId(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult<LectorDTO>(new LectorDTO
                 {
                     Id = It.IsAny<string>()
                 }));
-            _userManager.Setup(s => s.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(It.IsAny<string>() == "" ? null : user);
-            _lectorRepository.Setup(x => x.Delete(It.IsAny<string>()))
-                .Returns(Task.FromResult<bool>(true));
+            _userManager.Setup(s => s.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
+            _lectorRepository.Setup(s => s.Delete(It.IsAny<string>())).Returns(Task.FromResult<bool>(true));
             _userManager.Setup(s => s.RemoveFromRoleAsync(user, ProjectRoles.Lector));
             _userRepository.Setup(s => s.Delete(user.Id));
 
             //Act
-            var result = await _ioEAdminService.DeleteIoELector(It.IsAny<string>());
+            var result = await _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>());
 
             //Assert
             Assert.Equal("IoELectorIsDeleted", result.Object.Message);
@@ -886,10 +887,28 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _lectorRepository
                 .Setup(x => x.Get(It.IsAny<string>()))
                 .Returns(Task.FromResult<LectorDTO>(null));
+            _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
 
             //Act
             //Assert
-            await Assert.ThrowsAsync<NotFoundException>(() => _ioEAdminService.DeleteIoELector(It.IsAny<string>()));
+            await Assert.ThrowsAsync<NotFoundException>(() => _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [Fact]
+        public async Task DeleteIoELector_ShouldThrowBadRequestException_IfLectorIsAlreadyDeleted()
+        {
+            // Arrange  
+            LectorDTO lector = new LectorDTO() { IsDeleted = true };
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _lectorRepository.Setup(p => p.Get(It.IsAny<string>()))
+                .ReturnsAsync(lector);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
         }
     }
 }
