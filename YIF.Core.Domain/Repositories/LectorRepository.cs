@@ -71,7 +71,7 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<LectorDTO>(lector);
         }
 
-        public async Task<LectorDTO> GetLectorByLectorIdAndIoEId(string lectorId, string ioEId)
+        public async Task<LectorDTO> GetLectorInIoE(string lectorId, string ioEId)
         {
             var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(a => a.Id == lectorId && a.InstitutionOfEducationId == ioEId);
             return _mapper.Map<LectorDTO>(lector);

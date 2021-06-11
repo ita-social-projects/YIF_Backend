@@ -357,23 +357,26 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteIoELector(string lectorId, string userId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
-            var lector = await _lectorRepository.GetLectorByLectorIdAndIoEId(lectorId, ioEId);
+            var lector = await _lectorRepository.GetLectorInIoE(lectorId, ioEId);
+
             if (lector == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("IoELectorWithSuchIdNotFound")}: {lectorId}");
             }
+
             else if( lector.IsDeleted == true)
             {
                 throw new BadRequestException(_resourceManager.GetString("IoELectorWasAlreadyDeleted"));
             }
-            var searchUser = await _userManager.FindByIdAsync(lector.UserId);
 
+            var searchUser = await _userManager.FindByIdAsync(lector.UserId);
             await _lectorRepository.Delete(lector.Id);
             await _userManager.RemoveFromRoleAsync(searchUser, ProjectRoles.Lector);
             await _userRepository.Delete(searchUser.Id);
             
-            return result.Set(new DescriptionResponseApiModel("IoELectorIsDeleted"), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoELectorIsDeleted")), true);
         }
     }
 }

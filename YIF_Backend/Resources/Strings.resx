@@ -381,4 +381,7 @@
   <data name="IoELectorWasAlreadyDeleted" xml:space="preserve">
     <value>Цей лектор вже видалений</value>
   </data>
+  <data name="IoELectorIsDeleted" xml:space="preserve">
+    <value>Лектора успішно видалено</value>
+  </data>
 </root>
