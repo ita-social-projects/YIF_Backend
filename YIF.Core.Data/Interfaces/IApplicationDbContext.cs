@@ -37,6 +37,6 @@ namespace YIF.Core.Data.Interfaces
         int SaveChanges();
 
         ValueTask<EntityEntry<T>> AddAsync<T>(T entity) where T : class;
-        EntityEntry<T> GetEntry<T>(T entity) where T : class;
+        EntityEntry<T> Entry<T>(T entity) where T : class;
     }
 }

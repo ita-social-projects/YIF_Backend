@@ -27,9 +27,9 @@ namespace YIF.Core.Domain.Repositories
                 return _resourceManager.GetString("ObjectCannotBeDisabled");
             }
 
-            property.SetValue(entity,Convert.ChangeType(true, property.PropertyType), null);
+            property.SetValue(entity, Convert.ChangeType(true, property.PropertyType), null);
 
-            _context.GetEntry(entity).State = EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return _resourceManager.GetString("ObjectWasDisabled");
@@ -47,7 +47,7 @@ namespace YIF.Core.Domain.Repositories
 
             property.SetValue(entity, Convert.ChangeType(false, property.PropertyType), null);
 
-            _context.GetEntry(entity).State = EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return _resourceManager.GetString("ObjectWasEnabled");
