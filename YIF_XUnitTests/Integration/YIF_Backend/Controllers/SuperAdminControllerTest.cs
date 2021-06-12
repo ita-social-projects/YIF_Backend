@@ -372,7 +372,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task VerifyDeletedSpecialty() 
+        public async Task DeleteSpecialty_EndpointReturnsOk() 
         {
             // Arrange
             var specialty = _context.Specialties.First();

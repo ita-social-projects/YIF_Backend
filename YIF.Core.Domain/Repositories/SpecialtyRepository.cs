@@ -30,8 +30,8 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<bool> Delete(string id)
         {
-            var service = _context.Specialties.FirstOrDefault(x => x.Id == id);
-            service.IsDeleted = true;
+            var specialty = _context.Specialties.FirstOrDefault(x => x.Id == id);
+            specialty.IsDeleted = true;
             return await _context.SaveChangesAsync() > 0;
         }
 

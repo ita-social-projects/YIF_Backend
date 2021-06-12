@@ -498,7 +498,8 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
             }
-            else if (specialty.isDeleted) 
+
+            if (specialty.IsDeleted) 
             {
                 throw new BadRequestException(_resourceManager.GetString("SpecialtyHasAlreadyBeenDeleted"));
             }
