@@ -375,6 +375,18 @@
   <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
     <value>Заклад освіти не знайдено або адмін був видалений</value>
   </data>
+  <data name="ObjectCannotBeDisabled" xml:space="preserve">
+    <value>Об'єкт не може бути забаненим</value>
+  </data>
+  <data name="ObjectCannotBeEnabled" xml:space="preserve">
+    <value>Об'єкт не може бути розбаненим</value>
+  </data>
+  <data name="ObjectWasDisabled" xml:space="preserve">
+    <value>Об'єкт забанений</value>
+  </data>
+  <data name="ObjectWasEnabled" xml:space="preserve">
+    <value>Об'єкт розбанений</value>
+  </data>
   <data name="SpecialtyDeleted" xml:space="preserve">
     <value>Спеціальність була успішно видалена</value>
   </data>
