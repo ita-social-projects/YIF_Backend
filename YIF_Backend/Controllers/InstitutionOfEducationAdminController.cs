@@ -258,9 +258,11 @@ namespace YIF_Backend.Controllers
         /// <returns>Whether Lector was deleted or not</returns>
         /// <response code="200">Returns if the lector has been successfully deleted from institution of education.</response>
         /// <response code="400">If id is not valid.</response>
+        /// <response code="403">>If user is not Institution of Education admin</response>
         /// <response code="404">If lector with such Id wasn't found</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpDelete("DeleteIoELector")]

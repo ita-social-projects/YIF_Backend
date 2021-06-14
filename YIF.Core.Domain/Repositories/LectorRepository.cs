@@ -39,12 +39,12 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public async Task<IEnumerable<LectorDTO>> Find(Expression<Func<Lector, bool>> predicate)
+        public Task<IEnumerable<LectorDTO>> Find(Expression<Func<Lector, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<LectorDTO> Get(string id)
+        public Task<LectorDTO> Get(string id)
         {
             throw new NotImplementedException();
         }

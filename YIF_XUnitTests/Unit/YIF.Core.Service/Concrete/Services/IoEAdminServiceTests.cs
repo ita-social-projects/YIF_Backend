@@ -879,15 +879,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             var result = await _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>());
 
             //Assert
-            Assert.Equal("IoELectorIsDeleted", result.Object.Message);
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
         public async void DeleteIoELector_ReturnsNotFoundMessage()
         {
             //Arrange
-            _lectorRepository
-                .Setup(x => x.GetLectorInIoE(It.IsAny<string>(), It.IsAny<string>()))
+            _lectorRepository.Setup(x => x.GetLectorInIoE(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult<LectorDTO>(null));
             _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
 
