@@ -329,5 +329,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task DeleteIoELector_EndpointReturnOk()
+        {
+            // Arrange
+            var lector = _context.Lectors.First();
+            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
+
+            // Act
+            var response = await _client.DeleteAsync($"/api/InstitutionOfEducationAdmin/DeleteIoELector?lectorId={lector.Id}");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
