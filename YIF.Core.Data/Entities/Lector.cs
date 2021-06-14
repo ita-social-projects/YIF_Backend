@@ -6,6 +6,7 @@ namespace YIF.Core.Data.Entities
     public class Lector : BaseEntity
     {
         public string InstitutionOfEducationId { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         [ForeignKey("InstitutionOfEducationId")]
         public InstitutionOfEducation InstitutionOfEducation { get; set; }

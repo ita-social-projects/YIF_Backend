@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210603114120_AddedIsDeletedForLector")]
+    partial class AddedIsDeletedForLector
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,23 +170,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("BaseUsers");
-                });
-
-            modelBuilder.Entity("YIF.Core.Data.Entities.Department", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Direction", b =>
@@ -490,9 +475,6 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DepartmentId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("InstitutionOfEducationId")
                         .HasColumnType("nvarchar(450)");
 
@@ -503,8 +485,6 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("InstitutionOfEducationId");
 
@@ -894,11 +874,6 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
                 {
-                    b.HasOne("YIF.Core.Data.Entities.Department", "Department")
-                        .WithMany("Lectors")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
                         .WithMany("Lectors")
                         .HasForeignKey("InstitutionOfEducationId")

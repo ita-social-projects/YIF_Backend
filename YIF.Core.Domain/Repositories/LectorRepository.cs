@@ -28,9 +28,10 @@ namespace YIF.Core.Domain.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            (await _context.Lectors.FirstOrDefaultAsync(x => x.Id == id)).IsDeleted = true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public void Dispose()
@@ -38,7 +39,7 @@ namespace YIF.Core.Domain.Repositories
             _context.Dispose();
         }
 
-        public async Task<IEnumerable<LectorDTO>> Find(Expression<Func<Lector, bool>> predicate)
+        public Task<IEnumerable<LectorDTO>> Find(Expression<Func<Lector, bool>> predicate)
         {
             throw new NotImplementedException();
         }
@@ -67,6 +68,12 @@ namespace YIF.Core.Domain.Repositories
         public async Task<LectorDTO> GetLectorByUserAndIoEIds(string userId, string ioEId)
         {
             var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId && a.InstitutionOfEducationId == ioEId);
+            return _mapper.Map<LectorDTO>(lector);
+        }
+
+        public async Task<LectorDTO> GetLectorInIoE(string lectorId, string ioEId)
+        {
+            var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(a => a.Id == lectorId && a.InstitutionOfEducationId == ioEId);
             return _mapper.Map<LectorDTO>(lector);
         }
 
