@@ -28,9 +28,11 @@ namespace YIF.Core.Domain.Repositories
              return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<bool> Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            throw new NotImplementedException();
+            var specialty = _context.Specialties.FirstOrDefault(x => x.Id == id);
+            specialty.IsDeleted = true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<SpecialtyDTO> Get(string id)

@@ -396,4 +396,10 @@
   <data name="IoELectorIsDeleted" xml:space="preserve">
     <value>Лектора успішно видалено</value>
   </data>
+  <data name="SpecialtyDeleted" xml:space="preserve">
+    <value>Спеціальність була успішно видалена</value>
+  </data>
+  <data name="SpecialtyHasAlreadyBeenDeleted" xml:space="preserve">
+    <value>Спеціальність уже видалена</value>
+  </data>
 </root>
