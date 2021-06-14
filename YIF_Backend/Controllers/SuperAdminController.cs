@@ -335,11 +335,9 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
-        /// <response code="400">If specialty was deleted</response>
         /// <response code="403">If user is not super admin</response>
         /// <response code="404">Not found message</response>
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
