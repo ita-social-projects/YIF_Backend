@@ -16,7 +16,8 @@ namespace YIF.Core.Service.Mapping
             CreateMap<LectorDTO, LectorResponseApiModel>()
                 .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.User.Id))
-                .ForMember(dst => dst.IoEId, opt => opt.MapFrom(src => src.InstitutionOfEducationId));
+                .ForMember(dst => dst.IoEId, opt => opt.MapFrom(src => src.InstitutionOfEducationId))
+                .ForMember(dst => dst.LectorId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }
