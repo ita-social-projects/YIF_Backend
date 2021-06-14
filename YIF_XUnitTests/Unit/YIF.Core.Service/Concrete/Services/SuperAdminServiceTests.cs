@@ -53,6 +53,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly InstitutionOfEducationAdmin uniAdmin = new InstitutionOfEducationAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", InstitutionOfEducationId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
         private readonly InstitutionOfEducation uni = new InstitutionOfEducation { Id = "007a43f8-7553-4eec-9e91-898a9cba37c9", Name = "Uni1Stub", Description = "Descripton1Stub", ImagePath = "Image1Path" };
         private readonly InstitutionOfEducationModerator institutionOfEducationModerator = new InstitutionOfEducationModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
+        private readonly Specialty specialty = new Specialty { Id = "39e9621f-5baf-47bc-8c04-09cb25e84f44", IsDeleted = false };
 
         private readonly List<InstitutionOfEducationAdmin> _databaseUniAdmins = new List<InstitutionOfEducationAdmin>();
         private readonly List<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminsDTO;
@@ -491,6 +492,49 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Act
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetIoEAdminIdByIoEId(It.IsAny<string>()));
+        }
+
+        [Fact]
+        public async void DeleteSpecialty_ReturnsSuccess()
+        {
+            //Arrange
+            var specialtyDTO = new SpecialtyDTO { Id = specialty.Id, IsDeleted = specialty.IsDeleted};
+
+            _specialtyRepository.Setup(x => x.Get(specialty.Id)).Returns(Task.FromResult<SpecialtyDTO>(specialtyDTO));
+            _specialtyRepository.Setup(x => x.Delete(specialty.Id)).Returns(Task.FromResult<bool>(true));
+           
+            //Act
+            var result = await superAdminService.DeleteSpecialty(specialty.Id);
+            
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void DeleteSpecialty_ReturnsNotFoundMessage()
+        {
+            //Arrange
+            _specialtyRepository.Setup(x => x.Get(specialty.Id)).Returns(Task.FromResult<SpecialtyDTO>(null));
+          
+            //Act
+            
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteSpecialty(specialty.Id));
+        }
+
+        [Fact]
+        public async void DeleteSpecialty_BadRequestExceptionIfSpecialtyAlreadyDeleted()
+        {
+            //Arrange
+            var specialtyDTO = new SpecialtyDTO { Id = specialty.Id, IsDeleted = true };
+
+            _specialtyRepository.Setup(x => x.Get(specialty.Id)).Returns(Task.FromResult<SpecialtyDTO>(specialtyDTO));
+            
+            //Act
+            
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => superAdminService.DeleteSpecialty(specialty.Id));
         }
 
         [Fact]
