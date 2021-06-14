@@ -58,7 +58,7 @@ namespace YIF.Core.Domain.Repositories
         {
             var result = await _context.Lectors
                 .Include(x => x.User)
-                .Where(x => x.InstitutionOfEducationId == ioEId)
+                .Where(x => x.InstitutionOfEducationId == ioEId && x.IsDeleted == false)
                 .AsNoTracking()
                 .ToListAsync();
 
