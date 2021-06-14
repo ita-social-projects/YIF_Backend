@@ -280,5 +280,10 @@ namespace YIF.Core.Data
 
             #endregion
         }
+
+        public EntityEntry<T> Entry<T>(T entity) where T : class
+        {
+            return base.Entry(entity);
+        }
     }
 }
