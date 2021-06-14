@@ -387,4 +387,13 @@
   <data name="ObjectWasEnabled" xml:space="preserve">
     <value>Об'єкт розбанений</value>
   </data>
+  <data name="IoELectorWithSuchIdNotFound" xml:space="preserve">
+    <value>Лектора з таким Id не знайдено</value>
+  </data>
+  <data name="IoELectorWasAlreadyDeleted" xml:space="preserve">
+    <value>Цей лектор вже видалений</value>
+  </data>
+  <data name="IoELectorIsDeleted" xml:space="preserve">
+    <value>Лектора успішно видалено</value>
+  </data>
 </root>
