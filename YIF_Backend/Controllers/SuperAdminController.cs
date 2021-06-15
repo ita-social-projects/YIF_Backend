@@ -352,7 +352,7 @@ namespace YIF_Backend.Controllers
         /// Get Institution of Education information by Institution of Education id.
         /// </summary>
         /// <returns>List of moderators</returns>
-        /// <response code="200">Returns a list of moderators</response>
+        /// <response code="200">Returns information about Institution of Education</response>
         /// <response code="400">IoE wasn't found by the IoEId</response>
         /// <response code="403">If user is not super admin</response>
         [HttpGet("GetIoEInfoByIoEId/{ioEId}")]
