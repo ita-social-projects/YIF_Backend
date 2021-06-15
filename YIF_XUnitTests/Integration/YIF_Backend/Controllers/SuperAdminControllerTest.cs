@@ -38,6 +38,24 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _institutionOfEducationAdminRepository = _factory.Services.CreateScope().ServiceProvider.GetRequiredService<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         }
 
+        [Theory]
+        [InlineData("Машинобудування", "78")]
+        public async Task AddDirection_ShouldReturnOk(string name, string code)
+        {
+            //Arrange
+            var model = new DirectionPostApiModel()
+            {
+                Name = name,
+                Code = code
+            };
+
+            // Act            
+            var response = await _client.PostAsync($"/api/SuperAdmin/AddDirection", ContentHelper.GetStringContent(model));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
         [Fact]
         public async Task AddInstitutionOfEducationAdmin_Output_Correct()
         {
@@ -217,10 +235,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         public async Task DisableInstitutionOfEducationAdmin()
         {
             // Arrange
-            var admin = _context.InstitutionOfEducationAdmins.First();
+            var admin = _context.InstitutionOfEducationAdmins.Last();
+            var content = ContentHelper.GetStringContent(admin);
 
             // Act
-            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), ContentHelper.GetStringContent(admin));
+            var response = await _client.PatchAsync(string.Format("/api/SuperAdmin/DisableInstitutionOfEducationAdmin/{0}", admin.Id), content);
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -276,7 +295,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var ioEId = _context.InstitutionOfEducations.FirstOrDefault().Id;
 
             // Act
-            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById?ioEId={ioEId}");
+            var response = await _client.GetAsync($"api/SuperAdmin/GetIoEModeratorsById/{ioEId}");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -334,6 +353,32 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             // Act
             var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteInstitutionOfEducation/{0}", institutionOfEducation.Id));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task GetIoEAdminIdByIoEId_EndpointReturnsOk()
+        {
+            // Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.First();
+
+            // Act
+            var response = await _client.GetAsync(string.Format("/api/SuperAdmin/GetIoEAdminIdByIoEId/{0}", institutionOfEducation.Id));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async Task DeleteSpecialty_EndpointReturnsOk() 
+        {
+            // Arrange
+            var specialty = _context.Specialties.First();
+
+            // Act
+            var response = await _client.DeleteAsync(string.Format("/api/SuperAdmin/DeleteSpecialty/{0}", specialty.Id));
 
             // Assert
             response.EnsureSuccessStatusCode();

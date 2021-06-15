@@ -28,7 +28,7 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
-        /// Modify description of Institution
+        /// Modify Institution Of Education
         /// </summary>
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
@@ -38,14 +38,14 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("ModifyDescriptionOfInstitution")]
-        public async Task<IActionResult> ModifyDescriptionOfInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        [HttpPatch("ModifyInstitution")]
+        public async Task<IActionResult> ModifyInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             if (institutionOfEducationPostApiModel == null)
                 return BadRequest();
 
             var userId = User.FindFirst("id")?.Value;
-            var result = await _ioEAdminService.ModifyDescriptionOfInstitution(userId, institutionOfEducationPostApiModel);
+            var result = await _ioEAdminService.ModifyInstitution(userId, institutionOfEducationPostApiModel);
             return Ok(result.Object);
         }
 
@@ -156,6 +156,120 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             var result = await _ioEAdminService.GetSpecialtyToIoEDescription(userId, specialtyId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Soft delete Institution Of Education Moderator
+        /// </summary>
+        /// <returns>Whether Moderator was deleted or not</returns>
+        /// <response code="200">Returns if the moderator has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="404">If Moderator with such Id wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteIoEModerator")]
+        public async Task<IActionResult> DeleteIoEModerator(string moderatorId)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.DeleteIoEModerator(moderatorId, userId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Ban IoE Moderator (sets its Moderator IsBanned to true or false).
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">IoE Moderator wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("BanIoEModerator/{Id}")]
+        public async Task<IActionResult> BanIoEModerator(string Id)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(Id, userId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Adds new Institution Of Education Moderator
+        /// </summary>
+        /// <response code="200">Institution Of Education Moderator was succesfully added</response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="404">If institutionOfEducation not found</response>
+        /// <response code="409">If any issue appeared</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("AddIoEModerator")]
+        public async Task<IActionResult> AddIoEModerator([FromBody] EmailApiModel model)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.AddIoEModerator(model.UserEmail, userId, Request);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Adds Lector to IoE
+        /// </summary>
+        /// <response code="200">Lector successfully added to the Institution of Education</response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="404">If such user doesn't exist</response>
+        /// <response code="409">If email incorrect</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 409)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPost("AddLectorToIoE")]
+        public async Task<IActionResult> AddIoELector(EmailApiModel email)
+        {
+            var userId = User.FindFirst("id")?.Value;
+            var result = await _ioEAdminService.AddLectorToIoE(userId, email, Request);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get Institution of Education lectors.
+        /// </summary>
+        /// <returns>List of lectors</returns>
+        /// <response code="200">Returns a list of lectors</response>
+        /// <response code="403">If user is not Institution of Education admin</response>
+        [HttpGet("GetIoELectors")]
+        [ProducesResponseType(typeof(IEnumerable<LectorResponseApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetLectorsByUserId()
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.GetIoELectorsByUserId(userId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Soft delete Institution Of Education Lector
+        /// </summary>
+        /// <returns>Whether Lector was deleted or not</returns>
+        /// <response code="200">Returns if the lector has been successfully deleted from institution of education.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="403">>If user is not Institution of Education admin</response>
+        /// <response code="404">If lector with such Id wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpDelete("DeleteIoELector")]
+        public async Task<IActionResult> DeleteIoELector(string lectorId)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.DeleteIoELector(lectorId,userId);
             return Ok(result.Object);
         }
     }

@@ -27,7 +27,7 @@ namespace YIF.Core.Data.Entities
         public bool IsDeleted { get; set; } = false;
 
         public ICollection<InstitutionOfEducationAdmin> Admins { get; set; }
-        public ICollection<Lecture> Lectures { get; set; }
+        public ICollection<Lector> Lectors { get; set; }
         public ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }
         public ICollection<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
         public ICollection<DirectionToInstitutionOfEducation> DirectionToInstitutionOfEducation { get; set; }

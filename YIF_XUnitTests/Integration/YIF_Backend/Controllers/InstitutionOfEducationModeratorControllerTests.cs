@@ -128,5 +128,31 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             Assert.Equal("application/json; charset=utf-8",
                  response.Content.Headers.ContentType.ToString());
         }
+
+        [Fact]
+        public async void GetIoEAdmin_EndpointReturnOk()
+        {
+            // Arrange
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"/api/InstitutionOfEducationModerator/GetIoEAdmin/");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
+        public async void GetIoEInfo_EndpointReturnsSuccess()
+        {
+            // Arrange
+            _IoEmoderatorInputAttribute.SetUserIdByIoEModeratorUserIdForHttpContext();
+
+            // Act
+            var response = await _client.GetAsync($"api/InstitutionOfEducationModerator/GetIoEInfoByUserId");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

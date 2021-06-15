@@ -22,6 +22,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> _examRequirementRepository;
         private readonly IMapper _mapper;
         private readonly ResourceManager _resourceManager;
+        private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _ioEAdminRepository;
 
         public IoEModeratorService(
             ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
@@ -31,7 +32,8 @@ namespace YIF.Core.Service.Concrete.Services
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> ioEModeratorRepository,
             IExamRequirementRepository<ExamRequirement, ExamRequirementDTO> examRequirementRepository,
             IMapper mapper,
-            ResourceManager resourceManager)
+            ResourceManager resourceManager,
+            IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> ioEAdminRepository)
         {
             _specialtyRepository = specialtyRepository;
             _ioERepository = ioERepository;
@@ -41,7 +43,7 @@ namespace YIF.Core.Service.Concrete.Services
             _examRequirementRepository = examRequirementRepository;
             _mapper = mapper;
             _resourceManager = resourceManager;
-
+            _ioEAdminRepository = ioEAdminRepository;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
@@ -122,6 +124,28 @@ namespace YIF.Core.Service.Concrete.Services
             return new ResponseApiModel<SpecialtyToInstitutionOfEducationResponseApiModel>
             {
                 Object = _mapper.Map<SpecialtyToInstitutionOfEducationResponseApiModel>(specialtyToIoE.FirstOrDefault()),
+                Success = true
+            };
+        }
+
+        public async Task<ResponseApiModel<IoEAdminForIoEModeratorResponseApiModel>> GetIoEAdminByUserId(string userId)
+        {
+            string ioEId = (await _ioEModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
+
+            return new ResponseApiModel<IoEAdminForIoEModeratorResponseApiModel>
+            {
+                Object = _mapper.Map<IoEAdminForIoEModeratorResponseApiModel>(await _ioEAdminRepository.GetByInstitutionOfEducationId(ioEId)),
+                Success = true
+            };
+        }
+
+        public async Task<ResponseApiModel<IoEInformationResponseApiModel>> GetIoEInfoByUserId(string userId)
+        {
+            string ioEId = (await _ioEModeratorRepository.GetByUserId(userId)).Admin.InstitutionOfEducationId;
+
+            return new ResponseApiModel<IoEInformationResponseApiModel>
+            {
+                Object = _mapper.Map<IoEInformationResponseApiModel>(await _ioERepository.Get(ioEId)),
                 Success = true
             };
         }

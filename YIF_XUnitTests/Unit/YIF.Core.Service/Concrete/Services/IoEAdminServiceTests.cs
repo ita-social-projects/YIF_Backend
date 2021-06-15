@@ -17,11 +17,19 @@ using YIF.Core.Service.Concrete.Services;
 using YIF_XUnitTests.Unit.TestData;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using Microsoft.AspNetCore.JsonPatch;
+using YIF.Core.Data.Entities.IdentityEntities;
+using YIF.Core.Domain.DtoModels.IdentityDTO;
+using YIF.Core.Domain.ServiceInterfaces;
+using Microsoft.AspNetCore.Http;
+using YIF.Shared;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class IoEAdminServiceTests
     {
+        private readonly Mock<IUserService<DbUser>> _userService = new Mock<IUserService<DbUser>>();
+        private readonly Mock<FakeUserManager<DbUser>> _userManager = new Mock<FakeUserManager<DbUser>>();
+        private readonly Mock<IUserRepository<DbUser, UserDTO>> _userRepository = new Mock<IUserRepository<DbUser, UserDTO>>();
         private readonly IoEAdminService _ioEAdminService;
         private readonly Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>> _specialtyRepository= new Mock<ISpecialtyRepository<Specialty, SpecialtyDTO>>();
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _ioEAdminRepository =
@@ -33,14 +41,19 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>> _specialtyToIoEDescriptionRepository = new Mock<ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>> _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
+        private readonly Mock<ILectorRepository<Lector, LectorDTO>> _lectorRepository = new Mock<ILectorRepository<Lector, LectorDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
-        private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>();
+        private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>(); 
+        private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
 
         public IoEAdminServiceTests()
         {
             _ioEAdminService = new IoEAdminService(
+                _userService.Object,
+                _userManager.Object,
+                _userRepository.Object,
                 _specialtyRepository.Object,
                 _ioERepository.Object,
                 _specialtyToIoERepository.Object,
@@ -48,6 +61,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _specialtyToIoEDescriptionRepository.Object,
                 _examRequirementRepository.Object,
                 _ioEModeratorRepository.Object,
+                _lectorRepository.Object,
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
@@ -56,7 +70,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public void ModifyDescriptionOfInstitution_WrongAdminId()
+        public void ModifyInstitution_WrongAdminId()
         {
             // Arrange
             var wrongAdminId = "0";
@@ -65,14 +79,14 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(Task.FromResult(listOfAdmins));
 
             // Act
-            Func<Task> act = () => _ioEAdminService.ModifyDescriptionOfInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            Func<Task> act = () => _ioEAdminService.ModifyInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.ThrowsAsync<NullReferenceException>(act);
         }
 
         [Fact]
-        public void ModifyDescriptionOfInstitution_ReturnTrue()
+        public void ModifyInstitution_ReturnTrue()
         {
             // Arrange
             var institutionOfEducationAdminDTO = new InstitutionOfEducationAdminDTO()
@@ -99,7 +113,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns("");
 
             // Act
-            var result = _ioEAdminService.ModifyDescriptionOfInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            var result = _ioEAdminService.ModifyInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
 
             // Assert
             Assert.True(result.Result.Success);
@@ -511,6 +525,391 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldDeleteIoEModerator_IfEverythingOk()
+        {
+            // Arrange  
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            var user = new UserDTO() { Id = "blabla" };
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationModeratorDTO() { User = user });
+            _userRepository.Setup(x => x.GetUserWithRoles(It.IsAny<string>())).ReturnsAsync(new DbUser());
+            _userManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<DbUser>(), It.IsAny<string>()));
+
+            // Act
+            var result = await  _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldThrowNotFoundException_IfModeratorWasNotFound()
+        {
+            // Arrange  
+            InstitutionOfEducationModeratorDTO moderator = null;
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<NotFoundException>(act);
+        }
+
+        [Fact]
+        public async Task DeleteIoEModerator_ShouldThrowBadRequestException_IfModeratorIsAlreadyDeleted()
+        {
+            // Arrange  
+            InstitutionOfEducationModeratorDTO moderator = new InstitutionOfEducationModeratorDTO() { IsDeleted = true };
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(p => p.GetModeratorForAdmin(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(moderator);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessDisableMessage()
+        {
+            //Arrange
+            var ioEMonederator = new InstitutionOfEducationModeratorDTO() { IsBanned = false };
+            _ioEModeratorRepository.Setup(s => s.GetByAdminId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _ioEModeratorRepository.Setup(x => x.Disable(It.IsAny<InstitutionOfEducationModerator>())).Returns(Task.FromResult("IoE Moderator isBanned was set to true"));
+            _mapper.Setup(x => x.Map<InstitutionOfEducationModerator>(It.IsAny<InstitutionOfEducationModeratorDTO>())).Returns(It.IsAny<InstitutionOfEducationModerator>());
+
+            //Act
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
+            Assert.Equal("IoE Moderator isBanned was set to true", result.Object.Message);
+        }
+
+        [Fact]
+        public async Task DisableIoE_ReturnsSuccessEnableMessage()
+        {
+            //Arrange
+            var ioEMonederator = new InstitutionOfEducationModeratorDTO() { IsBanned = true };
+            _ioEModeratorRepository.Setup(s => s.GetByAdminId(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(ioEMonederator);
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+
+            _ioEModeratorRepository.Setup(x => x.Enable(It.IsAny<InstitutionOfEducationModerator>())).Returns(Task.FromResult("IoE Moderator isBanned was set to false"));
+            _mapper.Setup(x => x.Map<InstitutionOfEducationModerator>(It.IsAny<InstitutionOfEducationModeratorDTO>())).Returns(It.IsAny<InstitutionOfEducationModerator>());
+
+            //Act
+            var result = await _ioEAdminService.ChangeBannedStatusOfIoEModerator(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
+            Assert.Equal("IoE Moderator isBanned was set to false", result.Object.Message);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_ThrowsExceptionIfUserIsAlreadyModerator(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            IEnumerable<InstitutionOfEducationModeratorDTO> institutionOfEducationModerators = new List<InstitutionOfEducationModeratorDTO>{
+                new InstitutionOfEducationModeratorDTO { 
+                    Admin = admin 
+                }
+            };
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _ioEModeratorRepository.Setup(p => p.GetAll()).ReturnsAsync(institutionOfEducationModerators);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_ShouldThrowExceptionIfThereIsUserWithThisEmail(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            IEnumerable<InstitutionOfEducationModeratorDTO> institutionOfEducationModerators = new List<InstitutionOfEducationModeratorDTO>{
+                new InstitutionOfEducationModeratorDTO {
+                    Admin = admin
+                }
+            };
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(dbUser);
+            _ioEModeratorRepository.Setup(p => p.GetAll());
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_ShouldThrowNoExceptionsIfUserWasNotInDatabase(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser() {
+                Email = email,
+                UserName = email
+            };
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            DbUser nullUser = null;
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(nullUser);
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.InstitutionOfEducationModerator)).Returns(Task.FromResult(string.Empty));
+            _userService.Setup(p => p.ResetPasswordByEmail(email, It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+            _ioEModeratorRepository.Setup(p => p.AddUniModerator(new InstitutionOfEducationModerator())).ReturnsAsync(It.IsAny<string>());
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_ShouldThrowBadRequestIfProblemsWithCreatingUserAppeared(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            string response = null;
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.InstitutionOfEducationModerator)).ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Theory]
+        [InlineData("moderatorEmail")]
+        public async Task AddInstitutionOfEducationModerator_ShouldThrowBadRequestIfAnyProblemsWithSendingEmailAppeared(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO admin = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = false };
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(admin);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.InstitutionOfEducationModerator))
+                .Returns(Task.FromResult(string.Empty));
+            _userService.Setup(p => p.ResetPasswordByEmail(email, It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddIoEModerator(email, It.IsAny<string>(), httpRequest.Object);
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task AddIoELector_ReturnsBadRequestMessageIfUserWithSuchEmailExist()
+        {
+            //Arrange
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            LectorDTO lectorDto = null;
+            DbUser dbUser = new DbUser();
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lector)).Returns(Task.FromResult(string.Empty));
+            _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectorDto);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>()));
+        }
+
+        [Fact]
+        public async Task AddIoELector_ReturnsBadRequestMessageIfUserWithSuchEmailExistAndUserAlreadyLector()
+        {
+            //Arrange
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            LectorDTO lectorDto = new LectorDTO();
+            DbUser dbUser = new DbUser();
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUser);
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lector)).Returns(Task.FromResult(string.Empty));
+            _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+            _lectorRepository.Setup(p => p.GetLectorByUserAndIoEIds(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(lectorDto);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>()));
+        }
+
+        [Fact]
+        public async Task AddIoELector_ReturnsSuccess()
+        {
+            //Arrange
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            DbUser dbUser = new DbUser();
+            DbUser dbUserNull = null;
+
+            _ioEAdminRepository.Setup(s => s.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(dbUserNull);
+            _userRepository.Setup(x => x.Create(It.IsAny<DbUser>(), null, null, ProjectRoles.Lector)).Returns(Task.FromResult(string.Empty));
+            _userService.Setup(p => p.ResetPasswordByEmail(It.IsAny<string>(), It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+
+            //Act
+            var result = await _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Theory]
+        [InlineData("fakeEmail")]
+        public async Task AddIoELector_ShouldThrowBadRequestIfProblemsWithCreatingUserAppeared(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            DbUser dbUser = new DbUser();
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = true };
+            string response = null;
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lector)).ReturnsAsync(response);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Theory]
+        [InlineData("fakeEmail")]
+        public async Task AddIoELector_ShouldThrowBadRequestIfAnyProblemsWithSendingEmailAppeared(string email)
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO ioeAdminDto = new InstitutionOfEducationAdminDTO();
+            DbUser dbUser = new DbUser();
+            ResponseApiModel<bool> responseModel = new ResponseApiModel<bool>() { Success = false };
+
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioeAdminDto);
+            _userManager.Setup(p => p.FindByEmailAsync(email)).ReturnsAsync(new DbUser());
+            _userRepository.Setup(p => p.Create(dbUser, null, null, ProjectRoles.Lector)).ReturnsAsync(It.IsAny<string>());
+            _userService.Setup(p => p.ResetPasswordByEmail(email, It.IsAny<HttpRequest>())).ReturnsAsync(responseModel);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.AddLectorToIoE(It.IsAny<string>(), new EmailApiModel(), It.IsAny<HttpRequest>());
+
+            // Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async void GetIoELectorsByUserId_ShouldReturnListOfLectors_IfEverythingIsOk()
+        {
+            // Arrange  
+            _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _lectorRepository.Setup(x => x.GetLectorsByIoEId(It.IsAny<string>())).ReturnsAsync(It.IsAny<IEnumerable<LectorDTO>>);
+            _mapper.Setup(x => x.Map<IEnumerable<LectorResponseApiModel>>(It.IsAny<IEnumerable<LectorDTO>>()));
+
+            // Act
+            var result = await _ioEAdminService.GetIoELectorsByUserId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IEnumerable<LectorResponseApiModel>>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void DeleteIoELector_ReturnsSuccess()
+        {
+            //Arrange
+            var user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", Email = "shadj_hadjf@maliberty.com", UserName = "Jeremiah Gibson" };
+            
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _lectorRepository.Setup(x => x.GetLectorInIoE(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<LectorDTO>(new LectorDTO
+                {
+                    Id = It.IsAny<string>()
+                }));
+
+            _userManager.Setup(s => s.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(user);
+            _lectorRepository.Setup(s => s.Delete(It.IsAny<string>())).Returns(Task.FromResult<bool>(true));
+
+            _userManager.Setup(s => s.RemoveFromRoleAsync(user, ProjectRoles.Lector));
+            _userRepository.Setup(s => s.Delete(user.Id));
+
+            //Act
+            var result = await _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void DeleteIoELector_ReturnsNotFoundMessage()
+        {
+            //Arrange
+            _lectorRepository.Setup(x => x.GetLectorInIoE(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult<LectorDTO>(null));
+            _ioEAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>()));
+        }
+
+        [Fact]
+        public async Task DeleteIoELector_ShouldThrowBadRequestException_IfLectorIsAlreadyDeleted()
+        {
+            // Arrange  
+            LectorDTO lector = new LectorDTO() { IsDeleted = true };
+            
+            _ioEAdminRepository.Setup(p => p.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationAdminDTO());
+            _lectorRepository.Setup(p => p.GetLectorInIoE(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(lector);
+
+            // Act
+            Func<Task> act = () => _ioEAdminService.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            await Assert.ThrowsAsync<BadRequestException>(act);
         }
     }
 }

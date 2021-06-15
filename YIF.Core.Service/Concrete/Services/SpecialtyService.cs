@@ -62,30 +62,30 @@ namespace YIF.Core.Service.Concrete.Services
 
         public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilter(FilterApiModel filterModel)
         {
-            var specilaties = await _specialtyRepository.GetAll();
+            var specialties = await _specialtyRepository.GetAll();
 
             if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
-                specilaties = specilaties.Where(s => s.Name == filterModel.SpecialtyName);
+                specialties = specialties.Where(s => s.Name == filterModel.SpecialtyName);
             }
 
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
             {
-                specilaties = specilaties.Where(s => s.Direction.Name == filterModel.DirectionName);
+                specialties = specialties.Where(s => s.Direction.Name == filterModel.DirectionName);
             }
 
             if (filterModel.InstitutionOfEducationName != string.Empty && filterModel.InstitutionOfEducationName != null)
             {
                 var specialtyToInstitutionOfEducation = await _specialtyToInstitutionOfEducationRepository.Find(su => su.InstitutionOfEducation.Name == filterModel.InstitutionOfEducationName);
                 var specialtyId = specialtyToInstitutionOfEducation.Select(su => su.SpecialtyId);
-                specilaties = specilaties.Where(s => specialtyId.Contains(s.Id));
+                specialties = specialties.Where(s => specialtyId.Contains(s.Id));
             }
 
             if (filterModel.InstitutionOfEducationAbbreviation != string.Empty && filterModel.InstitutionOfEducationAbbreviation != null)
             {
                 var specialtyToInstitutionOfEducation = await _specialtyToInstitutionOfEducationRepository.Find(su => su.InstitutionOfEducation.Abbreviation == filterModel.InstitutionOfEducationAbbreviation);
                 var specialtyIds = specialtyToInstitutionOfEducation.Select(su => su.SpecialtyId);
-                specilaties = specilaties.Where(s => specialtyIds.Contains(s.Id));
+                specialties = specialties.Where(s => specialtyIds.Contains(s.Id));
             }
 
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
@@ -98,7 +98,7 @@ namespace YIF.Core.Service.Concrete.Services
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
                     .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-                specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
+                specialties = specialties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
@@ -109,9 +109,10 @@ namespace YIF.Core.Service.Concrete.Services
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
                     .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-                specilaties = specilaties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
+                specialties = specialties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
             }
-            return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specilaties.Distinct().ToList());
+
+            return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specialties.Distinct().ToList());
         }
         
         public async Task<IEnumerable<SpecialtyResponseApiModel>> GetAllSpecialtiesByFilterForUser(FilterApiModel filterModel, string id)

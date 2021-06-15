@@ -369,6 +369,9 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -389,9 +392,6 @@ namespace YIF.Core.Data.Migrations
 
                     b.Property<DateTime>("StartOfCampaign")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("isBanned")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -467,7 +467,7 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("InstitutionOfEducationsToGraduates");
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
+            modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -476,11 +476,19 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("InstitutionOfEducationId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("InstitutionOfEducationId");
 
-                    b.ToTable("Lectures");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Lectors");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.School", b =>
@@ -559,6 +567,9 @@ namespace YIF.Core.Data.Migrations
 
                     b.Property<string>("DirectionId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -862,17 +873,16 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("YIF.Core.Data.Entities.Lecture", b =>
+            modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
                 {
-                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
-                        .WithMany("Lectures")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
-                        .WithMany("Lectures")
+                        .WithMany("Lectors")
                         .HasForeignKey("InstitutionOfEducationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")
+                        .WithMany("Lectors")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

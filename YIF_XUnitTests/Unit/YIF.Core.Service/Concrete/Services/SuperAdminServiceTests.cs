@@ -6,7 +6,7 @@ using Moq;
 using SendGrid.Helpers.Errors.Model;
 using System;
 using System.Collections.Generic;
-using System.Resources;
+using System.Resources;                                
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -19,6 +19,7 @@ using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Service.Concrete.Services;
+using YIF.Shared;
 using YIF_XUnitTests.Unit.TestData;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
@@ -31,6 +32,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly FakeSignInManager<DbUser> _signInManager;
         private readonly Mock<IJwtService> _jwtService;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IDirectionRepository<Direction, DirectionDTO>> _directionRepository;
         private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>> _institutionOfEducationAdminRepository;
         private readonly Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>> _institutionOfEducationRepository;
         private readonly Mock<ISchoolRepository<SchoolDTO>> _schoolRepository;
@@ -50,6 +52,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly InstitutionOfEducationAdmin uniAdmin = new InstitutionOfEducationAdmin { Id = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", InstitutionOfEducationId = "007a43f8-7553-4eec-9e91-898a9cba37c9", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
         private readonly InstitutionOfEducation uni = new InstitutionOfEducation { Id = "007a43f8-7553-4eec-9e91-898a9cba37c9", Name = "Uni1Stub", Description = "Descripton1Stub", ImagePath = "Image1Path" };
         private readonly InstitutionOfEducationModerator institutionOfEducationModerator = new InstitutionOfEducationModerator { Id = "057f5632-56a6-4d64-97fa-1842d02ffb2c", AdminId = "3b16d794-7aaa-4ca5-943a-36d328f86ed3", UserId = "b87613a2-e535-4c95-a34c-ecd182272cba" };
+        private readonly Specialty specialty = new Specialty { Id = "39e9621f-5baf-47bc-8c04-09cb25e84f44", IsDeleted = false };
 
         private readonly List<InstitutionOfEducationAdmin> _databaseUniAdmins = new List<InstitutionOfEducationAdmin>();
         private readonly List<InstitutionOfEducationAdminDTO> _institutionOfEducationAdminsDTO;
@@ -73,6 +76,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _signInManager = new FakeSignInManager<DbUser>(_userManager);
             _jwtService = new Mock<IJwtService>();
             _mapperMock = new Mock<IMapper>();
+            _directionRepository = new Mock<IDirectionRepository<Direction, DirectionDTO>>();
             _institutionOfEducationAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
             _institutionOfEducationRepository = new Mock<IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO>>();
             _schoolRepository = new Mock<ISchoolRepository<SchoolDTO>>();
@@ -94,6 +98,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                                                     _signInManager,
                                                     _jwtService.Object,
                                                     _mapperMock.Object,
+                                                    _directionRepository.Object,
                                                     _institutionOfEducationRepository.Object,
                                                     _institutionOfEducationAdminRepository.Object,
                                                     _schoolRepository.Object,
@@ -129,6 +134,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[0].Id,  },
                 new InstitutionOfEducationAdminResponseApiModel { Id = _institutionOfEducationAdminsDTO[1].Id,  }
             };
+        }
+
+        [Fact]
+        public async Task AddDirection_ShouldAddDirection()
+        {
+            //Arrange
+            _mapperMock.Setup(sr => sr.Map<DirectionDTO>(It.IsAny<DirectionPostApiModel>())).Returns(It.IsAny<DirectionDTO>());
+            _mapperMock.Setup(sr => sr.Map<Direction>(It.IsAny<DirectionDTO>())).Returns(It.IsAny<Direction>());
+            _directionRepository.Setup(sr => sr.Add(It.IsAny<Direction>()));
+
+            //Act
+            var result = await superAdminService.AddDirection(new DirectionPostApiModel());
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -227,21 +248,26 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         public async Task DeleteAdmin_ReturnsSuccessDeleteMessage()
         {
             //Arrange
+            var user = new DbUser { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", Email = "shadj_hadjf@maliberty.com", UserName= "Jeremiah Gibson"};
             _institutionOfEducationAdminRepository
                 .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
-                    { 
-                        Id = uniAdmin.Id,
-                        UserId = uniAdmin.UserId,
-                        User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
-                    }));
-            _userRepository.Setup(p => p.Delete(uniAdmin.UserId)).Returns(Task.FromResult<bool>(true));
-
+                {
+                    Id = uniAdmin.Id,
+                    UserId = uniAdmin.UserId,
+                    User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
+                }));
+            _userManager.Setup(s => s.FindByIdAsync(uniAdmin.UserId)).ReturnsAsync(uniAdmin.UserId == "" ? null : user);
+            _institutionOfEducationAdminRepository.Setup(s => s.Delete(uniAdmin.Id)).Returns(Task.FromResult<bool>(true));
+            _userManager.Setup(s => s.RemoveFromRoleAsync(user, ProjectRoles.InstitutionOfEducationAdmin));
+            _userRepository.Setup(s => s.Delete(user.Id));
+           
             //Act
-            var a = await superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id);
+            var result = await superAdminService.DeleteInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("User IsDeleted was updated", a.Object.Message);
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -263,7 +289,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _institutionOfEducationAdminRepository
-                .Setup(p => p.GetByUserId(uniAdmin.Id))
+                .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
@@ -274,10 +300,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
-            var a = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
+            var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to true", a.Object.Message);
+            Assert.Equal("Admin IsBanned was set to true", result.Object.Message);
         }
 
         [Fact]
@@ -285,7 +311,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             _institutionOfEducationAdminRepository
-                .Setup(p => p.GetByUserId(uniAdmin.Id))
+                .Setup(p => p.GetUserByAdminId(uniAdmin.Id))
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = uniAdmin.Id,
@@ -297,10 +323,10 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
-            var a = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
+            var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to false", a.Object.Message);
+            Assert.Equal("Admin IsBanned was set to false", result.Object.Message);
         }
 
         [Fact]
@@ -362,7 +388,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             //Act
             var result = await superAdminService.ChangeBannedStatusOfIoE(uni.Id);
-
+            
             //Assert
             Assert.Equal("InstitutionOfEducation isBanned was set to true", result.Object.Message);
         }
@@ -434,6 +460,80 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Act
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteInstitutionOfEducation(uni.Id));
+        }
+
+        [Fact]
+        public async Task GetIoEAdminIdByIoEId_ReturnsSuccess()
+        {
+            //Arrange
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
+                {
+                    InstitutionOfEducationId = uni.Id
+                }));
+
+            //Act
+            var result = await superAdminService.GetIoEAdminIdByIoEId(uni.Id);
+
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task GetIoEAdminIdByIoEId_ReturnsNotFoundIfThereIsNoIoEWithSuchId()
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO nullAdmin = null;
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(It.IsAny<string>()))
+                .ReturnsAsync(nullAdmin);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetIoEAdminIdByIoEId(It.IsAny<string>()));
+        }
+
+        [Fact]
+        public async void DeleteSpecialty_ReturnsSuccess()
+        {
+            //Arrange
+            var specialtyDTO = new SpecialtyDTO { Id = specialty.Id, IsDeleted = specialty.IsDeleted};
+
+            _specialtyRepository.Setup(x => x.Get(specialty.Id)).Returns(Task.FromResult<SpecialtyDTO>(specialtyDTO));
+            _specialtyRepository.Setup(x => x.Delete(specialty.Id)).Returns(Task.FromResult<bool>(true));
+           
+            //Act
+            var result = await superAdminService.DeleteSpecialty(specialty.Id);
+            
+            //Assert
+            Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async void DeleteSpecialty_ReturnsNotFoundMessage()
+        {
+            //Arrange
+            _specialtyRepository.Setup(x => x.Get(specialty.Id)).Returns(Task.FromResult<SpecialtyDTO>(null));
+          
+            //Act
+            
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.DeleteSpecialty(specialty.Id));
+        }
+
+        [Fact]
+        public async void DeleteSpecialty_BadRequestExceptionIfSpecialtyAlreadyDeleted()
+        {
+            //Arrange
+            var specialtyDTO = new SpecialtyDTO { Id = specialty.Id, IsDeleted = true };
+
+            _specialtyRepository.Setup(x => x.Get(specialty.Id)).Returns(Task.FromResult<SpecialtyDTO>(specialtyDTO));
+            
+            //Act
+            
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => superAdminService.DeleteSpecialty(specialty.Id));
         }
     }
 }

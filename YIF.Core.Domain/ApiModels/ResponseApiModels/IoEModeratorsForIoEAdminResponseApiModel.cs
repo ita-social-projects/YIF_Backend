@@ -3,6 +3,10 @@
     public class IoEModeratorsForIoEAdminResponseApiModel
     {
         /// <summary>
+        /// Moderator Id
+        /// </summary>
+        public string ModeratorId { get; set; } 
+        /// <summary>
         /// User Id
         /// </summary>
         public string UserId { get; set; }

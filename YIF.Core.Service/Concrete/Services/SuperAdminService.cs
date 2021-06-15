@@ -32,6 +32,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IMapper _mapper;
+        private readonly IDirectionRepository<Direction, DirectionDTO> _directionRepository;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> _institutionOfEducationRepository;
         private readonly ISchoolRepository<SchoolDTO> _schoolRepository;
@@ -52,6 +53,7 @@ namespace YIF.Core.Service.Concrete.Services
             SignInManager<DbUser> signInManager,
             IJwtService _IJwtService,
             IMapper mapper,
+            IDirectionRepository<Direction, DirectionDTO> directionRepository,
             IInstitutionOfEducationRepository<InstitutionOfEducation, InstitutionOfEducationDTO> institutionOfEducationRepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             ISchoolRepository<SchoolDTO> schoolRepository,
@@ -71,6 +73,7 @@ namespace YIF.Core.Service.Concrete.Services
             _signInManager = signInManager;
             _jwtService = _IJwtService;
             _mapper = mapper;
+            _directionRepository = directionRepository;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
             _institutionOfEducationRepository = institutionOfEducationRepository;
             _schoolRepository = schoolRepository;
@@ -214,17 +217,22 @@ namespace YIF.Core.Service.Concrete.Services
 
             return result.Set(new AuthenticateResponseApiModel(token, refreshToken), true);
         }
-
+        
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
-            if (ch == null)
+            var admin = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
+            if (admin == null)
             {
-                throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
+                throw new NotFoundException(_resourceManager.GetString("IoEAdminNotFound"));
             }
-            await _userRepository.Delete(ch.User.Id);
-            return result.Set(new DescriptionResponseApiModel("User IsDeleted was updated"), true);
+
+            var searchUser = await _userManager.FindByIdAsync(admin.UserId);
+            
+            await _institutionOfEducationAdminRepository.Delete(adminId);
+            await _userManager.RemoveFromRoleAsync(searchUser, ProjectRoles.InstitutionOfEducationAdmin);
+            await _userRepository.Delete(searchUser.Id);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEAdminDeleted")), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteInstitutionOfEducation(string id)
@@ -242,7 +250,7 @@ namespace YIF.Core.Service.Concrete.Services
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var ch = await _institutionOfEducationAdminRepository.GetByUserId(adminId);
+            var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
@@ -409,6 +417,16 @@ namespace YIF.Core.Service.Concrete.Services
                    new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyWasAdded")), true);
         }
 
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDirection(DirectionPostApiModel directionModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var directionDTO = _mapper.Map<DirectionDTO>(directionModel);
+            await _directionRepository.Add(_mapper.Map<Direction>(directionDTO));
+
+            return result.Set(
+                   new DescriptionResponseApiModel(_resourceManager.GetString("DirectionWasAdded")), true);
+        }
+
         public async Task<ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>> GetIoEModeratorsByIoEId(string ioEId)
         {
             return new ResponseApiModel<IEnumerable<IoEModeratorsForSuperAdminResponseApiModel>>
@@ -457,5 +475,38 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return result.Set(new DescriptionResponseApiModel(res), true);
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> GetIoEAdminIdByIoEId(string ioEId) 
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
+
+            if (admin == null) 
+            {
+                throw new NotFoundException(_resourceManager.GetString("IoEWasNotFoundOrAdminWasDeleted"));
+            }
+
+            return result.Set(new DescriptionResponseApiModel(admin.Id), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSpecialty(string specialtyId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialty = await _specialtyRepository.Get(specialtyId);
+
+            if (specialty == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+            }
+
+            if (specialty.IsDeleted) 
+            {
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyHasAlreadyBeenDeleted"));
+            }
+
+            await _specialtyRepository.Delete(specialtyId);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
+        }
+
     }
 }

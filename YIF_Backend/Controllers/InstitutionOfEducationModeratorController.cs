@@ -100,5 +100,39 @@ namespace YIF_Backend.Controllers
             var result = await _ioEModeratorService.GetSpecialtyToIoEDescription(userId, specialtyId);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get Institution of Education admin.
+        /// </summary>
+        /// <returns>Admin name and email</returns>
+        /// <response code="200">Admin name and email</response>
+        /// <response code="403">If user is not Institution of Education moderator</response>
+        [HttpGet("GetIoEAdmin")]
+        [ProducesResponseType(typeof(IoEAdminForIoEModeratorResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAdminByUserId()
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEModeratorService.GetIoEAdminByUserId(userId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Get Institution Of Education Information
+        /// </summary>
+        /// <returns>Institution Of Education</returns>
+        /// <response code="200">Returns Institution Of Education</response>
+        /// <response code="403">If user is not Institution of Education moderator</response>
+        [HttpGet("GetIoEInfoByUserId")]
+        [ProducesResponseType(typeof(IoEInformationResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetIoEInfoByUserId()
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEModeratorService.GetIoEInfoByUserId(userId);
+            return Ok(result.Object);
+        }
     }
 }

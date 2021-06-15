@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Interfaces;
@@ -15,12 +16,15 @@ namespace YIF.Core.Domain.Repositories
     {
         private readonly IApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ResourceManager _resourceManager;
         public InstitutionOfEducationModeratorRepository(
             IMapper mapper,
-            IApplicationDbContext dbContext)
+            IApplicationDbContext dbContext,
+            ResourceManager resourceManager)
         {
             _mapper = mapper;
             _dbContext = dbContext;
+            _resourceManager = resourceManager;
         }
 
         public async Task<string> AddUniModerator(InstitutionOfEducationModerator institutionOfEducationModerator)
@@ -56,7 +60,7 @@ namespace YIF.Core.Domain.Repositories
         {
             var result = await _dbContext.InstitutionOfEducationModerators
                 .Include(x => x.User)
-                .Where(x => x.Admin.InstitutionOfEducationId == ioEId)
+                .Where(x => x.Admin.InstitutionOfEducationId == ioEId && x.IsDeleted == false)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -74,19 +78,64 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 
-        public Task<bool> Update(InstitutionOfEducationModerator item)
+        public async Task<bool> Update(InstitutionOfEducationModerator item)
         {
-            throw new NotImplementedException();
+            _dbContext.InstitutionOfEducationModerators.Update(item);
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public Task<InstitutionOfEducationModeratorDTO> Get(string id)
+        public async Task<InstitutionOfEducationModeratorDTO> GetModeratorForAdmin(string id, string adminId)
         {
-            throw new NotImplementedException();
+            var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Include(x => x.User)
+                .Include(m => m.Admin)
+                .Where(x => x.AdminId == adminId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
 
         public Task<IEnumerable<InstitutionOfEducationModeratorDTO>> Find(Expression<Func<InstitutionOfEducationModerator, bool>> predicate)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<string> Disable(InstitutionOfEducationModerator ioEModerator)
+        {
+            ioEModerator.IsBanned = true;
+            _dbContext.InstitutionOfEducationModerators.Update(ioEModerator);
+            await _dbContext.SaveChangesAsync();
+            return _resourceManager.GetString("IoEModeratorIsDisabled");
+        }
+
+        public async Task<string> Enable(InstitutionOfEducationModerator ioEModerator)
+        {
+            ioEModerator.IsBanned = false;
+            _dbContext.InstitutionOfEducationModerators.Update(ioEModerator);
+            await _dbContext.SaveChangesAsync();
+            return _resourceManager.GetString("IoEModeratorIsEnabled");
+        }
+
+        public async Task<InstitutionOfEducationModeratorDTO> Get(string id)
+        {
+            var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Include(x => x.User)
+                .Include(m => m.Admin)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
+        }
+
+        public async Task<InstitutionOfEducationModeratorDTO> GetByAdminId(string id, string adminId)
+        {
+            var moderator = await _dbContext.InstitutionOfEducationModerators
+                .Where(x => x.AdminId == adminId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return _mapper.Map<InstitutionOfEducationModeratorDTO>(moderator);
         }
     }
 }

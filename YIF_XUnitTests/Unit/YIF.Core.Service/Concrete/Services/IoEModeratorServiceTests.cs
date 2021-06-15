@@ -29,6 +29,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>
             _ioEModeratorRepository = new Mock<IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO>>();
         private readonly Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>> _examRequirementRepository = new Mock<IExamRequirementRepository<ExamRequirement, ExamRequirementDTO>>();
+        private readonly Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>
+            _ioEAdminRepository = new Mock<IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
 
@@ -42,7 +44,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _ioEModeratorRepository.Object,
                 _examRequirementRepository.Object,
                 _mapper.Object,
-                _resourceManager.Object
+                _resourceManager.Object,
+                _ioEAdminRepository.Object
             );
         }
 
@@ -411,6 +414,42 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async void GetIoEAdminByUserId_ShouldReturnAdminData()
+        {
+            // Arrange  
+            var ioEAdmin = new InstitutionOfEducationAdminDTO { InstitutionOfEducationId = "1" };
+            var ioEModerator = new InstitutionOfEducationModeratorDTO { Admin = ioEAdmin };
+
+            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(ioEModerator);
+            _mapper.Setup(x => x.Map<IoEAdminForIoEModeratorResponseApiModel>(It.IsAny<InstitutionOfEducationAdminDTO>()));
+
+            // Act
+            var result = await _ioEModeratorService.GetIoEAdminByUserId(It.IsAny<string>());
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IoEAdminForIoEModeratorResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+
+        [Fact]
+        public async void GetIoEInfoByUserId_ShouldReturnSuccess()
+        {
+            // Arrange  
+            var userId = "Id";
+            _ioEModeratorRepository.Setup(x => x.GetByUserId(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationModeratorDTO() {Admin = new InstitutionOfEducationAdminDTO() { InstitutionOfEducationId = "blahblah"}});
+            _ioERepository.Setup(x => x.Get(It.IsAny<string>())).ReturnsAsync(new InstitutionOfEducationDTO());
+            _mapper.Setup(x => x.Map<IoEInformationResponseApiModel>(It.IsAny<InstitutionOfEducationDTO>()));
+
+            // Act
+            var result = await _ioEModeratorService.GetIoEInfoByUserId(userId);
+
+            // Assert  
+            Assert.IsType<ResponseApiModel<IoEInformationResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
     }
 }

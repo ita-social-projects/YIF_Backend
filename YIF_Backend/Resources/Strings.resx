@@ -324,6 +324,84 @@
   <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
     <value>Не знайдено модератора з таким ідентифікатором</value>
   </data>
+  <data name="IoEModeratorWasAlreadyDeleted" xml:space="preserve">
+    <value>Модератор закладу освіти вже був видаленим</value>
+  </data>
+  <data name="IoEModeratorNotFoundForThisAdmin" xml:space="preserve">
+    <value>Модератора закладу освіти не знайдено для цього адміна</value>
+  </data>
+  <data name="IoEModeratorIsDisabled" xml:space="preserve">
+    <value>Модератор забанений</value>
+  </data>
+  <data name="IoEModeratorIsEnabled" xml:space="preserve">
+    <value>Модератор розбанений</value>
+  </data>
+  <data name="RegistrationAsIoEModerator" xml:space="preserve">
+    <value>Реєстрація як модератор навчального закладу</value>
+  </data>
+  <data name="IoEModeratorAdded" xml:space="preserve">
+    <value>Модератора було додано</value>
+  </data>
+  <data name="IoEModeratorFailedUserAlreadyModerator" xml:space="preserve">
+    <value>Користувач уже є модератором</value>
+  </data>
+  <data name="UserWithSuchEmailAlreadyExists" xml:space="preserve">
+    <value>Користувач з такою поштою вже зареєстрований</value>
+  </data>
+  <data name="IoEAdminNotFound" xml:space="preserve">
+    <value>Адміністратора не знайдено</value>
+  </data>
+  <data name="IoEAdminDeleted" xml:space="preserve">
+    <value>Адміністратора видалено</value>
+  </data>
+  <data name="DirectionWasAdded" xml:space="preserve">
+    <value>Напрямок додано</value>
+  </data>
+  <data name="AlreadyExistsInDbMessage" xml:space="preserve">
+    <value>Запис з таким параметром уже існує</value>
+  </data>
+  <data name="NotFoundInDbMessage" xml:space="preserve">
+    <value>Запис з таким параметром не знайдено</value>
+  </data>
+  <data name="IoEAlreadyHasLector" xml:space="preserve">
+    <value>Цей лектор вже є в навчальному закладі</value>
+  </data>
+  <data name="LectorWasAdded" xml:space="preserve">
+    <value>Лектора успішно додано </value>
+  </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Пароль успішно змінено</value>
+  </data>
+  <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
+    <value>Заклад освіти не знайдено або адмін був видалений</value>
+  </data>
+  <data name="ObjectCannotBeDisabled" xml:space="preserve">
+    <value>Об'єкт не може бути забаненим</value>
+  </data>
+  <data name="ObjectCannotBeEnabled" xml:space="preserve">
+    <value>Об'єкт не може бути розбаненим</value>
+  </data>
+  <data name="ObjectWasDisabled" xml:space="preserve">
+    <value>Об'єкт забанений</value>
+  </data>
+  <data name="ObjectWasEnabled" xml:space="preserve">
+    <value>Об'єкт розбанений</value>
+  </data>
+  <data name="IoELectorWithSuchIdNotFound" xml:space="preserve">
+    <value>Лектора з таким Id не знайдено</value>
+  </data>
+  <data name="IoELectorWasAlreadyDeleted" xml:space="preserve">
+    <value>Цей лектор вже видалений</value>
+  </data>
+  <data name="IoELectorIsDeleted" xml:space="preserve">
+    <value>Лектора успішно видалено</value>
+  </data>
+  <data name="SpecialtyDeleted" xml:space="preserve">
+    <value>Спеціальність була успішно видалена</value>
+  </data>
+  <data name="SpecialtyHasAlreadyBeenDeleted" xml:space="preserve">
+    <value>Спеціальність уже видалена</value>
+  </data>
   <data name="AlreadyExistSchoolAdmin" xml:space="preserve">
     <value>Шкільний адміністратор вже створений</value>
   </data>

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Shared;
@@ -32,8 +32,8 @@ namespace YIF.Core.Data.Seaders
                 var institutionOfEducationModeratorRole = new IdentityRole(ProjectRoles.InstitutionOfEducationModerator);
                 await roleManager.CreateAsync(institutionOfEducationModeratorRole);
 
-                var lectureRole = new IdentityRole(ProjectRoles.Lecture);
-                await roleManager.CreateAsync(lectureRole);
+                var lectorRole = new IdentityRole(ProjectRoles.Lector);
+                await roleManager.CreateAsync(lectorRole);
 
                 var graduateRole = new IdentityRole(ProjectRoles.Graduate);
                 await roleManager.CreateAsync(graduateRole);
@@ -1016,12 +1016,17 @@ namespace YIF.Core.Data.Seaders
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Рівненський державний гуманітарний університет").Id;
                 directionsToInstitutionOfEducations.AddRange(new List<DirectionToInstitutionOfEducation>
                 {
+                    new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Соціальні та поведінкові науки").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Електрична інженерія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                     new DirectionToInstitutionOfEducation { DirectionId = directions.FirstOrDefault(x => x.Name == "Математика та статистика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId },
                 });
 
                 specialitiesToInstitutionOfEducations.AddRange(new List<SpecialtyToInstitutionOfEducation>
                 {
+                    #region Соціальні та поведінкові науки
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Економіка").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Психологія").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
+                    #endregion
                     #region Електрична інженерія
                     new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Атомна енергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
                     new SpecialtyToInstitutionOfEducation { SpecialtyId = specialities.FirstOrDefault(x => x.Name == "Теплоенергетика").Id,InstitutionOfEducationId = currentInstitutionOfEducationId, IsDeleted = false },
@@ -1218,7 +1223,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         Description = "Це кастомний опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
                        " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
                         EducationalProgramLink = "example.com",
@@ -1237,7 +1242,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         Description = "Це кастомний опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
                        " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
                         EducationalProgramLink = "example.com",
@@ -1256,7 +1261,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         Description = "Це кастомний опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
                        " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
                         EducationalProgramLink = "example.com",
@@ -1280,7 +1285,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         Description = "Це кастомний опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
                        " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
                         EducationalProgramLink = "example.com",
@@ -1299,7 +1304,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1316,7 +1321,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1333,7 +1338,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1350,7 +1355,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1367,7 +1372,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1389,7 +1394,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1406,7 +1411,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1423,7 +1428,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1440,7 +1445,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1457,7 +1462,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1474,7 +1479,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1496,7 +1501,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1513,7 +1518,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1535,7 +1540,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         Description = "Це кастомний опис спеціальності від університету. Ця спеціальність підійде для тих хто хоче реалізувати себе у майбутньому у даній галузі." +
                        " Для здобувачів вищої освіти вона буде цікавою тому що вони зможуть розкрити себе у даному напрямку за рахунок актуальної інформації, яку будуть доносити ним професіонали своєї справи, які є майстрами у своїй галузі.",
                         EducationalProgramLink = "example.com",
@@ -1554,7 +1559,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1571,7 +1576,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1588,7 +1593,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1605,7 +1610,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1622,7 +1627,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1639,7 +1644,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1656,7 +1661,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1687,7 +1692,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1704,7 +1709,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1721,7 +1726,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1738,7 +1743,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1755,7 +1760,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1772,7 +1777,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1794,7 +1799,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1811,7 +1816,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1828,7 +1833,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1845,7 +1850,7 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
@@ -1862,13 +1867,47 @@ namespace YIF.Core.Data.Seaders
                     {
                         SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
                         EducationForm = EducationForm.Daily,
-                        PaymentForm = PaymentForm.Govermental,
+                        PaymentForm = PaymentForm.Governmental,
                         EducationalProgramLink = "example.com",
                         ExamRequirements = new List<ExamRequirement>
                         {
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
                             new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Географія").Id, MinimumScore = 100, Coefficient = 0.3}
+                        }
+                    });
+                #endregion
+                #region Економіка
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Економіка" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
+                context.SpecialtyToIoEDescriptions.Add(
+                    new SpecialtyToIoEDescription
+                    {
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                        EducationForm = EducationForm.Daily,
+                        PaymentForm = PaymentForm.Governmental,
+                        EducationalProgramLink = "example.com",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
+                        }
+                    });
+                #endregion
+                #region Психологія
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Психологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
+                context.SpecialtyToIoEDescriptions.Add(
+                    new SpecialtyToIoEDescription
+                    {
+                        SpecialtyToInstitutionOfEducationId = specialtyToIoEId,
+                        EducationForm = EducationForm.Daily,
+                        PaymentForm = PaymentForm.Governmental,
+                        EducationalProgramLink = "example.com",
+                        ExamRequirements = new List<ExamRequirement>
+                        {
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Українська мова та література").Id, MinimumScore = 100, Coefficient = 0.3},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Математика").Id, MinimumScore = 100, Coefficient = 0.35},
+                            new ExamRequirement{ ExamId = exams.FirstOrDefault(x => x.Name == "Англійська мова").Id, MinimumScore = 100, Coefficient = 0.3}
                         }
                     });
                 #endregion
@@ -1879,7 +1918,7 @@ namespace YIF.Core.Data.Seaders
 
         public async static Task SeedLectures(EFDbContext context, UserManager<DbUser> userManager)
         {
-            if (context.Lectures.Count() == 0)
+            if (context.Lectors.Count() == 0)
             {
                 var institutionOfEducations = context.InstitutionOfEducations.ToList();
 
@@ -1890,13 +1929,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "wformservices@triumphlotto.com",
                         UserName = "RayyanFord"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
 
                 {
@@ -1905,13 +1944,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "8wesclei_rjf@guestify.com",
                         UserName = "FedericoPierce"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
 
                 {
@@ -1920,13 +1959,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "imali@tuneintogiving.com",
                         UserName = "HamzahNeville"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
                 #endregion
 
@@ -1937,13 +1976,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "xsdhafer1@usayummy.com",
                         UserName = "StephanPlummer"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
 
                 {
@@ -1952,13 +1991,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "vweslaine.pg@ericreyess.com",
                         UserName = "AbrahamStafford"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
                 #endregion
 
@@ -1969,13 +2008,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "7wave@rose2.ga",
                         UserName = "BradleighHagan"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
 
                 {
@@ -1984,13 +2023,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "fmcaagent908@rose2.ga",
                         UserName = "GarinBurrows"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
 
                 {
@@ -1999,13 +2038,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "gjuninho.silva.3s@jbnasfjhas96637.ml",
                         UserName = "KaciePalmer"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
 
                 {
@@ -2014,13 +2053,13 @@ namespace YIF.Core.Data.Seaders
                         Email = "6amine.kikira2@nx-mail.com",
                         UserName = "KadeWood"
                     };
-                    var lecture = new Lecture
+                    var lector = new Lector
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
-                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lecture, lecture);
+                    await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
                 #endregion
             }

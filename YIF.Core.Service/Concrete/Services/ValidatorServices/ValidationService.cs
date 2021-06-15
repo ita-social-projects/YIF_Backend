@@ -39,6 +39,7 @@ namespace YIF.Core.Service.Concrete.Services
                 .Matches(@"[\W_]+").WithMessage("Пароль має містити щонайменше один спеціальний символ!");
 
             RuleFor(x => x.Email).Must(IsEmailExist).WithMessage("Логін або пароль неправильний!");
+            RuleFor(x => x.Email).Must(IsUserNotDeleted).WithMessage("Користувач видалений!");
             RuleFor(x => x.Password).Must(IsPasswordCorrect).WithMessage("Логін або пароль неправильний!");
         }
 
@@ -51,6 +52,12 @@ namespace YIF.Core.Service.Concrete.Services
         private bool IsPasswordCorrect(string password)
         {
             return _userManager.CheckPasswordAsync(_user, password).Result;
+        }
+
+        private bool IsUserNotDeleted(string email)
+        {
+            _user = _userManager.FindByEmailAsync(email).Result;
+            return !_user.IsDeleted;
         }
     }
 
