@@ -489,6 +489,26 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(admin.Id), true);
         }
 
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSpecialty(string specialtyId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var specialty = await _specialtyRepository.Get(specialtyId);
+
+            if (specialty == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("SpecialtyNotFound"));
+            }
+
+            if (specialty.IsDeleted) 
+            {
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyHasAlreadyBeenDeleted"));
+            }
+
+            await _specialtyRepository.Delete(specialtyId);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
+        }
+
+
         public async Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId)
         {
             var result = new ResponseApiModel<IoEforSuperAdminResponseApiModel>();

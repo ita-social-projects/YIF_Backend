@@ -419,6 +419,21 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         }
 
         [Fact]
+        public async Task DeletedSpecialty_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            
+            _superAdminService.Setup(x => x.DeleteSpecialty(It.IsAny<string>())).ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.DeleteSpecialty(It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
         public async Task GetIoEInfoByIoEId_EndpointReturnsOk()
         {
             //Arrange

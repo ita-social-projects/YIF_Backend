@@ -19,6 +19,10 @@
         /// </summary>
         public string DirectionId { get; set; }
         /// <summary>
+        /// Whether Specialty is deleted or not
+        /// </summary>
+        public bool IsDeleted { get; set; }
+        /// <summary>
         /// Gets or sets the description for this specialty
         /// </summary>
         public string Description { get; set; }
