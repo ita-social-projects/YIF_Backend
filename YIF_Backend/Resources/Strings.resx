@@ -324,4 +324,10 @@
   <data name="ModeratorWithSuchIdNotFound" xml:space="preserve">
     <value>Не знайдено модератора з таким ідентифікатором</value>
   </data>
+  <data name="AlreadyExistSchoolAdmin" xml:space="preserve">
+    <value>Шкільний адміністратор вже створений</value>
+  </data>
+  <data name="SchoolAdminIsNotExist" xml:space="preserve">
+    <value>Шкільного адміністратора не існує</value>
+  </data>
 </root>

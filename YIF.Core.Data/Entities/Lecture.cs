@@ -13,7 +13,7 @@ namespace YIF.Core.Data.Entities
 
         [ForeignKey("InstitutionOfEducationId")]
         public InstitutionOfEducation InstitutionOfEducation { get; set; }
-        /// <summary>
+        /// <summary>      р    п8мкуФ6532ГО3Й  РННННННННННННННННННННННННННННННННННННННННННРОООООООООООООООООООООООООООООООООООПЦРфйпп0212ц.
         /// Link to Identity user
         /// </summary>
         public DbUser User { get; set; }
