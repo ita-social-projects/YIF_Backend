@@ -97,6 +97,8 @@ namespace YIF_Backend
             services.AddTransient<ILectorService, LectorService>();
             services.AddTransient<ILectorRepository<Lector, LectorDTO>, LectorRepository>();
             services.AddTransient<IBanRepository, BanRepository>();
+            services.AddTransient<IDepartmentRepository<Department, DepartmentDTO>, DepartmentRepository>();
+            services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IDeleteRepository, DeleteRepository>();
 
             #endregion

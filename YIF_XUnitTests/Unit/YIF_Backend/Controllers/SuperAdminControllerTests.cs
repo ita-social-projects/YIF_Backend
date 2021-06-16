@@ -432,5 +432,22 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             //Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<IoEforSuperAdminResponseApiModel>(new IoEforSuperAdminResponseApiModel(), true);
+            _superAdminService.Setup(x => x.GetIoEInfoByIoEId(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.GetIoEInfoByIoEId(It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+
     }
 }

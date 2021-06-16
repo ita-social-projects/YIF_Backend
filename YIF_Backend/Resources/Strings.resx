@@ -372,6 +372,12 @@
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
   </data>
+  <data name="DepartmentAlreadyExist" xml:space="preserve">
+    <value>Такий департамент вже існує</value>
+  </data>
+  <data name="DepartmentWasAdded" xml:space="preserve">
+    <value>Департамент успішно додано</value>
+  </data>
   <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
     <value>Заклад освіти не знайдено або адмін був видалений</value>
   </data>
