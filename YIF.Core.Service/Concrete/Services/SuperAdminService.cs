@@ -508,5 +508,29 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
         }
 
+
+        public async Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId)
+        {
+            var result = new ResponseApiModel<IoEforSuperAdminResponseApiModel>();
+            var ioE = await _institutionOfEducationRepository.Get(ioEId);
+
+            if (ioE == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+            }
+
+            result.Object = _mapper.Map<IoEforSuperAdminResponseApiModel>(ioE);
+            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
+
+            if (admin == null)
+            {
+                throw new BadRequestException(_resourceManager.GetString("IoEAdminDeleted"));
+            }
+
+            result.Object.AdminId = admin.Id;
+            result.Success = true;
+
+            return result;
+        }
     }
 }

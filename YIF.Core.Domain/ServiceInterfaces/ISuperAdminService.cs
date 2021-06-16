@@ -28,5 +28,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> AddDirection(DirectionPostApiModel directionModel);
         Task<ResponseApiModel<DescriptionResponseApiModel>> GetIoEAdminIdByIoEId(string ioEId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSpecialty(string specialtyId);
+        Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId);
     }
 }

@@ -535,5 +535,61 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             //Assert
             await Assert.ThrowsAsync<BadRequestException>(() => superAdminService.DeleteSpecialty(specialty.Id));
         }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_ReturnsSuccess()
+        {
+            //Arrange
+            var ioE = new InstitutionOfEducationDTO()
+            {
+                Id = uni.Id
+            };
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
+                {
+                    Id = "FakeId",
+                    InstitutionOfEducationId = uni.Id
+                }));
+            _institutionOfEducationRepository.Setup(x => x.Get(uni.Id)).ReturnsAsync(ioE);
+            _mapperMock.Setup(x => x.Map<IoEforSuperAdminResponseApiModel>(ioE)).Returns(new IoEforSuperAdminResponseApiModel());
+
+            //Act
+            var result = await superAdminService.GetIoEInfoByIoEId(uni.Id);
+
+            //Assert
+            Assert.IsType<ResponseApiModel<IoEforSuperAdminResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_ReturnsBadRequestIfAdminIsDeleted()
+        {
+            //Arrange
+            InstitutionOfEducationAdminDTO nullAdmin = null;
+            var ioE = new InstitutionOfEducationDTO()
+            {
+                Id = uni.Id
+            };
+            _institutionOfEducationRepository.Setup(x => x.Get(uni.Id)).ReturnsAsync(ioE);
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(It.IsAny<string>()))
+                .ReturnsAsync(nullAdmin);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<BadRequestException>(() => superAdminService.GetIoEInfoByIoEId(uni.Id));
+        }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_ReturnsNotFoundIfThereIsNoIoEWithSuchId()
+        {
+            //Arrange
+            InstitutionOfEducationDTO nullIoE = null;
+            _institutionOfEducationRepository.Setup(x => x.Get(It.IsAny<string>()))
+                .ReturnsAsync(nullIoE);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetIoEInfoByIoEId(uni.Id));
+        }
     }
 }
