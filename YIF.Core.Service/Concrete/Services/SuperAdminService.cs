@@ -541,6 +541,8 @@ namespace YIF.Core.Service.Concrete.Services
             #endregion
 
             await _institutionOfEducationRepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
+        }
 
 
         public async Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId)
@@ -565,8 +567,6 @@ namespace YIF.Core.Service.Concrete.Services
             result.Success = true;
 
             return result;
-        }
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }
     }
 }

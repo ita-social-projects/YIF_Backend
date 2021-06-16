@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Xunit;
+using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -448,6 +451,18 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.IsType<OkObjectResult>(result);
         }
 
+        [Fact]
+        public async Task ModifyInstitution_ShouldReturnBadRequest()
+        {
+            // Arrange
 
+            JsonPatchDocument<InstitutionOfEducationPostApiModel> operations = null;
+
+            //Act
+            Func<Task> act = () => superAdminController.ModifyIoE(operations, It.IsAny<string>());
+
+            //Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
     }
 }

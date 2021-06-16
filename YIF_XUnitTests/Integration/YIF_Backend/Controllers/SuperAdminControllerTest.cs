@@ -418,7 +418,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
 
             var postRequest = new
             {
-                Url = string.Format("/api/SuperAdmin/ModifyInstitution/{0}", ioEAdminUserId),
+                Url = string.Format("/api/SuperAdmin/ModifyIoE/{0}", ioEAdminUserId),
                 Body = new JsonPatchDocument<InstitutionOfEducationPostApiModel>(operations, resolver)
             };
 
