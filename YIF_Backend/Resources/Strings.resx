@@ -408,4 +408,10 @@
   <data name="SpecialtyHasAlreadyBeenDeleted" xml:space="preserve">
     <value>Спеціальність уже видалена</value>
   </data>
+  <data name="ObjectCannotBeDeleted" xml:space="preserve">
+    <value>Об'єкт не може бути видаленим</value>
+  </data>
+  <data name="ObjectWasDeleted" xml:space="preserve">
+    <value>Об'єкт видалено</value>
+  </data>
 </root>

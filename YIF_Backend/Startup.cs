@@ -99,6 +99,7 @@ namespace YIF_Backend
             services.AddTransient<IBanRepository, BanRepository>();
             services.AddTransient<IDepartmentRepository<Department, DepartmentDTO>, DepartmentRepository>();
             services.AddTransient<IDepartmentService, DepartmentService>();
+            services.AddTransient<IDeleteRepository, DeleteRepository>();
 
             #endregion
 
