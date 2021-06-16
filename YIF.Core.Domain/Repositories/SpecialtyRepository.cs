@@ -37,13 +37,13 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SpecialtyDTO> Get(string id)
         {
-            var specialty = await _context.Specialties.Include(s => s.Direction).FirstOrDefaultAsync(x => x.Id == id);
+            var specialty = await _context.Specialties.Include(s => s.Direction).FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
             return _mapper.Map<SpecialtyDTO>(specialty);
         }
 
         public async Task<IEnumerable<SpecialtyDTO>> GetAll()
         {
-            var list = await _context.Specialties.Include(s => s.Direction).ToListAsync();
+            var list = await _context.Specialties.Include(s => s.Direction).Where(x => x.IsDeleted == false).ToListAsync();
             return _mapper.Map<IEnumerable<SpecialtyDTO>>(list);
         }
 
@@ -79,7 +79,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<bool> ContainsById(string id)
         {
-            return await _context.Specialties.AnyAsync(x => x.Id == id);
+            return await _context.Specialties.AnyAsync(x => x.Id == id && x.IsDeleted == false);
         }
 
         public async Task Add(Specialty specialty)
