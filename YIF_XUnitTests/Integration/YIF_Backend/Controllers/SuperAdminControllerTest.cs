@@ -387,6 +387,19 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
+        public async Task GetIoEInfoByIoEId_EndpointReturnsOk()
+        {
+            // Arrange
+            var institutionOfEducation = _context.InstitutionOfEducations.First();
+
+            // Act
+            var response = await _client.GetAsync(string.Format("/api/SuperAdmin/GetIoEInfoByIoEId/{0}", institutionOfEducation.Id));
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
         public async Task ModifyInstitution_ShouldReturnOk()
         {
             // Arrange

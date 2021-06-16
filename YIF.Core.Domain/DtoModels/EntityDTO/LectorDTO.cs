@@ -10,5 +10,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public UserDTO User { get; set; }
         public string InstitutionOfEducationId { get; set; }
         public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
+        public string DepartmentId { get; set; }
+        public DepartmentDTO Department { get; set; }
     }
 }
