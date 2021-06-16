@@ -47,6 +47,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IWebHostEnvironment> _env = new Mock<IWebHostEnvironment>();
         private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>(); 
         private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
+        private readonly Mock<IDeleteRepository> _deleteRepository = new Mock<IDeleteRepository>();
 
         public IoEAdminServiceTests()
         {
@@ -65,7 +66,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _mapper.Object,
                 _env.Object,
                 _configuration.Object,
-                _resourceManager.Object
+                _resourceManager.Object,
+                _deleteRepository.Object
             );
         }
 
