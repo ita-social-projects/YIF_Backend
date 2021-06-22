@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -363,6 +364,29 @@ namespace YIF_Backend.Controllers
         public async Task<IActionResult> GetIoEInfoByIoEId(string ioEId)
         {
             var result = await _superAdminService.GetIoEInfoByIoEId(ioEId);
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Modify Institution Of Education
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="400">If model state is not valid</response>
+        /// <response code="403">If user is not super admin</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("ModifyIoE/{ioEAdminUserId}")]
+        public async Task<IActionResult> ModifyIoE([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel, string ioEAdminUserId)
+        {
+            if (institutionOfEducationPostApiModel == null)
+                return BadRequest();
+
+            var result = await _superAdminService.ModifyIoE(ioEAdminUserId, institutionOfEducationPostApiModel);
             return Ok(result.Object);
         }
     }

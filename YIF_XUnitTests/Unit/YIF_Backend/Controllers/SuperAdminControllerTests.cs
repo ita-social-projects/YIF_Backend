@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
@@ -448,6 +449,32 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             Assert.IsType<OkObjectResult>(result);
         }
 
+        [Fact]
+        public async Task ModifyInstitution_ShouldReturnBadRequest()
+        {
+            // Arrange
+            JsonPatchDocument<InstitutionOfEducationPostApiModel> operations = null;
 
+            //Act
+            Func<Task> act = () => superAdminController.ModifyIoE(operations, It.IsAny<string>());
+
+            //Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task ModifyInstitution_ShouldReturnOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.ModifyIoE(It.IsAny<string>(), It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await superAdminController.ModifyIoE(new JsonPatchDocument<InstitutionOfEducationPostApiModel>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }
