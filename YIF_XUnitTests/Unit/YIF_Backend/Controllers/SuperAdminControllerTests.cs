@@ -424,6 +424,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             //Arrange
             var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+
             _superAdminService.Setup(x => x.DeleteSpecialty(It.IsAny<string>())).ReturnsAsync(response);
 
             //Act
