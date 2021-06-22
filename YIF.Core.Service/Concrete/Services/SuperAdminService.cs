@@ -510,7 +510,6 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
         }
 
-
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
@@ -543,7 +542,6 @@ namespace YIF.Core.Service.Concrete.Services
             await _institutionOfEducationRepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }
-
 
         public async Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId)
         {
