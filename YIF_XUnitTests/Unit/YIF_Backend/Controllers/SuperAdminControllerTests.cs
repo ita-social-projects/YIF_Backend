@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
@@ -6,10 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 using Xunit;
-using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -230,8 +228,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task GetAllUniAdminUsersAsync_EndpointReturnAllUsers()
         {
             // Arrange
-            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>() 
-                { ResponseList = InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels()};
+            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>()
+            { ResponseList = InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels() };
 
             _superAdminService.Setup(x => x.GetAllInstitutionOfEducationAdmins(It.IsAny<InstitutionOfEducationAdminSortingModel>(), It.IsAny<PageApiModel>()))
                 .Returns(Task.FromResult(responseApiModel));
@@ -426,7 +424,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             //Arrange
             var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
-            
+
             _superAdminService.Setup(x => x.DeleteSpecialty(It.IsAny<string>())).ReturnsAsync(response);
 
             //Act
@@ -455,7 +453,6 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task ModifyInstitution_ShouldReturnBadRequest()
         {
             // Arrange
-
             JsonPatchDocument<InstitutionOfEducationPostApiModel> operations = null;
 
             //Act
@@ -463,6 +460,21 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
 
             //Assert
             Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task ModifyInstitution_ShouldReturnOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.ModifyIoE(It.IsAny<string>(), It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await superAdminController.ModifyIoE(new JsonPatchDocument<InstitutionOfEducationPostApiModel>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
         }
     }
 }
