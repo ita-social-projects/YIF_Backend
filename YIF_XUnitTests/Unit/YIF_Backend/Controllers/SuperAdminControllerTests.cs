@@ -228,8 +228,8 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task GetAllUniAdminUsersAsync_EndpointReturnAllUsers()
         {
             // Arrange
-            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>()
-            { ResponseList = InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels() };
+            var responseApiModel = new PageResponseApiModel<InstitutionOfEducationAdminResponseApiModel>() 
+                { ResponseList = InstitutionOfEducationAdminTestData.GetInstitutionOfEducationAdminResponseApiModels()};
 
             _superAdminService.Setup(x => x.GetAllInstitutionOfEducationAdmins(It.IsAny<InstitutionOfEducationAdminSortingModel>(), It.IsAny<PageApiModel>()))
                 .Returns(Task.FromResult(responseApiModel));
