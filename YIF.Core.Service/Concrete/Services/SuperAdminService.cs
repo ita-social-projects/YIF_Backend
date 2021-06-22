@@ -520,6 +520,11 @@ namespace YIF.Core.Service.Concrete.Services
             var validator = new InstitutionOfEducationPostApiModelValidator();
             var validResult = await validator.ValidateAsync(request);
 
+            if (!validResult.IsValid)
+            {
+                throw new BadRequestException(validResult.ToString());
+            }
+
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
             var currentInstitutionOfEducationDTO = await _institutionOfEducationRepository.Get(ioEId);
 
