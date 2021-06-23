@@ -26,6 +26,7 @@ namespace YIF.Core.Data.Entities
         public DateTime EndOfCampaign { get; set; }
         public bool IsDeleted { get; set; } = false;
 
+        public InstitutionOfEducationBuffer InstitutionOfEducationBuffer { get; set; }
         public ICollection<InstitutionOfEducationAdmin> Admins { get; set; }
         public ICollection<Lector> Lectors { get; set; }
         public ICollection<InstitutionOfEducationToGraduate> InstitutionOfEducationGraduates { get; set; }

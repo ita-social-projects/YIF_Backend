@@ -43,6 +43,7 @@ namespace YIF.Core.Data
         public DbSet<ExamRequirement> ExamRequirements { get; set; }
         public DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
         public DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
+        public DbSet<InstitutionOfEducationBuffer> InstitutionOfEducationBuffers { get; set; }
 
         #endregion
 
@@ -115,6 +116,11 @@ namespace YIF.Core.Data
             #endregion
 
             #region InstitutionOfEducation
+
+            builder.Entity<InstitutionOfEducationBuffer>()
+                .HasOne(x => x.InstitutionOfEducation)
+                .WithOne(x => x.InstitutionOfEducationBuffer)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Lector>()
                 .HasOne(x => x.InstitutionOfEducation)

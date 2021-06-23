@@ -32,6 +32,7 @@ namespace YIF.Core.Data.Interfaces
         DbSet<ExamRequirement> ExamRequirements { get; set; }
         DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
         DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
+        DbSet<InstitutionOfEducationBuffer> InstitutionOfEducationBuffers { get; set; }
 
 
         Task<int> SaveChangesAsync();
