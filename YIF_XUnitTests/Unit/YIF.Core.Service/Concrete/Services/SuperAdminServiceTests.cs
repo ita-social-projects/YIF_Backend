@@ -549,7 +549,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
                 {
                     Id = "FakeId",
-                    InstitutionOfEducationId = uni.Id
+                    InstitutionOfEducationId = uni.Id,
+                    User = new UserDTO{ Email = "FakeEmail"}
                 }));
             _institutionOfEducationRepository.Setup(x => x.Get(uni.Id)).ReturnsAsync(ioE);
             _mapperMock.Setup(x => x.Map<IoEforSuperAdminResponseApiModel>(ioE)).Returns(new IoEforSuperAdminResponseApiModel());
