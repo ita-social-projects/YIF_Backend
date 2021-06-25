@@ -36,24 +36,14 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<SchoolAdminDTO> GetBySchoolId(string schoolId)
         {
-            var schoolAdmin = _context.SchoolModerators
-                .Join(_context.Users.Where(u => u.IsDeleted == false),
-                      moderator => moderator.UserId,
-                      user => user.Id,
-                      (user, moderator) => new SchoolModerator())
-                .Join(_context.SchoolAdmins.Where(a => a.SchoolId == schoolId),
-                      moderator => moderator.AdminId,
-                      admin => admin.Id,
-                      (moderator, admin) => new SchoolAdminDTO
-                      {
-                          Id = admin.Id,
-                          SchoolId = admin.Id,
-                      });
-
-            if (schoolAdmin.Count() != 0)
+            var admin = await _context.Schools.Include(x => x.Admins).Where(x => x.Id == schoolId)
+                        .Select(x=>x.Admins).FirstOrDefaultAsync();
+            
+            if (admin != null && admin.Count>0)
             {
-                return await schoolAdmin.FirstOrDefaultAsync();
+                return  _mapper.Map<SchoolAdminDTO>(admin);
             }
+
             return null;
         }
 
