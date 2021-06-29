@@ -300,5 +300,36 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return response;
         }
+        public async Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> GetInstitutionsOfEducationBySpecialty(bool basicGeneralSecondaryEducation, bool higherGeneralSecondaryEducation, string specialtyId)
+        {
+            var institutionOfEducations = await _institutionOfEducationRepository.GetAll();
+            if (specialtyId == null)
+            { 
+                if (basicGeneralSecondaryEducation == true)
+                {
+                    //Add colleges after 11th grade in future
+                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.College);
+                }
+                if (higherGeneralSecondaryEducation == true)
+                {
+                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.University);
+                }
+            }
+            else
+            {
+                var specialties = await _specialtyToInstitutionOfEducationRepository.Find(x => x.Specialty.Id == specialtyId);
+                institutionOfEducations = institutionOfEducations.Where(x => specialties.Any(y => y.InstitutionOfEducationId == x.Id));
+                if (basicGeneralSecondaryEducation == true)
+                {
+                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.College);
+                }
+                if (higherGeneralSecondaryEducation == true)
+                {
+                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.University);
+                }
+            }
+            
+            return _mapper.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducations.Distinct().ToList());
+        }
     }
 }

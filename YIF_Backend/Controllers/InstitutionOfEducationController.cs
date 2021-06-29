@@ -39,6 +39,23 @@ namespace YIF_Backend.Controllers
         }
 
         /// <summary>
+        /// Get institutionsOfEducation by specialty
+        /// </summary>
+        /// <returns>institutionsOfEducation by specialty</returns>
+        /// <response code="200">Returns institutionsOfEducation</response>
+        /// <response code="404">If institutionsOfEducation for specialty is not found</response>
+        [ProducesResponseType(typeof(InstitutionOfEducationResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpGet("GetInstitutionsOfEducationBySpecialty")]
+        public async Task<IActionResult> GetInstitutionsOfEducationBySpecialty(bool bgse, bool cgse, string id)
+        {
+            //var userId = User.FindFirst("id")?.Value;
+            var result = await _institutionOfEducationService.GetInstitutionsOfEducationBySpecialty(bgse, cgse, id);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get all institutionOfEducations with pagination for anonymous user, without checking of its favorites.
         /// </summary>
         /// <returns>Returns the page with institutionOfEducations</returns>

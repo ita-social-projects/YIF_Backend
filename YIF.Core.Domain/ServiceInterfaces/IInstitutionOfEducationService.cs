@@ -17,5 +17,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task AddInstitutionOfEducationToFavorite(string institutionOfEducationId, string userId);
         Task DeleteInstitutionOfEducationFromFavorite(string institutionOfEducationId, string userId);
         Task<IEnumerable<DirectionToIoEResponseApiModel>> GetAllDirectionsAndSpecialtiesInIoE(string userId);
+        Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> GetInstitutionsOfEducationBySpecialty(bool basicGeneralSecondaryEducation, bool higherGeneralSecondaryEducation, string specialtyId);
     }
 }

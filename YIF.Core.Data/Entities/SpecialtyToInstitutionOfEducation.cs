@@ -6,7 +6,7 @@ namespace YIF.Core.Data.Entities
     {
         public string SpecialtyId { get; set; }
         public string InstitutionOfEducationId { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Specialty Specialty { get; set; }
         public InstitutionOfEducation InstitutionOfEducation { get; set; }
