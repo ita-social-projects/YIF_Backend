@@ -19,7 +19,9 @@ namespace YIF.Core.Service.Mapping
         {
             AllowNullCollections = true;
             CreateMap<DbUser, UserDTO>()
-                .ForMember(dto => dto.Roles, opt => opt.MapFrom<GetRolesResolver>());
+                .ForMember(dto => dto.Roles, opt => opt.MapFrom<GetRolesResolver>())
+                .ForMember(dto => dto.UserName, opt => opt.MapFrom(src => src.UserProfile.Name))
+                .ForMember(dto => dto.Email, opt => opt.MapFrom(src => src.Email));
             CreateMap<UserDTO, DbUser>().AfterMap<SetRolesResolver>();
             CreateMap<UserDTO, UserApiModel>().ReverseMap();
             CreateMap<UserDTO, UserForInstitutionOfEducationAdminResponseApiModel>();

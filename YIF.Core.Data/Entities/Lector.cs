@@ -7,6 +7,8 @@ namespace YIF.Core.Data.Entities
     {
         public string InstitutionOfEducationId { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public string ImagePath { get; set; }
+        public string Description { get; set; }
 
         [ForeignKey("InstitutionOfEducationId")]
         public InstitutionOfEducation InstitutionOfEducation { get; set; }
