@@ -234,19 +234,13 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(dbUser));
 
-            if (isDeleted)
-            {
-                // Act
-                var result = await _testService.RegisterUser(userData);
 
-                // Assert
-                Assert.False(result.Success);
-            }
-            else
-            {
-                // Assert
-                await Assert.ThrowsAsync<InvalidOperationException>(() => _testService.RegisterUser(userData));
-            }
+            // Act
+            var result = await _testService.RegisterUser(userData);
+
+            // Assert
+            Assert.False(result.Success);
+
         }
 
         [Theory]
