@@ -561,13 +561,11 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<IoEforSuperAdminResponseApiModel>(ioE);
             var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
 
-            if (admin == null)
+            if (admin != null)
             {
-                throw new BadRequestException(_resourceManager.GetString("IoEAdminDeleted"));
+                result.Object.AdminId = admin.Id;
+                result.Object.AdminEmail = admin.User.Email;
             }
-
-            result.Object.AdminId = admin.Id;
-            result.Object.AdminEmail = admin.User.Email;
             result.Success = true;
 
             return result;
