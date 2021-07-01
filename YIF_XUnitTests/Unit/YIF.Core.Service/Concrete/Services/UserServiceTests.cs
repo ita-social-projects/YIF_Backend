@@ -234,13 +234,11 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _recaptcha.Setup(x => x.IsValid(userData.RecaptchaToken)).Returns(true);
             _userManager.Setup(x => x.FindByEmailAsync(userData.Email)).Returns(Task.FromResult<DbUser>(dbUser));
 
-
             // Act
             var result = await _testService.RegisterUser(userData);
 
             // Assert
             Assert.False(result.Success);
-
         }
 
         [Theory]
