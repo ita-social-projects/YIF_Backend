@@ -564,24 +564,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         }
 
         [Fact]
-        public async Task GetIoEInfoByIoEId_ReturnsBadRequestIfAdminIsDeleted()
-        {
-            //Arrange
-            InstitutionOfEducationAdminDTO nullAdmin = null;
-            var ioE = new InstitutionOfEducationDTO()
-            {
-                Id = uni.Id
-            };
-            _institutionOfEducationRepository.Setup(x => x.Get(uni.Id)).ReturnsAsync(ioE);
-            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(It.IsAny<string>()))
-                .ReturnsAsync(nullAdmin);
-
-            //Act
-            //Assert
-            await Assert.ThrowsAsync<BadRequestException>(() => superAdminService.GetIoEInfoByIoEId(uni.Id));
-        }
-
-        [Fact]
         public async Task GetIoEInfoByIoEId_ReturnsNotFoundIfThereIsNoIoEWithSuchId()
         {
             //Arrange
