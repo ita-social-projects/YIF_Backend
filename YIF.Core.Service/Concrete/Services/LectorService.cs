@@ -7,6 +7,7 @@ using System.IO;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
+using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -55,10 +56,7 @@ namespace YIF.Core.Service.Concrete.Services
             var lectorDTO = await _lectorRepository.GetLectorByUserId(userId);
             var newLectorDTO = _mapper.Map<LectorDTO>(request);
             newLectorDTO.Id = lectorDTO.Id;
-            newLectorDTO.UserId = userId;
-            lectorDTO.User = new UserDTO();
-            lectorDTO.User.UserName = request?.Name;
-            lectorDTO.User.Email = request?.Email;
+            newLectorDTO.UserId = lectorDTO.UserId;
 
             #region imageSaving
             if (request.ImageApiModel != null)
@@ -68,11 +66,12 @@ namespace YIF.Core.Service.Concrete.Services
                 var path = Path.Combine(serverPath, folderName);
 
                 var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
-                lectorDTO.ImagePath = fileName;
+                newLectorDTO.ImagePath = fileName;
             }
             #endregion
 
-            await _lectorRepository.Update(_mapper.Map<Lector>(lectorDTO));
+            await _lectorRepository.Update(_mapper.Map<Lector>(newLectorDTO));
+           
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }
     }

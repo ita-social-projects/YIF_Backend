@@ -16,6 +16,9 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<Lector, LectorDTO>()
                 .ForMember(post => post.ImageApiModel, un => un.Ignore())
+                .ForMember(dst => dst.User, opt => opt.MapFrom(lec => lec.User))
+                .ForPath(dst => dst.User.UserName, opt => opt.MapFrom(lec => lec.User.UserName))
+                .ForPath(dst => dst.User.Email, opt => opt.MapFrom(lec => lec.User.Email))
                 .ReverseMap();
 
             CreateMap<LectorDTO, LectorResponseApiModel>()

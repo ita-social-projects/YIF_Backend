@@ -13,7 +13,7 @@ namespace YIF.Core.Data.Entities
         [ForeignKey("InstitutionOfEducationId")]
         public InstitutionOfEducation InstitutionOfEducation { get; set; }
 
-        [ForeignKey("UserId")]
+        [ForeignKey("User")]
         public string UserId { get; set; }
         public DbUser User { get; set; }
 
