@@ -13,6 +13,7 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<Department, DepartmentDTO>().ReverseMap();
             CreateMap<DepartmentApiModel, Department>();
+            CreateMap<DepartmentDTO, DepartmentApiModel>();
         }
     }
 }
