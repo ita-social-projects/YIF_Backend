@@ -297,14 +297,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                     UserId = uniAdmin.UserId,
                     User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
                 }));
-            _institutionOfEducationAdminRepository.Setup(x => x.Disable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to true"));
+            _institutionOfEducationAdminRepository.Setup(x => x.Disable(uniAdmin)).Returns(Task.FromResult(It.IsAny<InstitutionOfEducationAdmin>()));
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
             var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to true", result.Object.Message);
+            Assert.IsType<ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -320,14 +321,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                     User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" },
                     IsBanned = true
                 }));
-            _institutionOfEducationAdminRepository.Setup(x => x.Enable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to false"));
+            _institutionOfEducationAdminRepository.Setup(x => x.Enable(uniAdmin)).Returns(Task.FromResult(It.IsAny<InstitutionOfEducationAdmin>()));
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
             var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to false", result.Object.Message);
+            Assert.IsType<ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]

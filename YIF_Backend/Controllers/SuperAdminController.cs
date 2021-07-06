@@ -91,7 +91,7 @@ namespace YIF_Backend.Controllers
         /// <returns>Success message</returns>
         /// <response code="200">Success message</response>
         /// <response code="404">Not found message</response>
-        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(IoEAdminForSuperAdminResponseApiModel), 200)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [HttpPatch("DisableInstitutionOfEducationAdmin/{id}")]
