@@ -25,4 +25,3 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> RestoreIoEModerator(string moderatorId, string userId);
     }
 }
-
