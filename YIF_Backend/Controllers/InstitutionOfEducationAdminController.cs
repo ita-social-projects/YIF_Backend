@@ -276,7 +276,7 @@ namespace YIF_Backend.Controllers
         /// <summary>
         /// Restore Institution Of Education Moderator
         /// </summary>
-        /// <returns>Whether Moderator aren't deleted</returns>
+        /// <returns>Whether Moderator isn't deleted</returns>
         /// <response code="200">Returns if the moderator has been successfully restored.</response>
         /// <response code="400">If id is not valid.</response>
         /// <response code="403">>If user is not Institution of Education admin</response>
