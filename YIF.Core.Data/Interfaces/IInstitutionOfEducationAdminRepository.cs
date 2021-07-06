@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Interfaces
@@ -10,8 +11,8 @@ namespace YIF.Core.Data.Interfaces
     {
         Task<string> AddUniAdmin(T institutionOfEducationAdmin);
         Task<string> Delete(DbUser user);
-        Task<string> Disable(T adminId);
-        Task<string> Enable(T adminId);
+        Task<T> Disable(T adminId);
+        Task<T> Enable(T adminId);
         Task<K> GetByInstitutionOfEducationId(string institutionOfEducationId);
         Task<K> GetByInstitutionOfEducationIdWithoutIsDeletedCheck(string institutionOfEducationId);
         Task<K> GetUserByAdminId(string id);
