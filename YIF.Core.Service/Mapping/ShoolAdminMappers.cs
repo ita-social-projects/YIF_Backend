@@ -9,7 +9,6 @@ namespace YIF.Core.Service.Mapping
     {
         public ShoolAdminMappers()
         {
-            //CreateMap<SchoolAdmin, SchoolAdminDTO>().ReverseMap();
             CreateMap<SchoolAdmin, SchoolAdminDTO>()
                .ForMember(dst => dst.SchoolId, opt => opt.MapFrom(src => src.School.Id))
                .ForMember(dst => dst.SchoolName, opt => opt.MapFrom(src => src.School.Name))
