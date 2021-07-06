@@ -272,5 +272,26 @@ namespace YIF_Backend.Controllers
             var result = await _ioEAdminService.DeleteIoELector(lectorId,userId);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Restore Institution Of Education Moderator
+        /// </summary>
+        /// <returns>Whether Moderator aren't deleted</returns>
+        /// <response code="200">Returns if the moderator has been successfully restored.</response>
+        /// <response code="400">If id is not valid.</response>
+        /// <response code="403">>If user is not Institution of Education admin</response>
+        /// <response code="404">If Moderator with such Id wasn't found</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        [HttpPatch("RestoreIoEModerator/{moderatorId}")]
+        public async Task<IActionResult> RestoreIoEModerator(string moderatorId)
+        {
+            string userId = User.FindFirst("id").Value;
+            var result = await _ioEAdminService.RestoreIoEModerator(moderatorId, userId);
+            return Ok(result.Object);
+        }
     }
 }

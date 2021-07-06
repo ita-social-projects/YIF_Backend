@@ -381,5 +381,26 @@ namespace YIF.Core.Service.Concrete.Services
             
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoELectorIsDeleted")), true);
         }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> RestoreIoEModerator(string moderatorId, string userId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var moderatorDTO = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
+
+            if (moderatorDTO == null)
+                throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
+
+            if (moderatorDTO.IsDeleted == false)
+            {
+                throw new BadRequestException(_resourceManager.GetString("IoEModeratorIsntDeleted"));
+            }
+                
+            await _deleteRepository.Restore(_mapper.Map<InstitutionOfEducationModerator>(moderatorDTO));
+            var dbUser = await _userRepository.GetUserWithRoles(moderatorDTO.User.Id);
+            await _userManager.AddToRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsRestored")), true);
+        }
     }
 }
