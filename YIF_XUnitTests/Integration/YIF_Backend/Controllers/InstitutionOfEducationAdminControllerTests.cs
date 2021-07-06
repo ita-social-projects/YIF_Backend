@@ -343,20 +343,5 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             // Assert
             response.EnsureSuccessStatusCode();
         }
-
-        [Fact]
-        public async Task RestoreIoEModerator_EndpointReturnOk()
-        {
-            // Arrange
-            _adminInputAttribute.SetUserIdByIoEAdminUserIdForHttpContext();
-            var ioEModerator = _context.InstitutionOfEducationModerators.Where(s => s.IsDeleted == true).AsNoTracking().FirstOrDefault();
-
-            // Act
-            var response = await _client.PatchAsync(string.Format("/api/InstitutionOfEducationAdmin/RestoreIoEModerator/{0}", ioEModerator.Id),
-                ContentHelper.GetStringContent(ioEModerator));
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-        }
     }
 }

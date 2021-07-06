@@ -423,4 +423,7 @@
   <data name="ObjectWasRestored" xml:space="preserve">
     <value>Об'єкт відновлено </value>
   </data>
+  <data name="ObjectCannotBeRestored" xml:space="preserve">
+    <value>Об'єкт не можна відновити</value>
+  </data>
 </root>

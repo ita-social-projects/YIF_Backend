@@ -42,7 +42,7 @@ namespace YIF.Core.Domain.Repositories
 
             if (property == null)
             {
-                return _resourceManager.GetString("ObjectCannotBeDeleted");
+                return _resourceManager.GetString("ObjectCannotBeRestored");
             }
 
             property.SetValue(entity, Convert.ChangeType(false, property.PropertyType), null);

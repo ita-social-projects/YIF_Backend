@@ -314,7 +314,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _httpContext.SetupGet(hc => hc.User).Returns(claimsPrincipal);
 
             _ioEAdminService.Setup(x => x.DeleteIoELector(It.IsAny<string>(), It.IsAny<string>()))
-                 .ReturnsAsync(new ResponseApiModel<DescriptionResponseApiModel>());
+                .ReturnsAsync(new ResponseApiModel<DescriptionResponseApiModel>());
 
             // Act
             var result = await _testControl.DeleteIoELector(It.IsAny<string>());
