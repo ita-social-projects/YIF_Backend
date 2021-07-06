@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 
 namespace YIF.Core.Data.Interfaces

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace YIF.Core.Domain.ApiModels.ResponseApiModels
+﻿namespace YIF.Core.Domain.ApiModels.ResponseApiModels
 {
     public class IoEAdminForSuperAdminResponseApiModel
     {

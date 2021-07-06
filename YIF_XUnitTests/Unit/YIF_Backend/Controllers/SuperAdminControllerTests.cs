@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Resources;
 using System.Threading.Tasks;
 using Xunit;
-using YIF.Core.Data.Entities;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.ServiceInterfaces;
@@ -172,14 +171,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 var result = await superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id);
                 // Assert
                 var responseResult = Assert.IsType<OkObjectResult>(result);
-                var model = (IoEAdminForSuperAdminResponseApiModel)responseResult.Value;
                 Assert.IsType<IoEAdminForSuperAdminResponseApiModel>(responseResult.Value);
             }
             else
             {
                 _superAdminService.Setup(x => x.DisableInstitutionOfEducationAdmin(requestModel.Id)).Throws(error);
                 // Assert
-                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id));
+                await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id));
             }
         }
 
