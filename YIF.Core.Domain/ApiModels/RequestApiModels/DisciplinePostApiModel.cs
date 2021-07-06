@@ -1,6 +1,6 @@
 ﻿namespace YIF.Core.Domain.ApiModels.RequestApiModels
 {
-    public class DisciplineApiModel
+    public class DisciplinePostApiModel
     {
         /// <summary>
         /// Discipline name

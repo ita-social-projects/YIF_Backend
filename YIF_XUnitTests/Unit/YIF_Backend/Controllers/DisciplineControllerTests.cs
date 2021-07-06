@@ -40,9 +40,9 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         {
             // Arrange
             _httpContext.SetupGet(x => x.User).Returns(_principal);
-            var discipline = new DisciplineApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>() };
+            var discipline = new DisciplinePostApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>() };
             var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
-            _disciplineService.Setup(x => x.AddDiscipline(It.IsAny<DisciplineApiModel>())).ReturnsAsync(response);
+            _disciplineService.Setup(x => x.AddDiscipline(It.IsAny<DisciplinePostApiModel>())).ReturnsAsync(response);
 
             //Act
             var result = await _testControl.AddDiscipline(discipline);
@@ -55,7 +55,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         public async Task AddDiscipline_EndpointsReturnBadRequest_IfDisciplineAlreadyExist()
         {
             // Arrange
-            var discipline = new DisciplineApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>() };
+            var discipline = new DisciplinePostApiModel() { Name = It.IsAny<string>(), Description = It.IsAny<string>() };
 
             // Assert
             Assert.ThrowsAsync<BadRequestException>(() => _testControl.AddDiscipline(discipline));

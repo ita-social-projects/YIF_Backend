@@ -5,7 +5,6 @@ using AutoMapper;
 using Moq;
 using System.Resources;
 using System.Threading.Tasks;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using SendGrid.Helpers.Errors.Model;
 using Xunit;
 using YIF.Core.Data.Entities;
@@ -43,7 +42,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _disciplineRepository.Setup(x => x.Add(new Discipline { Name = It.IsAny<string>(), Description = It.IsAny<string>() })).Returns(Task.FromResult(string.Empty)); ;
 
             //Act
-            var result = await _disciplineService.AddDiscipline(It.IsAny<DisciplineApiModel>());
+            var result = await _disciplineService.AddDiscipline(It.IsAny<DisciplinePostApiModel>());
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
@@ -67,7 +66,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _disciplineRepository.Setup(x => x.Add(new Discipline { Name = It.IsAny<string>(), Description = It.IsAny<string>() })).Returns(Task.FromResult(string.Empty)); ;
 
             //Act
-            Func<Task> result = () => _disciplineService.AddDiscipline(It.IsAny<DisciplineApiModel>());
+            Func<Task> result = () => _disciplineService.AddDiscipline(It.IsAny<DisciplinePostApiModel>());
 
             //Assert
             await Assert.ThrowsAsync<BadRequestException>(result);

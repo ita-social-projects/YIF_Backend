@@ -13,7 +13,6 @@ namespace YIF.Core.Data.Entities
 
         [ForeignKey("SpecialityId")]
         public string SpecialityId { get; set; }
-        public Specialty Speciality { get; set; }
-        
+        public Specialty Speciality { get; set; }   
     }
 }

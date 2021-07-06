@@ -28,11 +28,11 @@ namespace YIF.Core.Service.Concrete.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplineApiModel disciplineApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplinePostApiModel disciplineApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var disciplines = await _disciplineRepository
-                .Find(x => x.Name.Equals(disciplineApiModel.Name) && x.Description.Equals(disciplineApiModel.Description));
+                .Find(x => x.Name.Equals(disciplineApiModel.Name) || x.Description.Equals(disciplineApiModel.Description));
 
             if (disciplines != null)
             {

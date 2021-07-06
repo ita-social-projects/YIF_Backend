@@ -6,6 +6,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
 {
     public interface IDisciplineService
     {
-        Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplineApiModel disciplineApiModel);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplinePostApiModel disciplineApiModel);
     }
 }

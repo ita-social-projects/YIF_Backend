@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace YIF.Core.Domain.DtoModels.EntityDTO
+﻿namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class DisciplineDTO
     {
@@ -10,6 +8,5 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public LectorDTO Lector { get; set; }
         public string SpecialityId { get; set; }
         public SpecialtyDTO Speciality { get; set; }
-
     }
 }

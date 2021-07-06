@@ -12,7 +12,7 @@ namespace YIF.Core.Service.Mapping
             AllowNullCollections = true;
 
             CreateMap<Discipline, DisciplineDTO>().ReverseMap();
-            CreateMap<DisciplineApiModel, Discipline>();
+            CreateMap<DisciplinePostApiModel, Discipline>();
         }
     }
 }

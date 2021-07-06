@@ -14,6 +14,5 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string DepartmentId { get; set; }
         public DepartmentDTO Department { get; set; }
         public ICollection<DisciplineDTO> Disciplines { get; set; }
-
     }
 }

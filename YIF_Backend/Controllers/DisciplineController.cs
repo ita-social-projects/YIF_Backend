@@ -16,7 +16,7 @@ namespace YIF_Backend.Controllers
         
         public DisciplineController(IDisciplineService disciplineService)
         {
-            this._disciplineService = disciplineService;
+            _disciplineService = disciplineService;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         [Authorize(Roles = "InstitutionOfEducationAdmin, InstitutionOfEducationModerator")]
         [HttpPost("AddDiscipline")]
-        public async Task<IActionResult> AddDiscipline([FromBody] DisciplineApiModel discipline)
+        public async Task<IActionResult> AddDiscipline([FromBody] DisciplinePostApiModel discipline)
         {
             var result = await _disciplineService.AddDiscipline(discipline);
             return Ok(result.Object);

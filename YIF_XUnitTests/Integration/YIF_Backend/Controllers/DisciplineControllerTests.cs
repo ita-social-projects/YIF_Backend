@@ -30,10 +30,9 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             var postRequest = new
             {
                 Url = "/api/Discipline/AddDiscipline",
-                Body = new DisciplineApiModel { Name = "FakeName", Description = "Fake Description", LectorId = "FakeId", SpecialityId = "FakeId" }
+                Body = new DisciplinePostApiModel { Name = "FakeName", Description = "Fake Description", LectorId = "FakeId", SpecialityId = "FakeId" }
             };
             
-
             //Act
             var response = await _client.PostAsync(postRequest.Url, ContentHelper.GetStringContent(postRequest.Body));
 
