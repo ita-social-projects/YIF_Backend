@@ -37,12 +37,19 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         {
             //Arrange
             List<DisciplineDTO> disciplines = null;
-
+            DisciplinePostApiModel model = new DisciplinePostApiModel
+            {
+                Name = "Fake Name",
+                Description = "Fake Description",
+                LectorId = "Fake lector Id",
+                SpecialityId = "Fake speciality Id"
+            };
+           
             _disciplineRepository.Setup(x => x.Find(It.IsAny<Expression<Func<Discipline, bool>>>())).ReturnsAsync(disciplines);
-            _disciplineRepository.Setup(x => x.Add(new Discipline { Name = It.IsAny<string>(), Description = It.IsAny<string>() })).Returns(Task.FromResult(string.Empty)); ;
+            _disciplineRepository.Setup(x => x.Add(new Discipline { Name = model.Name, Description = model.Description })).Returns(Task.FromResult(string.Empty)); ;
 
             //Act
-            var result = await _disciplineService.AddDiscipline(It.IsAny<DisciplinePostApiModel>());
+            var result = await _disciplineService.AddDiscipline(model);
 
             //Assert
             Assert.IsType<ResponseApiModel<DescriptionResponseApiModel>>(result);
@@ -57,16 +64,22 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             {
                 new DisciplineDTO
                 {
-                Description = It.IsAny<string>(),
-                Name = It.IsAny<string>()
+                Name = "Fake Name",
+                Description = "Fake Description"
                 }
             };
-
+            DisciplinePostApiModel model = new DisciplinePostApiModel
+            {
+                Name = "Fake Name",
+                Description = "Fake Description",
+                LectorId = "Fake lector Id",
+                SpecialityId = "Fake speciality Id"
+            };
             _disciplineRepository.Setup(x => x.Find(It.IsAny<Expression<Func<Discipline, bool>>>())).ReturnsAsync(disciplines);
-            _disciplineRepository.Setup(x => x.Add(new Discipline { Name = It.IsAny<string>(), Description = It.IsAny<string>() })).Returns(Task.FromResult(string.Empty)); ;
+            _disciplineRepository.Setup(x => x.Add(new Discipline { Name = model.Name, Description = model.Description })).Returns(Task.FromResult(string.Empty)); ;
 
             //Act
-            Func<Task> result = () => _disciplineService.AddDiscipline(It.IsAny<DisciplinePostApiModel>());
+            Func<Task> result = () => _disciplineService.AddDiscipline(model);
 
             //Assert
             await Assert.ThrowsAsync<BadRequestException>(result);

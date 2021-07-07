@@ -1,5 +1,4 @@
-﻿using SendGrid.Helpers.Errors.Model;
-using YIF.Core.Domain.ServiceInterfaces;
+﻿using YIF.Core.Domain.ServiceInterfaces;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Data.Entities;
 using YIF.Core.Domain.DtoModels.EntityDTO;
@@ -8,6 +7,8 @@ using System.Resources;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Service.Concrete.Services.ValidatorServices;
+using SendGrid.Helpers.Errors.Model;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -16,6 +17,7 @@ namespace YIF.Core.Service.Concrete.Services
         private IDisciplineRepository<Discipline, DisciplineDTO> _disciplineRepository;
         private readonly ResourceManager _resourceManager;
         private readonly IMapper _mapper;
+        private readonly DisciplineValidator _disciplineValidator;
 
         public DisciplineService(
             IDisciplineRepository<Discipline, DisciplineDTO> disciplineRepository,
@@ -25,18 +27,17 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _disciplineRepository = disciplineRepository;
             _resourceManager = resourceManager;
+            _disciplineValidator = new DisciplineValidator(_disciplineRepository);
             _mapper = mapper;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplinePostApiModel disciplineApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var disciplines = await _disciplineRepository
-                .Find(x => x.Name.Equals(disciplineApiModel.Name) || x.Description.Equals(disciplineApiModel.Description));
-
-            if (disciplines != null)
+            var validResults = _disciplineValidator.Validate(disciplineApiModel);
+            if (!validResults.IsValid)
             {
-                throw new BadRequestException(_resourceManager.GetString("DisciplineAlreadyExist"));
+                throw new BadRequestException(validResults.ToString());
             }
 
             var discipline = _mapper.Map<Discipline>(disciplineApiModel);
