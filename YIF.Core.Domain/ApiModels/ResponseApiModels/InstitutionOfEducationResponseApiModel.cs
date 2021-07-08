@@ -99,6 +99,12 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         public bool IsFavorite { get; set; }
 
         /// <summary>
+        /// Is the institutionOfEducation favorite
+        /// </summary>
+        /// <example>true</example>
+        public bool IsBanned { get; set; }
+
+        /// <summary>
         ///Directions that belong to this institution of education
         /// </summary>
         public IEnumerable<DirectionForIoEResponseApiModel> Directions { get; set; }
