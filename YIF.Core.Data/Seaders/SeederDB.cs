@@ -1921,6 +1921,7 @@ namespace YIF.Core.Data.Seaders
             if (context.Lectors.Count() == 0)
             {
                 var institutionOfEducations = context.InstitutionOfEducations.ToList();
+                var departments = context.Departments.ToList();
 
                 #region НУВГП
                 {
@@ -1931,7 +1932,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Професійного та кар'єрного розвитку").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
@@ -1946,7 +1947,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Якості освіти").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
@@ -1978,7 +1979,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Зв’язків з громадкістю").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
@@ -2010,7 +2011,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Редакційно-видавничий").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
@@ -2025,7 +2026,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Експлуатації комп'ютерних систем").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
@@ -2207,6 +2208,41 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+        public async static Task SeedDepartments(EFDbContext context) 
+        {
+            if (context.Departments.Count() == 0)
+            {
+                await context.Departments.AddRangeAsync(new List<Department> 
+                {
+                    new Department 
+                    {
+                        Name = "Професійного та кар'єрного розвитку",
+                        Description = "Ваше майбутнє у великій мірі залежить від Вас особисто – від вашої наполегливості, вашого бажання зробити кар’єру."
+                    },              
+                    new Department
+                    { 
+                        Name = "Якості освіти", 
+                        Description = "Сприяє визнанню кваліфікацій, які здобувають студенти, та досвіду вищої освіти, який вони отримують, як головних пріоритетів університету" 
+                    },
+                    new Department 
+                    { 
+                        Name = "Зв’язків з громадкістю", 
+                        Description = "Систематичне та своєчасне, якісне і повне інформування про важливі події в університеті до міських, обласних, загальнодержавних засобів масової інформації" 
+                    },
+                    new Department 
+                    {
+                        Name = "Редакційно-видавничий", 
+                        Description = "Друк навчальних та навчально-методичних посібників, наукових видань та збірників наукових праць, методичних вказівок, довідкових та інформаційних матеріалів, дипломів та додатків до дипломів, авторефератів, бланкової продукції, журналів обліку та індивідуальних планів, студентських газет, запрошень, оголошень, грамот, вітальних адрес" 
+                    },
+                    new Department 
+                    { 
+                        Name = "Експлуатації комп'ютерних систем",
+                        Description = "Відділ експлуатації комп'ютерних систем відповідає за комп'ютерне забезпечення навчального процесу, впровадження нової обчислювальної техніки, установка, тестування і оновлення операційних систем та прикладних програм, проведення інвентаризації комп'ютерної техніки, експлуатація та розвиток комп'ютерної мережі університету."
+                    }
+                });
+                await context.SaveChangesAsync();
+            }
+        }
         #endregion
 
         static async Task CreateUser(EFDbContext context,
@@ -2254,6 +2290,7 @@ namespace YIF.Core.Data.Seaders
                 // InstitutionOfEducationAdmins: 3
                 // InstitutionOfEducationModerators: 9
                 // Lectures: 9
+                // Departments: 5
 
                 await SeederDB.SeedRoles(managerRole);
                 await SeederDB.SeedSuperAdmin(context, manager);
@@ -2274,6 +2311,7 @@ namespace YIF.Core.Data.Seaders
                 SeederDB.SeedSpecialtyToGraduate(context);
                 await SeederDB.SeedInstitutionOfEducationAdmins(context, manager);
                 await SeederDB.SeedInstitutionOfEducationModerators(context, manager);
+                await SeederDB.SeedDepartments(context);
                 await SeederDB.SeedLectures(context, manager);
                 SeederDB.SeedExams(context);
                 SeederDB.SeedSpecialtyToIoEDescription(context);
