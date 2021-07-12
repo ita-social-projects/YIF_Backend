@@ -414,4 +414,16 @@
   <data name="ObjectWasDeleted" xml:space="preserve">
     <value>Об'єкт видалено</value>
   </data>
+  <data name="IoEModeratorIsntDeleted" xml:space="preserve">
+    <value>Цього модератора не було видалено</value>
+  </data>
+  <data name="IoEModeratorIsRestored" xml:space="preserve">
+    <value>Модератора було відновлено </value>
+  </data>
+  <data name="ObjectWasRestored" xml:space="preserve">
+    <value>Об'єкт відновлено </value>
+  </data>
+  <data name="ObjectCannotBeRestored" xml:space="preserve">
+    <value>Об'єкт не можна відновити</value>
+  </data>
 </root>
