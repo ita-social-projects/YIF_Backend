@@ -380,13 +380,13 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("ModifyIoE/{ioEAdminUserId}")]
-        public async Task<IActionResult> ModifyIoE([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel, string ioEAdminUserId)
+        [HttpPatch("ModifyIoE/{ioEId}")]
+        public async Task<IActionResult> ModifyIoE([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel, string ioEId)
         {
             if (institutionOfEducationPostApiModel == null)
                 return BadRequest();
 
-            var result = await _superAdminService.ModifyIoE(ioEAdminUserId, institutionOfEducationPostApiModel);
+            var result = await _superAdminService.ModifyIoE(ioEId, institutionOfEducationPostApiModel);
             return Ok(result.Object);
         }
     }
