@@ -514,7 +514,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string ioEId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
@@ -529,7 +529,6 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(validResult.ToString());
             }
 
-            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
             var currentInstitutionOfEducationDTO = await _institutionOfEducationRepository.Get(ioEId);
 
             var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
