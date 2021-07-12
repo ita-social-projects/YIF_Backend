@@ -84,12 +84,6 @@ namespace YIF.Core.Data.Seaders
 
                 schools.Add(new School
                 {
-                    Name = "Школа №1",
-                    Description = "Рівненська загальноосвітня школа І-ІІІ ступенів НОМЕР 1"
-                });
-
-                schools.Add(new School
-                {
                     Name = "Рівненська гімназія \"Гармонія\"",
                     Description = "Рівненська гімназія, міської ради"
                 });
