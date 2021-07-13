@@ -503,7 +503,7 @@ namespace YIF.Core.Data.Seaders
         {
             if (context.Directions.Count() == 0)
             {
-                await context.Directions.AddRangeAsync(new List<Direction> { 
+                await context.Directions.AddRangeAsync(new List<Direction> {
                     new Direction { Name = "Соціальні та поведінкові науки", Code = "05" },
                     new Direction { Name = "Математика та статистика", Code = "11" },
                     new Direction { Name = "Інформаційні технології", Code = "12" },
@@ -763,7 +763,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region МЕГУ
-                univerities.Add(new InstitutionOfEducation 
+                univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Міжнародний економіко-гуманітарний університет імені академіка Степана Дем’янчука",
                     Abbreviation = "МЕГУ",
@@ -783,7 +783,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region ОА
-                univerities.Add(new InstitutionOfEducation 
+                univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Національний університет \"Острозька академія\"",
                     Abbreviation = "ОА",
@@ -808,7 +808,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
 
                 #region РДГУ
-                univerities.Add(new InstitutionOfEducation 
+                univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Рівненський державний гуманітарний університет",
                     Abbreviation = "РДГУ",
@@ -833,7 +833,7 @@ namespace YIF.Core.Data.Seaders
                 univerities.Add(new InstitutionOfEducation
                 {
                     Name = "Київський політехнічний інститут імені Ігоря Сікорського",
-                    Abbreviation="КПІ",
+                    Abbreviation = "КПІ",
                     Site = "https://kpi.ua/",
                     Address = "проспект Перемоги, 37, Київ, 03056",
                     Phone = "380442049100",
@@ -1058,8 +1058,8 @@ namespace YIF.Core.Data.Seaders
                 {
                     new SpecialtyToInstitutionOfEducationToGraduate
                     {
-                        GraduateId = graduate.FirstOrDefault().Id, 
-                        SpecialtyId = specialtyToUniversity.FirstOrDefault().SpecialtyId, 
+                        GraduateId = graduate.FirstOrDefault().Id,
+                        SpecialtyId = specialtyToUniversity.FirstOrDefault().SpecialtyId,
                         InstitutionOfEducationId = specialtyToUniversity.FirstOrDefault().InstitutionOfEducationId
                     }
                 });
@@ -1189,7 +1189,7 @@ namespace YIF.Core.Data.Seaders
                 exams.Add(new Exam
                 {
                     Name = "Англійська мова"
-                }); 
+                });
                 exams.Add(new Exam
                 {
                     Name = "Французька мова"
@@ -1217,7 +1217,7 @@ namespace YIF.Core.Data.Seaders
                 #region Академія внутрішніх військ МВС України
                 currentInstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == $"Академія внутрішніх військ МВС України").Id;
                 #region Соціологія
-                specialtyToIoEId =  context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Соціологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
@@ -1236,7 +1236,7 @@ namespace YIF.Core.Data.Seaders
                     });
                 #endregion
                 #region Політологія   
-                specialtyToIoEId =  context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
+                specialtyToIoEId = context.SpecialtyToInstitutionOfEducations.FirstOrDefault(x => x.Specialty.Name == "Політологія" && x.InstitutionOfEducationId == currentInstitutionOfEducationId).Id;
                 context.SpecialtyToIoEDescriptions.Add(
                     new SpecialtyToIoEDescription
                     {
@@ -1921,6 +1921,7 @@ namespace YIF.Core.Data.Seaders
             if (context.Lectors.Count() == 0)
             {
                 var institutionOfEducations = context.InstitutionOfEducations.ToList();
+                var departments = context.Departments.ToList();
 
                 #region НУВГП
                 {
@@ -1931,7 +1932,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Професійний та кар'єрний розвиток").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
@@ -1946,7 +1947,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Якість освіти").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Національний університет водного господарства та природокористування").Id,
                         User = dbUser
                     };
@@ -1978,7 +1979,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Зв’язок з громадкістю").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Київський політехнічний інститут імені Ігоря Сікорського").Id,
                         User = dbUser
                     };
@@ -2010,7 +2011,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Редакційно-видавничий").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
@@ -2025,7 +2026,7 @@ namespace YIF.Core.Data.Seaders
                     };
                     var lector = new Lector
                     {
-
+                        DepartmentId = departments.FirstOrDefault(x => x.Name == "Експлуатація комп'ютерних систем").Id,
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
                         User = dbUser
                     };
@@ -2064,7 +2065,7 @@ namespace YIF.Core.Data.Seaders
                 #endregion
             }
         }
-        
+
         public async static Task SeedInstitutionOfEducationModerators(EFDbContext context, UserManager<DbUser> userManager)
         {
             if (context.InstitutionOfEducationModerators.Count() == 0)
@@ -2207,6 +2208,41 @@ namespace YIF.Core.Data.Seaders
             }
         }
 
+        public async static Task SeedDepartments(EFDbContext context)
+        {
+            if (context.Departments.Count() == 0)
+            {
+                await context.Departments.AddRangeAsync(new List<Department>
+                {
+                    new Department
+                    {
+                        Name = "Професійний та кар'єрний розвиток",
+                        Description = "Ваше майбутнє у великій мірі залежить від Вас особисто – від вашої наполегливості, вашого бажання зробити кар’єру."
+                    },
+                    new Department
+                    {
+                        Name = "Якість освіти",
+                        Description = "Сприяє визнанню кваліфікацій, які здобувають студенти, та досвіду вищої освіти, який вони отримують, як головних пріоритетів університету"
+                    },
+                    new Department
+                    {
+                        Name = "Зв’язок з громадкістю",
+                        Description = "Систематичне та своєчасне, якісне і повне інформування про важливі події в університеті до міських, обласних, загальнодержавних засобів масової інформації"
+                    },
+                    new Department
+                    {
+                        Name = "Редакційно-видавничий",
+                        Description = "Друк навчальних та навчально-методичних посібників, наукових видань та збірників наукових праць, методичних вказівок, довідкових та інформаційних матеріалів, дипломів та додатків до дипломів, авторефератів, бланкової продукції, журналів обліку та індивідуальних планів, студентських газет, запрошень, оголошень, грамот, вітальних адрес"
+                    },
+                    new Department
+                    {
+                        Name = "Експлуатація комп'ютерних систем",
+                        Description = "Відділ експлуатації комп'ютерних систем відповідає за комп'ютерне забезпечення навчального процесу, впровадження нової обчислювальної техніки, установка, тестування і оновлення операційних систем та прикладних програм, проведення інвентаризації комп'ютерної техніки, експлуатація та розвиток комп'ютерної мережі університету."
+                    }
+                });
+                await context.SaveChangesAsync();
+            }
+        }
         #endregion
 
         static async Task CreateUser(EFDbContext context,
@@ -2254,6 +2290,7 @@ namespace YIF.Core.Data.Seaders
                 // InstitutionOfEducationAdmins: 3
                 // InstitutionOfEducationModerators: 9
                 // Lectures: 9
+                // Departments: 5
 
                 await SeederDB.SeedRoles(managerRole);
                 await SeederDB.SeedSuperAdmin(context, manager);
@@ -2274,6 +2311,7 @@ namespace YIF.Core.Data.Seaders
                 SeederDB.SeedSpecialtyToGraduate(context);
                 await SeederDB.SeedInstitutionOfEducationAdmins(context, manager);
                 await SeederDB.SeedInstitutionOfEducationModerators(context, manager);
+                await SeederDB.SeedDepartments(context);
                 await SeederDB.SeedLectures(context, manager);
                 SeederDB.SeedExams(context);
                 SeederDB.SeedSpecialtyToIoEDescription(context);
