@@ -15,7 +15,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
 {
     public class LectorServiceTests
     {
-
         private readonly LectorService _lectorService;
         private readonly Mock<IDepartmentRepository<Department, DepartmentDTO>> _departmentRepository = new Mock<IDepartmentRepository<Department, DepartmentDTO>>();
         private readonly Mock<ResourceManager> _resourceManager = new Mock<ResourceManager>();
