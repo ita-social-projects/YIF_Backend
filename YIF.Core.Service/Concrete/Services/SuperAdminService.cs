@@ -568,6 +568,7 @@ namespace YIF.Core.Service.Concrete.Services
             {
                 result.Object.AdminId = admin.Id;
                 result.Object.AdminEmail = admin.User.Email;
+                result.Object.IsAdminBanned = admin.IsBanned;
             }
             result.Success = true;
 

@@ -85,5 +85,10 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public InstitutionOfEducationType InstitutionOfEducationType { get; set; }
+
+        /// <summary>
+        /// Status of admin banning
+        /// </summary>
+        public bool IsAdminBanned { get; set; }
     }
 }
