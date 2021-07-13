@@ -95,5 +95,11 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         /// <example>true</example>
         public bool IsFavorite { get; set; }
+
+        /// <summary>
+        /// Is the institutionOfEducation banned
+        /// </summary>
+        /// <example>true</example>
+        public bool IsBanned { get; set; }
     }
 }

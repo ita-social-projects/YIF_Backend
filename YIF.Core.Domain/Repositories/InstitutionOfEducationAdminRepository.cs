@@ -42,20 +42,20 @@ namespace YIF.Core.Domain.Repositories
             return "";
         }
 
-        public async Task<string> Disable(InstitutionOfEducationAdmin admin)
+        public async Task<InstitutionOfEducationAdmin> Disable(InstitutionOfEducationAdmin admin)
         {
             admin.IsBanned = true;
             _dbContext.InstitutionOfEducationAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
-            return "Admin IsBanned was set to true";
+            return admin;
         }
 
-        public async Task<string> Enable(InstitutionOfEducationAdmin admin)
+        public async Task<InstitutionOfEducationAdmin> Enable(InstitutionOfEducationAdmin admin)
         {
             admin.IsBanned = false;
             _dbContext.InstitutionOfEducationAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
-            return "Admin IsBanned was set to false";
+            return admin;
         }
 
         public async Task<InstitutionOfEducationAdminDTO> GetByInstitutionOfEducationId(string institutionOfEducationId)
