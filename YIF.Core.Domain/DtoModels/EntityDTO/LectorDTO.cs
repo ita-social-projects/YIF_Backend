@@ -16,5 +16,7 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public string DepartmentId { get; set; }
         public DepartmentDTO Department { get; set; }
         public ImageApiModel ImageApiModel { get; set; }
+        public string SpecialtyId { get; set; }
+        public SpecialtyDTO Specialty { get; set; }
     }
 }

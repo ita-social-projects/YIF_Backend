@@ -20,5 +20,10 @@ namespace YIF.Core.Data.Entities
         public string DepartmentId { get; set; }
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
+
+        public string SpecialtyId { get; set; }
+        [ForeignKey("SpecialtyId")]
+        public Specialty Specialty { get; set; }
+
     }
 }

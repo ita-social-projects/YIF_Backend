@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid.Helpers.Errors.Model;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
@@ -38,7 +39,7 @@ namespace YIF_Backend.Controllers
         {
             var userId = User.FindFirst("id")?.Value;
             if (lectorApiModel == null)
-                return BadRequest();
+                throw new BadRequestException();
 
             var result = await _lectorService.ModifyLector(userId, lectorApiModel);
             return Ok(result.Object);

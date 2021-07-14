@@ -85,6 +85,7 @@ namespace YIF.Core.Domain.Repositories
 
         public async Task<bool> Update(Lector item)
         {
+            _context.Entry(item).State = EntityState.Modified;
             _context.Lectors.Update(item);
             return await _context.SaveChangesAsync() > 0;
         }

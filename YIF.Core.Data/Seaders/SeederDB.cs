@@ -2012,7 +2012,8 @@ namespace YIF.Core.Data.Seaders
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                        User = dbUser
+                        User = dbUser,
+                        SpecialtyId = (context.Specialties.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення")).Id
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }
@@ -2027,7 +2028,8 @@ namespace YIF.Core.Data.Seaders
                     {
 
                         InstitutionOfEducationId = institutionOfEducations.FirstOrDefault(x => x.Name == "Академія внутрішніх військ МВС України").Id,
-                        User = dbUser
+                        User = dbUser,
+                        SpecialtyId = (context.Specialties.FirstOrDefault(x => x.Name == "Комп'ютерні науки")).Id
                     };
                     await CreateUser(context, userManager, dbUser, ProjectRoles.Lector, lector);
                 }

@@ -56,6 +56,7 @@ namespace YIF.Core.Service.Concrete.Services
             var lectorDTO = await _lectorRepository.GetLectorByUserId(userId);
             var newLectorDTO = _mapper.Map<LectorDTO>(request);
             newLectorDTO.Id = lectorDTO.Id;
+            newLectorDTO.User.Id = lectorDTO.User.Id;
             newLectorDTO.UserId = lectorDTO.UserId;
 
             #region imageSaving

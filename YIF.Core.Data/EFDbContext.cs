@@ -122,6 +122,12 @@ namespace YIF.Core.Data
                 .HasForeignKey(x => x.InstitutionOfEducationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Lector>()
+                .HasOne(x => x.Specialty)
+                .WithMany(x => x.Lectors)
+                .HasForeignKey(x => x.SpecialtyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<Department>()
                 .HasMany(x => x.Lectors)
                 .WithOne(x => x.Department)

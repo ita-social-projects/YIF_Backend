@@ -42,7 +42,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             _lectorInputAttribute.SetUserIdByLectorUserIdForHttpContext();
             var operations = new List<Operation<LectorApiModel>>() {
                 new Operation<LectorApiModel>("replace", "/Description", null, "The best lector!"),
-                //new Operation<LectorApiModel>("replace", "/Name", null, "FakeName"),
+                new Operation<LectorApiModel>("replace", "/Name", null, "FakeName"),
                 new Operation<LectorApiModel>("replace", "/ImageApiModel", null, new ImageApiModel{ Photo = base64Photo }),
                 new Operation<LectorApiModel>("replace", "institutionOfEducationId", null, "FakeId"),
             };
