@@ -8,7 +8,7 @@ using YIF.Core.Domain.ApiModels.RequestApiModels;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using SendGrid.Helpers.Errors.Model;
-using YIF.Core.Domain.ApiModels.Validators;
+
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -35,8 +35,8 @@ namespace YIF.Core.Service.Concrete.Services
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             
             var discipline = _mapper.Map<Discipline>(disciplinePostApiModel);
-            var disciplines = Task.FromResult(_disciplineRepository
-                .Find(x => x.Name.Equals(discipline.Name))).Result.Result;
+            var disciplines = await _disciplineRepository
+                .Find(x => x.Name.Equals(discipline.Name));
             if(disciplines != null)
             {
                 throw new BadRequestException(_resourceManager.GetString("DisciplineAlreadyExist"));
