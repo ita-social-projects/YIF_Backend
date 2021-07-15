@@ -7,8 +7,8 @@ using System.Resources;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using System.Threading.Tasks;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
-using YIF.Core.Service.Concrete.Services.ValidatorServices;
 using SendGrid.Helpers.Errors.Model;
+using YIF.Core.Domain.ApiModels.Validators;
 
 namespace YIF.Core.Service.Concrete.Services
 {
@@ -17,7 +17,7 @@ namespace YIF.Core.Service.Concrete.Services
         private IDisciplineRepository<Discipline, DisciplineDTO> _disciplineRepository;
         private readonly ResourceManager _resourceManager;
         private readonly IMapper _mapper;
-        private readonly DisciplineValidator _disciplineValidator;
+        
 
         public DisciplineService(
             IDisciplineRepository<Discipline, DisciplineDTO> disciplineRepository,
@@ -27,23 +27,24 @@ namespace YIF.Core.Service.Concrete.Services
         {
             _disciplineRepository = disciplineRepository;
             _resourceManager = resourceManager;
-            _disciplineValidator = new DisciplineValidator(_disciplineRepository);
             _mapper = mapper;
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplinePostApiModel disciplineApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddDiscipline(DisciplinePostApiModel disciplinePostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
-            var validResults = _disciplineValidator.Validate(disciplineApiModel);
-            if (!validResults.IsValid)
+            
+            var discipline = _mapper.Map<Discipline>(disciplinePostApiModel);
+            var disciplines = Task.FromResult(_disciplineRepository
+                .Find(x => x.Name.Equals(discipline.Name))).Result.Result;
+            if(disciplines != null)
             {
-                throw new BadRequestException(validResults.ToString());
+                throw new BadRequestException(_resourceManager.GetString("DisciplineAlreadyExist"));
             }
 
-            var discipline = _mapper.Map<Discipline>(disciplineApiModel);
             await _disciplineRepository.Add(discipline);
 
-            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("DisciplinetWasAdded")), true);
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("DisciplineWasAdded")), true);
         }
     }
 }

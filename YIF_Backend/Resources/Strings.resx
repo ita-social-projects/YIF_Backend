@@ -429,7 +429,7 @@
   <data name="DisciplineAlreadyExist" xml:space="preserve">
     <value>Дисципліна вже існує</value>
   </data>
-  <data name="DisciplinetWasAdded" xml:space="preserve">
+  <data name="DisciplineWasAdded" xml:space="preserve">
     <value>Дисципліну успішно додано</value>
   </data>
 </root>

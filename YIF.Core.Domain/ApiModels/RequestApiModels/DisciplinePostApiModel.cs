@@ -17,13 +17,13 @@
         /// <summary>
         /// Lector id
         /// </summary>     
-        /// <example>914b5a3e-5c11-4e9a-91da-ccc7caf50111</example>
+        /// <example>162f77bf-b330-45a0-983f-6d0ef31af348</example>
         public string LectorId { get; set; }
 
         /// <summary>
         /// Speciality Id
         /// </summary>     
-        /// <example>914b5a3e-5c11-4e9a-91da-ccc7caf50111</example>
+        /// <example>02d752e1-4f62-49fa-b88a-8f2d4d7cd722</example>
         public string SpecialityId { get; set; }
     }
 }
