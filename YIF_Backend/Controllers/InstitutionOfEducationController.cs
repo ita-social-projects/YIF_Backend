@@ -50,7 +50,6 @@ namespace YIF_Backend.Controllers
         [HttpGet("GetInstitutionsOfEducationBySpecialty")]
         public async Task<IActionResult> GetInstitutionsOfEducationBySpecialty(bool bgse, bool cgse, string id)
         {
-            //var userId = User.FindFirst("id")?.Value;
             var result = await _institutionOfEducationService.GetInstitutionsOfEducationBySpecialty(bgse, cgse, id);
             return Ok(result);
         }

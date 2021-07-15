@@ -758,6 +758,30 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             Assert.ThrowsAsync<BadRequestException>(act);
         }
 
+        [Fact]
+        public async Task GetInstitutionsOfEducationBySpecialty_IfEverythingOk()
+        {
+            // Arrange  
+            //GetAllDirectionsAndSpecialitiesInIoE_ForAdmin_IfEverythingOk
+            var institutionOfEducation = true;
+            var admin = new InstitutionOfEducationAdminDTO { Id = "AdminId", InstitutionOfEducationId = "IoEId" };
+
+            _institutionOfEducationRepository
+                .Setup(sr => sr.ContainsById(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducation);
+
+            _ioeAdminRepository
+                .Setup(sr => sr.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(admin);
+
+            // Act
+            var exception = await Record
+                .ExceptionAsync(() => institutionOfEducationService.GetAllDirectionsAndSpecialtiesInIoE(admin.Id));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
         private IEnumerable<InstitutionOfEducationDTO> GetInstitutionOfEducations()
         {
             return new List<InstitutionOfEducationDTO>
