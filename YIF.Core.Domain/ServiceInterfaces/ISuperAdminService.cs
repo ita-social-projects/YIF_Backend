@@ -31,5 +31,8 @@ namespace YIF.Core.Domain.ServiceInterfaces
         Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSpecialty(string specialtyId);
         Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId);
         Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel);
+        Task<ResponseApiModel<IEnumerable<IoEChangesForSuperAdminResponceApiModel>>> GetAllIoEChanges();
+        Task<ResponseApiModel<DescriptionResponseApiModel>> ApproveModifyIoE(string ioEId);
+        Task<ResponseApiModel<DescriptionResponseApiModel>> DisapproveModifyIoE(DisaproveModifyIoEApiModel model);
     }
 }

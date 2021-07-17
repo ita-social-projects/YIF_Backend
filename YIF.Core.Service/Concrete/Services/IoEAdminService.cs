@@ -13,7 +13,6 @@ using YIF.Core.Domain.ApiModels.ResponseApiModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.ServiceInterfaces;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.JsonPatch;
 using YIF.Core.Domain.ApiModels.Validators;
 using YIF.Core.Data.Entities.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +41,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IConfiguration _configuration;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IDeleteRepository _deleteRepository;
+        private readonly IIoEBufferRepository<IoEBuffer, IoEBufferDTO> _ioEBufferRepository;
 
         public IoEAdminService(
             IUserService<DbUser> userService,
@@ -59,7 +59,8 @@ namespace YIF.Core.Service.Concrete.Services
             IWebHostEnvironment env,
             IConfiguration configuration,
             ResourceManager resourceManager,
-            IDeleteRepository deleteRepository
+            IDeleteRepository deleteRepository,
+            IIoEBufferRepository<IoEBuffer, IoEBufferDTO> ioEBufferRepository
         )
         {
             _userService = userService;
@@ -78,6 +79,7 @@ namespace YIF.Core.Service.Concrete.Services
             _env = env;
             _configuration = configuration;
             _deleteRepository = deleteRepository;
+            _ioEBufferRepository = ioEBufferRepository;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
@@ -123,38 +125,48 @@ namespace YIF.Core.Service.Concrete.Services
             await _specialtyToIoERepository.Update(specialtyToInstitutionOfEducation);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyInstitution(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyInstitution(string userId, InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
-            InstitutionOfEducationPostApiModel request = new InstitutionOfEducationPostApiModel();
-            institutionOfEducationPostApiModel.ApplyTo(request);
-
             var validator = new InstitutionOfEducationPostApiModelValidator();
-            var validResult = await validator.ValidateAsync(request);
+            var validResult = await validator.ValidateAsync(institutionOfEducationPostApiModel);
+
             if (!validResult.IsValid)
+            {
                 throw new BadRequestException(validResult.ToString());
+            }
 
             string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
+            var ioEBuffer = await _ioEBufferRepository.Get(ioEId);
+            var ioEBufferDTO = _mapper.Map<IoEBufferDTO>(institutionOfEducationPostApiModel);
             var currentInstitutionOfEducationDTO = await _ioERepository.Get(ioEId);
 
-            var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
-
-            newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
+            ioEBufferDTO.Id = ioEId;
+            ioEBufferDTO.IoEStatus = IoEStatus.Modified;
+            ioEBufferDTO.StartOfCampaign = currentInstitutionOfEducationDTO.StartOfCampaign;
+            ioEBufferDTO.EndOfCampaign = currentInstitutionOfEducationDTO.EndOfCampaign;
 
             #region imageSaving
-            if (request.ImageApiModel != null)
+            if (institutionOfEducationPostApiModel.ImageApiModel != null)
             {
                 var serverPath = _env.ContentRootPath;
                 var folderName = _configuration.GetValue<string>("ImagesPath");
                 var path = Path.Combine(serverPath, folderName);
 
-                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
+                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(institutionOfEducationPostApiModel.ImageApiModel.Photo, path);
                 currentInstitutionOfEducationDTO.ImagePath = fileName;
             }
             #endregion
 
-            await _ioERepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
+            if (ioEBuffer != null)
+            {
+                await _ioEBufferRepository.Update(_mapper.Map<IoEBuffer>(ioEBufferDTO));
+
+                return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
+            }
+
+            await _ioEBufferRepository.Add(_mapper.Map<IoEBuffer>(ioEBufferDTO));
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
         }       

@@ -47,6 +47,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IPaginationService _paginationService;
+        private readonly IIoEBufferRepository<IoEBuffer, IoEBufferDTO> _ioEBufferRepository;
 
         public SuperAdminService(
             IUserService<DbUser> userService,
@@ -67,7 +68,8 @@ namespace YIF.Core.Service.Concrete.Services
             ResourceManager resourceManager, 
             IWebHostEnvironment env,
             IConfiguration configuration,
-            IPaginationService paginationService)
+            IPaginationService paginationService,
+            IIoEBufferRepository<IoEBuffer, IoEBufferDTO> ioEBufferRepository)
         {
             _userService = userService;
             _userRepository = userRepository;
@@ -89,6 +91,7 @@ namespace YIF.Core.Service.Concrete.Services
             _configuration = configuration;
             _paginationService = paginationService;
             _specialtyRepository = specialtyRepository;
+            _ioEBufferRepository = ioEBufferRepository;
         }
 
         ///<inheritdoc/>
@@ -570,6 +573,59 @@ namespace YIF.Core.Service.Concrete.Services
             result.Success = true;
 
             return result;
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<IoEChangesForSuperAdminResponceApiModel>>> GetAllIoEChanges()
+        {
+            var result = new ResponseApiModel<IEnumerable<IoEChangesForSuperAdminResponceApiModel>>();
+            var ioE = await _ioEBufferRepository.GetAll();
+
+            if (ioE == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("NotFoundChangesInAnyIoE"));
+            }
+
+            result.Object = _mapper.Map<IEnumerable<IoEChangesForSuperAdminResponceApiModel>>(ioE);
+
+            result.Success = true;
+
+            return result;
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ApproveModifyIoE(string ioEId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            var ioEBufferDTO = await _ioEBufferRepository.Get(ioEId);
+
+            if (ioEBufferDTO == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("IoEWithSuchIdNotFound"));
+            }
+
+            await _institutionOfEducationRepository.Update(_mapper.Map<InstitutionOfEducation>(ioEBufferDTO));
+            await _ioEBufferRepository.Delete(ioEBufferDTO.Id);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("ChangesApproved")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisapproveModifyIoE(DisaproveModifyIoEApiModel model)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            var ioEBufferDTO = await _ioEBufferRepository.Get(model.Id);
+
+            if (ioEBufferDTO == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("IoEWithSuchIdNotFound"));
+            }
+
+            ioEBufferDTO.Comment = model.Comment;
+            ioEBufferDTO.IoEStatus = IoEStatus.PendingChanges;
+
+            await _ioEBufferRepository.Update(_mapper.Map<IoEBuffer>(ioEBufferDTO));
+            
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("MessageSended")), true);
         }
     }
 }

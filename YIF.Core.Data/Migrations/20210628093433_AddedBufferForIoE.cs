@@ -7,8 +7,20 @@ namespace YIF.Core.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDeleted",
+                table: "Specialties",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDeleted",
+                table: "Lectors",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.CreateTable(
-                name: "InstitutionOfEducationBuffers",
+                name: "IoEBuffers",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -27,33 +39,27 @@ namespace YIF.Core.Data.Migrations
                     StartOfCampaign = table.Column<DateTime>(nullable: false),
                     EndOfCampaign = table.Column<DateTime>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    InstitutionOfEducationStatus = table.Column<int>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    InstitutionOfEducationId = table.Column<string>(nullable: true)
+                    IoEStatus = table.Column<int>(nullable: false),
+                    Comment = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InstitutionOfEducationBuffers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InstitutionOfEducationBuffers_InstitutionOfEducations_InstitutionOfEducationId",
-                        column: x => x.InstitutionOfEducationId,
-                        principalTable: "InstitutionOfEducations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_IoEBuffers", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InstitutionOfEducationBuffers_InstitutionOfEducationId",
-                table: "InstitutionOfEducationBuffers",
-                column: "InstitutionOfEducationId",
-                unique: true,
-                filter: "[InstitutionOfEducationId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "InstitutionOfEducationBuffers");
+                name: "IoEBuffers");
+
+            migrationBuilder.DropColumn(
+                name: "IsDeleted",
+                table: "Specialties");
+
+            migrationBuilder.DropColumn(
+                name: "IsDeleted",
+                table: "Lectors");
         }
     }
 }

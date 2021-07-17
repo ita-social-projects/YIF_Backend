@@ -48,6 +48,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IConfiguration> _configuration = new Mock<IConfiguration>(); 
         private readonly Mock<HttpRequest> httpRequest = new Mock<HttpRequest>();
         private readonly Mock<IDeleteRepository> _deleteRepository = new Mock<IDeleteRepository>();
+        private readonly Mock<IIoEBufferRepository<IoEBuffer, IoEBufferDTO>> _ioeBuffer = new Mock<IIoEBufferRepository<IoEBuffer, IoEBufferDTO>>();
 
         public IoEAdminServiceTests()
         {
@@ -67,7 +68,8 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _env.Object,
                 _configuration.Object,
                 _resourceManager.Object,
-                _deleteRepository.Object
+                _deleteRepository.Object,
+                _ioeBuffer.Object
             );
         }
 
@@ -81,7 +83,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns(Task.FromResult(listOfAdmins));
 
             // Act
-            Func<Task> act = () => _ioEAdminService.ModifyInstitution(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            Func<Task> act = () => _ioEAdminService.ModifyInstitution(wrongAdminId, new InstitutionOfEducationPostApiModel());
 
             // Assert
             Assert.ThrowsAsync<NullReferenceException>(act);
@@ -115,7 +117,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns("");
 
             // Act
-            var result = _ioEAdminService.ModifyInstitution(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+            var result = _ioEAdminService.ModifyInstitution(It.IsAny<string>(), new InstitutionOfEducationPostApiModel());
 
             // Assert
             Assert.True(result.Result.Success);

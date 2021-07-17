@@ -389,5 +389,56 @@ namespace YIF_Backend.Controllers
             var result = await _superAdminService.ModifyIoE(ioEAdminUserId, institutionOfEducationPostApiModel);
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get Institution Of Education changes
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="403">If user is not super admin</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [HttpGet("GetAllIoEChanges")]
+        public async Task<IActionResult> GetAllIoEChanges()
+        {
+            var result = await _superAdminService.GetAllIoEChanges();
+            return Ok(result.Object);
+        }
+
+        /// <summary>
+        /// Approve Institution Of Education changes
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="403">If user is not super admin</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [HttpPut("ApproveIoEChanges/{ioEId}")]
+        public async Task<IActionResult> ApproveIoEChanges(string ioEId)
+        {
+            var result = await _superAdminService.ApproveModifyIoE(ioEId);
+            return Ok(result.Object);
+        }
+        
+        /// <summary>
+        /// Approve Institution Of Education changes
+        /// </summary>
+        /// <returns>Success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="403">If user is not super admin</response>
+        /// <response code="404">Not found message</response>
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [HttpPut("DisapproveIoEChanges")]
+        public async Task<IActionResult> DisapproveIoEChanges([FromBody]DisaproveModifyIoEApiModel model)
+        {
+            var result = await _superAdminService.DisapproveModifyIoE(model);
+            return Ok(result.Object);
+        }
     }
 }

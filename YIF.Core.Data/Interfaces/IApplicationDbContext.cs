@@ -32,7 +32,7 @@ namespace YIF.Core.Data.Interfaces
         DbSet<ExamRequirement> ExamRequirements { get; set; }
         DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
         DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
-        DbSet<InstitutionOfEducationBuffer> InstitutionOfEducationBuffers { get; set; }
+        DbSet<IoEBuffer> IoEBuffers { get; set; }
 
 
         Task<int> SaveChangesAsync();
@@ -40,5 +40,6 @@ namespace YIF.Core.Data.Interfaces
 
         ValueTask<EntityEntry<T>> AddAsync<T>(T entity) where T : class;
         EntityEntry<T> Entry<T>(T entity) where T : class;
+        EntityEntry<T> Remove<T>(T entity) where T : class;
     }
 }

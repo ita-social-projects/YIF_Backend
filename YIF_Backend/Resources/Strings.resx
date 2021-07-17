@@ -414,4 +414,13 @@
   <data name="ObjectWasDeleted" xml:space="preserve">
     <value>Об'єкт видалено</value>
   </data>
+  <data name="ChangesApproved" xml:space="preserve">
+    <value>Зміни підтверджені</value>
+  </data>
+  <data name="NotFoundChangesInAnyIoE" xml:space="preserve">
+    <value>Зміни у навчальних закладах відсутні</value>
+  </data>
+  <data name="MessageSended" xml:space="preserve">
+    <value>Повідомлення відправлено</value>
+  </data>
 </root>

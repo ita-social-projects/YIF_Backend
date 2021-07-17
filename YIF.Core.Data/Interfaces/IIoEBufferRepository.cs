@@ -2,7 +2,7 @@
 
 namespace YIF.Core.Data.Interfaces
 {
-    public interface IInstitutionOfEducationBufferRepository<T, K> : IRepository<T, K>
+    public interface IIoEBufferRepository<T, K> : IRepository<T, K>
         where T : class
         where K : class
     {

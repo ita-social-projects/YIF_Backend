@@ -3,7 +3,7 @@ using YIF.Core.Data.Entities;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
-    public class InstitutionOfEducationBufferDTO
+    public class IoEBufferDTO
     {
         public string Id { get; set; }
         /// <summary>
@@ -67,8 +67,8 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         /// </summary>
         public string Comment { get; set; }
         /// <summary>
-        /// IoE for modify
+        /// Modify status for IoE
         /// </summary>
-        public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
+        public IoEStatus IoEStatus { get; set; }
     }
 }

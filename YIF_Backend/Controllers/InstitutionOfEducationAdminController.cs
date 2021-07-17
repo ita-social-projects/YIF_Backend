@@ -38,8 +38,8 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpPatch("ModifyInstitution")]
-        public async Task<IActionResult> ModifyInstitution([FromBody] JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        [HttpPut("ModifyInstitution")]
+        public async Task<IActionResult> ModifyInstitution([FromBody] InstitutionOfEducationPostApiModel institutionOfEducationPostApiModel)
         {
             if (institutionOfEducationPostApiModel == null)
                 return BadRequest();

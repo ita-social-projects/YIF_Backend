@@ -1,9 +1,8 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YIF.Core.Data.Entities
 {
-    public enum InstitutionOfEducationStatus
+    public enum IoEStatus
     {
         Default,
         PendingChanges,
@@ -11,7 +10,7 @@ namespace YIF.Core.Data.Entities
         Verified
     }
 
-    public class InstitutionOfEducationBuffer : BaseEntity
+    public class IoEBuffer : BaseEntity
     {
         public string Name { get; set; }
         public string Abbreviation { get; set; }
@@ -23,17 +22,12 @@ namespace YIF.Core.Data.Entities
         public string ImagePath { get; set; }
         public float Lat { get; set; }
         public float Lon { get; set; }
-        public bool IsBanned { get; set; } = false;
+        public bool IsBanned { get; set; }
         public InstitutionOfEducationType InstitutionOfEducationType { get; set; }
         public DateTime StartOfCampaign { get; set; }
         public DateTime EndOfCampaign { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public InstitutionOfEducationStatus InstitutionOfEducationStatus { get; set; }
+        public bool IsDeleted { get; set; }
+        public IoEStatus IoEStatus { get; set; }
         public string Comment { get; set; }
-
-        public string InstitutionOfEducationId { get; set; }
-        [ForeignKey("InstitutionOfEducationId")]
-        public InstitutionOfEducation InstitutionOfEducation { get; set; }
-
     }
 }

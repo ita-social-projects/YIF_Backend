@@ -43,7 +43,7 @@ namespace YIF.Core.Data
         public DbSet<ExamRequirement> ExamRequirements { get; set; }
         public DbSet<SpecialtyToIoEDescription> SpecialtyToIoEDescriptions { get; set; }
         public DbSet<SpecialtyToInstitutionOfEducationToGraduate> SpecialtyToInstitutionOfEducationToGraduates { get; set; }
-        public DbSet<InstitutionOfEducationBuffer> InstitutionOfEducationBuffers { get; set; }
+        public DbSet<IoEBuffer> IoEBuffers { get; set; }
 
         #endregion
 
@@ -116,11 +116,6 @@ namespace YIF.Core.Data
             #endregion
 
             #region InstitutionOfEducation
-
-            builder.Entity<InstitutionOfEducationBuffer>()
-                .HasOne(x => x.InstitutionOfEducation)
-                .WithOne(x => x.InstitutionOfEducationBuffer)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Lector>()
                 .HasOne(x => x.InstitutionOfEducation)
@@ -296,6 +291,11 @@ namespace YIF.Core.Data
         public EntityEntry<T> Entry<T>(T entity) where T : class
         {
             return base.Entry(entity);
+        }
+        
+        public EntityEntry<T> Remove<T>(T entity) where T : class
+        {
+            return base.Remove(entity);
         }
     }
 }
