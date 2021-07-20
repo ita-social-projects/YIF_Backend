@@ -414,11 +414,11 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             };
 
             var resolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-            var ioEAdminUserId = _context.InstitutionOfEducationAdmins.First().UserId;
+            var ioEId = _context.InstitutionOfEducations.First().Id;
 
             var postRequest = new
             {
-                Url = string.Format("/api/SuperAdmin/ModifyIoE/{0}", ioEAdminUserId),
+                Url = string.Format("/api/SuperAdmin/ModifyIoE/{0}", ioEId),
                 Body = new JsonPatchDocument<InstitutionOfEducationPostApiModel>(operations, resolver)
             };
 

@@ -143,10 +143,6 @@ namespace YIF.Core.Service.Concrete.Services
             var searchUser = await _userManager.FindByEmailAsync(registerModel.Email);
             if (searchUser != null)
             {
-                if (searchUser.IsDeleted == false)
-                {
-                    throw new InvalidOperationException("Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
-                }
                 return result.Set(false, "Електронна пошта вже використовувалась раніше. Якщо це ваша, авторизуйтесь або скористайтесь відновленням доступу");
             }
 

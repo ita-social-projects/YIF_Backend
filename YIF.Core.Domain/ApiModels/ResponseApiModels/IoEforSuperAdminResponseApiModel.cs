@@ -70,6 +70,14 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         public string ImagePath { get; set; }
 
+        /// <summary>
+        /// Email of the admin of IoE
+        /// </summary>
+        public string AdminEmail { get; set; }
+
+        /// <summary>
+        /// IoEAdmin's Id
+        /// </summary>
         public string AdminId { get; set; }
 
         /// <summary>
@@ -77,5 +85,10 @@ namespace YIF.Core.Domain.ApiModels.ResponseApiModels
         /// </summary>
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public InstitutionOfEducationType InstitutionOfEducationType { get; set; }
+
+        /// <summary>
+        /// Status of admin banning
+        /// </summary>
+        public bool IsAdminBanned { get; set; }
     }
 }

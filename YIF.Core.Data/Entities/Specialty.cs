@@ -17,5 +17,6 @@ namespace YIF.Core.Data.Entities
         public ICollection<SpecialtyToGraduate> SpecialtyToGraduates { get; set; }
         public ICollection<SpecialtyToInstitutionOfEducation> SpecialtyToInstitutionOfEducations { get; set; }
         public ICollection<Lector> Lectors { get; set; }
+        public ICollection<Discipline> Disciplines { get; set; }
     }
 }

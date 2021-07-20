@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using YIF.Core.Data.Entities.IdentityEntities;
+using System.Collections.Generic;
 
 namespace YIF.Core.Data.Entities
 {
@@ -25,5 +26,6 @@ namespace YIF.Core.Data.Entities
         [ForeignKey("SpecialtyId")]
         public Specialty Specialty { get; set; }
 
+        public ICollection<Discipline> Disciplines { get; set; }
     }
 }

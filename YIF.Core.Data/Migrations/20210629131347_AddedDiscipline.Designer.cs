@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YIF.Core.Data;
 
 namespace YIF.Core.Data.Migrations
 {
     [DbContext(typeof(EFDbContext))]
-    partial class EFDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210629131347_AddedDiscipline")]
+    partial class AddedDiscipline
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -520,20 +522,11 @@ namespace YIF.Core.Data.Migrations
                     b.Property<string>("DepartmentId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InstitutionOfEducationId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("SpecialtyId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -543,8 +536,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("InstitutionOfEducationId");
-
-                    b.HasIndex("SpecialtyId");
 
                     b.HasIndex("UserId");
 
@@ -956,11 +947,6 @@ namespace YIF.Core.Data.Migrations
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
                         .WithMany("Lectors")
                         .HasForeignKey("InstitutionOfEducationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Specialty")
-                        .WithMany("Lectors")
-                        .HasForeignKey("SpecialtyId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("YIF.Core.Data.Entities.IdentityEntities.DbUser", "User")

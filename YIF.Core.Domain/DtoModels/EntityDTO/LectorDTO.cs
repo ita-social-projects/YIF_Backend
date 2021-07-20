@@ -1,5 +1,6 @@
 ﻿using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
+using System.Collections.Generic;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
@@ -18,5 +19,6 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public ImageApiModel ImageApiModel { get; set; }
         public string SpecialtyId { get; set; }
         public SpecialtyDTO Specialty { get; set; }
+        public ICollection<DisciplineDTO> Disciplines { get; set; }
     }
 }

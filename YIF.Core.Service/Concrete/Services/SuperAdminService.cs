@@ -249,24 +249,28 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel("IoEIsDeleted"), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
+        public async Task<ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
-            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var result = new ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>();
             var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
+
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
-            string res;
+
+            InstitutionOfEducationAdmin admin = null;
+
             if (ch.IsBanned == false)
             {
-                res = await _institutionOfEducationAdminRepository.Disable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
+                admin = await _institutionOfEducationAdminRepository.Disable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
             }
             else
             {
-                res = await _institutionOfEducationAdminRepository.Enable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
-            }
-            return result.Set(new DescriptionResponseApiModel(res), true);
+                admin = await _institutionOfEducationAdminRepository.Enable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
+            }         
+
+            return result.Set(_mapper.Map<IoEAdminForSuperAdminResponseApiModel>(admin), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
@@ -510,7 +514,7 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string userId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string ioEId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
 
@@ -525,7 +529,6 @@ namespace YIF.Core.Service.Concrete.Services
                 throw new BadRequestException(validResult.ToString());
             }
 
-            string ioEId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).InstitutionOfEducationId;
             var currentInstitutionOfEducationDTO = await _institutionOfEducationRepository.Get(ioEId);
 
             var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
@@ -561,12 +564,12 @@ namespace YIF.Core.Service.Concrete.Services
             result.Object = _mapper.Map<IoEforSuperAdminResponseApiModel>(ioE);
             var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
 
-            if (admin == null)
+            if (admin != null)
             {
-                throw new BadRequestException(_resourceManager.GetString("IoEAdminDeleted"));
+                result.Object.AdminId = admin.Id;
+                result.Object.AdminEmail = admin.User.Email;
+                result.Object.IsAdminBanned = admin.IsBanned;
             }
-
-            result.Object.AdminId = admin.Id;
             result.Success = true;
 
             return result;
