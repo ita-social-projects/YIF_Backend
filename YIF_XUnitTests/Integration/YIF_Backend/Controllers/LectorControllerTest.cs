@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using YIF.Core.Domain.ApiModels.RequestApiModels;

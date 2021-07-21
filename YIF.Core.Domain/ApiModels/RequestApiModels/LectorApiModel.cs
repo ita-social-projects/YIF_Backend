@@ -5,6 +5,7 @@
         public string Name { get; set; }
 
         public string InstitutionOfEducationId { get; set; }
+
         public string SpecialtyId { get; set; }
 
         public string Description { get; set; }

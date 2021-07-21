@@ -39,6 +39,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 _configuration.Object,
                 _lectorRepository.Object);
         }
+
         [Fact]
         public void ModifyLector_ReturnTrue()
         {
