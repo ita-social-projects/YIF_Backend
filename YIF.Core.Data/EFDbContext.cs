@@ -126,8 +126,7 @@ namespace YIF.Core.Data
             builder.Entity<Lector>()
                 .HasOne(x => x.Specialty)
                 .WithMany(x => x.Lectors)
-                .HasForeignKey(x => x.SpecialtyId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(x => x.SpecialtyId);
 
             builder.Entity<Department>()
                 .HasMany(x => x.Lectors)
