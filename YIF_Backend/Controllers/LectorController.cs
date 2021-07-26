@@ -25,9 +25,13 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>List of departments</returns>
         /// <response code="200">Returns a list of departments</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not lector</response>
         /// <response code="404">If there are no departments</response>
         [HttpGet("GetAllDepartments")]
         [ProducesResponseType(typeof(IEnumerable<DepartmentApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
         public async Task<IActionResult> GetAllDepartments()
