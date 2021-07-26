@@ -8,6 +8,7 @@ using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
+using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.Repositories;
 
 namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
@@ -75,15 +76,6 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             string a = await _schoolAdminRepository.Delete("3b16d794-7aaa-4ca5-943a-36d328f86ed3");
             //Assert
             Assert.Equal("User IsDeleted was updated", a);
-        }
-
-        [Fact]
-        public async Task GetByInstitutionOfEducationId_ReturnsNullForBadId()
-        {
-            //Act
-            var a = await _schoolAdminRepository.GetBySchoolId("sdfs");
-            //Assert
-            Assert.Null(a);
         }
     }
 }

@@ -35,8 +35,9 @@ namespace YIF.Core.Domain.Repositories
         }
 
         public async Task<IEnumerable<SchoolAdminDTO>> GetBySchoolId(string schoolId)
-        {
-            var admins = (await _context.Schools.Include(x => x.Admins).FirstOrDefaultAsync(x => x.Id == schoolId))?.Admins;
+            {
+            var schools = await _context.Schools.Include(x => x.Admins).FirstOrDefaultAsync(x => x.Id == schoolId);
+            ICollection<SchoolAdmin> admins = schools?.Admins;
             
             if (admins != null && admins.Count>0)
             {
