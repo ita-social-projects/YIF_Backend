@@ -1,4 +1,6 @@
-﻿namespace YIF.Core.Domain.DtoModels.EntityDTO
+﻿using System.Collections.Generic;
+
+namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
     public class SpecialtyDTO
     {
@@ -30,5 +32,9 @@
         /// Navigation property for the direction to which this specialty belongs.
         /// </summary>
         public DirectionDTO Direction { get; set; }
+        /// <summary>
+        /// Navigation property for the disciplines
+        /// </summary>
+        public ICollection<DisciplineDTO> Disciplines { get; set; }
     }
 }
