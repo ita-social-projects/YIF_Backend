@@ -414,6 +414,9 @@
   <data name="ObjectWasDeleted" xml:space="preserve">
     <value>Об'єкт видалено</value>
   </data>
+  <data name="DepartmentsNotFound" xml:space="preserve">
+    <value>Відділів не знайдено</value>
+  </data>
   <data name="IoEModeratorIsntDeleted" xml:space="preserve">
     <value>Цього модератора не було видалено</value>
   </data>

@@ -60,5 +60,15 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
             //Assert
             response.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task GetAllDepartmentsAsync_EndpointsReturnSuccess()
+        {
+            // Act
+            var response = await _client.GetAsync("/api/Lector/GetAllDepartments");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

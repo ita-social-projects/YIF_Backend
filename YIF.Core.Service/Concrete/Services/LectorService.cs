@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
 using YIF.Core.Data.Entities;
@@ -23,18 +25,22 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly ILectorRepository<Lector, LectorDTO> _lectorRepository;
+        private IDepartmentRepository<Department, DepartmentDTO> _departmentRepository;
+
 
         public LectorService(IMapper mapper, 
             ResourceManager resourceManager, 
             IWebHostEnvironment env, 
             IConfiguration configuration, 
-            ILectorRepository<Lector, LectorDTO> lectorRepository) 
+            ILectorRepository<Lector, LectorDTO> lectorRepository,
+            IDepartmentRepository<Department, DepartmentDTO> departmentRepository) 
         {
             _mapper = mapper;
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
             _lectorRepository = lectorRepository;
+            _departmentRepository = departmentRepository;
         }
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyLector(string userId, JsonPatchDocument<LectorApiModel> lectorApiModel)
         {
@@ -72,6 +78,18 @@ namespace YIF.Core.Service.Concrete.Services
             await _lectorRepository.Update(_mapper.Map<Lector>(newLectorDTO));
            
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
+        }
+
+        public async Task<ResponseApiModel<IEnumerable<DepartmentApiModel>>> GetAllDepartments()
+        {
+            var result = new ResponseApiModel<IEnumerable<DepartmentApiModel>>();
+            var departments = await _departmentRepository.GetAll();
+            if (departments.Count() == 0)
+            {
+                throw new NotFoundException(_resourceManager.GetString("DepartmentsNotFound"));
+            }
+            result.Object = _mapper.Map<IEnumerable<DepartmentApiModel>>(departments);
+            return result.Set(true);
         }
     }
 }

@@ -48,9 +48,10 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<DepartmentDTO>> GetAll()
+        public async Task<IEnumerable<DepartmentDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var departments = await _context.Departments.ToListAsync();
+            return _mapper.Map<IEnumerable<DepartmentDTO>>(departments);
         }
 
         public async Task<IEnumerable<DepartmentDTO>> Find(Expression<Func<Department, bool>> predicate)
