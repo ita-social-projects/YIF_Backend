@@ -76,14 +76,5 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Domain.Repositories
             //Assert
             Assert.Equal("User IsDeleted was updated", a);
         }
-
-        [Fact]
-        public async Task GetByInstitutionOfEducationId_ReturnsNullForBadId()
-        {
-            //Act
-            var a = await _schoolAdminRepository.GetBySchoolId("sdfs");
-            //Assert
-            Assert.Null(a);
-        }
     }
 }
