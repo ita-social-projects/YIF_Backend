@@ -2243,6 +2243,54 @@ namespace YIF.Core.Data.Seaders
                 await context.SaveChangesAsync();
             }
         }
+
+        public async static Task SeedDisciplines(EFDbContext context)
+        {
+            if (context.Disciplines.Count() == 0)
+            {
+                var Lectors = context.Lectors.ToList();
+                var Specialities = context.Specialties.ToList();
+                var Departments = context.Departments.ToList();
+                string[] DepartmentsId = { 
+
+                    Departments.FirstOrDefault(x => x.Name == "Експлуатація комп'ютерних систем").Id,
+
+                    Departments.FirstOrDefault(x => x.Name == "Якість освіти").Id,
+
+                    Departments.FirstOrDefault(x => x.Name == "Зв’язок з громадкістю").Id
+
+                };
+
+                await context.Disciplines.AddRangeAsync(new List<Discipline>
+                {
+                    new Discipline
+                    {
+                        Name = "Архітектура комп'ютера",
+                        Description = "Дисципліна АРХІТЕКТУРА КОМП'ЮТЕРА передбачає вивчення принципів організації і функціонування сучасних комп’ютерних систем, призначення і роботи на логічному рівні базових логічних елементів і функціональних вузлів комп’ютера, організації і функціонування комп'ютерної пам'яті, призначення і функціонування основних периферійних пристроїв.",
+                        LectorId= Lectors.FirstOrDefault(x => x.DepartmentId == DepartmentsId[0]).Id,
+                        SpecialityId = Specialities.FirstOrDefault(x => x.Name == "Інженерія програмного забезпечення").Id    
+                    },
+
+                 new Discipline
+                   {
+                        Name = "Об'єктно-орієнтоване програмування",
+                        Description = "Мета вивчення курсу – ознайомити студентів з основами об‘єктно-орієнтованого аналізу та проектування. Практичну реалізацію об‘єктно-орієнтованого програмування показати на прикладі мови С++ .",
+                        LectorId= Lectors.FirstOrDefault(x => x.DepartmentId == DepartmentsId[1]).Id,
+                        SpecialityId = Specialities.FirstOrDefault(x => x.Name == "Комп'ютерні науки").Id
+                    },
+
+                    new Discipline
+                    {
+                        Name = "Алгоритми і структури даних",
+                        Description = "Мета вивчення курсу – ознайомити студентів з різними моделями структур даних, які зустрічаються на логічному та фізичному рівнях їх організації, а також вивчити основні алгоритми опрацювання цих структур",
+                        LectorId= Lectors.FirstOrDefault(x => x.DepartmentId == DepartmentsId[2]).Id,
+                        SpecialityId = Specialities.FirstOrDefault(x => x.Name == "Кібербезпека").Id
+                    }
+                });
+                await context.SaveChangesAsync();
+            }
+        }
+
         #endregion
 
         static async Task CreateUser(EFDbContext context,
@@ -2291,6 +2339,7 @@ namespace YIF.Core.Data.Seaders
                 // InstitutionOfEducationModerators: 9
                 // Lectures: 9
                 // Departments: 5
+                // Disciplines 3
 
                 await SeederDB.SeedRoles(managerRole);
                 await SeederDB.SeedSuperAdmin(context, manager);
@@ -2313,6 +2362,7 @@ namespace YIF.Core.Data.Seaders
                 await SeederDB.SeedInstitutionOfEducationModerators(context, manager);
                 await SeederDB.SeedDepartments(context);
                 await SeederDB.SeedLectures(context, manager);
+                await SeederDB.SeedDisciplines(context);
                 SeederDB.SeedExams(context);
                 SeederDB.SeedSpecialtyToIoEDescription(context);
                 #endregion
