@@ -26,7 +26,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
         private readonly Mock<IWebHostEnvironment> _env;
         private readonly Mock<IConfiguration> _configuration;
         private readonly Mock<ILectorRepository<Lector, LectorDTO>> _lectorRepository;
-        private readonly LectorService lectorService;
+        private readonly LectorService _lectorService;
 
         public LectorServiceTests() 
         {
@@ -37,7 +37,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             _configuration = new Mock<IConfiguration>();
             _lectorRepository = new Mock<ILectorRepository<Lector, LectorDTO>>();
 
-            lectorService = new LectorService(
+            _lectorService = new LectorService(
                 _mapperMock.Object,
                 _resourceManager.Object,
                 _env.Object,
@@ -89,7 +89,7 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                 .Returns("");
 
             // Act
-            var result = lectorService.ModifyLector(It.IsAny<string>(), new JsonPatchDocument<LectorApiModel>());
+            var result = _lectorService.ModifyLector(It.IsAny<string>(), new JsonPatchDocument<LectorApiModel>());
 
             // Assert
             Assert.True(result.Result.Success);

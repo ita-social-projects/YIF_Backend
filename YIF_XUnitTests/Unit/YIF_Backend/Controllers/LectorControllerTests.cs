@@ -18,7 +18,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
     public class LectorControllerTests
     {
         private readonly Mock<ILectorService> _lectorService;
-        private readonly LectorController lectorController;
+        private readonly LectorController _lectorController;
         private readonly Mock<HttpContext> _httpContext;
 
         public LectorControllerTests() 
@@ -26,10 +26,10 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _lectorService = new Mock<ILectorService>();
             _httpContext = new Mock<HttpContext>();
 
-            lectorController = new LectorController(
+            _lectorController = new LectorController(
                 _lectorService.Object);
 
-            lectorController.ControllerContext = new ControllerContext()
+            _lectorController.ControllerContext = new ControllerContext()
             {
                 HttpContext = _httpContext.Object
             };
@@ -50,7 +50,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             JsonPatchDocument<LectorApiModel> operations = null;
 
             //Act
-            Func<Task> act = () => lectorController.ModifyLector(operations);
+            Func<Task> act = () => _lectorController.ModifyLector(operations);
 
             //Assert
             await Assert.ThrowsAsync<BadRequestException>(act);
@@ -73,7 +73,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 .ReturnsAsync(response);
 
             // Act
-            var result = await lectorController.ModifyLector(new JsonPatchDocument<LectorApiModel>());
+            var result = await _lectorController.ModifyLector(new JsonPatchDocument<LectorApiModel>());
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
