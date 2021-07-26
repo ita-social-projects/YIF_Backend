@@ -45,6 +45,7 @@ namespace YIF.Core.Domain.Repositories
         public async Task<InstitutionOfEducationAdmin> Disable(InstitutionOfEducationAdmin admin)
         {
             admin.IsBanned = true;
+            _dbContext.Entry(admin).State = EntityState.Modified;
             _dbContext.InstitutionOfEducationAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
             return admin;
@@ -53,6 +54,7 @@ namespace YIF.Core.Domain.Repositories
         public async Task<InstitutionOfEducationAdmin> Enable(InstitutionOfEducationAdmin admin)
         {
             admin.IsBanned = false;
+            _dbContext.Entry(admin).State = EntityState.Modified;
             _dbContext.InstitutionOfEducationAdmins.Update(admin);
             await _dbContext.SaveChangesAsync();
             return admin;
