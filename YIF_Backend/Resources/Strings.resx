@@ -432,7 +432,4 @@
   <data name="DisciplineWasAdded" xml:space="preserve">
     <value>Дисципліну успішно додано</value>
   </data>
-  <data name="AlreadyExistSchoolAdmin" xml:space="preserve">
-    <value>Шкільний адміністратор вже створений</value>
-  </data>
 </root>
