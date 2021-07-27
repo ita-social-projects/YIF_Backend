@@ -43,14 +43,23 @@ namespace YIF_Backend.Controllers
         /// </summary>
         /// <returns>institutionsOfEducation by specialty</returns>
         /// <response code="200">Returns institutionsOfEducation</response>
+        /// <response code="400">If id is not valid.</response>
         /// <response code="404">If institutionsOfEducation for specialty is not found</response>
         [ProducesResponseType(typeof(InstitutionOfEducationResponseApiModel), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 400)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        [HttpGet("GetInstitutionsOfEducationBySpecialty")]
-        public async Task<IActionResult> GetInstitutionsOfEducationBySpecialty(bool bgse, bool cgse, string id)
+        [HttpGet("GetInstitutionsOfEducationBySpecialty/{bgse}/{hgse}/{id}")]
+        public async Task<IActionResult> GetInstitutionsOfEducationBySpecialty(bool bgse, bool hgse, string id)
         {
-            var result = await _institutionOfEducationService.GetInstitutionsOfEducationBySpecialty(bgse, cgse, id);
+            var sortingModel = new IoESortingApiModel
+            {
+                BasicGeneralSecondaryEducation = bgse,
+                HigherGeneralSecondaryEducation = hgse,
+                SpecialtyId = id
+            };
+
+            var result = await _institutionOfEducationService.GetInstitutionsOfEducationBySpecialty(sortingModel);
             return Ok(result);
         }
 

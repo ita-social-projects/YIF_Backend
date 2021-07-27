@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF_XUnitTests.Integration.Fixture;
 using YIF_XUnitTests.Integration.YIF_Backend.Controllers.DataAttribute;
 
@@ -254,6 +256,33 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                 response.Content.Headers.ContentType.ToString());
         }
 
+        [Fact]
+        public async Task GetIoEInfoBySpecialtyAndType_EndpointReturnsOk()
+        {
+            // Arrange
+            var specialty = _context.Specialties.First();
+
+            var sortingModel = new IoESortingApiModel
+            {
+                BasicGeneralSecondaryEducation = false,
+                HigherGeneralSecondaryEducation = true,
+                SpecialtyId = specialty.Id
+            };
+
+            var gettRequest = new
+            {
+                Url = "api/InstitutionOfEducationAdmin/GetInstitutionsOfEducationBySpecialty/",
+                Body = sortingModel
+            };
+
+            // Act
+            //var response = await _client.GetAsync(gettRequest.Url, gettRequest.Body);
+
+            var response = await _client.GetAsync($"/api/InstitutionOfEducationAdmin/GetInstitutionsOfEducationBySpecialty?bgse={sortingModel.BasicGeneralSecondaryEducation}&hgse={sortingModel.HigherGeneralSecondaryEducation}&id={sortingModel.SpecialtyId}");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+        }
         #endregion
     }
 }

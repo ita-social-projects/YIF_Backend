@@ -26,6 +26,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> _specialtyToIoEDescriptionRepository;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
         private readonly IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> _institutionOfEducationModeratorRepository;
+        private readonly ISpecialtyRepository<Specialty, SpecialtyDTO> _specialtyRepository;
         private readonly IGraduateRepository<Graduate, GraduateDTO> _graduateRepository;
         private readonly IMapper _mapper;
         private readonly IPaginationService _paginationService;
@@ -40,6 +41,7 @@ namespace YIF.Core.Service.Concrete.Services
             ISpecialtyToIoEDescriptionRepository<SpecialtyToIoEDescription, SpecialtyToIoEDescriptionDTO> specialtyToIoEDescriptionRepository,
             IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> institutionOfEducationAdminRepository,
             IInstitutionOfEducationModeratorRepository<InstitutionOfEducationModerator, InstitutionOfEducationModeratorDTO> institutionOfEducationModeratorRepository,
+            ISpecialtyRepository<Specialty, SpecialtyDTO> specialtyRepository,
             IGraduateRepository<Graduate, GraduateDTO> graduateRepository,
             IMapper mapper,
             IPaginationService paginationService,
@@ -54,6 +56,7 @@ namespace YIF.Core.Service.Concrete.Services
             _specialtyToIoEDescriptionRepository = specialtyToIoEDescriptionRepository;
             _institutionOfEducationAdminRepository = institutionOfEducationAdminRepository;
             _institutionOfEducationModeratorRepository = institutionOfEducationModeratorRepository;
+            _specialtyRepository = specialtyRepository;
             _mapper = mapper;
             _paginationService = paginationService;
             _resourceManager = resourceManager;
@@ -300,36 +303,46 @@ namespace YIF.Core.Service.Concrete.Services
             }
             return response;
         }
-        public async Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> GetInstitutionsOfEducationBySpecialty(bool basicGeneralSecondaryEducation, bool higherGeneralSecondaryEducation, string specialtyId)
+
+        public async Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> GetInstitutionsOfEducationBySpecialty(IoESortingApiModel sortingApiModel)
+        {
+            var specialty = await _specialtyRepository.Get(sortingApiModel.SpecialtyId);
+
+            if(specialty == null)
+                throw new BadRequestException(_resourceManager.GetString("SpecialtyNotFound"));
+
+            if ((sortingApiModel.HigherGeneralSecondaryEducation == true && sortingApiModel.BasicGeneralSecondaryEducation == true) ||
+                (sortingApiModel.HigherGeneralSecondaryEducation == false && sortingApiModel.BasicGeneralSecondaryEducation == false))
+                throw new BadRequestException(_resourceManager.GetString("ModelIsInvalid"));
+
+            var institutionsOfEducation = await SortInstitutionsOfEducationBySpecialty(sortingApiModel);
+
+            if (institutionsOfEducation == null)
+                throw new BadRequestException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+
+            return institutionsOfEducation;
+        }
+
+        #region PrivateMethods
+        private async Task<IEnumerable<InstitutionsOfEducationResponseApiModel>> SortInstitutionsOfEducationBySpecialty(IoESortingApiModel sortingApiModel)
         {
             var institutionOfEducations = await _institutionOfEducationRepository.GetAll();
-            if (specialtyId == null)
-            { 
-                if (basicGeneralSecondaryEducation == true)
-                {
-                    //Add colleges after 11th grade in future
-                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.College);
-                }
-                if (higherGeneralSecondaryEducation == true)
-                {
-                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.University);
-                }
-            }
-            else
+
+            if (sortingApiModel.BasicGeneralSecondaryEducation == true)
             {
-                var specialties = await _specialtyToInstitutionOfEducationRepository.Find(x => x.Specialty.Id == specialtyId);
-                institutionOfEducations = institutionOfEducations.Where(x => specialties.Any(y => y.InstitutionOfEducationId == x.Id));
-                if (basicGeneralSecondaryEducation == true)
-                {
-                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.College);
-                }
-                if (higherGeneralSecondaryEducation == true)
-                {
-                    institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.University);
-                }
+                institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.College);
             }
-            
+
+            if (sortingApiModel.HigherGeneralSecondaryEducation == true)
+            {
+                institutionOfEducations = institutionOfEducations.Where(x => x.InstitutionOfEducationType == InstitutionOfEducationType.University);
+            }
+
+            var specialties = await _specialtyToInstitutionOfEducationRepository.Find(x => x.Specialty.Id == sortingApiModel.SpecialtyId);
+            institutionOfEducations = institutionOfEducations.Where(x => specialties.Any(y => y.InstitutionOfEducationId == x.Id));
+
             return _mapper.Map<IEnumerable<InstitutionsOfEducationResponseApiModel>>(institutionOfEducations.Distinct().ToList());
         }
+        #endregion
     }
 }
