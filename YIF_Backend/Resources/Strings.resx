@@ -243,9 +243,6 @@
   <data name="InstitutionOfEducationWithSuchNameNotFound" xml:space="preserve">
     <value>В базі даних немає навчального закладу із такою назвою</value>
   </data>
-  <data name="UserAlreadyExists" xml:space="preserve">
-    <value>Користувач вже існує</value>
-  </data>
   <data name="UserCreationFailed" xml:space="preserve">
     <value>Помилка створення користувача</value>
   </data>
@@ -437,14 +434,5 @@
   </data>
   <data name="AlreadyExistSchoolAdmin" xml:space="preserve">
     <value>Шкільний адміністратор вже створений</value>
-  </data>
-  <data name="SchoolAdminIsNotExist" xml:space="preserve">
-    <value>Шкільного адміністратора не існує</value>
-  </data>
-  <data name="SchoolIsNotExist" xml:space="preserve">
-    <value>Такої школи не існує</value>
-  </data>
-  <data name="PassIsNotValid" xml:space="preserve">
-    <value>Пароль некоректний</value>
   </data>
 </root>

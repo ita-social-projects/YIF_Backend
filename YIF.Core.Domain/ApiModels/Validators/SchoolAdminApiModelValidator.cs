@@ -33,11 +33,11 @@ namespace YIF.Core.Domain.ApiModels.Validators
 
             RuleFor(x => x.Email)
               .Must(x => _context.Users.Any(z => z.Email == x))
-              .WithMessage(_resourceManager.GetString("AlreadyExistSchoolAdmin"));
+              .WithMessage(_resourceManager.GetString("UserWithSuchEmailAlreadyExists"));
 
             RuleFor(x => x.SchoolName)
               .Must(x => _context.Schools.Any(z => z.Name == x))
-              .WithMessage(_resourceManager.GetString("SchoolIsNotExist"));
+              .WithMessage(_resourceManager.GetString("SchoolWithSuchNameNotFound"));
         }
     }
 }
