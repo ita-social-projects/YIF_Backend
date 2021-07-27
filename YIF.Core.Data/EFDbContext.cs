@@ -24,6 +24,8 @@ namespace YIF.Core.Data
         public DbSet<InstitutionOfEducationModerator> InstitutionOfEducationModerators { get; set; }
         public DbSet<InstitutionOfEducationAdmin> InstitutionOfEducationAdmins { get; set; }
         public DbSet<Lector> Lectors { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Discipline> Disciplines { get; set; }
         public DbSet<InstitutionOfEducation> InstitutionOfEducations { get; set; }
         public DbSet<Direction> Directions { get; set; }
         public DbSet<Specialty> Specialties { get; set; }
@@ -119,6 +121,23 @@ namespace YIF.Core.Data
                 .HasOne(x => x.InstitutionOfEducation)
                 .WithMany(x => x.Lectors)
                 .HasForeignKey(x => x.InstitutionOfEducationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Department>()
+                .HasMany(x => x.Lectors)
+                .WithOne(x => x.Department)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Discipline>()
+                .HasOne(x => x.Lector)
+                .WithMany(x => x.Disciplines)
+                .HasForeignKey(x => x.LectorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Discipline>()
+                .HasOne(x => x.Speciality)
+                .WithMany(x => x.Disciplines)
+                .HasForeignKey(x => x.SpecialityId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<InstitutionOfEducationAdmin>()

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
+using Xunit;
 using YIF_XUnitTests.Integration.Fixture;
 
 namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
@@ -18,6 +20,16 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
                     services.AddSingleton<IPolicyEvaluator, FakePolicyEvaluator>();
                 });
             }).CreateClient();
+        }
+
+        [Fact]
+        public async Task GetAllDepartmentsAsync_EndpointsReturnSuccess()
+        {
+            // Act
+            var response = await _client.GetAsync("/api/Lector/GetAllDepartments");
+
+            // Assert
+            response.EnsureSuccessStatusCode();
         }
     }
 }

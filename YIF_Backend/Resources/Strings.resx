@@ -372,6 +372,12 @@
   <data name="PasswordChanged" xml:space="preserve">
     <value>Пароль успішно змінено</value>
   </data>
+  <data name="DepartmentAlreadyExist" xml:space="preserve">
+    <value>Такий департамент вже існує</value>
+  </data>
+  <data name="DepartmentWasAdded" xml:space="preserve">
+    <value>Департамент успішно додано</value>
+  </data>
   <data name="IoEWasNotFoundOrAdminWasDeleted" xml:space="preserve">
     <value>Заклад освіти не знайдено або адмін був видалений</value>
   </data>
@@ -401,6 +407,33 @@
   </data>
   <data name="SpecialtyHasAlreadyBeenDeleted" xml:space="preserve">
     <value>Спеціальність уже видалена</value>
+  </data>
+  <data name="ObjectCannotBeDeleted" xml:space="preserve">
+    <value>Об'єкт не може бути видаленим</value>
+  </data>
+  <data name="ObjectWasDeleted" xml:space="preserve">
+    <value>Об'єкт видалено</value>
+  </data>
+  <data name="DepartmentsNotFound" xml:space="preserve">
+    <value>Відділів не знайдено</value>
+  </data>
+  <data name="IoEModeratorIsntDeleted" xml:space="preserve">
+    <value>Цього модератора не було видалено</value>
+  </data>
+  <data name="IoEModeratorIsRestored" xml:space="preserve">
+    <value>Модератора було відновлено </value>
+  </data>
+  <data name="ObjectWasRestored" xml:space="preserve">
+    <value>Об'єкт відновлено </value>
+  </data>
+  <data name="ObjectCannotBeRestored" xml:space="preserve">
+    <value>Об'єкт не можна відновити</value>
+  </data>
+  <data name="DisciplineAlreadyExist" xml:space="preserve">
+    <value>Дисципліна вже існує</value>
+  </data>
+  <data name="DisciplineWasAdded" xml:space="preserve">
+    <value>Дисципліну успішно додано</value>
   </data>
   <data name="AlreadyExistSchoolAdmin" xml:space="preserve">
     <value>Шкільний адміністратор вже створений</value>

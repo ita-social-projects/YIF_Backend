@@ -170,6 +170,23 @@ namespace YIF.Core.Data.Migrations
                     b.ToTable("BaseUsers");
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.Department", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Departments");
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.Direction", b =>
                 {
                     b.Property<string>("Id")
@@ -209,6 +226,33 @@ namespace YIF.Core.Data.Migrations
                     b.HasIndex("InstitutionOfEducationId");
 
                     b.ToTable("DirectionsToInstitutionOfEducations");
+                });
+
+            modelBuilder.Entity("YIF.Core.Data.Entities.Discipline", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LectorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SpecialityId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LectorId");
+
+                    b.HasIndex("SpecialityId");
+
+                    b.ToTable("Disciplines");
                 });
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Exam", b =>
@@ -473,6 +517,9 @@ namespace YIF.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("DepartmentId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("InstitutionOfEducationId")
                         .HasColumnType("nvarchar(450)");
 
@@ -483,6 +530,8 @@ namespace YIF.Core.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
 
                     b.HasIndex("InstitutionOfEducationId");
 
@@ -805,6 +854,19 @@ namespace YIF.Core.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("YIF.Core.Data.Entities.Discipline", b =>
+                {
+                    b.HasOne("YIF.Core.Data.Entities.Lector", "Lector")
+                        .WithMany("Disciplines")
+                        .HasForeignKey("LectorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("YIF.Core.Data.Entities.Specialty", "Speciality")
+                        .WithMany("Disciplines")
+                        .HasForeignKey("SpecialityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("YIF.Core.Data.Entities.ExamRequirement", b =>
                 {
                     b.HasOne("YIF.Core.Data.Entities.Exam", "Exam")
@@ -875,6 +937,11 @@ namespace YIF.Core.Data.Migrations
 
             modelBuilder.Entity("YIF.Core.Data.Entities.Lector", b =>
                 {
+                    b.HasOne("YIF.Core.Data.Entities.Department", "Department")
+                        .WithMany("Lectors")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("YIF.Core.Data.Entities.InstitutionOfEducation", "InstitutionOfEducation")
                         .WithMany("Lectors")
                         .HasForeignKey("InstitutionOfEducationId")

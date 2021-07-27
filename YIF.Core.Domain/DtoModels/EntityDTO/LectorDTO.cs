@@ -1,4 +1,5 @@
 ﻿using YIF.Core.Domain.DtoModels.IdentityDTO;
+using System.Collections.Generic;
 
 namespace YIF.Core.Domain.DtoModels.EntityDTO
 {
@@ -10,5 +11,8 @@ namespace YIF.Core.Domain.DtoModels.EntityDTO
         public UserDTO User { get; set; }
         public string InstitutionOfEducationId { get; set; }
         public InstitutionOfEducationDTO InstitutionOfEducation { get; set; }
+        public string DepartmentId { get; set; }
+        public DepartmentDTO Department { get; set; }
+        public ICollection<DisciplineDTO> Disciplines { get; set; }
     }
 }

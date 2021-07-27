@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Configuration;
 using SendGrid.Helpers.Errors.Model;
 using System;
@@ -16,6 +17,7 @@ using YIF.Core.Data.Entities.IdentityEntities;
 using YIF.Core.Data.Interfaces;
 using YIF.Core.Domain.ApiModels.RequestApiModels;
 using YIF.Core.Domain.ApiModels.ResponseApiModels;
+using YIF.Core.Domain.ApiModels.Validators;
 using YIF.Core.Domain.DtoModels;
 using YIF.Core.Domain.DtoModels.EntityDTO;
 using YIF.Core.Domain.DtoModels.IdentityDTO;
@@ -247,24 +249,28 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel("IoEIsDeleted"), true);
         }
 
-        public async Task<ResponseApiModel<DescriptionResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
+        public async Task<ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>> DisableInstitutionOfEducationAdmin(string adminId)
         {
-            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var result = new ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>();
             var ch = await _institutionOfEducationAdminRepository.GetUserByAdminId(adminId);
+
             if (ch == null)
             {
                 throw new NotFoundException($"{_resourceManager.GetString("UserWithSuchIdNotFound")}: {adminId}");
             }
-            string res;
+
+            InstitutionOfEducationAdmin admin = null;
+
             if (ch.IsBanned == false)
             {
-                res = await _institutionOfEducationAdminRepository.Disable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
+                admin = await _institutionOfEducationAdminRepository.Disable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
             }
             else
             {
-                res = await _institutionOfEducationAdminRepository.Enable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
-            }
-            return result.Set(new DescriptionResponseApiModel(res), true);
+                admin = await _institutionOfEducationAdminRepository.Enable(_mapper.Map<InstitutionOfEducationAdmin>(ch));
+            }         
+
+            return result.Set(_mapper.Map<IoEAdminForSuperAdminResponseApiModel>(admin), true);
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> DeleteSchoolAdmin(SchoolUniAdminDeleteApiModel schoolUniAdminDeleteApi)
@@ -508,5 +514,65 @@ namespace YIF.Core.Service.Concrete.Services
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("SpecialtyDeleted")), true);
         }
 
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> ModifyIoE(string ioEId, JsonPatchDocument<InstitutionOfEducationPostApiModel> institutionOfEducationPostApiModel)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+
+            InstitutionOfEducationPostApiModel request = new InstitutionOfEducationPostApiModel();
+            institutionOfEducationPostApiModel.ApplyTo(request);
+
+            var validator = new InstitutionOfEducationPostApiModelValidator();
+            var validResult = await validator.ValidateAsync(request);
+
+            if (!validResult.IsValid)
+            {
+                throw new BadRequestException(validResult.ToString());
+            }
+
+            var currentInstitutionOfEducationDTO = await _institutionOfEducationRepository.Get(ioEId);
+
+            var newInstitutionOfEducationDTO = _mapper.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(institutionOfEducationPostApiModel);
+
+            newInstitutionOfEducationDTO.ApplyTo(currentInstitutionOfEducationDTO);
+
+            #region imageSaving
+            if (request.ImageApiModel != null)
+            {
+                var serverPath = _env.ContentRootPath;
+                var folderName = _configuration.GetValue<string>("ImagesPath");
+                var path = Path.Combine(serverPath, folderName);
+
+                var fileName = ConvertImageApiModelToPath.FromBase64ToImageFilePath(request.ImageApiModel.Photo, path);
+                currentInstitutionOfEducationDTO.ImagePath = fileName;
+            }
+            #endregion
+
+            await _institutionOfEducationRepository.Update(_mapper.Map<InstitutionOfEducation>(currentInstitutionOfEducationDTO));
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("InformationChanged")), true);
+        }
+
+        public async Task<ResponseApiModel<IoEforSuperAdminResponseApiModel>> GetIoEInfoByIoEId(string ioEId)
+        {
+            var result = new ResponseApiModel<IoEforSuperAdminResponseApiModel>();
+            var ioE = await _institutionOfEducationRepository.Get(ioEId);
+
+            if (ioE == null)
+            {
+                throw new NotFoundException(_resourceManager.GetString("InstitutionOfEducationNotFound"));
+            }
+
+            result.Object = _mapper.Map<IoEforSuperAdminResponseApiModel>(ioE);
+            var admin = await _institutionOfEducationAdminRepository.GetByInstitutionOfEducationId(ioEId);
+
+            if (admin != null)
+            {
+                result.Object.AdminId = admin.Id;
+                result.Object.AdminEmail = admin.User.Email;
+                result.Object.IsAdminBanned = admin.IsBanned;
+            }
+            result.Success = true;
+
+            return result;
+        }
     }
 }

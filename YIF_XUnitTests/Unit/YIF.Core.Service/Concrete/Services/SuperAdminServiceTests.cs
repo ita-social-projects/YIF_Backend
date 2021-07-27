@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Resources;                                
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Xunit;
 using YIF.Core.Data.Entities;
 using YIF.Core.Data.Entities.IdentityEntities;
@@ -296,14 +297,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                     UserId = uniAdmin.UserId,
                     User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" }
                 }));
-            _institutionOfEducationAdminRepository.Setup(x => x.Disable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to true"));
+            _institutionOfEducationAdminRepository.Setup(x => x.Disable(uniAdmin)).Returns(Task.FromResult(It.IsAny<InstitutionOfEducationAdmin>()));
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
             var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to true", result.Object.Message);
+            Assert.IsType<ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -319,14 +321,15 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
                     User = new UserDTO { Id = "b87613a2-e535-4c95-a34c-ecd182272cba", UserName = "Jeremiah Gibson", Email = "shadj_hadjf@maliberty.com" },
                     IsBanned = true
                 }));
-            _institutionOfEducationAdminRepository.Setup(x => x.Enable(uniAdmin)).Returns(Task.FromResult("Admin IsBanned was set to false"));
+            _institutionOfEducationAdminRepository.Setup(x => x.Enable(uniAdmin)).Returns(Task.FromResult(It.IsAny<InstitutionOfEducationAdmin>()));
             _mapperMock.Setup(x => x.Map<InstitutionOfEducationAdmin>(It.IsAny<InstitutionOfEducationAdminDTO>())).Returns(uniAdmin);
 
             //Act
             var result = await superAdminService.DisableInstitutionOfEducationAdmin(uniAdmin.Id);
 
             //Assert
-            Assert.Equal("Admin IsBanned was set to false", result.Object.Message);
+            Assert.IsType<ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>>(result);
+            Assert.True(result.Success);
         }
 
         [Fact]
@@ -534,6 +537,95 @@ namespace YIF_XUnitTests.Unit.YIF.Core.Service.Concrete.Services
             
             //Assert
             await Assert.ThrowsAsync<BadRequestException>(() => superAdminService.DeleteSpecialty(specialty.Id));
+        }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_ReturnsSuccess()
+        {
+            //Arrange
+            var ioE = new InstitutionOfEducationDTO()
+            {
+                Id = uni.Id
+            };
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByInstitutionOfEducationId(uni.Id))
+                .Returns(Task.FromResult<InstitutionOfEducationAdminDTO>(new InstitutionOfEducationAdminDTO
+                {
+                    Id = "FakeId",
+                    InstitutionOfEducationId = uni.Id,
+                    User = new UserDTO{ Email = "FakeEmail"}
+                }));
+            _institutionOfEducationRepository.Setup(x => x.Get(uni.Id)).ReturnsAsync(ioE);
+            _mapperMock.Setup(x => x.Map<IoEforSuperAdminResponseApiModel>(ioE)).Returns(new IoEforSuperAdminResponseApiModel());
+
+            //Act
+            var result = await superAdminService.GetIoEInfoByIoEId(uni.Id);
+
+            //Assert
+            Assert.IsType<ResponseApiModel<IoEforSuperAdminResponseApiModel>>(result);
+            Assert.True(result.Success);
+        }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_ReturnsNotFoundIfThereIsNoIoEWithSuchId()
+        {
+            //Arrange
+            InstitutionOfEducationDTO nullIoE = null;
+            _institutionOfEducationRepository.Setup(x => x.Get(It.IsAny<string>()))
+                .ReturnsAsync(nullIoE);
+
+            //Act
+            //Assert
+            await Assert.ThrowsAsync<NotFoundException>(() => superAdminService.GetIoEInfoByIoEId(uni.Id));
+        }
+
+        [Fact]
+        public void ModifyInstitution_WrongAdminId()
+        {
+            // Arrange
+            var wrongAdminId = "0";
+            var listOfAdmins = InstitutionOfEducationAdminTestData.GetIEnumerableInstitutionOfEducationAdminDTO();
+            _institutionOfEducationAdminRepository.Setup(x => x.GetAllUniAdmins())
+                .Returns(Task.FromResult(listOfAdmins));
+
+            // Act
+            Func<Task> act = () => superAdminService.ModifyIoE(wrongAdminId, new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+
+            // Assert
+            Assert.ThrowsAsync<NullReferenceException>(act);
+        }
+
+        [Fact]
+        public void ModifyInstitution_ReturnTrue()
+        {
+            // Arrange
+            var institutionOfEducationAdminDTO = new InstitutionOfEducationAdminDTO()
+            {
+                InstitutionOfEducationId = "id"
+            };
+
+            _institutionOfEducationAdminRepository.Setup(x => x.GetByUserId(It.IsAny<string>()))
+                .ReturnsAsync(institutionOfEducationAdminDTO);
+
+            _institutionOfEducationRepository.Setup(x => x.Get(It.IsAny<string>()))
+                .ReturnsAsync(new InstitutionOfEducationDTO());
+
+            _mapperMock.Setup(x => x.Map<JsonPatchDocument<InstitutionOfEducationDTO>>(It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
+                .Returns(new JsonPatchDocument<InstitutionOfEducationDTO>());
+
+            _mapperMock.Setup(x => x.Map<InstitutionOfEducation>(It.IsAny<InstitutionOfEducationDTO>()))
+                .Returns(It.IsAny<InstitutionOfEducation>());
+
+            _institutionOfEducationRepository.Setup(x => x.Update(It.IsAny<InstitutionOfEducation>()))
+                .Returns(Task.FromResult(true));
+
+            _resourceManager.Setup(x => x.GetString(It.IsAny<string>()))
+                .Returns("");
+
+            // Act
+            var result = superAdminService.ModifyIoE(It.IsAny<string>(), new JsonPatchDocument<InstitutionOfEducationPostApiModel>());
+
+            // Assert
+            Assert.True(result.Result.Success);
         }
     }
 }

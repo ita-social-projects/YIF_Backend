@@ -66,26 +66,26 @@ namespace YIF.Core.Service.Concrete.Services
 
             if (filterModel.SpecialtyName != string.Empty && filterModel.SpecialtyName != null)
             {
-                specialties = specialties.Where(s => s.Name == filterModel.SpecialtyName);
+                specialties = specialties.Where(s => s.Name == filterModel.SpecialtyName && s.IsDeleted == false);
             }
 
             if (filterModel.DirectionName != string.Empty && filterModel.DirectionName != null)
             {
-                specialties = specialties.Where(s => s.Direction.Name == filterModel.DirectionName);
+                specialties = specialties.Where(s => s.Direction.Name == filterModel.DirectionName && s.IsDeleted == false);
             }
 
             if (filterModel.InstitutionOfEducationName != string.Empty && filterModel.InstitutionOfEducationName != null)
             {
                 var specialtyToInstitutionOfEducation = await _specialtyToInstitutionOfEducationRepository.Find(su => su.InstitutionOfEducation.Name == filterModel.InstitutionOfEducationName);
                 var specialtyId = specialtyToInstitutionOfEducation.Select(su => su.SpecialtyId);
-                specialties = specialties.Where(s => specialtyId.Contains(s.Id));
+                specialties = specialties.Where(s => specialtyId.Contains(s.Id) && s.IsDeleted == false);
             }
 
             if (filterModel.InstitutionOfEducationAbbreviation != string.Empty && filterModel.InstitutionOfEducationAbbreviation != null)
             {
                 var specialtyToInstitutionOfEducation = await _specialtyToInstitutionOfEducationRepository.Find(su => su.InstitutionOfEducation.Abbreviation == filterModel.InstitutionOfEducationAbbreviation);
                 var specialtyIds = specialtyToInstitutionOfEducation.Select(su => su.SpecialtyId);
-                specialties = specialties.Where(s => specialtyIds.Contains(s.Id));
+                specialties = specialties.Where(s => specialtyIds.Contains(s.Id) && s.IsDeleted == false);
             }
 
             if (filterModel.EducationForm != string.Empty && filterModel.EducationForm != null)
@@ -98,7 +98,7 @@ namespace YIF.Core.Service.Concrete.Services
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
                     .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-                specialties = specialties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
+                specialties = specialties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id && x.IsDeleted == false));
             }
 
             if (filterModel.PaymentForm != string.Empty && filterModel.PaymentForm != null)
@@ -109,7 +109,7 @@ namespace YIF.Core.Service.Concrete.Services
                 var specialtyToInstitutionOfEducation = specialtyToInstitutionOfEducationAll
                     .Where(x => specialtyToIoEDescription.Any(y => y.SpecialtyToInstitutionOfEducationId == x.Id));
 
-                specialties = specialties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id));
+                specialties = specialties.Where(x => specialtyToInstitutionOfEducation.Any(y => y.SpecialtyId == x.Id && x.IsDeleted == false));
             }
 
             return _mapper.Map<IEnumerable<SpecialtyResponseApiModel>>(specialties.Distinct().ToList());

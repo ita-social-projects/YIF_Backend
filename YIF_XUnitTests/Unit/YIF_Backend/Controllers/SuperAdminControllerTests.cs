@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SendGrid.Helpers.Errors.Model;
@@ -156,11 +157,11 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
         [Theory]
         [InlineData(true, "succes")]
         [InlineData(false, "wrong")]
-        public async Task DisableInstitutionOfEducationAdmin_EndpointsReturnsResponseApiModelWithText_or_Exception(bool success, string message)
+        public async Task DisableInstitutionOfEducationAdmin_EndpointsReturnsResponseApiModel_or_Exception(bool success, string message)
         {
             // Arrange
             var requestModel = new SchoolUniAdminDeleteApiModel { Id = "id" };
-            var responseModel = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(message), true);
+            var responseModel = new ResponseApiModel<IoEAdminForSuperAdminResponseApiModel>(new IoEAdminForSuperAdminResponseApiModel(), true);
             var error = new NotFoundException(message);
 
             if (success)
@@ -170,15 +171,13 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
                 var result = await superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id);
                 // Assert
                 var responseResult = Assert.IsType<OkObjectResult>(result);
-                var model = (DescriptionResponseApiModel)responseResult.Value;
-                Assert.Equal(responseModel.Object.Message, model.Message);
+                Assert.IsType<IoEAdminForSuperAdminResponseApiModel>(responseResult.Value);
             }
             else
             {
                 _superAdminService.Setup(x => x.DisableInstitutionOfEducationAdmin(requestModel.Id)).Throws(error);
                 // Assert
-                var exeption = await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id));
-                Assert.Equal(error.Message, exeption.Message);
+                await Assert.ThrowsAsync<NotFoundException>(() => superAdminController.DisableInstitutionOfEducationAdmin(requestModel.Id));
             }
         }
 
@@ -430,6 +429,49 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             var result = await superAdminController.DeleteSpecialty(It.IsAny<string>());
 
             //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task GetIoEInfoByIoEId_EndpointReturnsOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<IoEforSuperAdminResponseApiModel>(new IoEforSuperAdminResponseApiModel(), true);
+            _superAdminService.Setup(x => x.GetIoEInfoByIoEId(It.IsAny<string>()))
+                .ReturnsAsync(response);
+
+            //Act
+            var result = await superAdminController.GetIoEInfoByIoEId(It.IsAny<string>());
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task ModifyInstitution_ShouldReturnBadRequest()
+        {
+            // Arrange
+            JsonPatchDocument<InstitutionOfEducationPostApiModel> operations = null;
+
+            //Act
+            Func<Task> act = () => superAdminController.ModifyIoE(operations, It.IsAny<string>());
+
+            //Assert
+            Assert.ThrowsAsync<BadRequestException>(act);
+        }
+
+        [Fact]
+        public async Task ModifyInstitution_ShouldReturnOk()
+        {
+            //Arrange
+            var response = new ResponseApiModel<DescriptionResponseApiModel>(new DescriptionResponseApiModel(), true);
+            _superAdminService.Setup(x => x.ModifyIoE(It.IsAny<string>(), It.IsAny<JsonPatchDocument<InstitutionOfEducationPostApiModel>>()))
+                .ReturnsAsync(response);
+
+            // Act
+            var result = await superAdminController.ModifyIoE(new JsonPatchDocument<InstitutionOfEducationPostApiModel>(), It.IsAny<string>());
+
+            // Assert
             Assert.IsType<OkObjectResult>(result);
         }
     }

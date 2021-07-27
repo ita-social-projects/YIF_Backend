@@ -41,6 +41,7 @@ namespace YIF.Core.Service.Concrete.Services
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private readonly IInstitutionOfEducationAdminRepository<InstitutionOfEducationAdmin, InstitutionOfEducationAdminDTO> _institutionOfEducationAdminRepository;
+        private readonly IDeleteRepository _deleteRepository;
 
         public IoEAdminService(
             IUserService<DbUser> userService,
@@ -57,7 +58,8 @@ namespace YIF.Core.Service.Concrete.Services
             IMapper mapper,
             IWebHostEnvironment env,
             IConfiguration configuration,
-            ResourceManager resourceManager
+            ResourceManager resourceManager,
+            IDeleteRepository deleteRepository
         )
         {
             _userService = userService;
@@ -75,6 +77,7 @@ namespace YIF.Core.Service.Concrete.Services
             _resourceManager = resourceManager;
             _env = env;
             _configuration = configuration;
+            _deleteRepository = deleteRepository;
         }
 
         public async Task<ResponseApiModel<DescriptionResponseApiModel>> AddSpecialtyToIoe(
@@ -239,16 +242,16 @@ namespace YIF.Core.Service.Concrete.Services
         {
             var result = new ResponseApiModel<DescriptionResponseApiModel>();
             var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
-            var moderator = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
+            var moderatorDTO = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
 
-            if (moderator == null)
+            if (moderatorDTO == null)
                 throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
-            if (moderator.IsDeleted)
+            if (moderatorDTO.IsDeleted)
                 throw new BadRequestException(_resourceManager.GetString("IoEModeratorWasAlreadyDeleted"));
             else
-                await _ioEModeratorRepository.Delete(moderatorId);
+                await _deleteRepository.Delete(_mapper.Map<InstitutionOfEducationModerator>(moderatorDTO));
 
-            var dbUser = await _userRepository.GetUserWithRoles(moderator.User.Id);
+            var dbUser = await _userRepository.GetUserWithRoles(moderatorDTO.User.Id);
             await _userManager.RemoveFromRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
 
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsDeleted")), true);
@@ -377,6 +380,27 @@ namespace YIF.Core.Service.Concrete.Services
             await _userRepository.Delete(searchUser.Id);
             
             return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoELectorIsDeleted")), true);
+        }
+
+        public async Task<ResponseApiModel<DescriptionResponseApiModel>> RestoreIoEModerator(string moderatorId, string userId)
+        {
+            var result = new ResponseApiModel<DescriptionResponseApiModel>();
+            var adminId = (await _institutionOfEducationAdminRepository.GetByUserId(userId)).Id;
+            var moderatorDTO = await _ioEModeratorRepository.GetModeratorForAdmin(moderatorId, adminId);
+
+            if (moderatorDTO == null)
+                throw new NotFoundException(_resourceManager.GetString("IoEModeratorNotFoundForThisAdmin"));
+
+            if (moderatorDTO.IsDeleted == false)
+            {
+                throw new BadRequestException(_resourceManager.GetString("IoEModeratorIsntDeleted"));
+            }
+                
+            await _deleteRepository.Restore(_mapper.Map<InstitutionOfEducationModerator>(moderatorDTO));
+            var dbUser = await _userRepository.GetUserWithRoles(moderatorDTO.User.Id);
+            await _userManager.AddToRoleAsync(dbUser, ProjectRoles.InstitutionOfEducationModerator);
+
+            return result.Set(new DescriptionResponseApiModel(_resourceManager.GetString("IoEModeratorIsRestored")), true);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using YIF.Core.Data.Entities.IdentityEntities;
+using System.Collections.Generic;
 
 namespace YIF.Core.Data.Entities
 {
@@ -14,5 +15,10 @@ namespace YIF.Core.Data.Entities
         [ForeignKey("UserId")]
         public string UserId { get; set; }
         public DbUser User { get; set; }
+
+        public string DepartmentId { get; set; }
+        [ForeignKey("DepartmentId")]
+        public Department Department { get; set; }
+        public ICollection<Discipline> Disciplines { get; set; }
     }
 }
