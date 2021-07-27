@@ -40,5 +40,19 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
+        [Fact]
+        public async Task GetAllDisciplinesAsync_EndpointReturnOk()
+        {
+            // Arrange
+            var response = new ResponseApiModel<IEnumerable<DisciplinePostApiModel>>(new List<DisciplinePostApiModel>(), true);
+            _lectorService.Setup(x => x.GetAllDisciplines()).ReturnsAsync(response);
+
+            // Act
+            var result = await _lectorController.GetAllDiscipliness();
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
     }
 }

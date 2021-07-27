@@ -8,5 +8,6 @@ namespace YIF.Core.Domain.ServiceInterfaces
     public interface ILectorService
     {
         Task<ResponseApiModel<IEnumerable<DepartmentApiModel>>> GetAllDepartments();
+        Task<ResponseApiModel<IEnumerable<DisciplinePostApiModel>>> GetAllDisciplines();
     }
 }
