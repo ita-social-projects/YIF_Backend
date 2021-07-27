@@ -11,6 +11,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
         private readonly EFDbContext _context;
         private readonly ResourceManager _resourceManager;
 
+
         public SchoolAdminApiModelValidator(EFDbContext context, ResourceManager resourceManager)
         {
             ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
@@ -25,7 +26,7 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.Email)
                .NotEmpty()
                .NotNull();
-           
+            
             RuleFor(x => x.Password)
               .NotEmpty()
               .NotNull()
