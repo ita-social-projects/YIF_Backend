@@ -441,4 +441,10 @@
   <data name="SchoolAdminIsNotExist" xml:space="preserve">
     <value>Шкільного адміністратора не існує</value>
   </data>
+  <data name="SchoolIsNotExist" xml:space="preserve">
+    <value>Такої школи не існує</value>
+  </data>
+  <data name="PassIsNotValid" xml:space="preserve">
+    <value>Пароль некоректний</value>
+  </data>
 </root>

@@ -11,7 +11,6 @@ namespace YIF.Core.Domain.ApiModels.Validators
         private readonly EFDbContext _context;
         private readonly ResourceManager _resourceManager;
 
-
         public SchoolAdminApiModelValidator(EFDbContext context, ResourceManager resourceManager)
         {
             ValidatorOptions.Global.CascadeMode = CascadeMode.Stop;
@@ -26,18 +25,19 @@ namespace YIF.Core.Domain.ApiModels.Validators
             RuleFor(x => x.Email)
                .NotEmpty()
                .NotNull();
-            
+           
             RuleFor(x => x.Password)
               .NotEmpty()
-              .NotNull();
-            
-            RuleFor(x => x.SchoolName)
-              .Must(x => _context.SchoolAdmins.Any(z => z.School.Name == x))
-              .WithMessage(_resourceManager.GetString("SchoolAdminIsNotExist"));
+              .NotNull()
+              .MinimumLength(6);
+
+            RuleFor(x => x.Email)
+              .Must(x => _context.Users.Any(z => z.Email == x))
+              .WithMessage(_resourceManager.GetString("AlreadyExistSchoolAdmin"));
 
             RuleFor(x => x.SchoolName)
-              .Must(x => _context.SchoolAdmins.Any(z => z.School.Name != x))
-              .WithMessage(_resourceManager.GetString("AlreadyExistSchoolAdmin"));
+              .Must(x => _context.Schools.Any(z => z.Name == x))
+              .WithMessage(_resourceManager.GetString("SchoolIsNotExist"));
         }
     }
 }
