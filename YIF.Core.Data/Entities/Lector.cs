@@ -8,17 +8,24 @@ namespace YIF.Core.Data.Entities
     {
         public string InstitutionOfEducationId { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public string ImagePath { get; set; }
+        public string Description { get; set; }
 
         [ForeignKey("InstitutionOfEducationId")]
         public InstitutionOfEducation InstitutionOfEducation { get; set; }
 
-        [ForeignKey("UserId")]
+        [ForeignKey("User")]
         public string UserId { get; set; }
         public DbUser User { get; set; }
 
         public string DepartmentId { get; set; }
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
+
+        public string SpecialtyId { get; set; }
+        [ForeignKey("SpecialtyId")]
+        public Specialty Specialty { get; set; }
+
         public ICollection<Discipline> Disciplines { get; set; }
     }
 }

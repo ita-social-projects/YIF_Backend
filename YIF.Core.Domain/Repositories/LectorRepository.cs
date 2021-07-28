@@ -77,9 +77,17 @@ namespace YIF.Core.Domain.Repositories
             return _mapper.Map<LectorDTO>(lector);
         }
 
-        public Task<bool> Update(Lector item)
+        public async Task<LectorDTO> GetLectorByUserId(string userId)
         {
-            throw new NotImplementedException();
+            var lector = await _context.Lectors.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId);
+            return _mapper.Map<LectorDTO>(lector);
+        }
+
+        public async Task<bool> Update(Lector item)
+        {
+            _context.Entry(item).State = EntityState.Modified;
+            _context.Lectors.Update(item);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
