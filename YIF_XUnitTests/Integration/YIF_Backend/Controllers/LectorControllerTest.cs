@@ -33,7 +33,7 @@ namespace YIF_XUnitTests.Integration.YIF_Backend.Controllers
         }
 
         [Fact]
-        public async Task GettAllDisciplinesAsync_EndpointsReturnSuccess()
+        public async Task GetAllDisciplinesAsync_EndpointsReturnSuccess()
         {
             // Act
             var response = await _client.GetAsync("/api/Lector/GetAllDisciplines");

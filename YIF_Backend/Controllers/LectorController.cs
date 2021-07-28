@@ -54,7 +54,7 @@ namespace YIF_Backend.Controllers
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
         [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
         [ProducesResponseType(typeof(ErrorDetails), 500)]
-        public async Task<IActionResult> GetAllDiscipliness()
+        public async Task<IActionResult> GetAllDisciplines()
         {
             var result = await _lectorService.GetAllDisciplines();
             return Ok(result.Object);

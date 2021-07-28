@@ -49,7 +49,7 @@ namespace YIF_XUnitTests.Unit.YIF_Backend.Controllers
             _lectorService.Setup(x => x.GetAllDisciplines()).ReturnsAsync(response);
 
             // Act
-            var result = await _lectorController.GetAllDiscipliness();
+            var result = await _lectorController.GetAllDisciplines();
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
