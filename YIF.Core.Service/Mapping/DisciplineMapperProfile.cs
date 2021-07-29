@@ -13,6 +13,7 @@ namespace YIF.Core.Service.Mapping
 
             CreateMap<Discipline, DisciplineDTO>().ReverseMap();
             CreateMap<DisciplinePostApiModel, Discipline>();
+            CreateMap<DisciplineDTO, DisciplinePostApiModel>();
         }
     }
 }

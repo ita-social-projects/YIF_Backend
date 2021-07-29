@@ -39,5 +39,25 @@ namespace YIF_Backend.Controllers
             var result = await _lectorService.GetAllDepartments();
             return Ok(result.Object);
         }
+
+        /// <summary>
+        /// Get all disciplines.
+        /// </summary>
+        /// <returns>List of disciplines</returns>
+        /// <response code="200">Returns a list of disciplines</response>
+        /// <response code="401">If user is unauthorized, token is bad/expired</response>
+        /// <response code="403">If user is not lector</response>
+        /// <response code="404">If there are no disciplines</response>
+        [HttpGet("GetAllDisciplines")]
+        [ProducesResponseType(typeof(IEnumerable<DisciplinePostApiModel>), 200)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 401)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 403)]
+        [ProducesResponseType(typeof(DescriptionResponseApiModel), 404)]
+        [ProducesResponseType(typeof(ErrorDetails), 500)]
+        public async Task<IActionResult> GetAllDisciplines()
+        {
+            var result = await _lectorService.GetAllDisciplines();
+            return Ok(result.Object);
+        }
     }
 }

@@ -42,9 +42,10 @@ namespace YIF.Core.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<DisciplineDTO>> GetAll()
+        public async Task<IEnumerable<DisciplineDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var disciplines = await _context.Disciplines.ToListAsync();
+            return _mapper.Map<IEnumerable<DisciplineDTO>>(disciplines);
         }
 
         public async Task Add(Discipline discipline)

@@ -435,4 +435,7 @@
   <data name="UserAlreadyExists" xml:space="preserve">
     <value>Користувач вже існує</value>
   </data>
+  <data name="DisciplinesNotFound" xml:space="preserve">
+    <value>Дисциплін не знайдено</value>
+  </data>
 </root>
