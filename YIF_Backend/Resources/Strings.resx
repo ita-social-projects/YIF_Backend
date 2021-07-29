@@ -243,9 +243,6 @@
   <data name="InstitutionOfEducationWithSuchNameNotFound" xml:space="preserve">
     <value>В базі даних немає навчального закладу із такою назвою</value>
   </data>
-  <data name="UserAlreadyExists" xml:space="preserve">
-    <value>Користувач вже існує</value>
-  </data>
   <data name="UserCreationFailed" xml:space="preserve">
     <value>Помилка створення користувача</value>
   </data>
@@ -434,6 +431,9 @@
   </data>
   <data name="DisciplineWasAdded" xml:space="preserve">
     <value>Дисципліну успішно додано</value>
+  </data>
+  <data name="UserAlreadyExists" xml:space="preserve">
+    <value>Користувач вже існує</value>
   </data>
   <data name="DisciplinesNotFound" xml:space="preserve">
     <value>Дисциплін не знайдено</value>
