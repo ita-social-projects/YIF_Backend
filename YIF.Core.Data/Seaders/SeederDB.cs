@@ -758,7 +758,8 @@ namespace YIF.Core.Data.Seaders
                     Lon = 26.25865398659906f,
                     InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
-                    EndOfCampaign = new DateTime(2021, 8, 31)
+                    EndOfCampaign = new DateTime(2021, 8, 31),
+                    ImagePath = "0a6ea742-eb61-4ddf-9e36-20fa552d2d27.jpg"
                 });
                 #endregion
 
@@ -778,7 +779,8 @@ namespace YIF.Core.Data.Seaders
                     Lon = 26.288458069318498f,
                     InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
-                    EndOfCampaign = new DateTime(2021, 8, 31)
+                    EndOfCampaign = new DateTime(2021, 8, 31),
+                    ImagePath = "d47b46c2-b870-4522-8df0-903154c861af.jpg"
                 });
                 #endregion
 
@@ -803,7 +805,8 @@ namespace YIF.Core.Data.Seaders
                     Lon = 26.512545745229293f,
                     InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
-                    EndOfCampaign = new DateTime(2021, 8, 31)
+                    EndOfCampaign = new DateTime(2021, 8, 31),
+                    ImagePath = "4510654b-c53c-4a86-9c35-717791862da7.jpg"
                 });
                 #endregion
 
@@ -825,7 +828,8 @@ namespace YIF.Core.Data.Seaders
                     Lon = 26.260765167100683f,
                     InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
-                    EndOfCampaign = new DateTime(2021, 8, 31)
+                    EndOfCampaign = new DateTime(2021, 8, 31),
+                    ImagePath = "958d1897-2cb7-418a-84a6-48b832c18cdf.jpg"
                 });
                 #endregion
 
@@ -845,7 +849,8 @@ namespace YIF.Core.Data.Seaders
                     Lon = 30.4561487f,
                     InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
-                    EndOfCampaign = new DateTime(2021, 8, 31)
+                    EndOfCampaign = new DateTime(2021, 8, 31),
+                    ImagePath = "24baf43b-0062-4361-aa5d-bffa53374560.jpg"
                 });
                 #endregion
 
@@ -863,7 +868,8 @@ namespace YIF.Core.Data.Seaders
                     Lon = 30.471873937648123f,
                     InstitutionOfEducationType = InstitutionOfEducationType.University,
                     StartOfCampaign = new DateTime(2021, 8, 13),
-                    EndOfCampaign = new DateTime(2021, 8, 31)
+                    EndOfCampaign = new DateTime(2021, 8, 31),
+                    ImagePath = "57d063b9-62a8-4e45-b614-8cfe8ec2784f.jpg"
                 });
                 #endregion
 
